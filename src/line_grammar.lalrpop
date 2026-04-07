@@ -1,0 +1,30 @@
+grammar;
+
+extern {
+    type Location = usize;
+    type Error = String;
+
+    enum crate::parser_tokens::LineToken {
+        "|" => crate::parser_tokens::LineToken::Pipe,
+        "piece" => crate::parser_tokens::LineToken::Piece(<String>),
+    }
+}
+
+pub Segments: Vec<String> = {
+    <first:Segment> <rest:("|" <Segment>)*> => {
+        let mut out = Vec::with_capacity(rest.len() + 1);
+        out.push(first);
+        for segment in rest {
+            out.push(segment);
+        }
+        out
+    },
+};
+
+Segment: String = {
+    <parts:Piece*> => parts.concat(),
+};
+
+Piece: String = {
+    "piece" => <>,
+};
