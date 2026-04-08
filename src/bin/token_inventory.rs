@@ -21,6 +21,7 @@ fn main() -> io::Result<()> {
     let mut fallback_needed_counts: HashMap<String, usize> = HashMap::new();
     let mut policy_supported_counts: HashMap<String, usize> = HashMap::new();
     let mut unhandled_counts: HashMap<String, usize> = HashMap::new();
+    let fixture_token_counts = collect_fixture_token_counts()?;
     let mut file_count = 0;
     let mut total_lines = 0;
     let mut fixed_count = 0;
@@ -75,9 +76,23 @@ fn main() -> io::Result<()> {
         policy_supported_counts.len()
     );
     println!("Unique unhandled tokens: {}", unhandled_counts.len());
+    println!(
+        "Unique tokens represented in fixture files: {}",
+        fixture_token_counts.len()
+    );
     if fixed_count > 0 {
         println!("Files with UTF-8 encoding issues fixed: {}", fixed_count);
     }
+    println!();
+
+    let mut fixture_tokens: Vec<_> = fixture_token_counts.iter().collect();
+    fixture_tokens.sort_by(|a, b| b.1.cmp(a.1).then_with(|| a.0.cmp(b.0)));
+
+    println!("=== Fixture Tokens by Frequency ===");
+    for (token, count) in fixture_tokens {
+        println!("{:6} | {}", count, token);
+    }
+
     println!();
 
     let mut semantic_tokens: Vec<_> = semantic_counts.iter().collect();
@@ -333,6 +348,73 @@ fn process_file(
     }
 
     Ok(was_fixed)
+}
+
+fn collect_fixture_token_counts() -> io::Result<HashMap<String, usize>> {
+    let fixture_root = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/pcgen");
+    let mut counts = HashMap::new();
+
+    if !fixture_root.exists() || !fixture_root.is_dir() {
+        return Ok(counts);
+    }
+
+    collect_fixture_tokens_in_dir(&fixture_root, &mut counts)?;
+    Ok(counts)
+}
+
+fn collect_fixture_tokens_in_dir(path: &Path, counts: &mut HashMap<String, usize>) -> io::Result<()> {
+    if !path.is_dir() {
+        return Ok(());
+    }
+
+    for entry in fs::read_dir(path)? {
+        let entry = entry?;
+        let child = entry.path();
+
+        if child.is_dir() {
+            collect_fixture_tokens_in_dir(&child, counts)?;
+            continue;
+        }
+
+        let Some(ext) = child.extension().and_then(|e| e.to_str()) else {
+            continue;
+        };
+
+        let ext = ext.to_ascii_lowercase();
+        if ext != "lst" && ext != "pcc" && ext != "pcg" {
+            continue;
+        }
+
+        collect_fixture_tokens_from_file(&child, counts)?;
+    }
+
+    Ok(())
+}
+
+fn collect_fixture_tokens_from_file(path: &Path, counts: &mut HashMap<String, usize>) -> io::Result<()> {
+    let bytes = fs::read(path)?;
+    let content = String::from_utf8_lossy(&bytes);
+
+    for line in content.lines() {
+        let trimmed = line.trim();
+        if trimmed.is_empty() || trimmed.starts_with('#') {
+            continue;
+        }
+
+        let parsed = parse_line(trimmed);
+
+        if let Some(head_key) = extract_head_key(&parsed.head) {
+            *counts.entry(head_key).or_insert(0) += 1;
+        }
+
+        for (clause_index, clause) in parsed.clauses.iter().enumerate() {
+            if let Some(token_key) = extract_token_key(clause, clause_index) {
+                *counts.entry(token_key).or_insert(0) += 1;
+            }
+        }
+    }
+
+    Ok(())
 }
 
 fn extract_head_key(head: &str) -> Option<String> {
