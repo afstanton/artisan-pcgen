@@ -6,7 +6,7 @@ use crate::{ParsedClause, ParsedLine};
 use super::parser_tokens;
 
 pub(crate) fn parse_line_internal(line: &str) -> ParsedLine {
-    let segments = parse_segments_with_generated_parser(line);
+    let segments = split_top_level_segments(line);
     let mut iter = segments.into_iter();
     let head = iter.next().unwrap_or_default();
     let clauses = iter.map(|segment| parse_clause(&segment)).collect();
@@ -99,6 +99,89 @@ fn parse_segments_with_generated_parser(line: &str) -> Vec<String> {
             .collect(),
         Err(_) => vec![line.trim().to_string()],
     }
+}
+
+fn split_top_level_segments(line: &str) -> Vec<String> {
+    let whitespace_segments = split_on_whitespace_token_starts(line);
+    if whitespace_segments.len() > 1 {
+        return whitespace_segments;
+    }
+    parse_segments_with_generated_parser(line)
+}
+
+fn split_on_whitespace_token_starts(line: &str) -> Vec<String> {
+    let trimmed = line.trim();
+    if trimmed.is_empty() {
+        return Vec::new();
+    }
+
+    let mut segments = Vec::new();
+    let mut start = 0usize;
+    let mut scan = 0usize;
+
+    while scan < trimmed.len() {
+        let next_char = trimmed[scan..].chars().next().expect("valid char boundary");
+        if next_char.is_whitespace() {
+            let whitespace_start = scan;
+            let mut after_ws = scan;
+            while after_ws < trimmed.len() {
+                let ch = trimmed[after_ws..].chars().next().expect("valid char boundary");
+                if !ch.is_whitespace() {
+                    break;
+                }
+                after_ws += ch.len_utf8();
+            }
+
+            if looks_like_token_start(trimmed, after_ws) {
+                let segment = trimmed[start..whitespace_start].trim();
+                if !segment.is_empty() {
+                    segments.push(segment.to_string());
+                }
+                start = after_ws;
+                scan = after_ws;
+                continue;
+            }
+
+            scan = after_ws;
+            continue;
+        }
+
+        scan += next_char.len_utf8();
+    }
+
+    let tail = trimmed[start..].trim();
+    if !tail.is_empty() {
+        segments.push(tail.to_string());
+    }
+
+    segments
+}
+
+fn looks_like_token_start(input: &str, start: usize) -> bool {
+    if start >= input.len() {
+        return false;
+    }
+
+    let mut index = start;
+    let mut saw_alpha = false;
+
+    if input[index..].starts_with('!') {
+        index += 1;
+    }
+
+    while index < input.len() {
+        let ch = input[index..].chars().next().expect("valid char boundary");
+        if ch == ':' {
+            return saw_alpha;
+        }
+        if !(ch.is_ascii_alphanumeric() || matches!(ch, '_' | '-' | '.')) {
+            return false;
+        }
+        saw_alpha |= ch.is_ascii_alphabetic();
+        index += ch.len_utf8();
+    }
+
+    false
 }
 
 fn parse_clause(segment: &str) -> ParsedClause {

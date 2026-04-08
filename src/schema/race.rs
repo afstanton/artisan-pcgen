@@ -1,0 +1,95 @@
+//! RACE entity schema.
+//!
+//! Source: `docs/listfilepages/datafilestagpages/datafilesraces.html`
+//!
+//! Race files define playable and monster races. The head is the race name
+//! (no token prefix).
+
+use crate::schema::{
+    ArtisanMapping, Cardinality, EntitySchema, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
+};
+
+static RACE_TOKENS: &[TokenDef] = &[
+    // Core racial properties
+    TokenDef::text("RACETYPE", "pcgen_racetype"),
+    TokenDef {
+        key: "RACESUBTYPE",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_racesubtype"),
+        required: false,
+    },
+    TokenDef::text("SIZE", "pcgen_size"),
+    TokenDef::integer("LEVELADJUSTMENT", "pcgen_leveladjustment"),
+    TokenDef::integer("STARTFEATS", "pcgen_startfeats"),
+    TokenDef::integer("XTRASKILLPTSPERLVL", "pcgen_xtraskillptsperlvl"),
+    TokenDef::text("HITDIE", "pcgen_hitdie"),
+    TokenDef::text("HITDICEADVANCEMENT", "pcgen_hitdiceadvancement"),
+    // Favored class
+    TokenDef {
+        key: "FAVCLASS",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Once,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_favclass"),
+        required: false,
+    },
+    // Monster-specific
+    TokenDef::text("MONSTERCLASS", "pcgen_monsterclass"),
+    TokenDef {
+        key: "MONCSKILL",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_moncskill"),
+        required: false,
+    },
+    TokenDef {
+        key: "MONCCSKILL",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_monccskill"),
+        required: false,
+    },
+    // Feats and weapon bonuses
+    TokenDef {
+        key: "FEAT",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_feats"),
+        required: false,
+    },
+    TokenDef {
+        key: "WEAPONBONUS",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_weaponbonus"),
+        required: false,
+    },
+];
+
+static RACE_GLOBALS: &[GlobalGroup] = &[
+    GlobalGroup::Type,
+    GlobalGroup::Key,
+    GlobalGroup::Desc,
+    GlobalGroup::Fact,
+    GlobalGroup::Bonus,
+    GlobalGroup::Add,
+    GlobalGroup::Choose,
+    GlobalGroup::Auto,
+    GlobalGroup::Define,
+    GlobalGroup::Prerequisites,
+    GlobalGroup::SourcePage,
+    GlobalGroup::OutputName,
+    GlobalGroup::CSkill,
+    GlobalGroup::Sab,
+    GlobalGroup::Qualify,
+    GlobalGroup::Template,
+    GlobalGroup::SourceMeta,
+];
+
+pub static RACE_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:entity:race",
+    head_token: None,
+    head_format: HeadFormat::NameOnly,
+    tokens: RACE_TOKENS,
+    globals: RACE_GLOBALS,
+};

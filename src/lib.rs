@@ -17,9 +17,12 @@ use uuid::Uuid;
 
 mod analysis;
 mod parsing;
+mod emit;
+pub mod schema;
 
-use analysis::{metadata, semantics, signals};
+use analysis::{fields, metadata, semantics, signals};
 use parsing::line_codec;
+pub use emit::{emit_entity, emit_entity_auto};
 
 const ENTITY_TYPE_NAMESPACE: Uuid = Uuid::from_u128(0x6c8fdbf43f4f4a4ba4d846e2bf8b9c10);
 const ENTITY_NAMESPACE: Uuid = Uuid::from_u128(0x5ea8a1062b0842beaf2fcb5966e30f3a);
@@ -234,10 +237,8 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
             }
         }
 
-        let name = parsed_line
-            .head
-            .trim()
-            .to_string();
+        let name = semantics::derive_entity_name(&parsed_line.head, &supported_clauses)
+            .unwrap_or_else(|| parsed_line.head.trim().to_string());
         let name = if name.is_empty() {
             format!("line_{}", line_number + 1)
         } else {
@@ -254,9 +255,14 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
             "clauses".to_string(),
             json!(line_codec::clauses_to_json(&supported_clauses)),
         );
+        if let Some((decl_key, decl_value)) = semantics::declared_entity(&parsed_line.head) {
+            attributes.insert("pcgen_decl_token".to_string(), Value::String(decl_key));
+            attributes.insert("pcgen_decl_value".to_string(), Value::String(decl_value));
+        }
         attributes.insert("line_number".to_string(), json!(line_number + 1));
         attributes.insert("pcgen_line_number".to_string(), json!(line_number + 1));
         attributes.insert("source_format".to_string(), Value::String(ext.to_string()));
+        fields::project_clause_attributes(&supported_clauses, &mut attributes);
 
         let mut entity_citations = Vec::new();
         if let Some(source_page) = line_codec::find_key_value(&supported_clauses, "SOURCEPAGE") {
@@ -288,7 +294,7 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
             entity_citations.push(citation_id);
         }
 
-        let inferred_type_key = semantics::infer_entity_type_key(&supported_clauses);
+        let inferred_type_key = semantics::infer_entity_type_key(&parsed_line.head, &supported_clauses);
         attributes.insert(
             "pcgen_entity_type_key".to_string(),
             Value::String(inferred_type_key.clone()),
@@ -428,18 +434,23 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
 pub fn unparse_catalog_to_text(catalog: &ParsedCatalog) -> String {
     let mut lines = Vec::new();
     for entity in &catalog.entities {
-        let head = entity
-            .attributes
-            .get("head")
-            .and_then(Value::as_str)
-            .unwrap_or(&entity.name)
-            .to_string();
-        let clauses = entity
-            .attributes
-            .get("clauses")
-            .and_then(line_codec::clauses_from_json)
-            .unwrap_or_default();
-        lines.push(unparse_line(&head, &clauses));
+        // Prefer schema-driven emission; fall back to raw clause reconstruction.
+        if let Some(line) = emit_entity_auto(entity) {
+            lines.push(line);
+        } else {
+            let head = entity
+                .attributes
+                .get("head")
+                .and_then(Value::as_str)
+                .unwrap_or(&entity.name)
+                .to_string();
+            let clauses = entity
+                .attributes
+                .get("clauses")
+                .and_then(line_codec::clauses_from_json)
+                .unwrap_or_default();
+            lines.push(unparse_line(&head, &clauses));
+        }
     }
     lines.join("\n")
 }
@@ -476,6 +487,28 @@ mod tests {
     }
 
     #[test]
+    fn parse_line_splits_whitespace_delimited_top_level_tokens() {
+        let parsed = parse_line(
+            "CLASS:Psion           HD:4 TYPE:Base.Psionic.PC BONUS:COMBAT|BASEAB|classlevel(\"APPLIEDAS=NONEPIC\")/2|TYPE=Base.REPLACE",
+        );
+
+        assert_eq!(parsed.head, "CLASS:Psion");
+        assert!(matches!(
+            &parsed.clauses[0],
+            ParsedClause::KeyValue { key, value } if key == "HD" && value == "4"
+        ));
+        assert!(matches!(
+            &parsed.clauses[1],
+            ParsedClause::KeyValue { key, value } if key == "TYPE" && value == "Base.Psionic.PC"
+        ));
+        assert!(matches!(
+            &parsed.clauses[2],
+            ParsedClause::KeyValue { key, value }
+                if key == "BONUS" && value == "COMBAT|BASEAB|classlevel(\"APPLIEDAS=NONEPIC\")/2|TYPE=Base.REPLACE"
+        ));
+    }
+
+    #[test]
     fn parse_and_unparse_line_preserves_escaped_separators() {
         let original = r"Name\|WithPipe|DESC:Use \: carefully|TAG:ONE\|TWO";
         let parsed = parse_line(original);
@@ -500,6 +533,121 @@ mod tests {
             .effects
             .iter()
             .any(|e| e.kind == "BONUS" && e.target == "COMBAT"));
+    }
+
+    #[test]
+    fn parse_text_uses_declared_entity_head_for_name_and_type() {
+        let catalog = parse_text_to_catalog(
+            "SKILL:Bluff   RANK:9\nCLASS:Psion   HD:4 TYPE:Base.Psionic.PC",
+            "sample.lst",
+            "lst",
+        );
+
+        assert_eq!(catalog.entities[0].name, "Bluff");
+        assert_eq!(
+            catalog.entities[0]
+                .attributes
+                .get("pcgen_decl_token")
+                .and_then(Value::as_str),
+            Some("SKILL")
+        );
+        assert_eq!(
+            catalog.entities[0]
+                .attributes
+                .get("pcgen_entity_type_key")
+                .and_then(Value::as_str),
+            Some("pcgen:entity:skill")
+        );
+
+        assert_eq!(catalog.entities[1].name, "Psion");
+        assert_eq!(
+            catalog.entities[1]
+                .attributes
+                .get("pcgen_entity_type_key")
+                .and_then(Value::as_str),
+            Some("pcgen:entity:class")
+        );
+    }
+
+    #[test]
+    fn parse_text_projects_structured_field_attributes() {
+        let catalog = parse_text_to_catalog(
+            "Ability Name KEY:Nightblade ~ Spells CATEGORY:Special Ability DESC:Spellcasting text FACT:ClassType|PC SPELLS:Hellknight|TIMES=3+CHA|CASTERLEVEL=TL|Discern Lies,14+CHA CLASSES:Bard,Wizard=2|Cleric=3 EQMOD:Special Ability ~ Uses per Day / 1|CHARGES[1] COST:22000 RANK:4",
+            "fields.lst",
+            "lst",
+        );
+
+        let entity = &catalog.entities[0];
+        assert_eq!(
+            entity.attributes.get("pcgen_key").and_then(Value::as_str),
+            Some("Nightblade ~ Spells")
+        );
+        assert_eq!(
+            entity.attributes.get("pcgen_category").and_then(Value::as_str),
+            Some("Special Ability")
+        );
+        assert_eq!(
+            entity.attributes.get("description").and_then(Value::as_str),
+            Some("Spellcasting text")
+        );
+        assert_eq!(
+            entity.attributes.get("pcgen_cost").and_then(Value::as_str),
+            Some("22000")
+        );
+        assert_eq!(
+            entity.attributes.get("pcgen_rank").and_then(Value::as_i64),
+            Some(4)
+        );
+
+        let facts = entity
+            .attributes
+            .get("pcgen_facts")
+            .and_then(Value::as_array)
+            .expect("facts should be projected");
+        assert_eq!(facts.len(), 1);
+        assert_eq!(facts[0].get("key").and_then(Value::as_str), Some("ClassType"));
+        assert_eq!(facts[0].get("value").and_then(Value::as_str), Some("PC"));
+
+        let spells = entity
+            .attributes
+            .get("pcgen_spells")
+            .and_then(Value::as_array)
+            .expect("spells should be projected");
+        assert_eq!(spells[0].get("mode").and_then(Value::as_str), Some("Hellknight"));
+        assert_eq!(
+            spells[0]
+                .get("assignments")
+                .and_then(Value::as_object)
+                .and_then(|obj| obj.get("times"))
+                .and_then(Value::as_str),
+            Some("3+CHA")
+        );
+
+        let classes = entity
+            .attributes
+            .get("pcgen_classes")
+            .and_then(Value::as_array)
+            .expect("classes should be projected");
+        assert_eq!(
+            classes[0]
+                .get("parts")
+                .and_then(Value::as_array)
+                .map(|parts| parts.len()),
+            Some(2)
+        );
+
+        let eqmods = entity
+            .attributes
+            .get("pcgen_eqmods")
+            .and_then(Value::as_array)
+            .expect("eqmods should be projected");
+        assert_eq!(
+            eqmods[0]
+                .get("parts")
+                .and_then(Value::as_array)
+                .map(|parts| parts.len()),
+            Some(2)
+        );
     }
 
     #[test]
@@ -550,5 +698,95 @@ mod tests {
         assert!(strings.contains(&"bonus_target:tohit"));
         assert!(strings.contains(&"effect_key:choose"));
         assert!(strings.contains(&"effect_target:stat"));
+
     }
+
+        // -----------------------------------------------------------------------
+        // Schema + Emitter tests
+        // -----------------------------------------------------------------------
+
+        #[test]
+        fn schema_registry_looks_up_by_entity_type_key() {
+            let s = schema::schema_for_entity_type_key("pcgen:entity:ability")
+                .expect("ABILITY schema should be registered");
+            assert_eq!(s.entity_type_key, "pcgen:entity:ability");
+            assert!(s.token_def("CATEGORY").is_some());
+            assert!(s.token_def("COST").is_some());
+            assert!(s.knows_token_key("BONUS"));
+            assert!(s.knows_token_key("PREFEAT"));
+            assert!(s.knows_token_key("!PREMULT"));
+            assert!(!s.knows_token_key("XYZZY"));
+        }
+
+        #[test]
+        fn schema_for_head_token_looks_up_class_and_skill() {
+            let class_schema = schema::schema_for_head_token("CLASS")
+                .expect("CLASS schema should be registered by head token");
+            assert_eq!(class_schema.head_token, Some("CLASS"));
+
+            let skill_schema = schema::schema_for_head_token("SKILL")
+                .expect("SKILL schema should be registered by head token");
+            assert_eq!(skill_schema.head_token, Some("SKILL"));
+
+            // Ability has no head token prefix
+            assert!(schema::schema_for_head_token("ABILITY").is_none());
+        }
+
+        #[test]
+        fn emit_entity_produces_ability_line_from_parsed_entity() {
+            // Parse an ability line, then re-emit it using the schema-driven emitter.
+            let catalog = parse_text_to_catalog(
+                "Toughness\tCATEGORY:General\tTYPE:General\tDESC:You gain extra hit points.",
+                "ability.lst",
+                "lst",
+            );
+            let entity = &catalog.entities[0];
+            // Entity type is inferred from CATEGORY presence → pcgen:type:general (not ability),
+            // so emit_entity_auto won't find a schema; use ABILITY schema directly.
+            let ability_schema = schema::schema_for_entity_type_key("pcgen:entity:ability")
+                .expect("ability schema must exist");
+            let line = emit_entity(entity, ability_schema);
+
+            assert!(line.contains("CATEGORY:General"), "line should contain CATEGORY: {line}");
+            assert!(line.contains("DESC:"), "line should contain DESC: {line}");
+        }
+
+        #[test]
+        fn emit_entity_auto_produces_class_line_from_declared_entity() {
+            let catalog = parse_text_to_catalog(
+                "CLASS:Psion\tHITDIE:4\tTYPE:Base.Psionic.PC",
+                "class.lst",
+                "lst",
+            );
+            let entity = &catalog.entities[0];
+
+            // CLASS entity type is recognized via declared entity head
+            let line = emit_entity_auto(entity).expect("CLASS entity should have a schema");
+
+            assert!(
+                line.starts_with("CLASS:Psion"),
+                "CLASS line should be prefixed: {line}"
+            );
+            assert!(line.contains("HITDIE:4"), "HD should round-trip as HITDIE: {line}");
+        }
+
+        #[test]
+        fn any_schema_knows_token_covers_previously_hardcoded_tokens() {
+            use schema::any_schema_knows_token;
+            assert!(any_schema_knows_token("TYPE"));
+            assert!(any_schema_knows_token("BONUS"));
+            assert!(any_schema_knows_token("CATEGORY"));
+            assert!(any_schema_knows_token("SOURCELONG"));
+            assert!(any_schema_knows_token("GAMEMODE"));
+            assert!(any_schema_knows_token("PREFEAT"));
+            assert!(any_schema_knows_token("PREVARGTEQ"));
+            assert!(any_schema_knows_token("WT"));
+            assert!(any_schema_knows_token("SCHOOL"));
+            assert!(any_schema_knows_token("RANGE"));
+            assert!(any_schema_knows_token("SPROP"));
+            assert!(any_schema_knows_token("RACETYPE"));
+            assert!(any_schema_knows_token("HITDIE"));
+            assert!(!any_schema_knows_token("XYZZY"));
+            assert!(!any_schema_knows_token("NOTAREALTOKEN"));
+        }
 }

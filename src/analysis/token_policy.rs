@@ -2,9 +2,7 @@ use crate::ParsedClause;
 
 pub(crate) fn classify_clause_token(clause: &ParsedClause) -> ClauseSupportLevel {
     match clause {
-        ParsedClause::KeyValue { key, .. } => {
-            classify_token_key(key, false)
-        }
+        ParsedClause::KeyValue { key, .. } => classify_token_key(key, false),
         ParsedClause::Bare(value) => {
             let trimmed = value.trim();
             if trimmed.is_empty() {
@@ -20,42 +18,23 @@ pub(crate) fn classify_clause_token(clause: &ParsedClause) -> ClauseSupportLevel
 
 pub(crate) fn classify_token_key(input: &str, is_bare: bool) -> ClauseSupportLevel {
     let token = input.trim().to_ascii_uppercase();
+
     if !is_plausible_token_name(&token) {
         return ClauseSupportLevel::Artifact;
     }
 
-    if !is_bare && token.starts_with("PRE") {
+    // Schema-driven lookup: any registered schema that knows this token
+    // classifies it as semantically interpreted.
+    if crate::schema::any_schema_knows_token(&token) {
         return ClauseSupportLevel::SemanticallyInterpreted;
     }
 
-    match token.as_str() {
-        "TYPE"
-        | "BONUS"
-        | "AUTO"
-        | "DEFINE"
-        | "CHOOSE"
-        | "SOURCEPAGE"
-        | "CAMPAIGN"
-        | "SOURCELONG"
-        | "SOURCE"
-        | "SOURCESHORT"
-        | "SOURCEWEB"
-        | "SOURCEDATE"
-        | "PUBNAMELONG"
-        | "PUBNAMESHORT"
-        | "PUBLISHER"
-        | "PUBLISHERNAME"
-        | "GAMEMODE"
-        | "SETTING"
-        | "BOOKTYPE" => ClauseSupportLevel::SemanticallyInterpreted,
-        "AUTOMATIC" | "VISIBLE" | "VIRTUAL" | "PRERULE" | "!PRERULE" | "SET" => {
-            ClauseSupportLevel::PolicySupported
-        }
-        _ if is_bare && (token.starts_with("PRE") || token.starts_with("!PRE")) => {
-            ClauseSupportLevel::PolicySupported
-        }
-        _ => ClauseSupportLevel::Unhandled(token),
+    // Bare PRE* tokens not caught by the schema (edge-case aliases)
+    if is_bare && (token.starts_with("PRE") || token.starts_with("!PRE")) {
+        return ClauseSupportLevel::PolicySupported;
     }
+
+    ClauseSupportLevel::Unhandled(token)
 }
 
 pub(crate) enum ClauseSupportLevel {
@@ -67,14 +46,18 @@ pub(crate) enum ClauseSupportLevel {
 
 fn is_known_bare_directive(input: &str) -> bool {
     let upper = input.to_ascii_uppercase();
+
+    // PRE* bare directives
     if upper.starts_with("PRE") || upper.starts_with("!PRE") {
         return true;
     }
 
-    matches!(
-        upper.as_str(),
-        "AUTOMATIC" | "VISIBLE" | "VIRTUAL" | "PRERULE" | "!PRERULE" | "SET"
-    )
+    // Bare tokens that appear without a colon in PCGen data
+    if crate::schema::any_schema_knows_token(&upper) {
+        return true;
+    }
+
+    matches!(upper.as_str(), "AUTOMATIC" | "VIRTUAL" | "PRERULE" | "!PRERULE" | "SET")
 }
 
 fn is_plausible_token_name(token: &str) -> bool {
