@@ -1069,6 +1069,14 @@ mod tests {
             assert!(any_schema_knows_token("SPROP"));
             assert!(any_schema_knows_token("RACETYPE"));
             assert!(any_schema_knows_token("HITDIE"));
+            assert!(any_schema_knows_token("CLASS"));
+            assert!(any_schema_knows_token("SKILL"));
+            assert!(any_schema_knows_token("STARTPACK"));
+            assert!(any_schema_knows_token("CASTTIME"));
+            assert!(any_schema_knows_token("SORTKEY"));
+            assert!(any_schema_knows_token("SPELLKNOWN"));
+            assert!(any_schema_knows_token("MOVE"));
+            assert!(any_schema_knows_token("NATURALATTACKS"));
             assert!(!any_schema_knows_token("XYZZY"));
             assert!(!any_schema_knows_token("NOTAREALTOKEN"));
         }

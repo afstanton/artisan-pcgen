@@ -25,6 +25,20 @@ static RACE_TOKENS: &[TokenDef] = &[
     TokenDef::integer("XTRASKILLPTSPERLVL", "pcgen_xtraskillptsperlvl"),
     TokenDef::text("HITDIE", "pcgen_hitdie"),
     TokenDef::text("HITDICEADVANCEMENT", "pcgen_hitdiceadvancement"),
+    TokenDef {
+        key: "MOVE",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_move"),
+        required: false,
+    },
+    TokenDef {
+        key: "NATURALATTACKS",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_naturalattacks"),
+        required: false,
+    },
     // Favored class
     TokenDef {
         key: "FAVCLASS",

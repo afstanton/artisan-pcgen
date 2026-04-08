@@ -24,6 +24,20 @@ static TEMPLATE_TOKENS: &[TokenDef] = &[
     },
     TokenDef::text("SIZE", "pcgen_size"),
     TokenDef::text("HITDIE", "pcgen_hitdie"),
+    TokenDef {
+        key: "MOVE",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_move"),
+        required: false,
+    },
+    TokenDef {
+        key: "NATURALATTACKS",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_naturalattacks"),
+        required: false,
+    },
     TokenDef::text("GENDERLOCK", "pcgen_genderlock"),
     TokenDef::integer("BONUSSKILLPOINTS", "pcgen_bonusskillpoints"),
     // Level-based

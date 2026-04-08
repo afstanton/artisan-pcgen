@@ -254,6 +254,15 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
                 parts.push(format!("OUTPUTNAME:{on}"));
             }
         }
+        GlobalGroup::SortKey => {
+            if let Some(sk) = entity
+                .attributes
+                .get("pcgen_sortkey")
+                .and_then(Value::as_str)
+            {
+                parts.push(format!("SORTKEY:{sk}"));
+            }
+        }
         // Template, CSkill, Sab, Qualify, SourceMeta: not yet mapped from artisan model
         GlobalGroup::Template
         | GlobalGroup::CSkill

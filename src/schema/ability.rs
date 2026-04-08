@@ -37,6 +37,27 @@ static ABILITY_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Attribute("pcgen_spells"),
         required: false,
     },
+    TokenDef {
+        key: "SPELLKNOWN",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_spellknown"),
+        required: false,
+    },
+    TokenDef {
+        key: "MOVE",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_move"),
+        required: false,
+    },
+    TokenDef {
+        key: "NATURALATTACKS",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_naturalattacks"),
+        required: false,
+    },
     // Equipment modification grant: EQMOD:name|key=value...
     TokenDef {
         key: "EQMOD",

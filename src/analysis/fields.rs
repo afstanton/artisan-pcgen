@@ -189,6 +189,12 @@ pub(crate) fn project_clause_attributes(
             "CT" => {
                 attributes.insert("pcgen_casttime".to_string(), Value::String(value.clone()));
             }
+            "CASTTIME" => {
+                attributes.insert("pcgen_casttime".to_string(), Value::String(value.clone()));
+            }
+            "SORTKEY" => {
+                attributes.insert("pcgen_sortkey".to_string(), Value::String(value.clone()));
+            }
             "TARGETAREA" => {
                 attributes.insert("pcgen_targetarea".to_string(), Value::String(value.clone()));
             }
@@ -271,6 +277,9 @@ pub(crate) fn project_clause_attributes(
             "EQMOD" => equipment_modifiers.push(parse_pipe_series(value)),
             "CLASSES" => class_lists.push(parse_pipe_series(value)),
             "SPELLS" => spell_blocks.push(parse_spells(value)),
+            "SPELLKNOWN" => append_string_attr(attributes, "pcgen_spellknown", value),
+            "MOVE" => append_string_attr(attributes, "pcgen_move", value),
+            "NATURALATTACKS" => append_string_attr(attributes, "pcgen_naturalattacks", value),
             _ => {}
         }
     }

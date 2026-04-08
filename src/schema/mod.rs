@@ -239,6 +239,8 @@ pub enum GlobalGroup {
     SourcePage,
     /// `OUTPUTNAME:x` — display name override
     OutputName,
+    /// `SORTKEY:x` — sort/display ordering hint
+    SortKey,
     /// `TEMPLATE:x`, `TEMPLATE:ADDCHOICE:x`, `TEMPLATE:CHOOSE:x` (repeatable)
     Template,
     /// `CSKILL:x|x` — cross-class skill (repeatable)
@@ -270,6 +272,7 @@ impl GlobalGroup {
             GlobalGroup::Prerequisites => &["PRE", "!PRE"],
             GlobalGroup::SourcePage => &["SOURCEPAGE"],
             GlobalGroup::OutputName => &["OUTPUTNAME"],
+            GlobalGroup::SortKey => &["SORTKEY"],
             GlobalGroup::Template => &["TEMPLATE"],
             GlobalGroup::CSkill => &["CSKILL"],
             GlobalGroup::Sab => &["SAB"],
@@ -401,5 +404,16 @@ pub fn schema_for_head_token(token: &str) -> Option<&'static EntitySchema> {
 ///
 /// Used by `token_policy` for global (context-free) token classification.
 pub fn any_schema_knows_token(key: &str) -> bool {
-    ALL_SCHEMAS.iter().any(|s| s.knows_token_key(key))
+    let normalized = if key.eq_ignore_ascii_case("CASTTIME") {
+        "CT"
+    } else {
+        key
+    };
+
+    ALL_SCHEMAS.iter().any(|s| {
+        s.knows_token_key(normalized)
+            || s
+                .head_token
+                .is_some_and(|head| head.eq_ignore_ascii_case(normalized))
+    })
 }
