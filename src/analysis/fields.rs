@@ -43,6 +43,21 @@ pub(crate) fn project_clause_attributes(
             "SOURCEDATE" => {
                 attributes.insert("pcgen_source_date".to_string(), Value::String(value.clone()));
             }
+            "GAMEMODE" => {
+                attributes.insert("pcgen_gamemode".to_string(), Value::String(value.clone()));
+            }
+            "PUBNAMESHORT" => {
+                attributes.insert(
+                    "pcgen_publisher_short".to_string(),
+                    Value::String(value.clone()),
+                );
+            }
+            "SETTING" => {
+                attributes.insert("pcgen_setting".to_string(), Value::String(value.clone()));
+            }
+            "BOOKTYPE" => {
+                attributes.insert("pcgen_booktype".to_string(), Value::String(value.clone()));
+            }
             "BASESTATSCORE" => set_i64_or_string(attributes, "pcgen_basestatscore", value),
             "STATRANGE" => set_i64_or_string(attributes, "pcgen_statrange", value),
             "STATMOD" => {
@@ -108,6 +123,7 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_monsterclass".to_string(), Value::String(value.clone()));
             }
             "MONCSKILL" => append_string_attr(attributes, "pcgen_moncskill", value),
+            "MONCCSKILL" => append_string_attr(attributes, "pcgen_monccskill", value),
             "STARTFEATS" => set_i64_or_string(attributes, "pcgen_startfeats", value),
             "HITDICEADVANCEMENT" => {
                 attributes.insert(
@@ -232,8 +248,12 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_key".to_string(), Value::String(value.clone()));
             }
             "LANGBONUS" => append_string_attr(attributes, "pcgen_langbonus", value),
+            "CSKILL" => append_string_attr(attributes, "pcgen_cskill", value),
+            "SAB" => append_string_attr(attributes, "pcgen_sab", value),
             "CHANGEPROF" => append_string_attr(attributes, "pcgen_changeprof", value),
             "SERVESAS" => append_string_attr(attributes, "pcgen_servesas", value),
+            "QUALIFY" => append_string_attr(attributes, "pcgen_qualify", value),
+            "TEMPLATE" => append_string_attr(attributes, "pcgen_template", value),
             "OUTPUTNAME" => {
                 attributes.insert("pcgen_outputname".to_string(), Value::String(value.clone()));
             }

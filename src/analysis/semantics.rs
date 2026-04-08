@@ -23,8 +23,10 @@ pub(crate) fn project_semantics(
 
             if key == "BONUS"
                 || key == "TEMPBONUS"
+                || key == "ADD"
                 || key == "AUTO"
                 || key == "DEFINE"
+                || key == "DEFINESTAT"
                 || key == "CHOOSE"
                 || key == "SELECT"
             {
@@ -51,10 +53,6 @@ pub(crate) fn infer_entity_type_key(head: &str, clauses: &[ParsedClause]) -> Str
 
     if let Some((decl_key, _)) = declared_entity(head) {
         return format!("pcgen:entity:{}", decl_key.to_ascii_lowercase());
-    }
-
-    if looks_like_pcc(head, clauses) {
-        return "pcgen:entity:pcc".to_string();
     }
 
     if looks_like_system_align(clauses) {
@@ -98,6 +96,10 @@ pub(crate) fn infer_entity_type_key(head: &str, clauses: &[ParsedClause]) -> Str
     }
     if looks_like_template(clauses) {
         return "pcgen:entity:template".to_string();
+    }
+
+    if looks_like_pcc(head, clauses) {
+        return "pcgen:entity:pcc".to_string();
     }
 
     if let Some(value) = find_key_value(clauses, "TYPE") {
@@ -147,6 +149,7 @@ fn looks_like_pcc(head: &str, clauses: &[ParsedClause]) -> bool {
         "GAMEMODE",
         "SETTING",
         "BOOKTYPE",
+        "RANK",
         "FACTDEF",
         "STATUS",
         "OPTION",
@@ -318,7 +321,9 @@ fn looks_like_template(clauses: &[ParsedClause]) -> bool {
 }
 
 fn looks_like_race(clauses: &[ParsedClause]) -> bool {
-    has_token(clauses, "MONSTERCLASS") || has_token(clauses, "STARTFEATS")
+    has_token(clauses, "MONSTERCLASS")
+        || has_token(clauses, "STARTFEATS")
+        || has_token(clauses, "MONCCSKILL")
 }
 
 fn map_type_root_to_entity_key(root: &str) -> Option<&'static str> {

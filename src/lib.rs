@@ -22,7 +22,7 @@ pub mod schema;
 
 use analysis::{fields, metadata, semantics, signals};
 use parsing::line_codec;
-pub use emit::{emit_entity, emit_entity_auto};
+pub use emit::{emit_entity, emit_entity_auto, emittable_keys_for_entity};
 pub use emit::fallback_keys_for_entity;
 
 const ENTITY_TYPE_NAMESPACE: Uuid = Uuid::from_u128(0x6c8fdbf43f4f4a4ba4d846e2bf8b9c10);

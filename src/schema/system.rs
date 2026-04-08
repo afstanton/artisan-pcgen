@@ -117,3 +117,46 @@ pub static NAME_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
     tokens: &[],
     globals: &[],
 };
+
+static SUBSTITUTION_CLASS_GLOBALS: &[GlobalGroup] = &[
+    GlobalGroup::Bonus,
+    GlobalGroup::Add,
+    GlobalGroup::Choose,
+    GlobalGroup::Auto,
+    GlobalGroup::Define,
+    GlobalGroup::Prerequisites,
+    GlobalGroup::SourcePage,
+    GlobalGroup::SourceLink,
+    GlobalGroup::OutputName,
+    GlobalGroup::LangBonus,
+    GlobalGroup::CSkill,
+    GlobalGroup::Sab,
+    GlobalGroup::ChangeProf,
+    GlobalGroup::ServesAs,
+    GlobalGroup::Qualify,
+    GlobalGroup::Template,
+];
+
+pub static SUBCLASSLEVEL_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:subclasslevel",
+    head_token: Some("SUBCLASSLEVEL"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[],
+    globals: SUBSTITUTION_CLASS_GLOBALS,
+};
+
+pub static SUBSTITUTIONCLASS_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:substitutionclass",
+    head_token: Some("SUBSTITUTIONCLASS"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[],
+    globals: SUBSTITUTION_CLASS_GLOBALS,
+};
+
+pub static SUBSTITUTIONLEVEL_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:substitutionlevel",
+    head_token: Some("SUBSTITUTIONLEVEL"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[],
+    globals: SUBSTITUTION_CLASS_GLOBALS,
+};

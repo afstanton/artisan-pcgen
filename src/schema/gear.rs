@@ -8,6 +8,7 @@ static GEAR_TOKENS: &[TokenDef] = &[
     TokenDef::text("LOCATION", "pcgen_location"),
     TokenDef::text("QTY", "pcgen_qty"),
     TokenDef::text("OPTION", "pcgen_option"),
+    TokenDef::text("LOOKUP", "pcgen_lookup"),
     TokenDef::text("SIZE", "pcgen_size"),
     TokenDef {
         key: "EQMOD",

@@ -11,6 +11,7 @@ use crate::schema::{
 
 static STARTPACK_TOKENS: &[TokenDef] = &[
     TokenDef::text("APPLY", "pcgen_apply"),
+    TokenDef::text("EQUIPBUY", "pcgen_equipbuy"),
     TokenDef {
         key: "LOOKUP",
         grammar: TokenGrammar::Text,

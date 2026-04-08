@@ -1,8 +1,9 @@
 use artisan_pcgen::{
     ParsedClause, TokenSupportLevel, classify_clause_handling, classify_token_key_support,
-    fallback_keys_for_entity, parse_line, parse_text_to_catalog,
+    emittable_keys_for_entity, fallback_keys_for_entity, parse_line, parse_text_to_catalog,
 };
 use std::collections::{HashMap, HashSet};
+use std::fmt::Write as _;
 use std::fs;
 use std::io;
 use std::path::Path;
@@ -48,52 +49,71 @@ fn main() -> io::Result<()> {
         }
     }
 
-    println!("\n=== Token Inventory Summary ===");
-    println!("Files scanned: {}", file_count);
-    println!("Total lines processed: {}", total_lines);
-    println!(
+    let mut report = String::new();
+
+    writeln!(report, "\n=== Token Inventory Summary ===").unwrap();
+    writeln!(report, "Files scanned: {}", file_count).unwrap();
+    writeln!(report, "Total lines processed: {}", total_lines).unwrap();
+    writeln!(
+        report,
         "Unique observed token keys: {}",
         semantic_counts.len() + policy_supported_counts.len() + unhandled_counts.len()
-    );
-    println!("Unique semantically interpreted token keys: {}", semantic_counts.len());
-    println!(
+    )
+    .unwrap();
+    writeln!(
+        report,
+        "Unique semantically interpreted token keys: {}",
+        semantic_counts.len()
+    )
+    .unwrap();
+    writeln!(
+        report,
         "Unique fully-structured canonical token keys: {}",
         fully_structured_counts.len()
-    );
-    println!(
+    )
+    .unwrap();
+    writeln!(
+        report,
         "Unique semantically interpreted but not fully-structured token keys: {}",
         semantic_counts
             .keys()
             .filter(|k| !fully_structured_counts.contains_key(*k))
             .count()
-    );
-    println!(
+    )
+    .unwrap();
+    writeln!(
+        report,
         "Unique fallback-needed token keys: {}",
         fallback_needed_counts.len()
-    );
-    println!(
+    )
+    .unwrap();
+    writeln!(
+        report,
         "Unique policy-supported-only token keys: {}",
         policy_supported_counts.len()
-    );
-    println!("Unique unhandled tokens: {}", unhandled_counts.len());
-    println!(
+    )
+    .unwrap();
+    writeln!(report, "Unique unhandled tokens: {}", unhandled_counts.len()).unwrap();
+    writeln!(
+        report,
         "Unique tokens represented in fixture files: {}",
         fixture_token_counts.len()
-    );
+    )
+    .unwrap();
     if fixed_count > 0 {
-        println!("Files with UTF-8 encoding issues fixed: {}", fixed_count);
+        writeln!(report, "Files with UTF-8 encoding issues fixed: {}", fixed_count).unwrap();
     }
-    println!();
+    writeln!(report).unwrap();
 
     let mut fixture_tokens: Vec<_> = fixture_token_counts.iter().collect();
     fixture_tokens.sort_by(|a, b| b.1.cmp(a.1).then_with(|| a.0.cmp(b.0)));
 
-    println!("=== Fixture Tokens by Frequency ===");
+    writeln!(report, "=== Fixture Tokens by Frequency ===").unwrap();
     for (token, count) in fixture_tokens {
-        println!("{:6} | {}", count, token);
+        writeln!(report, "{:6} | {}", count, token).unwrap();
     }
 
-    println!();
+    writeln!(report).unwrap();
 
     let mut semantic_tokens: Vec<_> = semantic_counts.iter().collect();
     semantic_tokens.sort_by(|a, b| b.1.cmp(a.1));
@@ -110,46 +130,54 @@ fn main() -> io::Result<()> {
         .collect();
     semantic_not_fully_structured_tokens.sort_by(|a, b| b.1.cmp(a.1));
 
-    println!("=== Semantically Interpreted Tokens by Frequency ===");
+    writeln!(report, "=== Semantically Interpreted Tokens by Frequency ===").unwrap();
     for (token, count) in semantic_tokens {
-        println!("{:6} | {}", count, token);
+        writeln!(report, "{:6} | {}", count, token).unwrap();
     }
 
-    println!();
-    println!("=== Fully-Structured Canonical Tokens by Frequency ===");
+    writeln!(report).unwrap();
+    writeln!(report, "=== Fully-Structured Canonical Tokens by Frequency ===").unwrap();
     for (token, count) in structured_tokens {
-        println!("{:6} | {}", count, token);
+        writeln!(report, "{:6} | {}", count, token).unwrap();
     }
 
-    println!();
-    println!("=== Fallback-Needed Tokens by Frequency ===");
+    writeln!(report).unwrap();
+    writeln!(report, "=== Fallback-Needed Tokens by Frequency ===").unwrap();
     for (token, count) in fallback_tokens {
-        println!("{:6} | {}", count, token);
+        writeln!(report, "{:6} | {}", count, token).unwrap();
     }
 
-    println!();
-    println!("=== Semantically Interpreted But Not Fully-Structured Tokens by Frequency ===");
+    writeln!(report).unwrap();
+    writeln!(
+        report,
+        "=== Semantically Interpreted But Not Fully-Structured Tokens by Frequency ==="
+    )
+    .unwrap();
     for (token, count) in semantic_not_fully_structured_tokens {
-        println!("{:6} | {}", count, token);
+        writeln!(report, "{:6} | {}", count, token).unwrap();
     }
 
     let mut policy_tokens: Vec<_> = policy_supported_counts.iter().collect();
     policy_tokens.sort_by(|a, b| b.1.cmp(a.1));
 
-    println!();
-    println!("=== Policy-Supported-Only Tokens by Frequency ===");
+    writeln!(report).unwrap();
+    writeln!(report, "=== Policy-Supported-Only Tokens by Frequency ===").unwrap();
     for (token, count) in policy_tokens {
-        println!("{:6} | {}", count, token);
+        writeln!(report, "{:6} | {}", count, token).unwrap();
     }
 
     let mut unhandled: Vec<_> = unhandled_counts.iter().collect();
     unhandled.sort_by(|a, b| b.1.cmp(a.1));
 
-    println!();
-    println!("=== Unhandled Tokens by Frequency ===");
+    writeln!(report).unwrap();
+    writeln!(report, "=== Unhandled Tokens by Frequency ===").unwrap();
     for (token, count) in unhandled {
-        println!("{:6} | {}", count, token);
+        writeln!(report, "{:6} | {}", count, token).unwrap();
     }
+
+    let output_path = Path::new(env!("CARGO_MANIFEST_DIR")).join("TOKEN_INVENTORY.txt");
+    fs::write(&output_path, &report)?;
+    print!("{report}");
 
     Ok(())
 }
@@ -245,6 +273,7 @@ fn process_file(
         .unwrap_or_else(|| "lst".to_string());
 
     let parsed_catalog = parse_text_to_catalog(&content, source_name, &ext);
+    let mut emittable_by_line: HashMap<usize, HashSet<String>> = HashMap::new();
     let mut fallback_by_line: HashMap<usize, HashSet<String>> = HashMap::new();
     for entity in &parsed_catalog.entities {
         let Some(line_number) = entity
@@ -268,12 +297,24 @@ fn process_file(
             continue;
         };
 
+        let emittable: HashSet<String> = emittable_keys_for_entity(entity, schema)
+            .into_iter()
+            .map(|k| k.to_ascii_uppercase())
+            .collect();
+        emittable_by_line
+            .entry(line_number)
+            .or_default()
+            .extend(emittable);
+
         let fallback: HashSet<String> = fallback_keys_for_entity(entity, schema)
             .into_iter()
             .map(|k| k.to_ascii_uppercase())
             .collect();
 
-        fallback_by_line.insert(line_number, fallback);
+        fallback_by_line
+            .entry(line_number)
+            .or_default()
+            .extend(fallback);
     }
 
     *file_count += 1;
@@ -294,9 +335,9 @@ fn process_file(
             match classify_token_key_support(&head_key, false) {
                 TokenSupportLevel::SemanticallyInterpreted => {
                     *semantic_counts.entry(head_key.clone()).or_insert(0) += 1;
-                    if fallback_by_line
+                    if emittable_by_line
                         .get(&line_number)
-                        .is_some_and(|set| !set.contains(&head_key))
+                        .is_some_and(|set| set.contains(&head_key))
                     {
                         *fully_structured_counts.entry(head_key).or_insert(0) += 1;
                     } else if fallback_by_line
@@ -321,9 +362,9 @@ fn process_file(
                 TokenSupportLevel::SemanticallyInterpreted => {
                     if let Some(token_key) = extract_token_key(clause, clause_index) {
                         *semantic_counts.entry(token_key.clone()).or_insert(0) += 1;
-                        if fallback_by_line
+                        if emittable_by_line
                             .get(&line_number)
-                            .is_some_and(|set| !set.contains(&token_key))
+                            .is_some_and(|set| set.contains(&token_key))
                         {
                             *fully_structured_counts.entry(token_key).or_insert(0) += 1;
                         } else if fallback_by_line

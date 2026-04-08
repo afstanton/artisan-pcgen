@@ -35,7 +35,22 @@ pub fn emit_entity(entity: &Entity, schema: &EntitySchema) -> String {
         .unwrap_or(entity.name.as_str());
 
     let head = match schema.head_format {
-        HeadFormat::NameOnly => name.to_string(),
+        HeadFormat::NameOnly => {
+            let decl_token = entity
+                .attributes
+                .get("pcgen_decl_token")
+                .and_then(Value::as_str)
+                .map(|s| s.to_ascii_uppercase());
+            let schema_head = schema.head_token.map(|s| s.to_ascii_uppercase());
+
+            if let (Some(decl), Some(expected)) = (decl_token, schema_head)
+                && decl == expected
+            {
+                format!("{decl}:{name}")
+            } else {
+                name.to_string()
+            }
+        }
         HeadFormat::TokenPrefixed => {
             let token = schema.head_token.unwrap_or("");
             format!("{token}:{name}")
@@ -93,6 +108,44 @@ pub fn fallback_keys_for_entity(entity: &Entity, schema: &EntitySchema) -> Vec<S
     keys.into_iter().collect()
 }
 
+/// Returns the list of token keys that this entity would actually emit with the
+/// current schema-driven emitter.
+pub fn emittable_keys_for_entity(entity: &Entity, schema: &EntitySchema) -> Vec<String> {
+    let mut keys = BTreeSet::new();
+
+    if let Some(head_key) = emitted_head_key(entity, schema) {
+        keys.insert(head_key);
+    }
+
+    for token_def in schema.tokens {
+        match token_def.artisan_mapping {
+            ArtisanMapping::Attribute(field) => {
+                if let Some(value) = entity.attributes.get(field)
+                    && !serialize_value(value, token_def.grammar, token_def.cardinality).is_empty()
+                {
+                    keys.insert(token_def.key.to_string());
+                }
+            }
+            ArtisanMapping::Effect => {
+                if entity
+                    .effects
+                    .iter()
+                    .any(|effect| effect.kind.eq_ignore_ascii_case(token_def.key))
+                {
+                    keys.insert(token_def.key.to_string());
+                }
+            }
+            ArtisanMapping::Prerequisite | ArtisanMapping::EntityName | ArtisanMapping::None => {}
+        }
+    }
+
+    for group in schema.globals {
+        collect_emittable_global_keys(*group, entity, &mut keys);
+    }
+
+    keys.into_iter().collect()
+}
+
 /// Convert an artisan entity + schema into a `ParsedLine` (structured form).
 ///
 /// Useful when you need the intermediate representation rather than raw text.
@@ -124,12 +177,6 @@ fn emit_token_def(
                     parts.push(format!("{}:{}", token_def.key, s));
                 }
                 emitted_attribute_fields.insert(field);
-            } else {
-                // Fallback: if parser captured the raw token in `clauses` but no
-                // structured projection exists yet, preserve that data on emit.
-                for raw in raw_clause_values_for_key(entity, token_def.key) {
-                    parts.push(format!("{}:{}", token_def.key, raw));
-                }
             }
         }
         ArtisanMapping::Effect => {
@@ -150,6 +197,274 @@ fn uses_fallback_for_token(entity: &Entity, token_def: &TokenDef) -> bool {
                 && !raw_clause_values_for_key(entity, token_def.key).is_empty()
         }
         _ => false,
+    }
+}
+
+fn emitted_head_key(entity: &Entity, schema: &EntitySchema) -> Option<String> {
+    match schema.head_format {
+        HeadFormat::TokenPrefixed => schema.head_token.map(str::to_string),
+        HeadFormat::NameOnly => {
+            if let Some(decl) = entity
+                .attributes
+                .get("pcgen_decl_token")
+                .and_then(Value::as_str)
+                .map(|s| s.to_ascii_uppercase())
+            {
+                if schema
+                    .head_token
+                    .is_some_and(|head| decl.eq_ignore_ascii_case(head))
+                {
+                    return Some(decl);
+                }
+            }
+
+            if schema.head_token.is_none() {
+                let name = entity
+                    .attributes
+                    .get("pcgen_key")
+                    .and_then(Value::as_str)
+                    .unwrap_or(entity.name.as_str());
+                return name
+                    .split_once(':')
+                    .map(|(key, _)| key.trim().to_ascii_uppercase());
+            }
+
+            None
+        }
+    }
+}
+
+fn collect_emittable_global_keys(
+    group: GlobalGroup,
+    entity: &Entity,
+    keys: &mut BTreeSet<String>,
+) {
+    match group {
+        GlobalGroup::Bonus => {
+            if entity
+                .effects
+                .iter()
+                .any(|effect| effect.kind.eq_ignore_ascii_case("BONUS"))
+            {
+                keys.insert("BONUS".to_string());
+            }
+            if entity
+                .effects
+                .iter()
+                .any(|effect| effect.kind.eq_ignore_ascii_case("TEMPBONUS"))
+            {
+                keys.insert("TEMPBONUS".to_string());
+            }
+        }
+        GlobalGroup::Add => {
+            if entity
+                .effects
+                .iter()
+                .any(|effect| effect.kind.eq_ignore_ascii_case("ADD"))
+            {
+                keys.insert("ADD".to_string());
+            }
+        }
+        GlobalGroup::Choose => {
+            if entity
+                .effects
+                .iter()
+                .any(|effect| effect.kind.eq_ignore_ascii_case("CHOOSE"))
+            {
+                keys.insert("CHOOSE".to_string());
+            }
+            if entity
+                .effects
+                .iter()
+                .any(|effect| effect.kind.eq_ignore_ascii_case("SELECT"))
+            {
+                keys.insert("SELECT".to_string());
+            }
+        }
+        GlobalGroup::Auto => {
+            if entity
+                .effects
+                .iter()
+                .any(|effect| effect.kind.eq_ignore_ascii_case("AUTO"))
+            {
+                keys.insert("AUTO".to_string());
+            }
+        }
+        GlobalGroup::Define => {
+            if entity
+                .effects
+                .iter()
+                .any(|effect| effect.kind.eq_ignore_ascii_case("DEFINE"))
+            {
+                keys.insert("DEFINE".to_string());
+            }
+            if entity
+                .effects
+                .iter()
+                .any(|effect| effect.kind.eq_ignore_ascii_case("DEFINESTAT"))
+            {
+                keys.insert("DEFINESTAT".to_string());
+            }
+        }
+        GlobalGroup::Prerequisites => {
+            for prereq in &entity.prerequisites {
+                keys.insert(prereq.kind.to_ascii_uppercase());
+            }
+        }
+        GlobalGroup::Type => {
+            if entity.attributes.get("pcgen_type").and_then(Value::as_str).is_some() {
+                keys.insert("TYPE".to_string());
+            }
+        }
+        GlobalGroup::Key => {
+            if entity.attributes.get("pcgen_key").and_then(Value::as_str).is_some() {
+                keys.insert("KEY".to_string());
+            }
+        }
+        GlobalGroup::Desc => {
+            if entity.attributes.get("pcgen_desc").and_then(Value::as_str).is_some()
+                || entity.attributes.get("description").and_then(Value::as_str).is_some()
+            {
+                keys.insert("DESC".to_string());
+            }
+            if entity
+                .attributes
+                .get("pcgen_tempdesc")
+                .and_then(Value::as_str)
+                .is_some()
+            {
+                keys.insert("TEMPDESC".to_string());
+            }
+        }
+        GlobalGroup::Fact => {
+            if entity
+                .attributes
+                .get("pcgen_facts")
+                .and_then(Value::as_array)
+                .is_some_and(|values| !values.is_empty())
+            {
+                keys.insert("FACT".to_string());
+            }
+            if entity
+                .attributes
+                .get("pcgen_factsets")
+                .and_then(Value::as_array)
+                .is_some_and(|values| !values.is_empty())
+            {
+                keys.insert("FACTSET".to_string());
+            }
+        }
+        GlobalGroup::SourcePage => {
+            if entity
+                .attributes
+                .get("pcgen_source_page")
+                .and_then(Value::as_str)
+                .is_some()
+            {
+                keys.insert("SOURCEPAGE".to_string());
+            }
+        }
+        GlobalGroup::SourceLink => {
+            if entity
+                .attributes
+                .get("pcgen_source_link")
+                .and_then(Value::as_str)
+                .is_some()
+            {
+                keys.insert("SOURCELINK".to_string());
+            }
+        }
+        GlobalGroup::OutputName => {
+            if entity
+                .attributes
+                .get("pcgen_outputname")
+                .and_then(Value::as_str)
+                .is_some()
+            {
+                keys.insert("OUTPUTNAME".to_string());
+            }
+        }
+        GlobalGroup::SortKey => {
+            if entity
+                .attributes
+                .get("pcgen_sortkey")
+                .and_then(Value::as_str)
+                .is_some()
+            {
+                keys.insert("SORTKEY".to_string());
+            }
+        }
+        GlobalGroup::LangBonus => {
+            if entity
+                .attributes
+                .get("pcgen_langbonus")
+                .and_then(Value::as_array)
+                .is_some_and(|values| !values.is_empty())
+            {
+                keys.insert("LANGBONUS".to_string());
+            }
+        }
+        GlobalGroup::CSkill => {
+            if entity
+                .attributes
+                .get("pcgen_cskill")
+                .and_then(Value::as_array)
+                .is_some_and(|values| !values.is_empty())
+            {
+                keys.insert("CSKILL".to_string());
+            }
+        }
+        GlobalGroup::Sab => {
+            if entity
+                .attributes
+                .get("pcgen_sab")
+                .and_then(Value::as_array)
+                .is_some_and(|values| !values.is_empty())
+            {
+                keys.insert("SAB".to_string());
+            }
+        }
+        GlobalGroup::ChangeProf => {
+            if entity
+                .attributes
+                .get("pcgen_changeprof")
+                .and_then(Value::as_array)
+                .is_some_and(|values| !values.is_empty())
+            {
+                keys.insert("CHANGEPROF".to_string());
+            }
+        }
+        GlobalGroup::ServesAs => {
+            if entity
+                .attributes
+                .get("pcgen_servesas")
+                .and_then(Value::as_array)
+                .is_some_and(|values| !values.is_empty())
+            {
+                keys.insert("SERVESAS".to_string());
+            }
+        }
+        GlobalGroup::Qualify => {
+            if entity
+                .attributes
+                .get("pcgen_qualify")
+                .and_then(Value::as_array)
+                .is_some_and(|values| !values.is_empty())
+            {
+                keys.insert("QUALIFY".to_string());
+            }
+        }
+        GlobalGroup::Template => {
+            if entity
+                .attributes
+                .get("pcgen_template")
+                .and_then(Value::as_array)
+                .is_some_and(|values| !values.is_empty())
+            {
+                keys.insert("TEMPLATE".to_string());
+            }
+        }
+        GlobalGroup::SourceMeta => {}
     }
 }
 
@@ -195,6 +510,8 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
             for effect in &entity.effects {
                 if effect.kind.eq_ignore_ascii_case("DEFINE") {
                     parts.push(format!("DEFINE:{}", effect.target));
+                } else if effect.kind.eq_ignore_ascii_case("DEFINESTAT") {
+                    parts.push(format!("DEFINESTAT:{}", effect.target));
                 }
             }
         }
@@ -211,10 +528,6 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
                 entity.attributes.get("pcgen_type").and_then(Value::as_str)
             {
                 parts.push(format!("TYPE:{type_val}"));
-            } else {
-                for raw in raw_clause_values_for_key(entity, "TYPE") {
-                    parts.push(format!("TYPE:{raw}"));
-                }
             }
         }
         GlobalGroup::Key => {
@@ -316,6 +629,22 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
                 }
             }
         }
+        GlobalGroup::CSkill => {
+            if let Some(values) = entity.attributes.get("pcgen_cskill").and_then(Value::as_array)
+            {
+                for value in values.iter().filter_map(Value::as_str) {
+                    parts.push(format!("CSKILL:{value}"));
+                }
+            }
+        }
+        GlobalGroup::Sab => {
+            if let Some(values) = entity.attributes.get("pcgen_sab").and_then(Value::as_array)
+            {
+                for value in values.iter().filter_map(Value::as_str) {
+                    parts.push(format!("SAB:{value}"));
+                }
+            }
+        }
         GlobalGroup::ChangeProf => {
             if let Some(values) = entity.attributes.get("pcgen_changeprof").and_then(Value::as_array)
             {
@@ -332,12 +661,23 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
                 }
             }
         }
-        // Template, CSkill, Sab, Qualify, SourceMeta: not yet mapped from artisan model
-        GlobalGroup::Template
-        | GlobalGroup::CSkill
-        | GlobalGroup::Sab
-        | GlobalGroup::Qualify
-        | GlobalGroup::SourceMeta => {}
+        GlobalGroup::Qualify => {
+            if let Some(values) = entity.attributes.get("pcgen_qualify").and_then(Value::as_array)
+            {
+                for value in values.iter().filter_map(Value::as_str) {
+                    parts.push(format!("QUALIFY:{value}"));
+                }
+            }
+        }
+        GlobalGroup::Template => {
+            if let Some(values) = entity.attributes.get("pcgen_template").and_then(Value::as_array)
+            {
+                for value in values.iter().filter_map(Value::as_str) {
+                    parts.push(format!("TEMPLATE:{value}"));
+                }
+            }
+        }
+        GlobalGroup::SourceMeta => {}
     }
 }
 
