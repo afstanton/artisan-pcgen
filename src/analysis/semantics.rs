@@ -127,8 +127,14 @@ fn looks_like_pcc(head: &str, clauses: &[ParsedClause]) -> bool {
         "BOOKTYPE",
         "STATUS",
         "OPTION",
+        "DATAFORMAT",
+        "EXPLANATION",
+        "REQUIRED",
+        "SELECTABLE",
         "URL",
         "ALLOWDUPES",
+        "MAXVER",
+        "NEWKEY",
         "HIDETYPE",
         "FORWARDREF",
         "ISLICENSED",
@@ -148,6 +154,12 @@ fn looks_like_pcc(head: &str, clauses: &[ParsedClause]) -> bool {
         || has_token(clauses, "SETTING")
         || has_token(clauses, "URL")
         || has_token(clauses, "OPTION")
+        || has_token(clauses, "DATAFORMAT")
+        || has_token(clauses, "EXPLANATION")
+        || has_token(clauses, "REQUIRED")
+        || has_token(clauses, "SELECTABLE")
+        || has_token(clauses, "MAXVER")
+        || has_token(clauses, "NEWKEY")
         || has_token(clauses, "ALLOWDUPES")
         || has_token(clauses, "HIDETYPE")
         || has_token(clauses, "FORWARDREF")

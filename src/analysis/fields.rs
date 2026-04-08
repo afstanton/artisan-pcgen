@@ -50,6 +50,12 @@ pub(crate) fn project_clause_attributes(
             "BENEFIT" => {
                 attributes.insert("pcgen_benefit".to_string(), Value::String(value.clone()));
             }
+            "SPELLLEVEL" => {
+                attributes.insert("pcgen_spelllevel".to_string(), Value::String(value.clone()));
+            }
+            "INFO" => {
+                attributes.insert("pcgen_info".to_string(), Value::String(value.clone()));
+            }
             "ASPECT" => append_string_attr(attributes, "pcgen_aspects", value),
             "RACETYPE" => {
                 attributes.insert("pcgen_racetype".to_string(), Value::String(value.clone()));
@@ -235,6 +241,24 @@ pub(crate) fn project_clause_attributes(
             "OPTION" => {
                 attributes.insert("pcgen_option".to_string(), Value::String(value.clone()));
             }
+            "MAXVER" => {
+                attributes.insert("pcgen_maxver".to_string(), Value::String(value.clone()));
+            }
+            "NEWKEY" => {
+                attributes.insert("pcgen_newkey".to_string(), Value::String(value.clone()));
+            }
+            "DATAFORMAT" => {
+                attributes.insert("pcgen_dataformat".to_string(), Value::String(value.clone()));
+            }
+            "EXPLANATION" => {
+                attributes.insert("pcgen_explanation".to_string(), Value::String(value.clone()));
+            }
+            "REQUIRED" => {
+                attributes.insert("pcgen_required".to_string(), Value::String(value.clone()));
+            }
+            "SELECTABLE" => {
+                attributes.insert("pcgen_selectable".to_string(), Value::String(value.clone()));
+            }
             "ABILITYLIST" => append_string_attr(attributes, "pcgen_abilitylist", value),
             "DISPLAYLOCATION" => {
                 attributes.insert(
@@ -310,8 +334,20 @@ pub(crate) fn project_clause_attributes(
             "ACHECK" => {
                 attributes.insert("pcgen_accheck".to_string(), Value::String(value.clone()));
             }
+            "MAXDEX" => {
+                attributes.insert("pcgen_maxdex".to_string(), Value::String(value.clone()));
+            }
+            "SLOTS" => {
+                attributes.insert("pcgen_slots".to_string(), Value::String(value.clone()));
+            }
             "DAMAGE" => {
                 attributes.insert("pcgen_damage".to_string(), Value::String(value.clone()));
+            }
+            "ALTDAMAGE" => {
+                attributes.insert("pcgen_altdamage".to_string(), Value::String(value.clone()));
+            }
+            "ALTTYPE" => {
+                attributes.insert("pcgen_alttype".to_string(), Value::String(value.clone()));
             }
             "CRITMULT" => {
                 attributes.insert("pcgen_critmult".to_string(), Value::String(value.clone()));
@@ -345,6 +381,12 @@ pub(crate) fn project_clause_attributes(
             }
             "CONTAINS" => {
                 attributes.insert("pcgen_contains".to_string(), Value::String(value.clone()));
+            }
+            "BASEQTY" => {
+                attributes.insert("pcgen_baseqty".to_string(), Value::String(value.clone()));
+            }
+            "MODS" => {
+                attributes.insert("pcgen_mods".to_string(), Value::String(value.clone()));
             }
             "ICON" => {
                 attributes.insert("pcgen_icon".to_string(), Value::String(value.clone()));

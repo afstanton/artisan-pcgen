@@ -3,3 +3,9 @@ GAMEMODE:Starwars_SE BOOKTYPE:Core Rulebook SETTING:Space Opera
 PUBNAMELONG:Wizards of the Coast PUBNAMESHORT:WotC
 SOURCELONG:Star Wars Saga Edition Core Rulebook SOURCESHORT:SWSECR SOURCEWEB:www.wizards.com SOURCEDATE:2007-01
 OPTION:pcgen.options.optionSourcesAllowMultiLine=true
+MAXVER:6.10.0
+NEWKEY:SOURCEPAGE
+DATAFORMAT:LST
+EXPLANATION:Core rules metadata
+REQUIRED:YES
+SELECTABLE:YES

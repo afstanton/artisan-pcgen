@@ -22,8 +22,12 @@ static EQUIPMENT_TOKENS: &[TokenDef] = &[
     TokenDef::integer("EDR", "pcgen_edr"),
     TokenDef::integer("SPELLFAILURE", "pcgen_spellfailure"),
     TokenDef::text("ACCHECK", "pcgen_accheck"),
+    TokenDef::text("MAXDEX", "pcgen_maxdex"),
+    TokenDef::text("SLOTS", "pcgen_slots"),
     // Weapon properties
     TokenDef::text("DAMAGE", "pcgen_damage"),
+    TokenDef::text("ALTDAMAGE", "pcgen_altdamage"),
+    TokenDef::text("ALTTYPE", "pcgen_alttype"),
     TokenDef::text("CRITMULT", "pcgen_critmult"),
     TokenDef::text("CRITRANGE", "pcgen_critrange"),
     TokenDef::text("FUMBLERANGE", "pcgen_fumblerange"),
@@ -36,6 +40,8 @@ static EQUIPMENT_TOKENS: &[TokenDef] = &[
     TokenDef::pipe_positional("PROFICIENCY", PROFICIENCY_SLOTS, "pcgen_proficiency"),
     // Container
     TokenDef::text("CONTAINS", "pcgen_contains"),
+    TokenDef::text("BASEQTY", "pcgen_baseqty"),
+    TokenDef::text("MODS", "pcgen_mods"),
     // Aesthetic
     TokenDef::text("ICON", "pcgen_icon"),
     TokenDef::integer("NUMPAGES", "pcgen_numpages"),

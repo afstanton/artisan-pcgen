@@ -64,6 +64,12 @@ static PCC_TOKENS: &[TokenDef] = &[
     TokenDef::text("COVER", "pcgen_cover"),
     TokenDef::text("LOGO", "pcgen_logo"),
     TokenDef::text("ALLOWDUPES", "pcgen_allowdupes"),
+    TokenDef::text("DATAFORMAT", "pcgen_dataformat"),
+    TokenDef::text("EXPLANATION", "pcgen_explanation"),
+    TokenDef::text("REQUIRED", "pcgen_required"),
+    TokenDef::text("SELECTABLE", "pcgen_selectable"),
+    TokenDef::text("MAXVER", "pcgen_maxver"),
+    TokenDef::text("NEWKEY", "pcgen_newkey"),
     TokenDef {
         key: "FORWARDREF",
         grammar: TokenGrammar::PipeList,

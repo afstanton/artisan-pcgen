@@ -244,6 +244,12 @@ fn unparse_emits_pcgen_metadata_lines_for_pcc() {
     assert!(generated.contains("SOURCESHORT:SWSECR"));
     assert!(generated.contains("GAMEMODE:Starwars_SE"));
     assert!(generated.contains("OPTION:pcgen.options.optionSourcesAllowMultiLine=true"));
+    assert!(generated.contains("MAXVER:6.10.0"));
+    assert!(generated.contains("NEWKEY:SOURCEPAGE"));
+    assert!(generated.contains("DATAFORMAT:LST"));
+    assert!(generated.contains("EXPLANATION:Core rules metadata"));
+    assert!(generated.contains("REQUIRED:YES"));
+    assert!(generated.contains("SELECTABLE:YES"));
 }
 
 #[test]

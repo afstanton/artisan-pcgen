@@ -19,6 +19,8 @@ static ABILITY_TOKENS: &[TokenDef] = &[
     TokenDef::pipe_positional_repeatable("ASPECT", ASPECT_SLOTS, "pcgen_aspects"),
     TokenDef::text("BENEFIT", "pcgen_benefit"),
     TokenDef::text("COST", "pcgen_cost"),
+    TokenDef::text("SPELLLEVEL", "pcgen_spelllevel"),
+    TokenDef::text("INFO", "pcgen_info"),
     TokenDef::text("MULT", "pcgen_mult"),
     TokenDef::text("STACK", "pcgen_stack"),
     TokenDef {
