@@ -55,6 +55,9 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_racetype".to_string(), Value::String(value.clone()));
             }
             "RACESUBTYPE" => append_string_attr(attributes, "pcgen_racesubtype", value),
+            "SUBRACE" => {
+                attributes.insert("pcgen_subrace".to_string(), Value::String(value.clone()));
+            }
             "FAVCLASS" => {
                 attributes.insert("pcgen_favclass".to_string(), Value::String(value.clone()));
             }
@@ -132,6 +135,9 @@ pub(crate) fn project_clause_attributes(
             "WEAPONBONUS" => append_string_attr(attributes, "pcgen_weaponbonus", value),
             "VISIBLE" => {
                 attributes.insert("pcgen_visible".to_string(), Value::String(value.clone()));
+            }
+            "REMOVABLE" => {
+                attributes.insert("pcgen_removable".to_string(), Value::String(value.clone()));
             }
             "PROHIBITCOST" => set_i64_or_string(attributes, "pcgen_prohibitcost", value),
             "SUBCLASSLEVEL" => {
@@ -216,6 +222,45 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_spellpointcost".to_string(), Value::String(value.clone()));
             }
             "ITEM" => append_string_attr(attributes, "pcgen_items", value),
+            "GEAR" => append_string_attr(attributes, "pcgen_gear", value),
+            "KIT" => append_string_attr(attributes, "pcgen_kits", value),
+            "ABILITY" => append_string_attr(attributes, "pcgen_abilities", value),
+            "OPTION" => {
+                attributes.insert("pcgen_option".to_string(), Value::String(value.clone()));
+            }
+            "ABILITYLIST" => append_string_attr(attributes, "pcgen_abilitylist", value),
+            "DISPLAYLOCATION" => {
+                attributes.insert(
+                    "pcgen_displaylocation".to_string(),
+                    Value::String(value.clone()),
+                );
+            }
+            "EDITABLE" => {
+                attributes.insert("pcgen_editable".to_string(), Value::String(value.clone()));
+            }
+            "EDITPOOL" => {
+                attributes.insert("pcgen_editpool".to_string(), Value::String(value.clone()));
+            }
+            "FRACTIONALPOOL" => {
+                attributes.insert(
+                    "pcgen_fractionalpool".to_string(),
+                    Value::String(value.clone()),
+                );
+            }
+            "PLURAL" => {
+                attributes.insert("pcgen_plural".to_string(), Value::String(value.clone()));
+            }
+            "POOL" => {
+                attributes.insert("pcgen_pool".to_string(), Value::String(value.clone()));
+            }
+            "EQUIPBUY" => append_string_attr(attributes, "pcgen_equipbuy", value),
+            "LOCATION" => {
+                attributes.insert("pcgen_location".to_string(), Value::String(value.clone()));
+            }
+            "QTY" => set_i64_or_string(attributes, "pcgen_qty", value),
+            "FREE" => {
+                attributes.insert("pcgen_free".to_string(), parse_yes_no_or_string(value));
+            }
             "VARIANTS" => append_string_attr(attributes, "pcgen_variants", value),
             "SITUATION" => append_string_attr(attributes, "pcgen_situations", value),
             "USEUNTRAINED" => {
@@ -223,6 +268,22 @@ pub(crate) fn project_clause_attributes(
             }
             "SIZE" => {
                 attributes.insert("pcgen_size".to_string(), Value::String(value.clone()));
+            }
+            "FACE" => {
+                attributes.insert("pcgen_face".to_string(), Value::String(value.clone()));
+            }
+            "VISION" => append_string_attr(attributes, "pcgen_vision", value),
+            "LEGS" => {
+                attributes.insert("pcgen_legs".to_string(), Value::String(value.clone()));
+            }
+            "HANDS" => {
+                attributes.insert("pcgen_hands".to_string(), Value::String(value.clone()));
+            }
+            "DR" => {
+                attributes.insert("pcgen_dr".to_string(), Value::String(value.clone()));
+            }
+            "SR" => {
+                attributes.insert("pcgen_sr".to_string(), Value::String(value.clone()));
             }
             "WIELD" => {
                 attributes.insert("pcgen_wield".to_string(), Value::String(value.clone()));

@@ -58,6 +58,15 @@ static ABILITY_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Attribute("pcgen_naturalattacks"),
         required: false,
     },
+    TokenDef {
+        key: "VISION",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_vision"),
+        required: false,
+    },
+    TokenDef::text("DR", "pcgen_dr"),
+    TokenDef::text("SR", "pcgen_sr"),
     // Equipment modification grant: EQMOD:name|key=value...
     TokenDef {
         key: "EQMOD",

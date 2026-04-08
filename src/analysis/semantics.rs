@@ -71,11 +71,11 @@ pub(crate) fn infer_entity_type_key(head: &str, clauses: &[ParsedClause]) -> Str
     if looks_like_feat(clauses) {
         return "pcgen:entity:feat".to_string();
     }
-    if looks_like_template(clauses) {
-        return "pcgen:entity:template".to_string();
-    }
     if looks_like_race(clauses) {
         return "pcgen:entity:race".to_string();
+    }
+    if looks_like_template(clauses) {
+        return "pcgen:entity:template".to_string();
     }
 
     if let Some(value) = find_key_value(clauses, "TYPE") {
@@ -126,6 +126,7 @@ fn looks_like_pcc(head: &str, clauses: &[ParsedClause]) -> bool {
         "SETTING",
         "BOOKTYPE",
         "STATUS",
+        "OPTION",
         "URL",
         "ALLOWDUPES",
         "HIDETYPE",
@@ -146,6 +147,7 @@ fn looks_like_pcc(head: &str, clauses: &[ParsedClause]) -> bool {
         || has_token(clauses, "GAMEMODE")
         || has_token(clauses, "SETTING")
         || has_token(clauses, "URL")
+        || has_token(clauses, "OPTION")
         || has_token(clauses, "ALLOWDUPES")
         || has_token(clauses, "HIDETYPE")
         || has_token(clauses, "FORWARDREF")

@@ -243,6 +243,7 @@ fn unparse_emits_pcgen_metadata_lines_for_pcc() {
     assert!(generated.contains("SOURCELONG:Star Wars Saga Edition Core Rulebook"));
     assert!(generated.contains("SOURCESHORT:SWSECR"));
     assert!(generated.contains("GAMEMODE:Starwars_SE"));
+    assert!(generated.contains("OPTION:pcgen.options.optionSourcesAllowMultiLine=true"));
 }
 
 #[test]

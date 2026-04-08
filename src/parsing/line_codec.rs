@@ -93,28 +93,31 @@ fn parse_segments_with_generated_parser(line: &str) -> Vec<String> {
     let parse_result: Result<Vec<String>, ParseError<usize, super::parser_tokens::LineToken, String>> =
         parser.parse(parser_tokens::line_tokens(line));
     match parse_result {
-        Ok(segments) => segments
-            .into_iter()
-            .map(|segment| segment.trim().to_string())
-            .collect(),
-        Err(_) => vec![line.trim().to_string()],
+        Ok(segments) => normalize_non_empty_segments(segments),
+        Err(_) => normalize_non_empty_segments([line.to_string()]),
     }
 }
 
 fn split_top_level_segments(line: &str) -> Vec<String> {
-    let whitespace_segments = split_on_whitespace_token_starts(line);
-    if whitespace_segments.len() > 1 {
-        return whitespace_segments;
-    }
-    parse_segments_with_generated_parser(line)
-}
-
-fn split_on_whitespace_token_starts(line: &str) -> Vec<String> {
     let trimmed = line.trim();
     if trimmed.is_empty() {
         return Vec::new();
     }
 
+    // Fast path: lines with no whitespace cannot have whitespace token separators.
+    if !trimmed.chars().any(char::is_whitespace) {
+        return parse_segments_with_generated_parser(trimmed);
+    }
+
+    let whitespace_segments = split_on_whitespace_token_starts_trimmed(trimmed);
+    if whitespace_segments.len() > 1 {
+        return whitespace_segments;
+    }
+
+    parse_segments_with_generated_parser(trimmed)
+}
+
+fn split_on_whitespace_token_starts_trimmed(trimmed: &str) -> Vec<String> {
     let mut segments = Vec::new();
     let mut start = 0usize;
     let mut scan = 0usize;
@@ -133,10 +136,7 @@ fn split_on_whitespace_token_starts(line: &str) -> Vec<String> {
             }
 
             if looks_like_token_start(trimmed, after_ws) {
-                let segment = trimmed[start..whitespace_start].trim();
-                if !segment.is_empty() {
-                    segments.push(segment.to_string());
-                }
+                push_trimmed_if_non_empty(&mut segments, &trimmed[start..whitespace_start]);
                 start = after_ws;
                 scan = after_ws;
                 continue;
@@ -149,12 +149,27 @@ fn split_on_whitespace_token_starts(line: &str) -> Vec<String> {
         scan += next_char.len_utf8();
     }
 
-    let tail = trimmed[start..].trim();
-    if !tail.is_empty() {
-        segments.push(tail.to_string());
-    }
+    push_trimmed_if_non_empty(&mut segments, &trimmed[start..]);
 
     segments
+}
+
+fn normalize_non_empty_segments<I>(segments: I) -> Vec<String>
+where
+    I: IntoIterator<Item = String>,
+{
+    let mut out = Vec::new();
+    for segment in segments {
+        push_trimmed_if_non_empty(&mut out, &segment);
+    }
+    out
+}
+
+fn push_trimmed_if_non_empty(out: &mut Vec<String>, input: &str) {
+    let trimmed = input.trim();
+    if !trimmed.is_empty() {
+        out.push(trimmed.to_string());
+    }
 }
 
 fn looks_like_token_start(input: &str, start: usize) -> bool {
@@ -200,63 +215,60 @@ fn parse_clause(segment: &str) -> ParsedClause {
         parser.parse(parser_tokens::clause_tokens(segment));
 
     if let Ok(parts) = parse_result {
-        let mut key = String::new();
-        let mut value = String::new();
-        let mut seen_colon = false;
-
-        for part in parts {
-            match part {
-                None => {
-                    if seen_colon {
-                        value.push(':');
-                    } else {
-                        seen_colon = true;
-                    }
-                }
-                Some(piece) => {
-                    if seen_colon {
-                        value.push_str(&piece);
-                    } else {
-                        key.push_str(&piece);
-                    }
-                }
-            }
-        }
-
-        if seen_colon {
-            let key_trimmed = key.trim().to_string();
-            if !key_trimmed.is_empty() {
-                return ParsedClause::KeyValue {
-                    key: key_trimmed,
-                    value: value.trim().to_string(),
-                };
-            }
-            return ParsedClause::Bare(format!("{}:{}", key, value).trim().to_string());
-        }
-
-        return ParsedClause::Bare(key.trim().to_string());
+        return build_clause_from_parts(parts.into_iter().map(ClausePart::from));
     }
 
     // Keep a conservative fallback to avoid dropping data if the generated parser fails.
-    let tokens = parser_tokens::clause_tokens(segment);
+    let parts = parser_tokens::clause_tokens(segment)
+        .into_iter()
+        .map(|(_, token, _)| ClausePart::from(token));
+
+    build_clause_from_parts(parts)
+}
+
+#[derive(Debug)]
+enum ClausePart {
+    Piece(String),
+    Colon,
+}
+
+impl From<Option<String>> for ClausePart {
+    fn from(value: Option<String>) -> Self {
+        match value {
+            Some(piece) => ClausePart::Piece(piece),
+            None => ClausePart::Colon,
+        }
+    }
+}
+
+impl From<parser_tokens::ClauseToken> for ClausePart {
+    fn from(token: parser_tokens::ClauseToken) -> Self {
+        match token {
+            parser_tokens::ClauseToken::Colon => ClausePart::Colon,
+            parser_tokens::ClauseToken::Piece(part) => ClausePart::Piece(part),
+        }
+    }
+}
+
+fn build_clause_from_parts(parts: impl IntoIterator<Item = ClausePart>) -> ParsedClause {
     let mut key = String::new();
     let mut value = String::new();
     let mut seen_colon = false;
 
-    for (_, token, _) in tokens {
-        match token {
-            parser_tokens::ClauseToken::Colon => {
+    for part in parts {
+        match part {
+            ClausePart::Colon => {
                 if seen_colon {
                     value.push(':');
                 } else {
                     seen_colon = true;
                 }
             }
-            parser_tokens::ClauseToken::Piece(part) => {
+            ClausePart::Piece(piece) => {
                 if seen_colon {
-                    value.push_str(&part);
+                    value.push_str(&piece);
                 } else {
-                    key.push_str(&part);
+                    key.push_str(&piece);
                 }
             }
         }

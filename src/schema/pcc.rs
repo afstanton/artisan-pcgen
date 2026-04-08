@@ -92,6 +92,7 @@ static PCC_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::None,
         required: false,
     },
+    TokenDef::text("OPTION", "pcgen_option"),
 ];
 
 static PCC_GLOBALS: &[GlobalGroup] = &[GlobalGroup::SourceMeta];

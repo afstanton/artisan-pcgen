@@ -1,0 +1,27 @@
+//! GEAR entry schema for starting kit files.
+//!
+//! GEAR lines use `GEAR:name` heads and optional placement/modifier clauses.
+
+use crate::schema::{ArtisanMapping, Cardinality, EntitySchema, HeadFormat, TokenDef, TokenGrammar};
+
+static GEAR_TOKENS: &[TokenDef] = &[
+    TokenDef::text("LOCATION", "pcgen_location"),
+    TokenDef::text("QTY", "pcgen_qty"),
+    TokenDef::text("OPTION", "pcgen_option"),
+    TokenDef::text("SIZE", "pcgen_size"),
+    TokenDef {
+        key: "EQMOD",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_eqmods"),
+        required: false,
+    },
+];
+
+pub static GEAR_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:entity:gear",
+    head_token: Some("GEAR"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: GEAR_TOKENS,
+    globals: &[],
+};

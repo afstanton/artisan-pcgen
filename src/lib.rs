@@ -1077,6 +1077,25 @@ mod tests {
             assert!(any_schema_knows_token("SPELLKNOWN"));
             assert!(any_schema_knows_token("MOVE"));
             assert!(any_schema_knows_token("NATURALATTACKS"));
+            assert!(any_schema_knows_token("KIT"));
+            assert!(any_schema_knows_token("GEAR"));
+            assert!(any_schema_knows_token("OPTION"));
+            assert!(any_schema_knows_token("EQUIPBUY"));
+            assert!(any_schema_knows_token("ABILITYLIST"));
+            assert!(any_schema_knows_token("DISPLAYLOCATION"));
+            assert!(any_schema_knows_token("EDITABLE"));
+            assert!(any_schema_knows_token("EDITPOOL"));
+            assert!(any_schema_knows_token("FRACTIONALPOOL"));
+            assert!(any_schema_knows_token("PLURAL"));
+            assert!(any_schema_knows_token("POOL"));
+            assert!(any_schema_knows_token("LEGS"));
+            assert!(any_schema_knows_token("HANDS"));
+            assert!(any_schema_knows_token("FACE"));
+            assert!(any_schema_knows_token("VISION"));
+            assert!(any_schema_knows_token("DR"));
+            assert!(any_schema_knows_token("SR"));
+            assert!(any_schema_knows_token("SUBRACE"));
+            assert!(any_schema_knows_token("REMOVABLE"));
             assert!(!any_schema_knows_token("XYZZY"));
             assert!(!any_schema_knows_token("NOTAREALTOKEN"));
         }

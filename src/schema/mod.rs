@@ -12,6 +12,8 @@ pub mod system;
 pub mod class;
 pub mod equipment;
 pub mod feat;
+pub mod gear;
+pub mod kit;
 pub mod pcc;
 pub mod race;
 pub mod skill;
@@ -29,6 +31,8 @@ pub use system::{
 pub use class::CLASS_SCHEMA;
 pub use equipment::EQUIPMENT_SCHEMA;
 pub use feat::FEAT_SCHEMA;
+pub use gear::GEAR_SCHEMA;
+pub use kit::KIT_SCHEMA;
 pub use pcc::PCC_SCHEMA;
 pub use race::RACE_SCHEMA;
 pub use skill::SKILL_SCHEMA;
@@ -378,6 +382,8 @@ static ALL_SCHEMAS: &[&EntitySchema] = &[
     &class::CLASS_SCHEMA,
     &equipment::EQUIPMENT_SCHEMA,
     &feat::FEAT_SCHEMA,
+    &gear::GEAR_SCHEMA,
+    &kit::KIT_SCHEMA,
     &pcc::PCC_SCHEMA,
     &race::RACE_SCHEMA,
     &skill::SKILL_SCHEMA,
