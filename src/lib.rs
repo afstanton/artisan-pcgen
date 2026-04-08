@@ -6,19 +6,20 @@ use artisan_core::{
         CitationLocator, CitationRecord, PublisherRecord, SourceRecord, SubjectRef,
         VerificationState,
         entity::CompletenessState,
-        rules::{Effect, Prerequisite},
     },
     id::{ExternalId, FormatId},
     reconcile::{ImportCandidate, SourceHint},
 };
 use indexmap::IndexMap;
-use lalrpop_util::lalrpop_mod;
 use serde_json::{Value, json};
 use std::collections::BTreeMap;
 use uuid::Uuid;
 
-mod parser_tokens;
-lalrpop_mod!(line_grammar);
+mod analysis;
+mod parsing;
+
+use analysis::{metadata, semantics, signals};
+use parsing::line_codec;
 
 const ENTITY_TYPE_NAMESPACE: Uuid = Uuid::from_u128(0x6c8fdbf43f4f4a4ba4d846e2bf8b9c10);
 const ENTITY_NAMESPACE: Uuid = Uuid::from_u128(0x5ea8a1062b0842beaf2fcb5966e30f3a);
@@ -114,7 +115,7 @@ impl PcgenLoader {
             }
 
             let parsed = parse_line(line);
-            if let Some((key, value)) = split_first_key_value(&parsed) {
+            if let Some((key, value)) = line_codec::split_first_key_value(&parsed) {
                 campaign
                     .metadata
                     .entry(key.to_ascii_uppercase())
@@ -169,7 +170,7 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
         provenance: None,
     };
 
-    let mut metadata = PcgenMetadata::default();
+    let mut metadata = metadata::PcgenMetadata::default();
     let mut entities = Vec::new();
     let mut citations = Vec::new();
     for (line_number, raw_line) in text.lines().enumerate() {
@@ -179,7 +180,7 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
         }
 
         let parsed_line = parse_line(trimmed);
-        collect_metadata(&parsed_line, trimmed, &mut metadata);
+        metadata::collect_metadata(&parsed_line, trimmed, &mut metadata);
         let name = parsed_line
             .head
             .trim()
@@ -196,13 +197,16 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
 
         let mut attributes = IndexMap::new();
         attributes.insert("head".to_string(), Value::String(parsed_line.head.clone()));
-        attributes.insert("clauses".to_string(), json!(clauses_to_json(&parsed_line.clauses)));
+        attributes.insert(
+            "clauses".to_string(),
+            json!(line_codec::clauses_to_json(&parsed_line.clauses)),
+        );
         attributes.insert("line_number".to_string(), json!(line_number + 1));
         attributes.insert("pcgen_line_number".to_string(), json!(line_number + 1));
         attributes.insert("source_format".to_string(), Value::String(ext.to_string()));
 
         let mut entity_citations = Vec::new();
-        if let Some(source_page) = find_key_value(&parsed_line.clauses, "SOURCEPAGE") {
+        if let Some(source_page) = line_codec::find_key_value(&parsed_line.clauses, "SOURCEPAGE") {
             attributes.insert(
                 "pcgen_source_page".to_string(),
                 Value::String(source_page.clone()),
@@ -231,11 +235,15 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
             entity_citations.push(citation_id);
         }
 
-        let inferred_type_key = infer_entity_type_key(&parsed_line.clauses);
+        let inferred_type_key = semantics::infer_entity_type_key(&parsed_line.clauses);
         attributes.insert(
             "pcgen_entity_type_key".to_string(),
             Value::String(inferred_type_key.clone()),
         );
+        let mechanical_signals = signals::extract_mechanical_signals(&parsed_line.clauses);
+        if !mechanical_signals.is_empty() {
+            attributes.insert("pcgen_mechanical_signals".to_string(), json!(mechanical_signals));
+        }
 
         let external_id = ExternalId {
             format: FormatId::Pcgen,
@@ -245,7 +253,7 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
 
         let mut effects = Vec::new();
         let mut prerequisites = Vec::new();
-        project_semantics(&parsed_line.clauses, &mut effects, &mut prerequisites);
+        semantics::project_semantics(&parsed_line.clauses, &mut effects, &mut prerequisites);
 
         entities.push(Entity {
             id: entity_id,
@@ -365,7 +373,7 @@ pub fn unparse_catalog_to_text(catalog: &ParsedCatalog) -> String {
         let clauses = entity
             .attributes
             .get("clauses")
-            .and_then(clauses_from_json)
+            .and_then(line_codec::clauses_from_json)
             .unwrap_or_default();
         lines.push(unparse_line(&head, &clauses));
     }
@@ -373,346 +381,15 @@ pub fn unparse_catalog_to_text(catalog: &ParsedCatalog) -> String {
 }
 
 pub fn parse_line(line: &str) -> ParsedLine {
-    let segments = parse_segments_with_generated_parser(line);
-    let mut iter = segments.into_iter();
-    let head = iter.next().unwrap_or_default();
-    let clauses = iter
-        .map(|segment| parse_clause(&segment))
-        .collect();
-    ParsedLine { head, clauses }
+    line_codec::parse_line_internal(line)
 }
 
 pub fn unparse_line(head: &str, clauses: &[ParsedClause]) -> String {
-    let mut parts = vec![escape_head_segment(head)];
-    for clause in clauses {
-        match clause {
-            ParsedClause::Bare(value) => parts.push(escape_segment(value)),
-            ParsedClause::KeyValue { key, value } => {
-                parts.push(format!("{}:{}", escape_segment(key), escape_segment(value)));
-            }
-        }
-    }
-    parts.join("|")
-}
-
-fn escape_head_segment(input: &str) -> String {
-    let mut out = String::new();
-    for ch in input.chars() {
-        match ch {
-            '\\' | '|' => {
-                out.push('\\');
-                out.push(ch);
-            }
-            _ => out.push(ch),
-        }
-    }
-    out
+    line_codec::unparse_line_internal(head, clauses)
 }
 
 fn deterministic_id(namespace: Uuid, key: &str) -> CanonicalId {
     CanonicalId(Uuid::new_v5(&namespace, key.as_bytes()))
-}
-
-fn parse_segments_with_generated_parser(line: &str) -> Vec<String> {
-    let parser = line_grammar::SegmentsParser::new();
-    match parser.parse(parser_tokens::line_tokens(line)) {
-        Ok(segments) => segments
-            .into_iter()
-            .map(|segment| segment.trim().to_string())
-            .collect(),
-        Err(_) => vec![line.trim().to_string()],
-    }
-}
-
-fn parse_clause(segment: &str) -> ParsedClause {
-    let tokens = parser_tokens::clause_tokens(segment);
-    let mut key = String::new();
-    let mut value = String::new();
-    let mut seen_colon = false;
-
-    for (_, token, _) in tokens {
-        match token {
-            parser_tokens::ClauseToken::Colon => {
-                if seen_colon {
-                    value.push(':');
-                } else {
-                    seen_colon = true;
-                }
-            }
-            parser_tokens::ClauseToken::Piece(part) => {
-                if seen_colon {
-                    value.push_str(&part);
-                } else {
-                    key.push_str(&part);
-                }
-            }
-        }
-    }
-
-    if seen_colon {
-        let key_trimmed = key.trim().to_string();
-        if !key_trimmed.is_empty() {
-            return ParsedClause::KeyValue {
-                key: key_trimmed,
-                value: value.trim().to_string(),
-            };
-        }
-        return ParsedClause::Bare(format!("{}:{}", key, value).trim().to_string());
-    }
-
-    ParsedClause::Bare(key.trim().to_string())
-}
-
-fn project_semantics(clauses: &[ParsedClause], effects: &mut Vec<Effect>, prerequisites: &mut Vec<Prerequisite>) {
-    for clause in clauses {
-        if let ParsedClause::KeyValue { key, value } = clause {
-            if key.starts_with("PRE") {
-                prerequisites.push(Prerequisite {
-                    kind: key.clone(),
-                    expression: if value.is_empty() { None } else { Some(value.clone()) },
-                });
-                continue;
-            }
-
-            if key == "BONUS" || key == "AUTO" || key == "DEFINE" || key == "CHOOSE" {
-                effects.push(Effect {
-                    kind: key.clone(),
-                    target: value.clone(),
-                    value: None,
-                });
-            }
-        }
-    }
-}
-
-fn split_first_key_value(parsed: &ParsedLine) -> Option<(String, String)> {
-    if let Some((k, v)) = parse_head_key_value(&parsed.head) {
-        return Some((k, v));
-    }
-    for clause in &parsed.clauses {
-        if let ParsedClause::KeyValue { key, value } = clause {
-            return Some((key.clone(), value.clone()));
-        }
-    }
-    None
-}
-
-fn parse_head_key_value(head: &str) -> Option<(String, String)> {
-    let idx = head.find(':')?;
-    let key = head[..idx].trim();
-    let value = head[idx + 1..].trim();
-    if key.is_empty() || value.is_empty() {
-        return None;
-    }
-    Some((key.to_string(), value.to_string()))
-}
-
-fn find_key_value(clauses: &[ParsedClause], key: &str) -> Option<String> {
-    for clause in clauses {
-        if let ParsedClause::KeyValue { key: k, value } = clause {
-            if k.eq_ignore_ascii_case(key) {
-                return Some(value.clone());
-            }
-        }
-    }
-    None
-}
-
-fn infer_entity_type_key(clauses: &[ParsedClause]) -> String {
-    if let Some(value) = find_key_value(clauses, "TYPE") {
-        let normalized = value
-            .split('.')
-            .next()
-            .unwrap_or(value.as_str())
-            .trim()
-            .to_ascii_lowercase()
-            .replace(' ', "-");
-        if !normalized.is_empty() {
-            return format!("pcgen:type:{normalized}");
-        }
-    }
-    "pcgen:type:unresolved".to_string()
-}
-
-fn clauses_to_json(clauses: &[ParsedClause]) -> Vec<Value> {
-    clauses
-        .iter()
-        .map(|clause| match clause {
-            ParsedClause::Bare(value) => json!({"kind": "bare", "value": value}),
-            ParsedClause::KeyValue { key, value } => {
-                json!({"kind": "key_value", "key": key, "value": value})
-            }
-        })
-        .collect()
-}
-
-fn clauses_from_json(value: &Value) -> Option<Vec<ParsedClause>> {
-    let array = value.as_array()?;
-    let mut out = Vec::new();
-    for item in array {
-        let kind = item.get("kind")?.as_str()?;
-        match kind {
-            "bare" => {
-                out.push(ParsedClause::Bare(item.get("value")?.as_str()?.to_string()));
-            }
-            "key_value" => {
-                out.push(ParsedClause::KeyValue {
-                    key: item.get("key")?.as_str()?.to_string(),
-                    value: item.get("value")?.as_str()?.to_string(),
-                });
-            }
-            _ => return None,
-        }
-    }
-    Some(out)
-}
-
-#[derive(Default)]
-struct PcgenMetadata {
-    campaign: Option<String>,
-    source_title: Option<String>,
-    source_short: Option<String>,
-    source_web: Option<String>,
-    source_date: Option<String>,
-    publisher_long: Option<String>,
-    publisher_short: Option<String>,
-    game_mode: Option<String>,
-    setting: Option<String>,
-    book_type: Option<String>,
-}
-
-fn collect_metadata(parsed_line: &ParsedLine, raw_line: &str, metadata: &mut PcgenMetadata) {
-    // Many PCGen metadata lines are whitespace-separated key:value blocks, not pipe clauses.
-    for (key, value) in extract_metadata_pairs(raw_line) {
-        match key.as_str() {
-            "CAMPAIGN" if metadata.campaign.is_none() => metadata.campaign = Some(value),
-            "SOURCELONG" | "SOURCE" if metadata.source_title.is_none() => {
-                metadata.source_title = Some(value)
-            }
-            "SOURCESHORT" if metadata.source_short.is_none() => metadata.source_short = Some(value),
-            "SOURCEWEB" if metadata.source_web.is_none() => metadata.source_web = Some(value),
-            "SOURCEDATE" if metadata.source_date.is_none() => metadata.source_date = Some(value),
-            "PUBNAMELONG" | "PUBLISHER" | "PUBLISHERNAME" if metadata.publisher_long.is_none() => {
-                metadata.publisher_long = Some(value)
-            }
-            "PUBNAMESHORT" if metadata.publisher_short.is_none() => {
-                metadata.publisher_short = Some(value)
-            }
-            "GAMEMODE" if metadata.game_mode.is_none() => metadata.game_mode = Some(value),
-            "SETTING" if metadata.setting.is_none() => metadata.setting = Some(value),
-            "BOOKTYPE" if metadata.book_type.is_none() => metadata.book_type = Some(value),
-            _ => {}
-        }
-    }
-
-    if metadata.campaign.is_none()
-        && let Some((key, value)) = parse_head_key_value(&parsed_line.head)
-        && key.eq_ignore_ascii_case("CAMPAIGN")
-    {
-        metadata.campaign = Some(value);
-    }
-
-    for clause in &parsed_line.clauses {
-        if let ParsedClause::KeyValue { key, value } = clause {
-            let key_upper = key.to_ascii_uppercase();
-            if metadata.source_title.is_none() && (key_upper == "SOURCELONG" || key_upper == "SOURCE") {
-                metadata.source_title = Some(value.clone());
-            }
-            if metadata.source_short.is_none() && key_upper == "SOURCESHORT" {
-                metadata.source_short = Some(value.clone());
-            }
-            if metadata.source_web.is_none() && key_upper == "SOURCEWEB" {
-                metadata.source_web = Some(value.clone());
-            }
-            if metadata.source_date.is_none() && key_upper == "SOURCEDATE" {
-                metadata.source_date = Some(value.clone());
-            }
-            if metadata.publisher_long.is_none()
-                && (key_upper == "PUBNAMELONG" || key_upper == "PUBLISHER" || key_upper == "PUBLISHERNAME")
-            {
-                metadata.publisher_long = Some(value.clone());
-            }
-            if metadata.publisher_short.is_none() && key_upper == "PUBNAMESHORT" {
-                metadata.publisher_short = Some(value.clone());
-            }
-            if metadata.game_mode.is_none() && key_upper == "GAMEMODE" {
-                metadata.game_mode = Some(value.clone());
-            }
-            if metadata.setting.is_none() && key_upper == "SETTING" {
-                metadata.setting = Some(value.clone());
-            }
-            if metadata.book_type.is_none() && key_upper == "BOOKTYPE" {
-                metadata.book_type = Some(value.clone());
-            }
-        }
-    }
-}
-
-fn extract_metadata_pairs(line: &str) -> Vec<(String, String)> {
-    let keys = [
-        "CAMPAIGN",
-        "SOURCELONG",
-        "SOURCE",
-        "SOURCESHORT",
-        "SOURCEWEB",
-        "SOURCEDATE",
-        "PUBNAMELONG",
-        "PUBNAMESHORT",
-        "PUBLISHER",
-        "PUBLISHERNAME",
-        "GAMEMODE",
-        "BOOKTYPE",
-        "SETTING",
-    ];
-
-    let mut marks: Vec<(usize, &'static str)> = Vec::new();
-    for key in keys {
-        let needle = format!("{key}:");
-        let mut cursor = 0usize;
-        while let Some(pos) = line[cursor..].find(&needle) {
-            let start = cursor + pos;
-            marks.push((start, key));
-            cursor = start + needle.len();
-            if cursor >= line.len() {
-                break;
-            }
-        }
-    }
-
-    marks.sort_by_key(|(start, _)| *start);
-    marks.dedup_by_key(|(start, _)| *start);
-
-    let mut out = Vec::new();
-    for (idx, (start, key)) in marks.iter().enumerate() {
-        let value_start = start + key.len() + 1;
-        let value_end = marks
-            .get(idx + 1)
-            .map(|(next, _)| *next)
-            .unwrap_or(line.len());
-        if value_start > line.len() || value_start > value_end {
-            continue;
-        }
-        let value = line[value_start..value_end].trim();
-        if !value.is_empty() {
-            out.push(((*key).to_string(), value.to_string()));
-        }
-    }
-
-    out
-}
-
-fn escape_segment(input: &str) -> String {
-    let mut out = String::new();
-    for ch in input.chars() {
-        match ch {
-            '\\' | '|' | ':' => {
-                out.push('\\');
-                out.push(ch);
-            }
-            _ => out.push(ch),
-        }
-    }
-    out
 }
 
 #[cfg(test)]
@@ -787,5 +464,27 @@ mod tests {
             .game_systems
             .iter()
             .any(|g| g == "Space Opera"));
+    }
+
+    #[test]
+    fn parse_text_extracts_mechanical_signals_for_reconciliation_hints() {
+        let text = "Power Attack|TYPE:Combat|PRESTAT:1,STR=13|BONUS:COMBAT\\|TOHIT\\|1|CHOOSE:STAT";
+        let catalog = parse_text_to_catalog(text, "signals.lst", "lst");
+        let entity = &catalog.entities[0];
+
+        let signals = entity
+            .attributes
+            .get("pcgen_mechanical_signals")
+            .and_then(Value::as_array)
+            .expect("mechanical signals should be present");
+
+        let strings: Vec<&str> = signals.iter().filter_map(Value::as_str).collect();
+        assert!(strings.contains(&"type_token:combat"));
+        assert!(strings.contains(&"pre_key:prestat"));
+        assert!(strings.contains(&"prestat:str"));
+        assert!(strings.contains(&"bonus_category:combat"));
+        assert!(strings.contains(&"bonus_target:tohit"));
+        assert!(strings.contains(&"effect_key:choose"));
+        assert!(strings.contains(&"effect_target:stat"));
     }
 }

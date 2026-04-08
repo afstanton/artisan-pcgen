@@ -4,9 +4,9 @@ extern {
     type Location = usize;
     type Error = String;
 
-    enum crate::parser_tokens::LineToken {
-        "|" => crate::parser_tokens::LineToken::Pipe,
-        "piece" => crate::parser_tokens::LineToken::Piece(<String>),
+    enum crate::parsing::parser_tokens::LineToken {
+        "|" => crate::parsing::parser_tokens::LineToken::Pipe,
+        "piece" => crate::parsing::parser_tokens::LineToken::Piece(<String>),
     }
 }
 
