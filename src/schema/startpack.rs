@@ -5,13 +5,26 @@
 //! Starting kit files use `STARTPACK:name` heads and mostly consist of global
 //! effect and prerequisite tags.
 
-use crate::schema::{EntitySchema, GlobalGroup, HeadFormat};
+use crate::schema::{
+    ArtisanMapping, Cardinality, EntitySchema, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
+};
+
+static STARTPACK_TOKENS: &[TokenDef] = &[
+    TokenDef::text("APPLY", "pcgen_apply"),
+    TokenDef {
+        key: "LOOKUP",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_lookup"),
+        required: false,
+    },
+];
 
 pub static STARTPACK_SCHEMA: EntitySchema = EntitySchema {
     entity_type_key: "pcgen:entity:startpack",
     head_token: Some("STARTPACK"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[],
+    tokens: STARTPACK_TOKENS,
     globals: &[
         GlobalGroup::Prerequisites,
         GlobalGroup::Bonus,

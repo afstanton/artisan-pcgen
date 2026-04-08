@@ -1,0 +1,3 @@
+FOLLOWER:AnimalCompanionLVL=1	TYPE:Animal Companion	HD:1	BONUS:STAT|STR|1	DEFINE:CurrentInt|0	ABILITY:Special Ability|AUTOMATIC|Companion Bond
+FOLLOWER:FamiliarLVL=1	TYPE:Familiar	PRERACE:1,Bat	KIT:1|Bat Familiar
+MASTERBONUSRACE:Bat	TYPE:Familiar	ABILITY:Special Ability|AUTOMATIC|Familiar (Bat)	BONUS:FOLLOWERS|Familiar|1

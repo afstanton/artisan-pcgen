@@ -1,0 +1,73 @@
+//! Companion modifier schemas.
+//!
+//! Source: `docs/listfilepages/datafilestagpages/datafilescompanionmodifiers.html`
+//!
+//! Companion modifier files define two line types using token-prefixed heads:
+//! `FOLLOWER:x=y` and `MASTERBONUSRACE:x`.
+
+use crate::schema::{ArtisanMapping, Cardinality, EntitySchema, GlobalGroup, HeadFormat, TokenDef, TokenGrammar};
+
+static FOLLOWER_TOKENS: &[TokenDef] = &[
+    TokenDef::text("HD", "pcgen_hitdie"),
+    TokenDef::text("RACETYPE", "pcgen_racetype"),
+    TokenDef {
+        key: "ABILITY",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_abilities"),
+        required: false,
+    },
+    TokenDef::pipe_positional_repeatable("KIT", &["count", "kit"], "pcgen_kits"),
+];
+
+static MASTERBONUSRACE_TOKENS: &[TokenDef] = &[TokenDef {
+    key: "ABILITY",
+    grammar: TokenGrammar::PipeList,
+    cardinality: Cardinality::Repeatable,
+    artisan_mapping: ArtisanMapping::Attribute("pcgen_abilities"),
+    required: false,
+}];
+
+pub static FOLLOWER_COMPANIONMOD_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:entity:companionmod-follower",
+    head_token: Some("FOLLOWER"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: FOLLOWER_TOKENS,
+    globals: &[
+        GlobalGroup::Type,
+        GlobalGroup::Bonus,
+        GlobalGroup::Add,
+        GlobalGroup::Choose,
+        GlobalGroup::Auto,
+        GlobalGroup::Define,
+        GlobalGroup::Prerequisites,
+        GlobalGroup::Template,
+        GlobalGroup::Sab,
+        GlobalGroup::OutputName,
+        GlobalGroup::SourcePage,
+        GlobalGroup::SourceLink,
+        GlobalGroup::SourceMeta,
+    ],
+};
+
+pub static MASTERBONUSRACE_COMPANIONMOD_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:entity:companionmod-masterbonusrace",
+    head_token: Some("MASTERBONUSRACE"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: MASTERBONUSRACE_TOKENS,
+    globals: &[
+        GlobalGroup::Type,
+        GlobalGroup::Bonus,
+        GlobalGroup::Add,
+        GlobalGroup::Choose,
+        GlobalGroup::Auto,
+        GlobalGroup::Define,
+        GlobalGroup::Prerequisites,
+        GlobalGroup::Template,
+        GlobalGroup::Sab,
+        GlobalGroup::OutputName,
+        GlobalGroup::SourcePage,
+        GlobalGroup::SourceLink,
+        GlobalGroup::SourceMeta,
+    ],
+};

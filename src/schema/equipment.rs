@@ -15,6 +15,7 @@ static EQUIPMENT_TOKENS: &[TokenDef] = &[
     // Weight and cost
     TokenDef::text("WT", "pcgen_weight"),
     TokenDef::text("COST", "pcgen_cost"),
+    TokenDef::text("BASEITEM", "pcgen_baseitem"),
     // Size and wield
     TokenDef::text("SIZE", "pcgen_size"),
     TokenDef::text("WIELD", "pcgen_wield"),

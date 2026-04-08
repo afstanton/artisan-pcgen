@@ -67,6 +67,29 @@ pub(crate) fn project_clause_attributes(
             "INFO" => {
                 attributes.insert("pcgen_info".to_string(), Value::String(value.clone()));
             }
+            "APPLY" => {
+                attributes.insert("pcgen_apply".to_string(), Value::String(value.clone()));
+            }
+            "LOOKUP" => append_string_attr(attributes, "pcgen_lookup", value),
+            "BASEAGE" => {
+                attributes.insert("pcgen_baseage".to_string(), Value::String(value.clone()));
+            }
+            "MAXAGE" => {
+                attributes.insert("pcgen_maxage".to_string(), Value::String(value.clone()));
+            }
+            "AGEDIEROLL" => {
+                attributes.insert("pcgen_agedieroll".to_string(), Value::String(value.clone()));
+            }
+            "SEX" => append_string_attr(attributes, "pcgen_sex", value),
+            "HAIR" => {
+                attributes.insert("pcgen_hair".to_string(), Value::String(value.clone()));
+            }
+            "EYES" => {
+                attributes.insert("pcgen_eyes".to_string(), Value::String(value.clone()));
+            }
+            "SKINTONE" => {
+                attributes.insert("pcgen_skintone".to_string(), Value::String(value.clone()));
+            }
             "ASPECT" => append_string_attr(attributes, "pcgen_aspects", value),
             "RACETYPE" => {
                 attributes.insert("pcgen_racetype".to_string(), Value::String(value.clone()));
@@ -223,6 +246,9 @@ pub(crate) fn project_clause_attributes(
             }
             "COST" => {
                 attributes.insert("pcgen_cost".to_string(), Value::String(value.clone()));
+            }
+            "BASEITEM" => {
+                attributes.insert("pcgen_baseitem".to_string(), Value::String(value.clone()));
             }
             "WT" => {
                 attributes.insert("pcgen_weight".to_string(), Value::String(value.clone()));

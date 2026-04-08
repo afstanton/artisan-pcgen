@@ -8,8 +8,10 @@
 pub mod ability;
 pub mod abilitycategory;
 pub mod classlevel;
+pub mod companionmod;
 pub mod startpack;
 pub mod system;
+pub mod biosettings;
 pub mod class;
 pub mod deity;
 pub mod equipment;
@@ -26,7 +28,9 @@ pub mod token_aliases;
 pub use ability::ABILITY_SCHEMA;
 pub use abilitycategory::ABILITYCATEGORY_SCHEMA;
 pub use classlevel::CLASSLEVEL_SCHEMA;
+pub use companionmod::{FOLLOWER_COMPANIONMOD_SCHEMA, MASTERBONUSRACE_COMPANIONMOD_SCHEMA};
 pub use startpack::STARTPACK_SCHEMA;
+pub use biosettings::BIOSETTINGS_SCHEMA;
 pub use system::{
     ALIGN_SYSTEM_SCHEMA, BONUSFEATLEVELSTARTINTERVAL_SCHEMA, BONUSSPELLLEVEL_SCHEMA,
     BONUSSTACKS_SCHEMA, BONUSSTATLEVELSTARTINTERVAL_SCHEMA, ICON_SYSTEM_SCHEMA,
@@ -393,7 +397,10 @@ static ALL_SCHEMAS: &[&EntitySchema] = &[
     &ability::ABILITY_SCHEMA,
     &abilitycategory::ABILITYCATEGORY_SCHEMA,
     &classlevel::CLASSLEVEL_SCHEMA,
+    &companionmod::FOLLOWER_COMPANIONMOD_SCHEMA,
+    &companionmod::MASTERBONUSRACE_COMPANIONMOD_SCHEMA,
     &startpack::STARTPACK_SCHEMA,
+    &biosettings::BIOSETTINGS_SCHEMA,
     &system::BONUSSPELLLEVEL_SCHEMA,
     &system::BONUSSTACKS_SCHEMA,
     &system::BONUSFEATLEVELSTARTINTERVAL_SCHEMA,
