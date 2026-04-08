@@ -18,6 +18,7 @@ use crate::{
         TokenGrammar,
     },
 };
+use std::collections::BTreeSet;
 
 /// Emit a PCGen `.lst` line for `entity` using the provided `schema`.
 ///
@@ -67,6 +68,30 @@ pub fn emit_entity_auto(entity: &Entity) -> Option<String> {
     Some(emit_entity(entity, schema))
 }
 
+/// Returns the list of token keys that would use raw-clause fallback for this
+/// entity and schema.
+///
+/// This is a migration aid for eliminating fallback entirely.
+pub fn fallback_keys_for_entity(entity: &Entity, schema: &EntitySchema) -> Vec<String> {
+    let mut keys = BTreeSet::new();
+
+    for token_def in schema.tokens {
+        if uses_fallback_for_token(entity, token_def) {
+            keys.insert(token_def.key.to_string());
+        }
+    }
+
+    // Global TYPE fallback
+    if schema.globals.contains(&GlobalGroup::Type)
+        && entity.attributes.get("pcgen_type").and_then(Value::as_str).is_none()
+        && !raw_clause_values_for_key(entity, "TYPE").is_empty()
+    {
+        keys.insert("TYPE".to_string());
+    }
+
+    keys.into_iter().collect()
+}
+
 /// Convert an artisan entity + schema into a `ParsedLine` (structured form).
 ///
 /// Useful when you need the intermediate representation rather than raw text.
@@ -104,6 +129,16 @@ fn emit_token_def(token_def: &TokenDef, entity: &Entity, parts: &mut Vec<String>
             }
         }
         ArtisanMapping::Prerequisite | ArtisanMapping::EntityName | ArtisanMapping::None => {}
+    }
+}
+
+fn uses_fallback_for_token(entity: &Entity, token_def: &TokenDef) -> bool {
+    match token_def.artisan_mapping {
+        ArtisanMapping::Attribute(field) => {
+            entity.attributes.get(field).is_none()
+                && !raw_clause_values_for_key(entity, token_def.key).is_empty()
+        }
+        _ => false,
     }
 }
 
@@ -161,6 +196,10 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
                 entity.attributes.get("pcgen_type").and_then(Value::as_str)
             {
                 parts.push(format!("TYPE:{type_val}"));
+            } else {
+                for raw in raw_clause_values_for_key(entity, "TYPE") {
+                    parts.push(format!("TYPE:{raw}"));
+                }
             }
         }
         GlobalGroup::Key => {

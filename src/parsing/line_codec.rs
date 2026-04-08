@@ -164,6 +164,7 @@ fn looks_like_token_start(input: &str, start: usize) -> bool {
 
     let mut index = start;
     let mut saw_alpha = false;
+    let mut saw_upper = false;
 
     if input[index..].starts_with('!') {
         index += 1;
@@ -172,12 +173,21 @@ fn looks_like_token_start(input: &str, start: usize) -> bool {
     while index < input.len() {
         let ch = input[index..].chars().next().expect("valid char boundary");
         if ch == ':' {
-            return saw_alpha;
+            return saw_alpha && saw_upper;
         }
         if !(ch.is_ascii_alphanumeric() || matches!(ch, '_' | '-' | '.')) {
             return false;
         }
-        saw_alpha |= ch.is_ascii_alphabetic();
+        if ch.is_ascii_alphabetic() {
+            saw_alpha = true;
+            if ch.is_ascii_uppercase() {
+                saw_upper = true;
+            } else {
+                // Token keys in PCGen are uppercase; lowercase strongly suggests
+                // this is inline free text (e.g., description prose).
+                return false;
+            }
+        }
         index += ch.len_utf8();
     }
 

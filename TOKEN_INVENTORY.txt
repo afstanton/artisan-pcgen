@@ -2,65 +2,65 @@
 === Token Inventory Summary ===
 Files scanned: 9443
 Total lines processed: 847515
-Unique observed token keys: 2420
-Unique semantically interpreted token keys: 255
+Unique observed token keys: 765
+Unique semantically interpreted token keys: 245
 Unique policy-supported-only token keys: 3
-Unique unhandled tokens: 2162
+Unique unhandled tokens: 517
 Files with UTF-8 encoding issues fixed: 60
 
 === Semantically Interpreted Tokens by Frequency ===
-283608 | TYPE
-236633 | BONUS
+283564 | TYPE
+236462 | BONUS
 186432 | SOURCEPAGE
-165732 | CATEGORY
+165729 | CATEGORY
 152266 | DESC
-112535 | ABILITY
-108368 | KEY
+112411 | ABILITY
+108366 | KEY
  76645 | VISIBLE
- 63999 | COST
+ 63783 | COST
  49708 | DEFINE
- 39794 | CLASSES
+ 39790 | CLASSES
  39471 | WT
- 30301 | RANGE
+ 30238 | RANGE
  29790 | SPROP
  25549 | SCHOOL
- 25387 | FACT
- 25067 | DURATION
- 24626 | SIZE
- 24561 | ASPECT
- 24495 | RANK
+ 25386 | FACT
+ 25063 | DURATION
+ 24613 | SIZE
+ 24556 | ASPECT
+ 24494 | RANK
  23684 | TARGETAREA
  22687 | PREABILITY
  21650 | COMPS
  21375 | SAVEINFO
  21192 | SPELLRES
  20206 | OUTPUTNAME
- 20127 | QUALITY
+ 20113 | QUALITY
  19693 | PREMULT
- 15921 | SPELLS
+ 15668 | SPELLS
  15111 | EQMOD
  14750 | PREVARGTEQ
- 13968 | CHOOSE
  13946 | MULT
+ 13945 | CHOOSE
  12925 | SOURCELONG
  12466 | SAB
  12151 | SOURCESHORT
- 10765 | PROFICIENCY
+ 10719 | PROFICIENCY
  10374 | AUTO
  10004 | STACK
-  9834 | BENEFIT
   9742 | TEMPLATE
+  9593 | BENEFIT
   9319 | PRECLASS
   9092 | RACETYPE
   8988 | ABILITYCATEGORY
   8904 | DESCRIPTOR
   8315 | REACH
-  8026 | CAST
+  8025 | CAST
   7623 | MONSTERCLASS
   7414 | PRETYPE
   7016 | CSKILL
   6936 | SUBSCHOOL
-  6464 | DOMAINS
+  6426 | DOMAINS
   6394 | !PRERACE
   6274 | PRETEXT
   6257 | STARTFEATS
@@ -68,7 +68,7 @@ Files with UTF-8 encoding issues fixed: 60
   5874 | !PREABILITY
   5810 | SOURCEDATE
   5474 | SOURCEWEB
-  5119 | ITEM
+  5100 | ITEM
   4688 | CONTAINS
   4611 | PRESKILL
   4552 | RACESUBTYPE
@@ -76,7 +76,7 @@ Files with UTF-8 encoding issues fixed: 60
   4422 | PRESTAT
   4414 | MONCSKILL
   3934 | WIELD
-  3931 | KNOWN
+  3890 | KNOWN
   3885 | USEUNTRAINED
   3518 | HITDICEADVANCEMENT
   3108 | STARTSKILLPTS
@@ -104,23 +104,23 @@ Files with UTF-8 encoding issues fixed: 60
    867 | PRESPELLTYPE
    833 | BOOKTYPE
    825 | ABB
-   821 | SETTING
    817 | PUBNAMEWEB
    817 | PREDEITY
    762 | GAMEMODE
    750 | PREVARLTEQ
+   727 | SETTING
    720 | !PRECHARACTERTYPE
    691 | FAVCLASS
    598 | !PREFACT
-   588 | STATUS
+   584 | STATUS
    572 | PREVARGT
    543 | PRESPELL
    514 | LOGO
    497 | PRESPELLSCHOOL
    475 | MODTOSKILLS
    471 | !PRETEMPLATE
-   448 | COVER
-   428 | DOMAIN
+   445 | COVER
+   424 | DOMAIN
    422 | PRERACETYPE
    406 | PROHIBITSPELL
    404 | FAVOREDCLASS
@@ -136,46 +136,45 @@ Files with UTF-8 encoding issues fixed: 60
    279 | ALTCRITMULT
    274 | ALTCRITRANGE
    251 | VARIANTS
-   246 | SOURCE
+   244 | SOURCE
    233 | !PRECAMPAIGN
    231 | PREMOVE
    228 | !PREALIGN
    217 | HIDETYPE
    207 | KNOWNSPELLS
    206 | FORWARDREF
-   205 | PREREQUISITE
    186 | PRESUBCLASS
    181 | PRELANG
    172 | REACHMULT
    167 | FUMBLERANGE
    154 | PRERULE
    149 | PRESPELLCAST
-   149 | LEVELSPERFEAT
    149 | ALTEQMOD
+   149 | LEVELSPERFEAT
    143 | PRECHECKBASE
    139 | PREDOMAIN
    137 | !PREWEAPONPROF
    128 | PRELEVELMAX
    122 | MONNONSKILLHD
    114 | PRE
-   113 | PREREQUISITES
    109 | !PRECSKILL
    107 | SPECIALTYKNOWN
    105 | PROHIBITCOST
-    92 | FEAT
     85 | PRECSKILL
     82 | PRESKILLTOT
+    79 | PREREQUISITE
     78 | BONUSSPELLSTAT
     77 | PREVARNEQ
     77 | ICON
     74 | ISLICENSED
     71 | KNOWNSPELLSFROMSPECIALTY
     70 | ALLOWBASECLASS
-    68 | NUMPAGES
     68 | XTRASKILLPTSPERLVL
+    68 | NUMPAGES
     65 | SUBSTITUTIONCLASS
     64 | QUALIFY
     63 | PRESIZEGTEQ
+    62 | PREREQUISITES
     58 | PREGENDER
     57 | !PRESTAT
     56 | PRELEGSGTEQ
@@ -188,81 +187,72 @@ Files with UTF-8 encoding issues fixed: 60
     43 | WEAPONBONUS
     41 | PREDEITYDOMAIN
     39 | PREPROFWITHARMOR
-    37 | PREVISION
     37 | PREATT
+    37 | PREVISION
     36 | PREITEM
     36 | PREVIEWSHEET
     36 | GENDERLOCK
     35 | PREVIEWDIR
     32 | !PRESUBCLASS
-    31 | BONUSSTACKS
     31 | BONUSFEATLEVELSTARTINTERVAL
     31 | BONUSSTATLEVELSTARTINTERVAL
+    31 | BONUSSTACKS
     30 | !PRESKILL
     27 | PRESPELLSCHOOLSUB
     26 | PREHANDSGTEQ
-    26 | LICENSE
+    24 | LICENSE
     20 | !PREMOVE
     19 | PREBASESIZEGTEQ
-    17 | PREPROFWITHSHIELD
     17 | PRESPELLDESCRIPTOR
+    17 | PREPROFWITHSHIELD
     16 | PRECHECK
     15 | PRECHARACTERTYPE
     15 | PREEQUIP
-    14 | PREHD
     14 | PREDEITYALIGN
-    14 | PREHANDSEQ
     14 | ADDDOMAINS
+    14 | PREHD
+    14 | PREHANDSEQ
     13 | !PREVISION
-    12 | BONUSES
     12 | ALLOWDUPES
-    11 | !PREMULT
     11 | PREHANDSGT
-     9 | PREPARATION
+    11 | !PREMULT
      8 | PRESPELLBOOK
      7 | PRESRGTEQ
-     7 | PREPARE
      7 | PREWIELD
-     6 | PREBASESIZELT
      6 | ATTACKCYCLE
      6 | PREDR
+     6 | PREBASESIZELT
      5 | CT
-     5 | PRESENCE
-     5 | PREAGESET
      5 | !PREEQUIP
-     5 | !PREAGESET
      5 | !PREDOMAIN
      5 | !PREDEITY
-     4 | PREPARED
-     3 | !PRESA
+     5 | PREAGESET
+     5 | !PREAGESET
+     3 | PRESIZELT
+     3 | PREHANDS
      3 | BONUSSKILLPOINTS
      3 | PREREACHGTEQ
-     3 | PREHANDS
-     3 | PRESIZELT
-     2 | PRESIZEGT
-     2 | PREY
-     2 | PREUATT
-     2 | PREHP
-     2 | PRECLASSLEVELMAX
-     2 | !PREDR
-     2 | !PRECLASSLEVELMAX
+     3 | !PRESA
      2 | !PRESPELL
      2 | MONCCSKILL
+     2 | !PRESPELLSCHOOLSUB
+     2 | PRESIZEGT
+     2 | !PRECHECK
+     2 | PREHP
      2 | PREARMORTYPE
      2 | !PRESPELLTYPE
-     2 | !PRESPELLSCHOOLSUB
+     2 | PREUATT
+     2 | PRECLASSLEVELMAX
      2 | PRESIZENEQ
-     2 | !PRECHECK
      2 | !PRESPELLCAST
-     1 | PRESRLT
+     2 | !PRECLASSLEVELMAX
+     2 | !PREDR
      1 | REPEATLEVEL
-     1 | PRESSURE
-     1 | PRESENTS
-     1 | PRESCIENCE
-     1 | !PREREGION
+     1 | FEAT
      1 | PREREACH
      1 | !PREKIT
-     1 | PREDATOR
+     1 | PRESRLT
+     1 | !PREREGION
      1 | !PRESPELLDESCRIPTOR
 
 === Policy-Supported-Only Tokens by Frequency ===
@@ -272,51 +262,51 @@ Files with UTF-8 encoding issues fixed: 60
 
 === Unhandled Tokens by Frequency ===
  24629 | CASTTIME
- 24138 | SKILL
+ 24063 | SKILL
  22782 | SORTKEY
  16376 | GEAR
- 15077 | OPTION
- 13677 | CLASS
- 13054 | KIT
- 10056 | MOVE
+ 15030 | OPTION
+ 13570 | CLASS
+ 13006 | KIT
+ 10055 | MOVE
   9846 | NATURALATTACKS
   9732 | STARTPACK
   9152 | SPELLKNOWN
-  9094 | DAMAGE
+  8987 | DAMAGE
   8265 | EDITABLE
   8247 | EQUIPBUY
   8053 | DISPLAYLOCATION
-  7952 | NEWKEY
   7952 | MAXVER
+  7952 | NEWKEY
   7893 | EDITPOOL
   7847 | CR
   7526 | CRITRANGE
   7341 | ALIGN
   7316 | STAT
   7113 | CRITMULT
-  6976 | RACE
-  6799 | NAME
+  6966 | RACE
+  6793 | NAME
   6579 | LEGS
   6441 | NAMEISPI
   5791 | FACE
   5613 | DATAFORMAT
   5528 | FACTDEF
-  5325 | HANDS
+  5322 | HANDS
   5090 | HD
   4859 | TEMPBONUS
-  4783 | COPYRIGHT
+  4782 | COPYRIGHT
   4753 | SELECTABLE
-  4742 | REQUIRED
+  4740 | REQUIRED
   4719 | DISPLAYNAME
-  4609 | LOCATION
+  4603 | LOCATION
   4310 | KEYSTAT
   4235 | EXPLANATION
   4217 | FRACTIONALPOOL
   4200 | SPELLLEVEL
   3936 | PLURAL
   3583 | ITYPE
-  3439 | VISION
   3435 | FOLLOWER
+  3399 | VISION
   3306 | SOURCELINK
   3164 | QTY
   3114 | DR
@@ -324,2112 +314,467 @@ Files with UTF-8 encoding issues fixed: 60
   2635 | MAXLEVEL
   2540 | FACTSET
   2510 | PLUS
-  2461 | REPLACES
   2457 | LOOKUP
+  2402 | REPLACES
   2273 | RACENAME
   2132 | SR
   2078 | INFO
-  2077 | EQUIPMENT
+  2059 | EQUIPMENT
   2048 | BASEITEM
   1906 | LANGBONUS
   1885 | MODIFY
-  1877 | APPLY
-  1800 | COMPONENT
+  1873 | APPLY
   1786 | ACCHECK
-  1785 | SELECT
-  1571 | LEVEL
+  1767 | SELECT
   1548 | MODS
   1503 | MAXDEX
   1488 | DEITYWEAP
   1463 | BASEAGE
   1432 | TEMPDESC
-  1385 | SPECIAL
   1377 | MAXAGE
   1340 | DESCISPI
   1292 | MAXDEVVER
   1251 | AGEDIEROLL
-  1207 | HTTP
-  1174 | COMPANION
+  1214 | LEVEL
+  1180 | HTTP
   1145 | SIZENAME
   1101 | SKILLMULT
-  1082 | PART
+  1081 | PART
   1076 | SUBRACE
   1014 | COMPANIONLIST
-   982 | SLOTS
-   931 | LOAD
-   889 | AUTHOR
+   971 | SLOTS
+   930 | LOAD
    884 | SERVESAS
-   875 | FOCUS
    874 | INFOTEXT
    832 | REMOVABLE
    802 | ISOGL
    760 | ABILITYLIST
    753 | ASSIGNTOALL
-   735 | EFFECTS
    733 | GENRE
    727 | ACTYPE
    682 | UDAM
-   665 | BEAST
    665 | SPELLSTAT
-   662 | AUGMENT
    649 | WIELDCATEGORY
-   638 | AUTHORS
    621 | TEMPVALUE
    620 | ROLE
-   619 | DEFAULT
+   616 | DEFAULT
    613 | SEX
    606 | REGION
-   591 | EQSLOT
    591 | NUMBER
+   591 | EQSLOT
    577 | FORMATCAT
    571 | MINXP
-   542 | SPELL
    535 | SUBCLASS
-   514 | FREE
-   511 | DRAGON
-   511 | NORMAL
-   496 | CSKILLMAX
+   504 | FREE
+   501 | SPELL
    496 | CCSKILLMAX
+   496 | CSKILLMAX
    483 | PCC
    482 | MASTERBONUSRACE
-   482 | TABLE
    473 | EXCLUSIVE
    456 | TAB
    452 | CONTEXT
    439 | BASEQTY
-   437 | POOL
    435 | STATRANGE
    432 | AGESET
-   425 | UP
-   424 | FOLLOWERS
+   425 | POOL
+   423 | FOLLOWERS
    420 | DOWN
+   418 | UP
    403 | BASESTATSCORE
+   390 | TABLE
    390 | VALUES
    385 | PARM
-   382 | DIE
    367 | UMULT
+   367 | EFFECTS
    358 | SIZENUM
    338 | ACHECK
    331 | BASEDICE
    330 | MEMORIZE
    329 | ALTDAMAGE
-   324 | ABILITIES
    320 | NEWCATEGORY
    313 | WEAPONTYPE
-   305 | EYES
    304 | MODIFYOTHER
    302 | HAIR
-   301 | ROUND
+   301 | EYES
    296 | EQUIPMOD
    295 | SKINTONE
    293 | DONOTADD
-   289 | HUMANOID
-   275 | ATTACK
-   275 | SWITCH
-   274 | NOTE
+   273 | SWITCH
    271 | WEAPONPROF
-   269 | SKILLS
-   268 | LANGUAGE
    264 | DC
-   258 | FUNDS
-   253 | ESSENTIA
+   257 | FUNDS
+   252 | LANGUAGE
    237 | ALTTYPE
    233 | DEFAULTVARIABLEVALUE
    231 | VAR
-   224 | DEITY
    217 | SIZEMULT
    217 | STATMOD
+   216 | DEITY
    212 | ENCUMBRANCE
    212 | METHOD
-   207 | CHARGES
-   205 | CHOICE
-   195 | LIST
-   193 | BENEFITS
-   193 | POWER
+   193 | CHARGES
    189 | WEAPONCATEGORY
    185 | REMOVE
-   180 | COMPONENTS
-   178 | FEATS
    172 | ROLLMETHOD
-   172 | THROW
    167 | XPCOST
-   165 | HIT
+   152 | CHOICE
+   152 | FOCUS
    151 | CLASSTYPE
-   151 | CRFORMULA
    151 | ISMONSTER
+   151 | CRFORMULA
    149 | GENDER
    148 | XPPENALTY
    147 | DATACONTROL
    146 | COMPANIONMOD
    143 | TOTALCOST
-   142 | DEITIES
-   142 | LEVELS
-   142 | TARGET
-   142 | CHECKS
-   141 | RESISTANCE
    138 | SCREAM
    135 | MOVECLONE
    133 | CHANGEPROF
-   114 | SPELLBOOK
-   114 | RANKS
    114 | ARMORPROF
-   111 | FOLLOWING
+   113 | SPELLBOOK
    109 | LOCAL
-   108 | TO
-   107 | COUNT
-   107 | TIME
    106 | EXCLUDE
-   105 | INIT.
-   103 | EFFECT
-    95 | LANGUAGES
-    94 | ITEMS
-    92 | ALIGNMENT
+   101 | TARGET
     90 | BIOSET
-    85 | FACTSETDEF
     85 | GLOBAL
-    85 | SEC.
+    85 | FACTSETDEF
     84 | SPELLRANGE
-    83 | FIRE
-    83 | ATTACKS
-    83 | POINTS
     82 | SUBREGION
-    80 | AURA
     79 | ARMORTYPE
-    77 | TYPES
-    77 | FOLLOWS
+    79 | SPECIAL
+    78 | COUNT
     73 | SHIELDPROF
-    73 | ACTION
     70 | OUTPUTSHEET
+    69 | COMPONENTS
     69 | INFOSHEET
-    67 | HEIGHTPATTERN
-    67 | MODULE
-    67 | HEIGHTUNIT
-    67 | WEIGHTPATTERN
-    67 | DISTANCEPATTERN
-    67 | WEIGHTUNIT
-    67 | WEIGHTFACTOR
-    67 | DISTANCEUNIT
-    67 | UNITSET
-    67 | HEIGHTFACTOR
     67 | DISTANCEFACTOR
-    66 | USE
-    66 | SPEED
+    67 | UNITSET
+    67 | WEIGHTFACTOR
+    67 | HEIGHTFACTOR
+    67 | HEIGHTPATTERN
+    67 | DISTANCEPATTERN
+    67 | HEIGHTUNIT
+    67 | DISTANCEUNIT
+    67 | WEIGHTPATTERN
+    67 | WEIGHTUNIT
     65 | CRMOD
     64 | EXCLASS
-    62 | WAYS
     62 | CRMODPRIORITY
     61 | LSTEXCLUDE
     61 | UNENCUMBEREDMOVE
-    60 | STRENGTH
-    59 | ARCHETYPE
-    59 | MAGIC
     58 | CCSKILL
-    57 | SHIELD
-    56 | TRAITS
-    56 | ADVANCES
-    53 | COLD
-    53 | ELECTRICITY
-    53 | DIVINITY
-    51 | POWERS
+    58 | ALIGNMENT
     51 | II
-    49 | SAVE
-    49 | CHRONICLES
-    46 | SCORES
-    44 | ACTIVATION
-    44 | QUALITIES
+    47 | NORMAL
+    45 | SAVE
     44 | I
-    44 | DICE
-    43 | VALIDFORDEITY
     43 | VALIDFORFOLLOWER
-    43 | FEATURE
-    42 | GOAL
-    42 | WATER
+    43 | VALIDFORDEITY
     42 | ISDEFAULTSIZE
-    42 | SONIC
-    42 | ORIENT
-    42 | PROPERTIES
-    41 | TALENTS
-    39 | MINUTE
-    38 | REQUIREMENT
-    38 | INCREASE
-    38 | WEAPONS
+    41 | POINTS
     37 | MAXCOST
-    37 | OPTIONS
-    36 | DAY
+    36 | FEATURE
+    36 | ACTIVATION
     36 | AC
-    36 | WEAPON
-    36 | STRIKE
-    35 | CURRENCYUNITABBREV
-    35 | COPYMASTERCHECK
-    35 | BOOST
+    36 | THROW
     35 | ALIGNMENTFEATURE
     35 | DIESIZES
-    35 | PROFICIENCIES
-    35 | PANTHEON
     35 | MENUENTRY
-    35 | TORSO
-    35 | CONDITIONS
+    35 | CURRENCYUNITABBREV
     35 | DISPLAYORDER
-    35 | GROUP
-    35 | HEAD
-    34 | BABMINVAL
-    34 | BABMAXATT
-    34 | BABATTCYC
-    34 | DOMAINFEATURE
-    34 | LOADMULT
-    34 | ACNAME
+    35 | COPYMASTERCHECK
+    35 | PANTHEON
     34 | ALLOWEDMODES
-    34 | DEFAULTUNITSET
+    34 | TORSO
+    34 | BABMAXATT
     34 | NUMSLOTS
-    33 | LEVELMSG
-    33 | WEAPONREACH
+    34 | LOADMULT
+    34 | DEFAULTUNITSET
+    34 | ACNAME
+    34 | DOMAINFEATURE
+    34 | SHIELD
+    34 | BABMINVAL
+    34 | HEAD
+    34 | BABATTCYC
     33 | RANGEPENALTY
+    33 | WEAPONREACH
     33 | SQUARESIZE
+    33 | GROUP
+    33 | LEVELMSG
     33 | SKILLMULTIPLIER
-    32 | PENALTY
-    32 | SPACE
     32 | SIZEDIFF
     32 | WEAPONNONPROFPENALTY
-    32 | CREATURES
-    31 | TRAINED
-    31 | NORMALLY
-    31 | DISPEL
-    31 | UNDEAD
-    30 | SAVES
-    30 | COPYMASTERHP
     30 | SHORTRANGE
-    29 | IT
-    29 | SPELLBASEDC
-    29 | CHARACTERTYPE
+    30 | COPYMASTERHP
     29 | COPYMASTERBAB
-    29 | SACRIFICE
-    28 | SYMBOL
-    28 | SPELLCASTING
-    28 | USEMASTERSKILL
-    28 | SUBTYPE
+    29 | CHARACTERTYPE
+    29 | SPELLBASEDC
     28 | ITEMCREATE
-    27 | HANDBOOK
-    27 | ARCANA
-    26 | GRANTED
-    26 | HEALING
-    26 | RESIZABLEEQUIPTYPE
+    28 | USEMASTERSKILL
+    28 | SYMBOL
+    27 | SKILLS
     26 | III
-    25 | INITIAL
-    25 | GAIN
-    25 | CREATURE
-    25 | VALUE
-    25 | FAVOR
-    25 | FINESSABLE
-    25 | SECONDARY
+    26 | RESIZABLEEQUIPTYPE
     25 | HTTPS
-    24 | LOSE
-    24 | COUNTERSPELL
-    24 | POISON
-    24 | PLANE
-    24 | ENERVATION
-    23 | ARC
-    23 | AREA
-    23 | LOCATIONS
-    23 | PATRON
-    22 | FEATURES
-    22 | PATH
+    25 | FINESSABLE
     21 | CRSTEPS
-    21 | STRAIN
-    21 | DRAWBACK
-    21 | CRITICAL
     20 | MONSTERROLES
-    20 | TRIGGER
     20 | CRTHRESHOLD
-    20 | CORRUPT
-    20 | EQUIPMENT.PART
     20 | MONSTERROLEDEFAULT
-    20 | RATING
-    20 | ANIMAL
-    19 | EARTH
-    19 | DEATH
-    19 | EACH
-    19 | SHIFT
-    19 | WILL
-    19 | ARE
-    18 | USAGE
+    20 | EQUIPMENT.PART
+    18 | FEATS
     18 | XPTABLE
-    18 | ELEMENTAL
-    18 | THEM
-    18 | MARKETS
-    18 | ECLIPSE
-    18 | ONE
-    18 | INCLUDE
-    18 | AUGMENTED
-    17 | CONDITION
-    17 | TALENT
-    17 | SUPERDUNGEON
-    17 | ADVANCEMENT
-    17 | KNOWLEDGE
     17 | EQSIZEPENALTY
-    17 | ORGANIZATION
-    16 | YOU
-    16 | RACES
-    16 | SENSOR
-    16 | ENVIRONMENT
-    16 | CHECK
-    16 | ENERGY
-    16 | REWARD
-    16 | EVIL
-    16 | LESS
-    16 | GAINS
-    16 | ALARM
-    16 | MASTERY
-    16 | GROUND
     16 | SHOWINMENU
-    15 | SLAS
-    15 | KILLED
-    15 | TREASURE
-    15 | FORMS
-    15 | NAMES
+    16 | ABILITIES
+    15 | SPEED
+    15 | GRANTED
     15 | INITIATIVE
-    14 | GRANT
-    14 | THRONE
-    14 | EMOTION
-    14 | GOOD
-    14 | TABOOS
-    14 | OBJECT
-    14 | GLYPH
-    14 | GROWTH
-    14 | LIGHTNING
-    13 | ACT
-    13 | CELESTIAL
-    13 | IV
-    13 | GUTS
-    13 | EXCEPTION
-    13 | FORM
-    13 | IDENTITY
-    13 | UNCHANGED
-    13 | DEFENSE
-    13 | MAXNONEPICLEVEL
-    13 | FEAR
-    13 | FAMILIARITY
-    13 | AIR
-    13 | PRICE
+    15 | TREASURE
+    15 | SAVES
+    15 | ORGANIZATION
+    14 | ATTACK
+    14 | ADVANCEMENT
+    14 | ENVIRONMENT
     13 | SKILLCOST_CROSSCLASS
-    13 | AGAIN
-    13 | MODIFIER
-    13 | SCORE
-    12 | ANSWER
-    12 | ADJUSTMENT
-    12 | CLOUD
-    12 | NATURE
-    12 | VAMPIRE
+    13 | GRANT
+    13 | IV
+    13 | MAXNONEPICLEVEL
     12 | PLUSCOST
-    12 | TRAINING
-    12 | SUBJECT
-    12 | DIRECTION
-    12 | IMPALER
-    12 | CHARISMA
-    12 | FEWER
-    12 | INFORMATION
-    12 | FIENDISH
-    11 | LOYALTY
-    11 | NOSFERATU
-    11 | COMPENDIUM
-    11 | MOVEMENT
-    11 | SELECTION
-    11 | CANTRIPS
-    11 | MINIS
-    11 | REQUIREMENTS
-    11 | THROWN
-    11 | RESULTS
-    11 | FORCE
-    11 | ADJUSTMENTS
-    11 | VISUALIZE
-    11 | COMBAT
-    11 | THROWS
+    12 | USAGE
     11 | STARTTABLE
-    11 | ROUNDS
-    11 | MORE
-    11 | VENTRUE
+    11 | HEALING
+    11 | SELECTION
     11 | LANGAUTO
-    11 | CHAKRA
-    10 | DEAFENED
-    10 | STUNNED
-    10 | ARCANE
-    10 | CATEGORIES
-    10 | EXAMPLE
-    10 | ORB
-    10 | AGE
-    10 | SKILLCOST_CLASS
-    10 | THRUST
     10 | COSTPRE
-    10 | CONSTITUTION
-    10 | MARSH
-    10 | LIFE
-    10 | TRAVEL
-    10 | EVOLUTIONS
-    10 | HALVED
-    10 | SENSES
-    10 | STOPPED
-    10 | PLANT
-    10 | FEVER
-    10 | RUBBLE
-    10 | CREATE
-    10 | FORTIFICATION
     10 | HP
+    10 | FORTIFICATION
     10 | DISPLAY
-    10 | EIGHT
-    10 | PERFORMANCE
-     9 | MANIFEST.AUGMENT
-     9 | EXPERT
-     9 | RESIDUAL
+    10 | AUGMENT
+    10 | MOVEMENT
+    10 | NOTE
+    10 | SKILLCOST_CLASS
+     9 | WATER
      9 | VARIABLE
-     9 | DECREASE
-     9 | ARTS
-     9 | ARMOR
-     9 | BLADES
-     9 | REACTION
-     9 | CHAOS
-     9 | COMMAND
-     9 | WIND
-     9 | PORTRAITS
-     9 | CONFUSION
-     9 | BLOOD
-     9 | HEMISPHERE
-     9 | GAME
-     9 | PROFESSIONAL
-     9 | PARALYZED
-     9 | MANEUVERS
-     9 | NIGHT
-     9 | LAW
-     9 | VENOM
-     8 | SMITE
-     8 | ENHANCED
-     8 | ZOMBIES
-     8 | BITE
-     8 | FUNCTION
-     8 | WAY
-     8 | EXPLOIT
-     8 | SUBJECTS
-     8 | ACCESS
-     8 | TUNNEL
-     8 | INC.
-     8 | SLUMBER
-     8 | COMBATANT
-     8 | CASTING
-     8 | DEXTERITY
-     8 | DRUG
-     8 | VERMIN
-     8 | CHARGE
-     8 | BOLT
-     8 | SHAPES
      8 | DEFAULTDATASET
-     8 | PERSON
-     8 | REPLACEMENT
-     8 | CURSE
-     8 | DOORS
-     8 | REDUCTION
-     8 | BELOW
-     8 | STAR
-     7 | MADNESS
-     7 | ELEMENTS
-     7 | TURN
-     7 | GAMEMODEKEY
-     7 | CHANGE
-     7 | ILLUSIONS
+     7 | AIR
      7 | BASEAGEADD
-     7 | DRAGONS
-     7 | WISDOM
-     7 | FIREWORKS
-     7 | FEET
-     7 | ALONG
-     7 | ACTIVITIES
-     7 | EXCEPTIONS
-     7 | FLESH
-     7 | REGISTER
-     7 | MONSTER
-     7 | INTELLIGENCE
-     7 | PROHIBITED
-     7 | KNOW
-     7 | TEMPTATION
-     7 | FOG
-     7 | BLIND
-     7 | SKELETONS
-     7 | POINT
-     7 | LUCK
-     7 | SCOURGE
-     7 | DARKNESS
-     7 | FROM
-     7 | INSERT
-     7 | ENTANGLE
-     7 | ORDER
-     7 | IMPROVED
-     7 | SPIRIT
-     7 | THEMES
      7 | HEIGHT
-     7 | TOUCH
-     7 | CASTER
-     6 | VARIETIES
-     6 | ABOVE
-     6 | DISEASES
-     6 | LEFTMARGIN
-     6 | RETAIN
-     6 | BLINDNESS
-     6 | SNAKE
-     6 | TERRAIN
-     6 | TOPMARGIN
-     6 | SUMMONED
-     6 | CHANGES
-     6 | LVL
-     6 | MANEUVER
-     6 | APPEARS
-     6 | ENRICHMENT
-     6 | WEBS
-     6 | CONTAINMENT
-     6 | ACTIONS
-     6 | GRENADES
-     6 | ALLY
-     6 | FALL
-     6 | CONTACT
-     6 | SLINGS
-     6 | CONFUSED
-     6 | ROLL
-     6 | VIPER
-     6 | CAGE
-     6 | PURPOSES
-     6 | INSTRUCTIONS
-     6 | PRODUCE
-     6 | TIMES
+     7 | FIRE
+     7 | EARTH
+     7 | GAMEMODEKEY
+     7 | PROHIBITED
      6 | RIGHTMARGIN
-     6 | MIND
-     6 | IS
-     6 | IDENTICAL
-     6 | DIE.SONIC
+     6 | CANTRIPS
+     6 | TOPMARGIN
      6 | EXCHANGELEVEL
-     6 | BOMBS
-     6 | HERE
-     6 | TARGETS
-     6 | COMPLETION
-     6 | OPAL
-     6 | LOCKS
-     6 | GREATER
-     6 | THRUSTA
-     6 | MANUAL
-     6 | PAGE
-     6 | FLIGHT
-     6 | DCS
      6 | WIDTH
-     6 | CAPACITY
-     6 | DROP
-     6 | MEKHET
-     6 | CRUSHA
-     6 | CELL
-     6 | WHIPA
-     6 | FOCUSES
-     6 | TAINT
-     6 | PRISON
-     6 | BOTTOMMARGIN
-     6 | INSTEAD
-     6 | PLACE
-     6 | APPEAR
-     6 | DISEASE
-     6 | INSINUATION
-     6 | GRAFT
-     6 | OVERGROWTH
+     6 | SCORE
      6 | ----SKILLS
-     6 | BLASTA
-     6 | CONCENTRATION
-     5 | OF
-     5 | PROTECTION
-     5 | SPELLBASECONCENTRATION
-     5 | HALT
-     5 | VERSION
-     5 | ENDTABLE
-     5 | SCHOOLS
-     5 | HIGHER
-     5 | STUPOR
-     5 | SUN
-     5 | ASPECTS
-     5 | SKILLCOST_EXCLUSIVE
-     5 | POSSIBLE
-     5 | STEEL
-     5 | RAGE
-     5 | RING
-     5 | THUNDERCLAP
-     5 | FURY
-     5 | ONLINE
-     5 | ENEMY
-     5 | SEVEN
-     5 | APPROACH
-     5 | LINGERS
-     5 | TWO
-     5 | OCCUPYING
-     5 | STRUCTURES
-     5 | AMMUNITION
-     5 | DESIRED
-     5 | MATERIAL
-     5 | VERSIONS
-     5 | PURSUE
-     5 | PLAGUE
-     5 | AFFILIATION
-     5 | SLEEP
-     5 | STRUCTURE
-     5 | ENVIRONMENTS
-     5 | LEGEND
-     5 | DRUIDS
-     5 | ISMATURE
-     5 | CHOICES
-     5 | FIND
-     5 | DATATABLE
-     5 | THINGS
-     5 | KOBOLDS
-     5 | BREATH
-     5 | PRIORITY
-     5 | BLADE
-     5 | IMAGE
-     5 | TRICKS
-     5 | THUNDER
-     5 | FLEE
-     5 | MISHAP
+     6 | BOTTOMMARGIN
+     6 | LEFTMARGIN
      5 | XPAWARD
-     5 | CHANNEL
-     4 | EMOTIONS
-     4 | ICE
-     4 | PORTALS
-     4 | RESTRICTIONS
-     4 | TERROR
-     4 | RITUALS
-     4 | LANCES
-     4 | SICKENED
-     4 | HAND
-     4 | HEZROU
-     4 | FLYING
-     4 | DAYS
-     4 | POWERFUL
-     4 | NALFESHNEE
-     4 | TABOO
-     4 | ENCHANTMENT
-     4 | DIMENSIONS
-     4 | WEAKENED
-     4 | IMMUNITY
-     4 | SIGHT
-     4 | TENETS
-     4 | ILLUSION
-     4 | CLIFFS
-     4 | SWIPE
-     4 | SUCCUBUS
-     4 | CHAINS
-     4 | RAY
-     4 | DODGE
-     4 | COURSER
-     4 | WEIRD
-     4 | DAEVA
-     4 | CLERIC
-     4 | THREE
-     4 | BOON
-     4 | PUBLISHING
-     4 | DESCRIPTORS
-     4 | CHOSEN
-     4 | FLAMES
-     4 | METALS
-     4 | STONECUNNING
-     4 | LOSS
-     4 | TELEPORT
-     4 | WOUNDS
-     4 | MODIFICATIONS
-     4 | AXES
-     4 | DYNAMICSCOPE
-     4 | EDITION
+     5 | DATATABLE
+     5 | AREA
+     5 | TARGETS
+     5 | ISMATURE
+     5 | ENDTABLE
+     5 | SPELLBASECONCENTRATION
+     5 | SKILLCOST_EXCLUSIVE
+     4 | EFFECT
+     4 | FUNCTION
+     4 | VALUE
      4 | VROCK
-     4 | EYE
-     4 | TEAM
-     4 | BODY
-     4 | GLABREZU
-     4 | ARMS
-     4 | DEBT
-     4 | GLOBALMODIFIER
-     4 | ANTIGENESIS
-     4 | SHADOWS
-     4 | SITE
-     4 | DESTRIER
-     4 | HAMMERS
-     4 | ELONGATION
-     4 | MARILITH
-     4 | WITH
+     4 | DIVINITY
      4 | DYNAMIC
-     4 | NEUTRAL
-     4 | SORCERER
-     4 | PENALTIES
+     4 | GLOBALMODIFIER
+     4 | NALFESHNEE
+     4 | DYNAMICSCOPE
+     4 | HEZROU
+     4 | AMMUNITION
+     4 | GLABREZU
      4 | BALOR
+     4 | SUCCUBUS
+     4 | MARILITH
      4 | ----FOCUS
-     4 | AFFLICTION
-     4 | WINTER
-     4 | ELEMENT
-     4 | MINOR
-     4 | DAZED
-     4 | FIVE
-     4 | ENDURANCE
-     4 | AWARD
-     4 | OBVIOUS
-     4 | GEMS
-     4 | MELDSHAPING
-     4 | OTHER
-     4 | VOID
-     4 | LOWER
-     4 | LIGHT
-     4 | POSSESSES
-     4 | GANGREL
-     4 | QUESTS
-     3 | TOY
-     3 | ALERTNESS
-     3 | CHARACTERISTICS
-     3 | DECAY
-     3 | RUNE
-     3 | WORLD
-     3 | SUMMER
-     3 | SILENCE
-     3 | KNIGHT
-     3 | YOURSELF
-     3 | AWARENESS
-     3 | PACT
-     3 | PAIN
-     3 | DEEDS
-     3 | BLAST
-     3 | STATISTICS
-     3 | PATCHES
-     3 | ROT
-     3 | SPORES
-     3 | UNDERGROUND
-     3 | AMOUNTS
-     3 | 7TH
-     3 | DISGUISE
-     3 | HEX
-     3 | HUNT
-     3 | F
-     3 | STARTER
-     3 | TOLERANCE
-     3 | LORD
-     3 | KRIKIK
-     3 | QUASIT
-     3 | STONE
-     3 | NEGATION
-     3 | SUGGESTION
-     3 | SPECIALIZED
-     3 | 1ST
-     3 | TRANSFORMED
-     3 | EVOCATION
-     3 | DIVINATION
-     3 | FORTUNE
-     3 | BEHAVIOR
-     3 | 2ND
-     3 | BOND
-     3 | DESTRUCTION
-     3 | PARALYZE
-     3 | BE
-     3 | ASSUME
      3 | D1
-     3 | TRANSMUTATION
-     3 | MORTIS
-     3 | WITCHLIGHT
-     3 | HAVE
-     3 | THAT
-     3 | 4TH-5TH
-     3 | SELECTED
-     3 | TRAVELING
-     3 | INCLUDING
-     3 | DIAMOND
-     3 | SUBTYPES
-     3 | BATTLE
-     3 | D1.5
-     3 | IMAGES
-     3 | BARRIER
-     3 | BACKSTAB
-     3 | MASTER
-     3 | WARRIOR
-     3 | MELODY
-     3 | CENTURIES
-     3 | TATTOOS
-     3 | CHAKRAS
-     3 | RULES
-     3 | FAMILIAR
-     3 | NIGHTSHADE
-     3 | UNNERVE
-     3 | COMPULSION
-     3 | MEMBER
-     3 | HEXES
-     3 | FATES
-     3 | DANGER
-     3 | ENGINE
-     3 | AT
      3 | BEBILITH
-     3 | VI
-     3 | D0
-     3 | FAMILIARS
-     3 | CONJURATION
-     3 | ABJURATION
-     3 | VEHICLE
-     3 | BLINDED
-     3 | TEMPTER
-     3 | RUBY
-     3 | NAUSEATED
-     3 | SHADOW
-     3 | APPROPRIATE
-     3 | CHARM
-     3 | VII
-     3 | PETRIFICATION
-     3 | LINNORM
-     3 | COMATOSE
-     3 | 4TH
-     3 | V
-     3 | EDGE
-     3 | NERVES
-     3 | HELP
-     3 | FORMULAS
-     3 | GUIDE
-     3 | SYNERGY
-     3 | SPECIALIZATION
-     3 | ANOTHER
-     3 | DESIRE
-     3 | NECROMANCY
-     3 | STROKE
-     3 | FOLIO
-     3 | CLARITY
-     3 | 5TH
-     3 | BESTIARY
-     3 | ENDS
-     3 | 3RD
-     3 | MEDITATION
-     3 | TRAVAIL
-     3 | FOUR
-     3 | SAME
-     3 | CHURCH
-     3 | NUISANCES
-     3 | TONGUES
-     3 | GLORY
-     3 | RULEBOOKS
-     3 | WEEKS
-     3 | SPECIALIST
-     3 | TRAPS
-     3 | STRIKES
-     3 | 6TH
-     3 | MODE
-     3 | EVENTS
-     3 | PANICKED
-     3 | ACCUMULATION
+     3 | CHANNEL
+     3 | KNOWLEDGE
      3 | BABAU
-     3 | ROAR
-     3 | PATHFINDER
-     3 | GRAPPLING
-     3 | BOX
-     3 | FOREST
-     3 | YEARS
-     3 | CHILLS
-     3 | OBJECTS
-     3 | TURNING
-     3 | IMPLEMENT
-     3 | ANIMALS
-     3 | REST
-     3 | NAUSEA
-     3 | THEREAFTER
-     3 | RESTRICTION
-     3 | INVOCATIONS
-     2 | 8TH-9TH
-     2 | URGATHOA
-     2 | FOOL
-     2 | REVIEW
-     2 | DIALECTS
-     2 | POOR
-     2 | SIX
-     2 | MODELS
-     2 | TWELVE
-     2 | FROST
-     2 | AWAY
-     2 | RETALIATE
-     2 | JOURNEY
-     2 | R
-     2 | BREATHING
-     2 | MINUTES
-     2 | NYCALOTH
-     2 | POSSESSIONS
-     2 | TORNADO
-     2 | SUNS
-     2 | PERCEPTION
-     2 | GOLD
-     2 | RAVENS
-     2 | PRIEST
-     2 | PHANTOM
-     2 | LISTS
-     2 | RANGED
-     2 | SARGAVA
-     2 | ROGUE
-     2 | CROWNS
-     2 | EXHAUSTION
-     2 | SWIMMERS
-     2 | GROUPS
-     2 | NAGA
-     2 | THIEVERY
-     2 | PARTS
-     2 | TRANSFORMATION
-     2 | POOLPOINTS
-     2 | TALES
-     2 | LARVAE
-     2 | OOZE
-     2 | DEVOTION
-     2 | ADAMANTINE
-     2 | RANGERS
-     2 | WISH
-     2 | CROSSBOWS
-     2 | HEART
-     2 | LOCK
-     2 | ESCAPE
-     2 | DISCOUNT
-     2 | ACROBATICS
-     2 | MOONS
-     2 | FLAGS
-     2 | AILMENTS
-     2 | MIGHT
-     2 | ARTIFACTS
-     2 | QUEEN
-     2 | NEED
-     2 | FAIR
-     2 | WORD
-     2 | EXPLOITS
-     2 | BUTTONS
-     2 | RECOVERY
-     2 | COMMANDS
-     2 | MACES
-     2 | LARETHIAN
-     2 | ABSORPTION
-     2 | XCRAWL
-     2 | EMULATE
-     2 | ISITOQ
-     2 | JAVELINS
-     2 | PROGRESSION
-     2 | RAVEN
-     2 | IX
-     2 | LIBRARY
-     2 | SHOT
-     2 | RESULT
-     2 | ROBE
-     2 | DARKVISION
-     2 | EXISTENCE
-     2 | TRICKERY
-     2 | BLESSED
-     2 | BROW
-     2 | PANIC
-     2 | GEM
-     2 | STANCE
-     2 | SHARPNESS
-     2 | HIDDENEQUIPTYPES
-     2 | LEAP
+     3 | VI
+     3 | VII
+     3 | AGE
+     3 | QUASIT
+     3 | D1.5
+     3 | V
+     3 | REQUIREMENTS
+     3 | D0
+     3 | F
      2 | HIDDENFEATTYPES
-     2 | HALLUCINATIONS
-     2 | PIERCING
-     2 | DISCHARGE
-     2 | LANCE
-     2 | INCREASES
-     2 | FATIGUE
-     2 | MEMORY
-     2 | COMET
-     2 | VIII
-     2 | COMPRESSION
-     2 | WOUNDS.
-     2 | MATERIALS
-     2 | SPHINXKIND
-     2 | SERVEAS
-     2 | HASSUBCLASS
-     2 | TASKS
-     2 | SPORT
-     2 | BALANCE
-     2 | ABSORB
-     2 | BECOMES
-     2 | LOLTH
-     2 | HOUR
-     2 | TATTOO
-     2 | STEELUE
-     2 | USED
-     2 | DESPAIR
-     2 | OFF
-     2 | TERRIFY
-     2 | DREAM
-     2 | GIANT
-     2 | STATE
-     2 | DONJON
-     2 | COMRADES
-     2 | HOURS
-     2 | ANCIENTS
-     2 | PERIL
-     2 | JUDGMENT
-     2 | SOUL
-     2 | RECOVER
-     2 | HATRED
-     2 | CROWN
-     2 | GRIP
-     2 | BEACON
-     2 | APPEARANCE
-     2 | SILVER
-     2 | READIED
-     2 | IRON
-     2 | RIGHT
-     2 | CAVERN
-     2 | SECRETS
-     2 | THROAT
-     2 | CONSTANT
-     2 | IDENTITIES
-     2 | FAMINE
-     2 | FONT
-     2 | JESTER
-     2 | ADVENTURE
-     2 | CREATIONS
-     2 | GLITTERGOLD
-     2 | WASTING
-     2 | OUTSIDERS
-     2 | PASSAGE
-     2 | TITLES
-     2 | PLAIN
-     2 | STYLE
-     2 | DROWNING
-     2 | POX
-     2 | WEAK
-     2 | BELLS
-     2 | EXPERTISE
-     2 | MASTERED
-     2 | OCCUR
-     2 | CODE
-     2 | VINES
-     2 | REVELATION
-     2 | DEFLECT
-     2 | VIZIER
-     2 | OTHERS
-     2 | DESERT
-     2 | MONKEY
-     2 | HER
-     2 | PARALYSIS
-     2 | WORKS
-     2 | STARS
-     2 | FROSTBURN
-     2 | IV.PRECLASS
-     2 | SECRET
-     2 | MANIFESTING
-     2 | COMMON
-     2 | GUN
-     2 | SAFETY
-     2 | HINDRANCE
-     2 | SPRING
-     2 | AFFECTS
-     2 | 6TH-7TH
-     2 | SLEEPING
-     2 | OMENS
-     2 | CRAFT
-     2 | TARGETING
-     2 | BOWS
-     2 | WORSE
-     2 | PURPOSE
-     2 | MOON
-     2 | HEROES
-     2 | CHEETAH
-     2 | SURGE
-     2 | BEING
-     2 | MODIFIERS
-     2 | WAR
-     2 | MULTIVERSE
-     2 | HYSTERIA
-     2 | SENSE
-     2 | TALONS
-     2 | DIPLOMACY
-     2 | DISPELLING
-     2 | ATTUNEMENTS
-     2 | IMBUE
-     2 | STATMODSAVE
-     2 | MANGVHUNE
-     2 | FOE
-     2 | MINDLOCKS
-     2 | SPRAY
-     2 | TRADITION
-     2 | RETRIEVER
-     2 | SELF
-     2 | RUN
-     2 | TOXIN
-     2 | MOUNTAIN
-     2 | DISTRACTION
-     2 | STATINPUT
-     2 | RUIN
-     2 | TRAIN
-     2 | DEED
-     2 | TRUTH
-     2 | FIREARM
-     2 | DESTRUCTIVE
-     2 | WARD
-     2 | BLESSING
-     2 | SKULL
-     2 | ARCHERY
-     2 | CHARLATAN
-     2 | POLEARMS
-     2 | DANCING
-     2 | TACTICIAN
-     2 | LEVERS
-     2 | CLUBS
-     2 | WALL
-     2 | ADAPTATION
-     2 | DESCRIPTION
-     2 | SWORD
-     2 | WARNING
+     2 | HIDDENEQUIPTYPES
+     2 | R
      2 | USETEMPMODS
-     2 | SYSTEMS
-     2 | EVOLUTION
-     2 | 2ND-3RD
-     2 | SAND
-     2 | EVASION
-     2 | FUNCTIONS
-     2 | FEW
-     2 | SPRINT
-     2 | AFFECTED
-     2 | HILL
-     2 | FEY
-     2 | ACID
-     2 | HEARING
-     2 | GRAVITY
-     2 | WEIGHT
-     2 | FUSIONS
-     2 | CLAWS
-     2 | RETREAT
-     2 | SO
-     2 | SALIVA
-     2 | ACTIVATE
-     2 | EURYALE
-     2 | SPECIES
-     2 | CANNON
-     2 | DRAIN
-     2 | IDIOT
-     2 | DOG
-     2 | CERTAIN
-     2 | WALK
-     2 | THEOREM
-     2 | DETECT
-     2 | EMPATHY
-     2 | REQIREMENTS
-     2 | SHAPE
-     2 | STING
-     2 | USES
-     1 | ELECTROCUTION
-     1 | IE
-     1 | MAXIMUM
-     1 | DEATHSTRIKE
-     1 | DEMORALIZED
-     1 | VARIANT
-     1 | BREAKS
-     1 | SUBGROUPS
-     1 | DEEPENS
-     1 | MORADIN
-     1 | SKILLPOOL
-     1 | COPPER
-     1 | VECNA
-     1 | PERSONALITYTRAIT1
-     1 | MELEE
-     1 | RETURNING
-     1 | MOONBOW
-     1 | TRAP
-     1 | APPLICABLE
-     1 | AGENCY
-     1 | ONSLAUGHT
-     1 | PORTRAIT
-     1 | PARENTHESIS
-     1 | HAMPERED
-     1 | INSPIRED
-     1 | MAGICSAP
-     1 | CREATUREHANDS
-     1 | RUINATION
-     1 | ORCS
-     1 | LIBERATION
-     1 | USERPOOL
-     1 | GLIDING
-     1 | STORM
-     1 | SERVAAS
-     1 | KING
-     1 | TASK
-     1 | SHADOWCASTING
-     1 | SKILLSOUTPUTORDER
-     1 | MINDSAP
-     1 | PHYLACTERY
-     1 | PESTILENCE
-     1 | CHALLENGE
-     1 | MEMBERS
-     1 | OLFACTORY
-     1 | LEGION
-     1 | RITE
-     1 | WORSHIPER
-     1 | SKIP
-     1 | TRANSFORMS
-     1 | SCARE
-     1 | ALTCRITICAL
-     1 | REGIONS
-     1 | CYRAN
-     1 | BRONZE
-     1 | FORM.EXAMPLE
-     1 | POSSIBILITY
-     1 | EXAMPLES
-     1 | READ
-     1 | FASTER
-     1 | VEIL
-     1 | WYVERNSPUR
-     1 | BRIARTANGLE
-     1 | MOB
-     1 | WHIPWOODUE
-     1 | INFERNAL
-     1 | SEQUESTER
-     1 | COLOR
-     1 | 8TH
-     1 | FORCEWARD
-     1 | JUMP
-     1 | VESSEL
-     1 | TACTICS
-     1 | SENTIENCE
-     1 | HEAL
-     1 | HAMMER
-     1 | UNTRAINED
-     1 | DEEDSUC
-     1 | IRITH
-     1 | QUALIFICATIONS
-     1 | TENACITY
-     1 | YEAR
-     1 | LACING
-     1 | OTHE
-     1 | PELOR
-     1 | ADVENTURES
-     1 | SMOOTHHANDS
-     1 | SHORT
-     1 | FORTITUDE
-     1 | SAVANT
-     1 | IMPLANT
-     1 | FIRRE
-     1 | ATHLETE
-     1 | TS
-     1 | RINGS
-     1 | AGGRESSION
-     1 | SPHERE
-     1 | ANALGESIC
-     1 | WAVE
-     1 | FORMS.
-     1 | SHAKES
-     1 | MAMMOTH
-     1 | A
-     1 | LIONS
-     1 | STR
-     1 | MAGMA
-     1 | FRENZY
-     1 | ALL-OR-NOTHING
-     1 | IMPERVIOUS
-     1 | PETRIFY
-     1 | ABERRANT
-     1 | CONTAIN
-     1 | CONE
-     1 | ACHERON
-     1 | SUNBEAM
-     1 | SU
-     1 | ROOF
-     1 | PUFFS
-     1 | CHAINING
-     1 | STEED
-     1 | ALL
-     1 | BEINGS
-     1 | LIE
-     1 | INTERESTS
-     1 | EXPERIENCETABLE
-     1 | HOWEVER
-     1 | BIND
-     1 | FAENYA
-     1 | TIAMAT
-     1 | AREAS
-     1 | DRIVING
-     1 | AS
-     1 | LEGACY
-     1 | DAMNED
-     1 | TOUGHNESS
-     1 | SMOKE
-     1 | FASCINATION
-     1 | LOADCOMPANIONS
-     1 | STATS
-     1 | BIRKAN
-     1 | STARSHIPS
-     1 | FEY-TOUCHED
-     1 | AVATAR
-     1 | TABLES
-     1 | SETTLEMENT
-     1 | LEPROSY
-     1 | MACHINEFOR
-     1 | ERUPTION
-     1 | WOLF
-     1 | INSIGHT
-     1 | CRYSTALSLOT
-     1 | SELUNE
-     1 | UNUSUAL
-     1 | BRIGHTAXE
-     1 | OBAD-HAI
-     1 | WILDS
-     1 | SUNRISE
-     1 | NODES
-     1 | CAVALIERS
-     1 | KNIGHTHOOD
-     1 | MOONWEB
-     1 | GATE
-     1 | QUICKENING
-     1 | HARBINGERS
-     1 | MAGERY
-     1 | ERYTHNUL
-     1 | HARROW
-     1 | TWICE
-     1 | 3RD-LEVEL
-     1 | THIEF-CURSE
-     1 | PASSED
-     1 | HITPOINTS
-     1 | DISTRACTED
-     1 | INFLICTS
-     1 | MASK
-     1 | RHINOCEROS
-     1 | LIGHTSBLOOD
-     1 | PARENTHESES
-     1 | DUSTUP
-     1 | LAMP
-     1 | ACCESSORY
-     1 | RESIST
-     1 | FEATURE.PREABILITY
-     1 | STUN
-     1 | TRAPFINDING
-     1 | BOUNTIFUL
-     1 | HUMAN
-     1 | ABSTINENCE
-     1 | SKILLSGAINED
-     1 | VIIBLE
-     1 | HUT
-     1 | CLIFF
-     1 | IRONHAND
-     1 | CLASSABILITIESLEVEL
-     1 | SLIP
-     1 | EITHER
-     1 | MISSILE
-     1 | DIFFERENTLY
-     1 | BATTLETIDE
-     1 | HAS
-     1 | METAL
-     1 | EXCALIBUR
-     1 | OINODAEMON
-     1 | TORPOR
-     1 | BLIGHT
-     1 | FLY
-     1 | LESSER
-     1 | ENORETH
-     1 | BOUNCE
-     1 | MAGES
-     1 | PROMISE
-     1 | PACK
-     1 | KNIGHTS
-     1 | INCREASED
-     1 | GLOW
-     1 | AWE
-     1 | GOODIES
-     1 | MANNER
-     1 | GREEN
-     1 | SHAITAN
-     1 | SUMMON
-     1 | GODCLAW
-     1 | NAVEL
-     1 | DANGERS
-     1 | FLOURISHES
-     1 | SEPARATE
-     1 | TRANSFORMATIONS
-     1 | SHERWOOD
-     1 | WOOD
-     1 | DEAD
-     1 | DRAGONSTAR
-     1 | 1ST-LEVEL
-     1 | OWL
-     1 | LOCALES
-     1 | SOUND
-     1 | MENDERS
-     1 | WISHES
-     1 | IDEALS
-     1 | DRAW
-     1 | DEX
-     1 | ROOT
-     1 | FANG
-     1 | SEE
-     1 | HIEROPHANT
-     1 | SETTIN13
-     1 | FOLLOW-BENEFITS
-     1 | ASP
-     1 | CURRENTWLVL
-     1 | ASSASSIN
-     1 | VENGEANCE
-     1 | SELECTS
-     1 | FAN
-     1 | SASHELAS
-     1 | LEGALITY
-     1 | NOW
-     1 | NATIONS
-     1 | HOLDER
-     1 | THOUGHTS
-     1 | CUNNING
-     1 | BEASTF
-     1 | WATER.PREVARGTEQ
-     1 | CHARACTERMAGIC
-     1 | KNOCK
-     1 | IMPRESSIONS
-     1 | RALLATHIL
-     1 | PERYROYL
-     1 | STEWARD
-     1 | CUTHBERT
-     1 | HIDE
-     1 | LATHANDER
-     1 | VANITY
-     1 | TRIFECTA
-     1 | RITUAL
-     1 | FLAWS
-     1 | ERASURE
-     1 | HAPPENS
-     1 | WOLVERINE
-     1 | APPLIED
-     1 | SEASONAL
-     1 | WINDSTROM
-     1 | PURCHASEPOINTS
-     1 | ILESERE
-     1 | HANDFIRE
-     1 | INDIFFERENT
-     1 | 0-LEVEL
-     1 | PERSONALITIES
-     1 | HANDED
-     1 | SILVERBEARD
-     1 | INCREMENTS
-     1 | STEPS
-     1 | COLLECTIVE
-     1 | DECADENCE
-     1 | SERVANTS
-     1 | USELESS
-     1 | EX
-     1 | RHYTHM
-     1 | KORD
-     1 | IMMOBILIZE
-     1 | TABLABEL
-     1 | ILLITHIDS
-     1 | TREE
-     1 | FIRST
-     1 | INTOXICATION
-     1 | FIELD
-     1 | WEAPONS.SLASHING.
-     1 | GULTHYN
-     1 | PENETRATION
-     1 | ACTIVITY
-     1 | DECEPTION
-     1 | APPLIES
-     1 | CHED
-     1 | FIENDBLADE
-     1 | NONDETECTIONM
-     1 | LAUGHTER
-     1 | TALON
-     1 | SHOCK
-     1 | SPELLMANTLE
-     1 | REACL
-     1 | REALITY
-     1 | FLANK
-     1 | ONLY
-     1 | COMMENT
-     1 | INIT
-     1 | PP
-     1 | GLIBNESS
-     1 | PYRE
-     1 | BEFORE
-     1 | CARDS
-     1 | STAGGERED
-     1 | EYECOLOR
-     1 | AUTORESIZEGEAR
-     1 | BRIDGE
-     1 | RHUNE
-     1 | SPLENDOR
-     1 | DETAILS
-     1 | FOLK
-     1 | EFREETI
-     1 | FAVORS
-     1 | DEVICE
-     1 | CHAIN
-     1 | PASSWALL
-     1 | LEADER
-     1 | STRIKER
-     1 | CONSCIENCE
-     1 | SMASH
-     1 | TOOLS
-     1 | EASE
-     1 | BEBELITH
-     1 | BROADBLADE
-     1 | CENARIUS
-     1 | VAIN
-     1 | TOTEM
-     1 | MONK
-     1 | INFLICT
-     1 | BLEEDING
-     1 | CLOAKSHADOW
-     1 | FEATHERS
-     1 | OLIDAMMARA
-     1 | FOLIAGE
-     1 | SWIFTNESS
-     1 | SPEEDSAP
-     1 | TRUESILVER
-     1 | 1ST-3RD
-     1 | RED
-     1 | LRORI
-     1 | GEHENNA
-     1 | EXPERIENCE
-     1 | IVY
-     1 | TIGER
-     1 | SHANDIAN
-     1 | GENIEKIND
-     1 | BLOW
-     1 | SUBRACES
-     1 | OUT
-     1 | PATHS
-     1 | BA-BUMP
-     1 | QUIRKS
-     1 | RELOAD
-     1 | BURST
-     1 | DEVOURER
-     1 | SUIT
-     1 | SENTINEL
-     1 | ALTHP
-     1 | UNDETECTED
-     1 | REFLECTION
-     1 | SHIP
-     1 | SUNLIGHT
-     1 | ILLITERACY
-     1 | FLOW
-     1 | GRIFFON
-     1 | DRUID
-     1 | SNIPER
-     1 | ARSENAL
-     1 | WILDWANDERER
-     1 | VANISHING
-     1 | MIRROR
-     1 | BOW
-     1 | ASSAULT
-     1 | BLANK
-     1 | VITALITY
-     1 | UNFRIENDLY
-     1 | VISUAL
-     1 | OBSESSION
-     1 | RETRY
-     1 | WIZARD
-     1 | DUERRA
-     1 | DEFENSES
-     1 | BRIGHTMANTLE
-     1 | NIMBLE
-     1 | CAPTIVATION
-     1 | CLAW
-     1 | GENERAL
-     1 | HOPE
-     1 | POISONS
-     1 | FIREWALL
-     1 | ALREADY
-     1 | FOCI
-     1 | PROWESS
-     1 | FIGHTING
-     1 | THREAT
-     1 | GOATS
-     1 | EGG
-     1 | WAKEFULNESS
-     1 | ANSWERS
-     1 | DURABILITY
-     1 | PLACES
-     1 | MULTIPLIER
-     1 | ACTIVE
-     1 | NATIONALITY
-     1 | MECHANISMS
-     1 | JUDGMENTS
-     1 | SPEAR
-     1 | RAGES
-     1 | PUPPETEER
-     1 | PASSIVE
-     1 | MARID
-     1 | KOBOLD
-     1 | PLANES
-     1 | INTRIGUE
-     1 | COMPLACENCY
-     1 | ELSE
-     1 | GRAB
-     1 | DISABLE
-     1 | LINGUIST
-     1 | STRATEGY
-     1 | EMPLOYEES
-     1 | WHITE
-     1 | D6
-     1 | NAIL
-     1 | REAL
-     1 | BARKFLESH
-     1 | SENSITIVITY
-     1 | SPREAD
-     1 | SHOM
-     1 | TSALAXA
-     1 | DOCTOR
-     1 | HOME
-     1 | BOAT
-     1 | WIELDSKILL
-     1 | PERFORMANCE.USE
-     1 | OPPORTUNITY
-     1 | WILDSHAPE
-     1 | WARRIORS
-     1 | IGNORECOST
-     1 | LAWFUL
-     1 | GLOWGLYPH
-     1 | MESTARINE
-     1 | LEXICONS
-     1 | COURAGE
-     1 | ZENITH
-     1 | HOLDING
-     1 | NONE
-     1 | RESEARCH
-     1 | SINCE
-     1 | PIKE
-     1 | EXPEDITION.ABILITY
-     1 | SIMPLE
-     1 | GROVEL
-     1 | ALLEGIANCE
-     1 | MARSHES
-     1 | ABYSSAL
-     1 | COMPETENCE
-     1 | STAG
-     1 | DAMPENING
-     1 | READY
-     1 | RENEGADES
-     1 | HAWK
-     1 | COUNTDOWN
-     1 | FIREWARD
-     1 | BLOODLINES
-     1 | CITY
-     1 | VORDON
-     1 | EYESF
-     1 | CHOSE
-     1 | INDICATED
-     1 | BARREL
-     1 | CAVEAT
-     1 | FIREARMS
-     1 | SEC
-     1 | SUCCESS
-     1 | GRUUMSH
-     1 | DEVASTATING
-     1 | WINGS
-     1 | CURE
-     1 | RESTRICTED
-     1 | USEHIGHERKNOWN
-     1 | FASHION
-     1 | REPOSE
-     1 | STEELSKIN
-     1 | POISON-TYPE
-     1 | SPELLGUARD
-     1 | DAUNTING
-     1 | ODO
-     1 | TYRANNY
-     1 | EYEBITE
-     1 | COMMUNICATE
-     1 | RADIUS
-     1 | MULTIATTACK
-     1 | CHARACTERBIO
-     1 | CERVIDAL
-     1 | DUIN
-     1 | REVENGE
-     1 | CALCEQUIPSET
-     1 | CALUMNY
-     1 | BLACK
-     1 | MOBILITY
-     1 | INVOCATION
-     1 | BUFFET
-     1 | DENSITY
-     1 | MONEY
-     1 | DEAFNESS
-     1 | FACES
-     1 | MARTYRDOM
-     1 | WAIST
-     1 | HIM.DISEASE
-     1 | ELUNE
-     1 | FACTOR
-     1 | SCALE
-     1 | GREENSINGERS
-     1 | SKILLFILTER
-     1 | SKELETON
-     1 | ASHBOUND
-     1 | MASTERS
-     1 | ON
-     1 | ATTRACTED
-     1 | OPERATION
-     1 | FIGHTER
-     1 | OPENING
-     1 | INFLUENCE
-     1 | INTERACT
-     1 | CORROSIVENESS
-     1 | THELANDIRA
-     1 | WYROOTUE
-     1 | POISONING
-     1 | HINT
-     1 | PASSION
-     1 | COCOON
-     1 | CONCLAVE
-     1 | SLOT
-     1 | LAND
-     1 | TECHS
-     1 | CARCERI
-     1 | FRIENDSHIP
-     1 | AMONG
-     1 | EMBRACED
-     1 | DEADLANDS
-     1 | BRASS
-     1 | TRICK
-     1 | AMPHIBIOUS
-     1 | TOPIC
-     1 | THORNS
-     1 | ADDITIONS
-     1 | CITYSCAPE
-     1 | WWII
-     1 | TRIBES
-     1 | PCGVERSION
-     1 | COHORT
-     1 | IMPLIES
-     1 | VIRIDIUMUE
-     1 | WEAPONRY
-     1 | BIRTHPLACE
-     1 | SPOT
-     1 | ENCHANTED
-     1 | MENTAL
-     1 | INVENTIVENESS
-     1 | SPLENDORS
-     1 | TOUGH
-     1 | RACK
-     1 | SEVERE
-     1 | STOIC
-     1 | STORMS
-     1 | END
-     1 | PARTY
-     1 | INSTALLED
-     1 | DISHEARTENED
-     1 | ALLIES
-     1 | DO
-     1 | SPEDAL
-     1 | SUBJECT.LOCATION
-     1 | 300-FT.-WIDE
-     1 | CASUALLY
-     1 | RADIO
-     1 | WEAKNESSES
-     1 | VOYAGE
-     1 | ACOLYTEPREALIGN
-     1 | SKILLLIST
-     1 | COSMETIC
-     1 | REJUVENATE
-     1 | SUPPRESSBIOFIELDS
-     1 | CLEARANCE
-     1 | ARCHERS
-     1 | ELEPHANT
-     1 | CORE
-     1 | PRAYER
-     1 | CHARACTERASSET
-     1 | COOPERATIVE
-     1 | CONTINGENCY
-     1 | SHIRADI
-     1 | FOES
-     1 | GATEKEEPERS
-     1 | FLOOD
-     1 | DIETIES
-     1 | SOCIETY
-     1 | ONSET
-     1 | SUMMONING
-     1 | LIMBO
-     1 | SOBRIETY
-     1 | UNFURLED
-     1 | FEEDBACK
-     1 | CURRENTALVL
-     1 | WAVIR
-     1 | CHRONICLE
-     1 | FAILURE
-     1 | INIKA
-     1 | PORTAL
-     1 | CHARACTERDESC
-     1 | BELIAL
-     1 | CELANIL
-     1 | DESTINED
-     1 | INVISIBILITY
-     1 | FOOTING
-     1 | IDENTIFIED
-     1 | SCORCHED
-     1 | CAPABILITIES
-     1 | AVAILABLE
-     1 | DWEOMERF
-     1 | POWERSAP
-     1 | TOXICITY
-     1 | TACTILE
-     1 | EXTRACTS
-     1 | ILMATER
-     1 | BRONZEUE
-     1 | HEROISM
-     1 | CHARACTERCOMP
-     1 | 1.0A
-     1 | SPEECHPATTERN
-     1 | STILTS
-     1 | BOCCOB
-     1 | GLOOM
-     1 | EARTHCALLER
-     1 | BATTLEMIND
-     1 | SACRAL
-     1 | PURCHASE
-     1 | PANDEMONIUM
-     1 | POOLPOINTSAVAIL
-     1 | POSSESSION
-     1 | ERROR
-     1 | EXPRESSION
-     1 | NONPP
-     1 | MODES
-     1 | CONDUCT
-     1 | BAHAMUT
-     1 | SUPPRESS
-     1 | BOAR
-     1 | BEWILDERED
-     1 | DANCE
-     1 | PLAYERNAME
-     1 | 2ND-LEVEL
-     1 | SAVAGERY
-     1 | EXTEND
-     1 | HARDNESS
-     1 | KINDS
-     1 | REPERTOIRE
-     1 | SPELLBASE
-     1 | HUNTERS
-     1 | PERFORMANCES
-     1 | MOOD
-     1 | SMILODON
-     1 | SPECIALTIES
-     1 | SUSCEPTIBLE
-     1 | ITSELF
-     1 | ID
-     1 | ROSEMANTLE
-     1 | CARGO
-     1 | FEATPOOL
-     1 | CONCEPTS
-     1 | WHIM
-     1 | SKILLSREMAINING
-     1 | STEL
-     1 | PONG
-     1 | SITUATIONS
-     1 | DRACONIC
-     1 | DJINNI
-     1 | SWAP
-     1 | WITHIN
-     1 | ESTATE
-     1 | ANCHOR
-     1 | DEVA
-     1 | MAGE
-     1 | IMPRISONMENT
-     1 | MATERI-AL
-     1 | BELL
-     1 | INCLUDES
-     1 | SURROUNDINGS
-     1 | JEALOUSY
-     1 | YONDALLA
-     1 | COMMUNITY
-     1 | SIDEWINDER
-     1 | VANISH
-     1 | BLUE
-     1 | RUSH
-     1 | PANACHE
-     1 | PHOBIAS
-     1 | ENTHRALLED
-     1 | 4TH-LEVEL
-     1 | THESE
-     1 | SKIN
-     1 | PO
-     1 | MAINTAIN
-     1 | INSPIRE
-     1 | LYCAN
-     1 | DESC.CLEAR
-     1 | SPINES
-     1 | MOONLIGHT
-     1 | AMONKHET
+     2 | SERVEAS
+     2 | SPORT
+     2 | VIII
+     2 | POOLPOINTS
+     2 | STATINPUT
+     2 | ATTACKS
+     2 | STATMODSAVE
+     2 | CRAFT
+     2 | IX
+     2 | RESTRICTIONS
+     2 | IV.PRECLASS
+     2 | RETRIEVER
+     2 | TATTOO
+     2 | HASSUBCLASS
+     2 | SPELLCASTING
+     1 | SUN
      1 | HAIRCOLOR
-     1 | CAPITAL
-     1 | GLIDE
+     1 | SPELLGUARD
+     1 | GOOD
+     1 | PLANT
+     1 | PCGVERSION
+     1 | DARKNESS
+     1 | DEATH
+     1 | FEATPOOL
+     1 | IMMOBILIZE
+     1 | PERSONALITYTRAIT1
+     1 | DESTRUCTION
+     1 | TRAPFINDING
+     1 | CHARACTERASSET
+     1 | SUPPRESSBIOFIELDS
+     1 | MIND
+     1 | REPOSE
+     1 | LIBERATION
+     1 | PHOBIAS
+     1 | EX
+     1 | FOLIO
+     1 | STRENGTH
      1 | CHARACTERNAME
-     1 | FOOT
-     1 | PROCESSING
-     1 | PUSH
-     1 | SORT
-     1 | DATE
-     1 | WIPE
-     1 | MASS
-     1 | LEAPER
-     1 | HONOR
-     1 | ADVANTAGE
-     1 | FROG
-     1 | SEAL
-     1 | CEILING
-     1 | MET
-     1 | ACTION.PRECLASS
-     1 | DWELLERS
-     1 | FILLED
-     1 | PERSONALITYTRAIT2
-     1 | COURSE
-     1 | LASH
-     1 | KURTULMAK
-     1 | TURSAS
-     1 | WEATHER
-     1 | SUBDOMAIN
-     1 | GRANTS
-     1 | VIGOR
-     1 | DISCOVERIES
-     1 | SOLAMNIA
-     1 | HOWL
-     1 | VAYDE
-     1 | FETISH
-     1 | HEIRONEOUS
-     1 | DRETCH
-     1 | TERRITORY
-     1 | INFUSION
-     1 | RESET
-     1 | SHAMAN
-     1 | SPIKES
-     1 | TARGETED
-     1 | DMG
-     1 | RELEASE
-     1 | ME
-     1 | PERSISTENCE
-     1 | FLAME
-     1 | AURAS
-     1 | LIQUID
-     1 | COUNTERMEASURES
-     1 | ISPI
-     1 | ARCHON
-     1 | BIRTHDAY
-     1 | BACK
-     1 | POTENCY
-     1 | INFILTRATION
-     1 | EVERYWHERE
-     1 | PALADIN
-     1 | DIVERSE
-     1 | MORPHIC
-     1 | ALACRITY
-     1 | CHAOTIC
-     1 | JIANG-SHI
-     1 | TELEPORTATION
-     1 | PASSENGERS
-     1 | NETS
-     1 | HEXTOR
-     1 | QUADRUPED
-     1 | DOWSING
-     1 | GAZE
-     1 | TENTACLES
-     1 | FFECTS
-     1 | LIMBS
-     1 | CONTENT
-     1 | NON-ORCS
-     1 | SCOPE
-     1 | STOPS
-     1 | BOILS
-     1 | HARR
-     1 | DEMAND
-     1 | CHARGE.PRECLASS
-     1 | ALLEGIANCES
-     1 | SKIPPING
-     1 | AUTOSPELLS
-     1 | SHOULDERS
-     1 | HAIRSTYLE
-     1 | MAGICALLY
-     1 | SPECIALTY
-     1 | JAS
-     1 | AUDITORY
-     1 | INDIVIDUALS
-     1 | ANGER
-     1 | METAMORPHOSIS
-     1 | SINEWS
-     1 | SLASH
-     1 | ARTIFICE
-     1 | TRACKER
-     1 | DISORIENTED
-     1 | WHIP
-     1 | WEALTH
-     1 | USEHIGHERPREPPED
-     1 | SURE-FOOTED
-     1 | NETHERWORLD
-     1 | MATRIARCH
-     1 | STRAIGHTFORWARD
-     1 | WEAVER
-     1 | ONCE
-     1 | STANCES
-     1 | FEATHERLIGHT
-     1 | GREATERFOR
-     1 | STUNTS
-     1 | EXCELLENCE
-     1 | STREET
-     1 | EXCEPT
-     1 | APPLIEDTO
-     1 | OATHBOUND
-     1 | HORDE
-     1 | NOTED
-     1 | STEP
-     1 | CATCHPHRASE
-     1 | HALLUCINATION
-     1 | CLASSICS
-     1 | EX-CEPTIONS
-     1 | BLADEFOR
-     1 | MARKETPLACE
-     1 | TABNAME
-     1 | NUMBERED
-     1 | FACETS
-     1 | CP
-     1 | BIOHACKS
-     1 | PYTHON
-     1 | INFESTATION
-     1 | WORNMAGIC
-     1 | SCRAMBLER
-     1 | PSIONICS
-     1 | FHARLANGHN
-     1 | SLOW
-     1 | ENHANCEMENTS
-     1 | 1D6
-     1 | HELLS
-     1 | GAINED
-     1 | RECORDS
-     1 | XP-COST
-     1 | EHLONNA
-     1 | BLOODHOUND
-     1 | MANIFESTED
-     1 | CRAFTING
-     1 | CAREFULLY
-     1 | NERULL
-     1 | MARTYRF
-     1 | ZEAL
-     1 | SILVERSHEEN
-     1 | LONGBOW
-     1 | BOOSTERS
-     1 | INJUSTICE
-     1 | RESPONSE
-     1 | OFTEN
-     1 | FLAW
-     1 | IN
-     1 | EMBRACE
-     1 | EQUIPSET
-     1 | ALLOWDEBT
-     1 | CRIMINAL
-     1 | HERITAGE
-     1 | SECT
-     1 | WARFARE
-     1 | NINE
-     1 | NOBILITY
-     1 | STANCESS
+     1 | TABLABEL
+     1 | DESC.CLEAR
+     1 | POWERSAP
+     1 | MADNESS
+     1 | PURCHASEPOINTS
+     1 | CLASSABILITIESLEVEL
+     1 | SILENCE
      1 | SKINCOLOR
-     1 | 4TH-6TH
-     1 | ANYSPELLFOR
-     1 | THIEF
-     1 | CONTROL
-     1 | OUTSIDER
-     1 | ATATCK
-     1 | REBUILDING
+     1 | SERVAAS
+     1 | SKIPPING
+     1 | GLIDE
+     1 | 1ST-LEVEL
+     1 | PLAYERNAME
+     1 | COMMUNITY
+     1 | DEATHSTRIKE
+     1 | VERSION
+     1 | SKILLPOOL
+     1 | INTERESTS
+     1 | FEATHERLIGHT
+     1 | SU
+     1 | TABNAME
+     1 | APPLIEDTO
+     1 | 3RD-LEVEL
+     1 | POOLPOINTSAVAIL
+     1 | WEATHER
+     1 | DISCOVERIES
+     1 | CHARACTERCOMP
+     1 | USEHIGHERKNOWN
+     1 | SKILLLIST
+     1 | PARALYZE
+     1 | SLOW
+     1 | ARTIFICE
+     1 | CP
+     1 | SPEECHPATTERN
+     1 | WWII
+     1 | ILLITERACY
+     1 | ALLOWDEBT
+     1 | DISABLE
+     1 | CHARACTERBIO
+     1 | EVIL
+     1 | TRAVEL
+     1 | PETRIFY
+     1 | HANDED
+     1 | WAR
+     1 | CREATUREHANDS
+     1 | DURABILITY
+     1 | AUTOSPELLS
+     1 | MINDSAP
+     1 | LUCK
+     1 | INTELLIGENCE
+     1 | BIRTHPLACE
+     1 | EYECOLOR
+     1 | CALCEQUIPSET
+     1 | EQUIPSET
+     1 | CONFUSION
+     1 | FROG
+     1 | USERPOOL
+     1 | GLOWGLYPH
+     1 | THIEF-CURSE
+     1 | BIRTHDAY
+     1 | USEHIGHERPREPPED
+     1 | PROTECTION
+     1 | MONEY
+     1 | HELP
+     1 | CHARACTERMAGIC
+     1 | BA-BUMP
+     1 | SLEEP
+     1 | SPELLBASE
+     1 | SKILLFILTER
+     1 | LOADCOMPANIONS
+     1 | CITY
+     1 | EXPERIENCE
+     1 | HAIRSTYLE
+     1 | CHAOS
+     1 | PORTRAIT
      1 | CHARACTERDMNOTES
-     1 | SUMMONS
-     1 | TIMELINE
-     1 | PHEROMONES
-     1 | TUNNELS
-     1 | AUGMENTATIONS
-     1 | ASSOCIATES
-     1 | CROWD
-     1 | DYING
-     1 | SPELLCASTERS
-     1 | CIRCUMSTANCES
-     1 | FREQUENCY
+     1 | GLORY
+     1 | ARMS
+     1 | STR
+     1 | RUNE
+     1 | NONPP
+     1 | SKILLSOUTPUTORDER
+     1 | IGNORECOST
+     1 | 4TH-LEVEL
+     1 | COUNTDOWN
+     1 | ISPI
+     1 | ANIMAL
+     1 | BENEFITS
+     1 | MAGICSAP
+     1 | ALTCRITICAL
+     1 | LAW
+     1 | AUTORESIZEGEAR
+     1 | WEIGHT
      1 | CANCASTPERDAY
-     1 | EMISSARY
+     1 | SKILLSREMAINING
+     1 | ID
+     1 | BLINDNESS
+     1 | RESTRICTION
+     1 | VEHICLE
+     1 | 2ND-LEVEL
+     1 | MAGIC
+     1 | ALTHP
+     1 | SELUNE
+     1 | PP
+     1 | VIIBLE
+     1 | RINGS
+     1 | RETURNING
+     1 | NOBILITY
+     1 | EXPRESSION
+     1 | COMMENT
+     1 | PERSONALITYTRAIT2
+     1 | HITPOINTS
+     1 | SPEEDSAP
+     1 | BEBELITH
+     1 | EXPERIENCETABLE
+     1 | DRETCH
+     1 | STUNNED
+     1 | CHARM
+     1 | BODY
+     1 | IE
+     1 | SKILLSGAINED
+     1 | TRICKERY
+     1 | CHARACTERDESC
+     1 | CATCHPHRASE

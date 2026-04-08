@@ -1,6 +1,8 @@
 use std::{collections::BTreeMap, fs, io, path::{Path, PathBuf}};
 
-use artisan_pcgen::{parse_file, parse_text_to_catalog, unparse_catalog_to_text};
+use artisan_pcgen::{
+    fallback_keys_for_entity, parse_file, parse_text_to_catalog, unparse_catalog_to_text,
+};
 use serde_json::{Value, json};
 
 fn fixture_root() -> PathBuf {
@@ -218,4 +220,45 @@ fn unparse_emits_pcgen_metadata_lines_for_pcc() {
     assert!(generated.contains("SOURCELONG:Star Wars Saga Edition Core Rulebook"));
     assert!(generated.contains("SOURCESHORT:SWSECR"));
     assert!(generated.contains("GAMEMODE:Starwars_SE"));
+}
+
+#[test]
+fn roundtrip_fixtures_use_zero_raw_clause_fallback_for_schema_entities() {
+    let root = fixture_root();
+    let files = collect_all_fixture_files(&root).expect("collect fixtures");
+
+    let mut checked = 0usize;
+    for file in files {
+        let name = file.file_name().and_then(|n| n.to_str()).unwrap_or_default();
+        if !name.starts_with("roundtrip_") {
+            continue;
+        }
+
+        let parsed = parse_file(&file).expect("parse fixture");
+        for entity in &parsed.entities {
+            let Some(type_key) = entity
+                .attributes
+                .get("pcgen_entity_type_key")
+                .and_then(Value::as_str)
+            else {
+                continue;
+            };
+
+            let Some(schema) = artisan_pcgen::schema::schema_for_entity_type_key(type_key) else {
+                continue;
+            };
+
+            let fallbacks = fallback_keys_for_entity(entity, schema);
+            assert!(
+                fallbacks.is_empty(),
+                "{} / {} still uses fallback tokens: {:?}",
+                file.display(),
+                entity.name,
+                fallbacks
+            );
+            checked += 1;
+        }
+    }
+
+    assert!(checked > 0, "expected at least one schema-bound roundtrip fixture entity");
 }

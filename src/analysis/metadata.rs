@@ -124,7 +124,7 @@ fn extract_metadata_pairs(line: &str) -> Vec<(String, String)> {
         if value_start > line.len() || value_start > value_end {
             continue;
         }
-        let value = line[value_start..value_end].trim();
+        let value = line[value_start..value_end].trim().trim_matches('|').trim();
         if !value.is_empty() {
             out.push(((*key).to_string(), value.to_string()));
         }

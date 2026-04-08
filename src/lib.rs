@@ -23,6 +23,7 @@ pub mod schema;
 use analysis::{fields, metadata, semantics, signals};
 use parsing::line_codec;
 pub use emit::{emit_entity, emit_entity_auto};
+pub use emit::fallback_keys_for_entity;
 
 const ENTITY_TYPE_NAMESPACE: Uuid = Uuid::from_u128(0x6c8fdbf43f4f4a4ba4d846e2bf8b9c10);
 const ENTITY_NAMESPACE: Uuid = Uuid::from_u128(0x5ea8a1062b0842beaf2fcb5966e30f3a);
@@ -509,6 +510,26 @@ mod tests {
     }
 
     #[test]
+    fn parse_line_does_not_split_on_mixed_case_text_that_looks_like_token() {
+        let parsed = parse_line(
+            "Feat Name DESC:This references Type:Combat in prose TYPE:General.Combat",
+        );
+
+        assert_eq!(parsed.head, "Feat Name");
+        assert_eq!(parsed.clauses.len(), 2);
+        assert!(matches!(
+            &parsed.clauses[0],
+            ParsedClause::KeyValue { key, value }
+                if key == "DESC" && value == "This references Type:Combat in prose"
+        ));
+        assert!(matches!(
+            &parsed.clauses[1],
+            ParsedClause::KeyValue { key, value }
+                if key == "TYPE" && value == "General.Combat"
+        ));
+    }
+
+    #[test]
     fn parse_and_unparse_line_preserves_escaped_separators() {
         let original = r"Name\|WithPipe|DESC:Use \: carefully|TAG:ONE\|TWO";
         let parsed = parse_line(original);
@@ -648,6 +669,72 @@ mod tests {
                 .map(|parts| parts.len()),
             Some(2)
         );
+    }
+
+    #[test]
+    fn parse_text_projects_spell_and_equipment_descriptor_fields() {
+        let catalog = parse_text_to_catalog(
+            "Magic Missile SCHOOL:Evocation SUBSCHOOL:Force COMPS:V,S CT:1 standard action RANGE:Medium TARGETAREA:Up to five targets DURATION:Instantaneous SAVEINFO:None SPELLRES:Yes WT:4 SIZE:M WIELD:OneHanded EDR:0 SPELLFAILURE:0 FUMBLERANGE:1 RATEOFFIRE:1 REACH:5 REACHMULT:1 ALTCRITMULT:x2 ALTCRITRANGE:19-20 ALTEQMOD:Masterwork|COST=300 PROFICIENCY:WEAPON|Longsword CONTAINS:0|QTY=0 ICON:weapon_longsword NUMPAGES:1 PAGEUSAGE:1 QUALITY:Material|Steel SPROP:Martial melee weapon TYPE:Spell.Arcane",
+            "descriptors.lst",
+            "lst",
+        );
+
+        let entity = &catalog.entities[0];
+        assert_eq!(
+            entity.attributes.get("pcgen_school").and_then(Value::as_str),
+            Some("Evocation")
+        );
+        assert_eq!(
+            entity.attributes.get("pcgen_subschool").and_then(Value::as_str),
+            Some("Force")
+        );
+        assert_eq!(
+            entity.attributes.get("pcgen_comps").and_then(Value::as_str),
+            Some("V,S")
+        );
+        assert_eq!(
+            entity.attributes.get("pcgen_casttime").and_then(Value::as_str),
+            Some("1 standard action")
+        );
+        assert_eq!(
+            entity.attributes.get("pcgen_range").and_then(Value::as_str),
+            Some("Medium")
+        );
+        assert_eq!(
+            entity.attributes.get("pcgen_targetarea").and_then(Value::as_str),
+            Some("Up to five targets")
+        );
+        assert_eq!(
+            entity.attributes.get("pcgen_duration").and_then(Value::as_str),
+            Some("Instantaneous")
+        );
+        assert_eq!(
+            entity.attributes.get("pcgen_saveinfo").and_then(Value::as_str),
+            Some("None")
+        );
+        assert_eq!(
+            entity.attributes.get("pcgen_spellres").and_then(Value::as_str),
+            Some("Yes")
+        );
+        assert_eq!(
+            entity.attributes.get("pcgen_weight").and_then(Value::as_str),
+            Some("4")
+        );
+        assert_eq!(
+            entity.attributes.get("pcgen_type").and_then(Value::as_str),
+            Some("Spell.Arcane")
+        );
+        assert_eq!(
+            entity.attributes.get("pcgen_numpages").and_then(Value::as_i64),
+            Some(1)
+        );
+
+        let sprop = entity
+            .attributes
+            .get("pcgen_sprop")
+            .and_then(Value::as_array)
+            .expect("sprop should be projected");
+        assert_eq!(sprop.first().and_then(Value::as_str), Some("Martial melee weapon"));
     }
 
     #[test]
