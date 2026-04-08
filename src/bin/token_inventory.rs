@@ -1,8 +1,8 @@
 use artisan_pcgen::{
     ParsedClause, TokenSupportLevel, classify_clause_handling, classify_token_key_support,
-    parse_line,
+    fallback_keys_for_entity, parse_line, parse_text_to_catalog,
 };
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::fs;
 use std::io;
 use std::path::Path;
@@ -17,6 +17,8 @@ fn main() -> io::Result<()> {
     }
 
     let mut semantic_counts: HashMap<String, usize> = HashMap::new();
+    let mut fully_structured_counts: HashMap<String, usize> = HashMap::new();
+    let mut fallback_needed_counts: HashMap<String, usize> = HashMap::new();
     let mut policy_supported_counts: HashMap<String, usize> = HashMap::new();
     let mut unhandled_counts: HashMap<String, usize> = HashMap::new();
     let mut file_count = 0;
@@ -33,6 +35,8 @@ fn main() -> io::Result<()> {
                 let (_, fixes) = scan_directory(
                     &path,
                     &mut semantic_counts,
+                    &mut fully_structured_counts,
+                    &mut fallback_needed_counts,
                     &mut policy_supported_counts,
                     &mut unhandled_counts,
                     &mut file_count,
@@ -52,6 +56,14 @@ fn main() -> io::Result<()> {
     );
     println!("Unique semantically interpreted token keys: {}", semantic_counts.len());
     println!(
+        "Unique fully-structured canonical token keys: {}",
+        fully_structured_counts.len()
+    );
+    println!(
+        "Unique fallback-needed token keys: {}",
+        fallback_needed_counts.len()
+    );
+    println!(
         "Unique policy-supported-only token keys: {}",
         policy_supported_counts.len()
     );
@@ -64,8 +76,26 @@ fn main() -> io::Result<()> {
     let mut semantic_tokens: Vec<_> = semantic_counts.iter().collect();
     semantic_tokens.sort_by(|a, b| b.1.cmp(a.1));
 
+    let mut structured_tokens: Vec<_> = fully_structured_counts.iter().collect();
+    structured_tokens.sort_by(|a, b| b.1.cmp(a.1));
+
+    let mut fallback_tokens: Vec<_> = fallback_needed_counts.iter().collect();
+    fallback_tokens.sort_by(|a, b| b.1.cmp(a.1));
+
     println!("=== Semantically Interpreted Tokens by Frequency ===");
     for (token, count) in semantic_tokens {
+        println!("{:6} | {}", count, token);
+    }
+
+    println!();
+    println!("=== Fully-Structured Canonical Tokens by Frequency ===");
+    for (token, count) in structured_tokens {
+        println!("{:6} | {}", count, token);
+    }
+
+    println!();
+    println!("=== Fallback-Needed Tokens by Frequency ===");
+    for (token, count) in fallback_tokens {
         println!("{:6} | {}", count, token);
     }
 
@@ -93,6 +123,8 @@ fn main() -> io::Result<()> {
 fn scan_directory(
     path: &Path,
     semantic_counts: &mut HashMap<String, usize>,
+    fully_structured_counts: &mut HashMap<String, usize>,
+    fallback_needed_counts: &mut HashMap<String, usize>,
     policy_supported_counts: &mut HashMap<String, usize>,
     unhandled_counts: &mut HashMap<String, usize>,
     file_count: &mut usize,
@@ -120,6 +152,8 @@ fn scan_directory(
                 scan_directory(
                     &path,
                     semantic_counts,
+                    fully_structured_counts,
+                    fallback_needed_counts,
                     policy_supported_counts,
                     unhandled_counts,
                     file_count,
@@ -133,6 +167,8 @@ fn scan_directory(
                     process_file(
                         &path,
                         semantic_counts,
+                        fully_structured_counts,
+                        fallback_needed_counts,
                         policy_supported_counts,
                         unhandled_counts,
                         file_count,
@@ -153,6 +189,8 @@ fn scan_directory(
 fn process_file(
     path: &Path,
     semantic_counts: &mut HashMap<String, usize>,
+    fully_structured_counts: &mut HashMap<String, usize>,
+    fallback_needed_counts: &mut HashMap<String, usize>,
     policy_supported_counts: &mut HashMap<String, usize>,
     unhandled_counts: &mut HashMap<String, usize>,
     file_count: &mut usize,
@@ -162,9 +200,52 @@ fn process_file(
     let content = String::from_utf8_lossy(&bytes);
     let was_fixed = content.contains('\u{FFFD}');
 
+    let source_name = path
+        .file_name()
+        .and_then(|f| f.to_str())
+        .unwrap_or("inventory");
+    let ext = path
+        .extension()
+        .and_then(|e| e.to_str())
+        .map(|s| s.to_ascii_lowercase())
+        .unwrap_or_else(|| "lst".to_string());
+
+    let parsed_catalog = parse_text_to_catalog(&content, source_name, &ext);
+    let mut fallback_by_line: HashMap<usize, HashSet<String>> = HashMap::new();
+    for entity in &parsed_catalog.entities {
+        let Some(line_number) = entity
+            .attributes
+            .get("pcgen_line_number")
+            .and_then(|v| v.as_u64())
+            .map(|n| n as usize)
+        else {
+            continue;
+        };
+
+        let Some(type_key) = entity
+            .attributes
+            .get("pcgen_entity_type_key")
+            .and_then(|v| v.as_str())
+        else {
+            continue;
+        };
+
+        let Some(schema) = artisan_pcgen::schema::schema_for_entity_type_key(type_key) else {
+            continue;
+        };
+
+        let fallback: HashSet<String> = fallback_keys_for_entity(entity, schema)
+            .into_iter()
+            .map(|k| k.to_ascii_uppercase())
+            .collect();
+
+        fallback_by_line.insert(line_number, fallback);
+    }
+
     *file_count += 1;
 
-    for line in content.lines() {
+    for (line_idx, line) in content.lines().enumerate() {
+        let line_number = line_idx + 1;
         *total_lines += 1;
 
         // Skip comments and empty lines
@@ -178,7 +259,18 @@ fn process_file(
         if let Some(head_key) = extract_head_key(&parsed.head) {
             match classify_token_key_support(&head_key, false) {
                 TokenSupportLevel::SemanticallyInterpreted => {
-                    *semantic_counts.entry(head_key).or_insert(0) += 1;
+                    *semantic_counts.entry(head_key.clone()).or_insert(0) += 1;
+                    if fallback_by_line
+                        .get(&line_number)
+                        .is_some_and(|set| !set.contains(&head_key))
+                    {
+                        *fully_structured_counts.entry(head_key).or_insert(0) += 1;
+                    } else if fallback_by_line
+                        .get(&line_number)
+                        .is_some_and(|set| set.contains(&head_key))
+                    {
+                        *fallback_needed_counts.entry(head_key).or_insert(0) += 1;
+                    }
                 }
                 TokenSupportLevel::PolicySupported => {
                     *policy_supported_counts.entry(head_key).or_insert(0) += 1;
@@ -194,7 +286,18 @@ fn process_file(
             match classify_clause_handling(clause) {
                 TokenSupportLevel::SemanticallyInterpreted => {
                     if let Some(token_key) = extract_token_key(clause, clause_index) {
-                        *semantic_counts.entry(token_key).or_insert(0) += 1;
+                        *semantic_counts.entry(token_key.clone()).or_insert(0) += 1;
+                        if fallback_by_line
+                            .get(&line_number)
+                            .is_some_and(|set| !set.contains(&token_key))
+                        {
+                            *fully_structured_counts.entry(token_key).or_insert(0) += 1;
+                        } else if fallback_by_line
+                            .get(&line_number)
+                            .is_some_and(|set| set.contains(&token_key))
+                        {
+                            *fallback_needed_counts.entry(token_key).or_insert(0) += 1;
+                        }
                     }
                 }
                 TokenSupportLevel::PolicySupported => {

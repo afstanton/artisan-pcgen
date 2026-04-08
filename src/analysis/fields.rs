@@ -30,6 +30,39 @@ pub(crate) fn project_clause_attributes(
             "STACK" => {
                 attributes.insert("pcgen_stack".to_string(), Value::String(value.clone()));
             }
+            "BENEFIT" => {
+                attributes.insert("pcgen_benefit".to_string(), Value::String(value.clone()));
+            }
+            "ASPECT" => append_string_attr(attributes, "pcgen_aspects", value),
+            "RACETYPE" => {
+                attributes.insert("pcgen_racetype".to_string(), Value::String(value.clone()));
+            }
+            "RACESUBTYPE" => append_string_attr(attributes, "pcgen_racesubtype", value),
+            "FAVCLASS" => {
+                attributes.insert("pcgen_favclass".to_string(), Value::String(value.clone()));
+            }
+            "FAVOREDCLASS" => {
+                attributes.insert("pcgen_favoredclass".to_string(), Value::String(value.clone()));
+            }
+            "MONSTERCLASS" => {
+                attributes.insert("pcgen_monsterclass".to_string(), Value::String(value.clone()));
+            }
+            "MONCSKILL" => append_string_attr(attributes, "pcgen_moncskill", value),
+            "STARTFEATS" => set_i64_or_string(attributes, "pcgen_startfeats", value),
+            "HITDICEADVANCEMENT" => {
+                attributes.insert(
+                    "pcgen_hitdiceadvancement".to_string(),
+                    Value::String(value.clone()),
+                );
+            }
+            "LEVELADJUSTMENT" => set_i64_or_string(attributes, "pcgen_leveladjustment", value),
+            "XTRASKILLPTSPERLVL" => {
+                set_i64_or_string(attributes, "pcgen_xtraskillptsperlvl", value)
+            }
+            "ADDLEVEL" => {
+                attributes.insert("pcgen_addlevel".to_string(), Value::String(value.clone()));
+            }
+            "REPEATLEVEL" => append_string_attr(attributes, "pcgen_repeatlevel", value),
             "HITDIE" => set_i64_or_string(attributes, "pcgen_hitdie", value),
             "ABB" => {
                 attributes.insert("pcgen_abbreviation".to_string(), Value::String(value.clone()));
