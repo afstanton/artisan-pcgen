@@ -685,7 +685,7 @@ mod tests {
     #[test]
     fn parse_text_projects_spell_and_equipment_descriptor_fields() {
         let catalog = parse_text_to_catalog(
-            "Magic Missile SCHOOL:Evocation SUBSCHOOL:Force COMPS:V,S CT:1 standard action RANGE:Medium TARGETAREA:Up to five targets DURATION:Instantaneous SAVEINFO:None SPELLRES:Yes WT:4 SIZE:M WIELD:OneHanded EDR:0 SPELLFAILURE:0 FUMBLERANGE:1 RATEOFFIRE:1 REACH:5 REACHMULT:1 ALTCRITMULT:x2 ALTCRITRANGE:19-20 ALTEQMOD:Masterwork|COST=300 PROFICIENCY:WEAPON|Longsword CONTAINS:0|QTY=0 ICON:weapon_longsword NUMPAGES:1 PAGEUSAGE:1 QUALITY:Material|Steel SPROP:Martial melee weapon TYPE:Spell.Arcane",
+            "Magic Missile SCHOOL:Evocation SUBSCHOOL:Force COMPS:V,S CASTTIME:1 standard action CT:41 RANGE:Medium TARGETAREA:Up to five targets DURATION:Instantaneous SAVEINFO:None SPELLRES:Yes WT:4 SIZE:M WIELD:OneHanded EDR:0 SPELLFAILURE:0 FUMBLERANGE:1 RATEOFFIRE:1 REACH:5 REACHMULT:1 ALTCRITMULT:x2 ALTCRITRANGE:19-20 ALTEQMOD:Masterwork|COST=300 PROFICIENCY:WEAPON|Longsword CONTAINS:0|QTY=0 ICON:weapon_longsword NUMPAGES:1 PAGEUSAGE:1 QUALITY:Material|Steel SPROP:Martial melee weapon TYPE:Spell.Arcane",
             "descriptors.lst",
             "lst",
         );
@@ -706,6 +706,10 @@ mod tests {
         assert_eq!(
             entity.attributes.get("pcgen_casttime").and_then(Value::as_str),
             Some("1 standard action")
+        );
+        assert_eq!(
+            entity.attributes.get("pcgen_ct").and_then(Value::as_i64),
+            Some(41)
         );
         assert_eq!(
             entity.attributes.get("pcgen_range").and_then(Value::as_str),
@@ -1088,6 +1092,15 @@ mod tests {
             assert!(any_schema_knows_token("FRACTIONALPOOL"));
             assert!(any_schema_knows_token("PLURAL"));
             assert!(any_schema_knows_token("POOL"));
+            assert!(any_schema_knows_token("DAMAGE"));
+            assert!(any_schema_knows_token("CRITMULT"));
+            assert!(any_schema_knows_token("CRITRANGE"));
+            assert!(any_schema_knows_token("ACCHECK"));
+            assert!(any_schema_knows_token("ACHECK"));
+            assert!(any_schema_knows_token("KEYSTAT"));
+            assert!(any_schema_knows_token("HD"));
+            assert!(any_schema_knows_token("MAXLEVEL"));
+            assert!(any_schema_knows_token("SPELLSTAT"));
             assert!(any_schema_knows_token("LEGS"));
             assert!(any_schema_knows_token("HANDS"));
             assert!(any_schema_knows_token("FACE"));
@@ -1098,5 +1111,22 @@ mod tests {
             assert!(any_schema_knows_token("REMOVABLE"));
             assert!(!any_schema_knows_token("XYZZY"));
             assert!(!any_schema_knows_token("NOTAREALTOKEN"));
+        }
+
+        #[test]
+        fn token_alias_registry_exposes_explicit_rules() {
+            use schema::all_token_aliases;
+
+            let aliases = all_token_aliases();
+            assert!(aliases.iter().any(|a| a.alias == "HD" && a.canonical == "HITDIE"));
+        }
+
+        #[test]
+        fn token_alias_lookup_respects_scope() {
+            use schema::token_aliases::canonical_lookup_key;
+
+            assert_eq!(canonical_lookup_key("CASTTIME", None), "CASTTIME");
+            assert_eq!(canonical_lookup_key("HD", Some("pcgen:entity:class")), "HITDIE");
+            assert_eq!(canonical_lookup_key("HD", Some("pcgen:entity:template")), "HD");
         }
 }

@@ -87,7 +87,11 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_addlevel".to_string(), Value::String(value.clone()));
             }
             "REPEATLEVEL" => append_string_attr(attributes, "pcgen_repeatlevel", value),
+            "HD" => set_i64_or_string(attributes, "pcgen_hitdie", value),
             "HITDIE" => set_i64_or_string(attributes, "pcgen_hitdie", value),
+            "MAXLEVEL" => {
+                attributes.insert("pcgen_maxlevel".to_string(), Value::String(value.clone()));
+            }
             "ABB" => {
                 attributes.insert("pcgen_abbreviation".to_string(), Value::String(value.clone()));
             }
@@ -98,6 +102,9 @@ pub(crate) fn project_clause_attributes(
             }
             "SPELLTYPE" => {
                 attributes.insert("pcgen_spelltype".to_string(), Value::String(value.clone()));
+            }
+            "SPELLSTAT" => {
+                attributes.insert("pcgen_spellstat".to_string(), Value::String(value.clone()));
             }
             "BONUSSPELLSTAT" => {
                 attributes.insert("pcgen_bonusspellstat".to_string(), Value::String(value.clone()));
@@ -193,7 +200,7 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_comps".to_string(), Value::String(value.clone()));
             }
             "CT" => {
-                attributes.insert("pcgen_casttime".to_string(), Value::String(value.clone()));
+                set_i64_or_string(attributes, "pcgen_ct", value);
             }
             "CASTTIME" => {
                 attributes.insert("pcgen_casttime".to_string(), Value::String(value.clone()));
@@ -266,6 +273,9 @@ pub(crate) fn project_clause_attributes(
             "USEUNTRAINED" => {
                 attributes.insert("pcgen_useuntrained".to_string(), parse_yes_no_or_string(value));
             }
+            "KEYSTAT" => {
+                attributes.insert("pcgen_keystat".to_string(), Value::String(value.clone()));
+            }
             "SIZE" => {
                 attributes.insert("pcgen_size".to_string(), Value::String(value.clone()));
             }
@@ -293,6 +303,21 @@ pub(crate) fn project_clause_attributes(
             }
             "SPELLFAILURE" => {
                 attributes.insert("pcgen_spellfailure".to_string(), Value::String(value.clone()));
+            }
+            "ACCHECK" => {
+                attributes.insert("pcgen_accheck".to_string(), Value::String(value.clone()));
+            }
+            "ACHECK" => {
+                attributes.insert("pcgen_accheck".to_string(), Value::String(value.clone()));
+            }
+            "DAMAGE" => {
+                attributes.insert("pcgen_damage".to_string(), Value::String(value.clone()));
+            }
+            "CRITMULT" => {
+                attributes.insert("pcgen_critmult".to_string(), Value::String(value.clone()));
+            }
+            "CRITRANGE" => {
+                attributes.insert("pcgen_critrange".to_string(), Value::String(value.clone()));
             }
             "FUMBLERANGE" => {
                 attributes.insert("pcgen_fumblerange".to_string(), Value::String(value.clone()));

@@ -54,7 +54,8 @@ static SPELL_TOKENS: &[TokenDef] = &[
     },
     // Casting parameters
     TokenDef::text("COMPS", "pcgen_comps"),
-    TokenDef::text("CT", "pcgen_casttime"),
+    TokenDef::text("CASTTIME", "pcgen_casttime"),
+    TokenDef::text("CT", "pcgen_ct"),
     TokenDef::text("RANGE", "pcgen_range"),
     TokenDef::text("TARGETAREA", "pcgen_targetarea"),
     TokenDef::text("DURATION", "pcgen_duration"),

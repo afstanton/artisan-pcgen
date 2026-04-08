@@ -156,8 +156,10 @@ fn looks_like_pcc(head: &str, clauses: &[ParsedClause]) -> bool {
 fn looks_like_class(clauses: &[ParsedClause]) -> bool {
     has_token(clauses, "CAST")
         || has_token(clauses, "KNOWN")
+        || has_token(clauses, "SPELLSTAT")
         || has_token(clauses, "ADDDOMAINS")
         || has_token(clauses, "DOMAIN")
+        || has_token(clauses, "MAXLEVEL")
         || has_token(clauses, "STARTSKILLPTS")
         || has_token(clauses, "SPELLTYPE")
         || has_token(clauses, "SPECIALTYKNOWN")

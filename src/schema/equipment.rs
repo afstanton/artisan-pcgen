@@ -21,7 +21,11 @@ static EQUIPMENT_TOKENS: &[TokenDef] = &[
     // Armor/shield properties
     TokenDef::integer("EDR", "pcgen_edr"),
     TokenDef::integer("SPELLFAILURE", "pcgen_spellfailure"),
+    TokenDef::text("ACCHECK", "pcgen_accheck"),
     // Weapon properties
+    TokenDef::text("DAMAGE", "pcgen_damage"),
+    TokenDef::text("CRITMULT", "pcgen_critmult"),
+    TokenDef::text("CRITRANGE", "pcgen_critrange"),
     TokenDef::text("FUMBLERANGE", "pcgen_fumblerange"),
     TokenDef::text("RATEOFFIRE", "pcgen_rateoffire"),
     TokenDef::text("REACH", "pcgen_reach"),

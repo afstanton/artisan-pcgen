@@ -19,6 +19,7 @@ pub mod race;
 pub mod skill;
 pub mod spell;
 pub mod template;
+pub mod token_aliases;
 
 pub use ability::ABILITY_SCHEMA;
 pub use abilitycategory::ABILITYCATEGORY_SCHEMA;
@@ -38,6 +39,7 @@ pub use race::RACE_SCHEMA;
 pub use skill::SKILL_SCHEMA;
 pub use spell::SPELL_SCHEMA;
 pub use template::TEMPLATE_SCHEMA;
+pub use token_aliases::{AliasScope, AliasStatus, TokenAlias, all_token_aliases};
 
 // ---------------------------------------------------------------------------
 // Core grammar types
@@ -410,16 +412,12 @@ pub fn schema_for_head_token(token: &str) -> Option<&'static EntitySchema> {
 ///
 /// Used by `token_policy` for global (context-free) token classification.
 pub fn any_schema_knows_token(key: &str) -> bool {
-    let normalized = if key.eq_ignore_ascii_case("CASTTIME") {
-        "CT"
-    } else {
-        key
-    };
+    let normalized = token_aliases::canonical_lookup_key(key, None);
 
     ALL_SCHEMAS.iter().any(|s| {
-        s.knows_token_key(normalized)
+        s.knows_token_key(&normalized)
             || s
                 .head_token
-                .is_some_and(|head| head.eq_ignore_ascii_case(normalized))
+                .is_some_and(|head| head.eq_ignore_ascii_case(&normalized))
     })
 }

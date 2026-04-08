@@ -18,13 +18,14 @@ use crate::{
         TokenGrammar,
     },
 };
-use std::collections::BTreeSet;
+use std::collections::{BTreeSet, HashSet};
 
 /// Emit a PCGen `.lst` line for `entity` using the provided `schema`.
 ///
 /// Returns the full line text with tab-separated top-level tokens.
 pub fn emit_entity(entity: &Entity, schema: &EntitySchema) -> String {
     let mut parts: Vec<String> = Vec::new();
+    let mut emitted_attribute_fields: HashSet<&'static str> = HashSet::new();
 
     // --- Head ---
     let name = entity
@@ -44,7 +45,7 @@ pub fn emit_entity(entity: &Entity, schema: &EntitySchema) -> String {
 
     // --- Entity-specific tokens ---
     for token_def in schema.tokens {
-        emit_token_def(token_def, entity, &mut parts);
+        emit_token_def(token_def, entity, &mut parts, &mut emitted_attribute_fields);
     }
 
     // --- Global token groups ---
@@ -104,15 +105,25 @@ pub fn entity_to_parsed_line(entity: &Entity, schema: &EntitySchema) -> ParsedLi
 // Per-token emission
 // ---------------------------------------------------------------------------
 
-fn emit_token_def(token_def: &TokenDef, entity: &Entity, parts: &mut Vec<String>) {
+fn emit_token_def(
+    token_def: &TokenDef,
+    entity: &Entity,
+    parts: &mut Vec<String>,
+    emitted_attribute_fields: &mut HashSet<&'static str>,
+) {
     match token_def.artisan_mapping {
         ArtisanMapping::Attribute(field) => {
+            if emitted_attribute_fields.contains(field) {
+                return;
+            }
+
             if let Some(value) = entity.attributes.get(field) {
                 let serialized =
                     serialize_value(value, token_def.grammar, token_def.cardinality);
                 for s in serialized {
                     parts.push(format!("{}:{}", token_def.key, s));
                 }
+                emitted_attribute_fields.insert(field);
             } else {
                 // Fallback: if parser captured the raw token in `clauses` but no
                 // structured projection exists yet, preserve that data on emit.
