@@ -64,6 +64,7 @@ static SPELL_TOKENS: &[TokenDef] = &[
     TokenDef::text("SPELLRES", "pcgen_spellres"),
     // Cost and variants
     TokenDef::text("COST", "pcgen_cost"),
+    TokenDef::text("XPCOST", "pcgen_xpcost"),
     TokenDef::integer("PPCOST", "pcgen_ppcost"),
     TokenDef {
         key: "SPELLPOINTCOST",

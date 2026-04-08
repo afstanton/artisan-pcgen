@@ -23,6 +23,7 @@ static CLASS_TOKENS: &[TokenDef] = &[
     TokenDef::text("SPELLTYPE", "pcgen_spelltype"),
     TokenDef::text("SPELLSTAT", "pcgen_spellstat"),
     TokenDef::text("BONUSSPELLSTAT", "pcgen_bonusspellstat"),
+    TokenDef::yesno("SPELLBOOK", "pcgen_spellbook"),
     TokenDef::yesno("MEMORIZE", "pcgen_memorize"),
     TokenDef {
         key: "CAST",

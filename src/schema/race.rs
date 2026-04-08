@@ -33,6 +33,7 @@ static RACE_TOKENS: &[TokenDef] = &[
     TokenDef::text("DR", "pcgen_dr"),
     TokenDef::text("SR", "pcgen_sr"),
     TokenDef::text("CR", "pcgen_cr"),
+    TokenDef::text("REACH", "pcgen_reach"),
     TokenDef::integer("LEVELADJUSTMENT", "pcgen_leveladjustment"),
     TokenDef::integer("STARTFEATS", "pcgen_startfeats"),
     TokenDef::integer("XTRASKILLPTSPERLVL", "pcgen_xtraskillptsperlvl"),

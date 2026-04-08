@@ -82,6 +82,9 @@ pub(crate) fn infer_entity_type_key(head: &str, clauses: &[ParsedClause]) -> Str
     if looks_like_spell(clauses) {
         return "pcgen:entity:spell".to_string();
     }
+    if looks_like_race(clauses) {
+        return "pcgen:entity:race".to_string();
+    }
     if looks_like_equipment(clauses) {
         return "pcgen:entity:equipment".to_string();
     }
@@ -90,9 +93,6 @@ pub(crate) fn infer_entity_type_key(head: &str, clauses: &[ParsedClause]) -> Str
     }
     if looks_like_feat(clauses) {
         return "pcgen:entity:feat".to_string();
-    }
-    if looks_like_race(clauses) {
-        return "pcgen:entity:race".to_string();
     }
     if looks_like_template(clauses) {
         return "pcgen:entity:template".to_string();

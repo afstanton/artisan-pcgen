@@ -166,6 +166,9 @@ pub(crate) fn project_clause_attributes(
             "BONUSSPELLSTAT" => {
                 attributes.insert("pcgen_bonusspellstat".to_string(), Value::String(value.clone()));
             }
+            "SPELLBOOK" => {
+                attributes.insert("pcgen_spellbook".to_string(), parse_yes_no_or_string(value));
+            }
             "MEMORIZE" => {
                 attributes.insert("pcgen_memorize".to_string(), parse_yes_no_or_string(value));
             }
@@ -324,6 +327,9 @@ pub(crate) fn project_clause_attributes(
             }
             "SPELLRES" => {
                 attributes.insert("pcgen_spellres".to_string(), Value::String(value.clone()));
+            }
+            "XPCOST" => {
+                attributes.insert("pcgen_xpcost".to_string(), Value::String(value.clone()));
             }
             "DESCRIPTOR" => append_string_attr(attributes, "pcgen_descriptors", value),
             "DOMAINS" => {
@@ -530,17 +536,18 @@ pub(crate) fn project_clause_attributes(
             "SPELLS" => spell_blocks.push(parse_spells(value)),
             "SPELLKNOWN" => append_string_attr(attributes, "pcgen_spellknown", value),
             "MOVE" => append_string_attr(attributes, "pcgen_move", value),
-            "MOVECLONE" => append_string_attr(attributes, "pcgen_moveclone", value),
             "NATURALATTACKS" => append_string_attr(attributes, "pcgen_naturalattacks", value),
             _ => {}
         }
     }
 
     if !facts.is_empty() {
-        attributes.insert("pcgen_facts".to_string(), Value::Array(facts));
     }
     if !equipment_modifiers.is_empty() {
         attributes.insert("pcgen_eqmods".to_string(), Value::Array(equipment_modifiers));
+    }
+    if !facts.is_empty() {
+        attributes.insert("pcgen_facts".to_string(), Value::Array(facts));
     }
     if !class_lists.is_empty() {
         attributes.insert("pcgen_classes".to_string(), Value::Array(class_lists));
