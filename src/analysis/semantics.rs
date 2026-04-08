@@ -9,7 +9,7 @@ pub(crate) fn project_semantics(
 ) {
     for clause in clauses {
         if let ParsedClause::KeyValue { key, value } = clause {
-            if key.starts_with("PRE") {
+            if key.starts_with("PRE") || key.starts_with("!PRE") {
                 prerequisites.push(Prerequisite {
                     kind: key.clone(),
                     expression: if value.is_empty() {
@@ -37,6 +37,10 @@ pub(crate) fn infer_entity_type_key(head: &str, clauses: &[ParsedClause]) -> Str
         && let Some(schema) = crate::schema::schema_for_head_token(&head_key)
     {
         return schema.entity_type_key.to_string();
+    }
+
+    if head.trim_start().to_ascii_uppercase().starts_with("CATEGORY=") {
+        return "pcgen:entity:ability".to_string();
     }
 
     if let Some((decl_key, _)) = declared_entity(head) {
@@ -188,14 +192,32 @@ fn looks_like_equipment(clauses: &[ParsedClause]) -> bool {
 }
 
 fn looks_like_ability(clauses: &[ParsedClause]) -> bool {
-    has_token(clauses, "CATEGORY")
-        && (has_token(clauses, "ADDSPELLLEVEL")
-            || has_token(clauses, "SPELLS")
-            || has_token(clauses, "EQMOD")
-            || has_token(clauses, "CSKILL")
-            || has_token(clauses, "BENEFIT")
-            || has_token(clauses, "STACK")
-            || has_token(clauses, "MULT"))
+    let Some(category) = find_key_value(clauses, "CATEGORY") else {
+        return false;
+    };
+
+    let category = category.trim();
+    if category.eq_ignore_ascii_case("FEAT") {
+        return false;
+    }
+
+    has_token(clauses, "ADDSPELLLEVEL")
+        || has_token(clauses, "SPELLS")
+        || has_token(clauses, "EQMOD")
+        || has_token(clauses, "CSKILL")
+        || has_token(clauses, "BENEFIT")
+        || has_token(clauses, "STACK")
+        || has_token(clauses, "MULT")
+        || has_token(clauses, "BONUS")
+        || has_token(clauses, "DEFINE")
+        || has_token(clauses, "SAB")
+        || has_token(clauses, "ABILITY")
+        || has_token(clauses, "SPELLKNOWN")
+        || category.eq_ignore_ascii_case("SPECIAL ABILITY")
+        || category.eq_ignore_ascii_case("INTERNAL")
+        || category.eq_ignore_ascii_case("TALENT")
+        || category.eq_ignore_ascii_case("AFFLICTIONS")
+        || category.eq_ignore_ascii_case("CAREER SKILL")
 }
 
 fn looks_like_feat(clauses: &[ParsedClause]) -> bool {
@@ -209,6 +231,20 @@ fn looks_like_template(clauses: &[ParsedClause]) -> bool {
         || has_token(clauses, "REPEATLEVEL")
         || has_token(clauses, "GENDERLOCK")
         || has_token(clauses, "BONUSSKILLPOINTS")
+        || has_token(clauses, "PREAGESET")
+        || has_token(clauses, "!PREAGESET")
+        || has_token(clauses, "!PREDOMAIN")
+        || has_token(clauses, "!PRESPELL")
+    || has_token(clauses, "MOVECLONE")
+    || has_token(clauses, "MOVE")
+    || has_token(clauses, "VISION")
+    || has_token(clauses, "SUBRACE")
+    || has_token(clauses, "REMOVABLE")
+    || has_token(clauses, "SR")
+    || has_token(clauses, "!PREMOVE")
+    || has_token(clauses, "!PREVISION")
+    || has_token(clauses, "PRESRLT")
+    || has_token(clauses, "!PREKIT")
 }
 
 fn looks_like_race(clauses: &[ParsedClause]) -> bool {

@@ -554,6 +554,17 @@ mod tests {
             .effects
             .iter()
             .any(|e| e.kind == "BONUS" && e.target == "COMBAT"));
+
+        let catalog = parse_text_to_catalog(
+            "No Swim Speed VISIBLE:NO !PREMOVE:1,Swim=1 MOVECLONE:Walk,Swim,*1",
+            "templates.lst",
+            "lst",
+        );
+        let entity = &catalog.entities[0];
+        assert!(entity
+            .prerequisites
+            .iter()
+            .any(|p| p.kind == "!PREMOVE" && p.expression.as_deref() == Some("1,Swim=1")));
     }
 
     #[test]
@@ -880,6 +891,45 @@ mod tests {
                 .get("pcgen_entity_type_key")
                 .and_then(Value::as_str),
             Some("pcgen:system:previewsheet")
+        );
+
+        let category_head = parse_text_to_catalog(
+            "CATEGORY=Special Ability|Divine Speed.MOD ABILITY:Internal|AUTOMATIC|Fine Speed|PRELEGSLTEQ:3|PREMOVE:1,Walk=1|PRESIZEEQ:F",
+            "abilities.lst",
+            "lst",
+        );
+        assert_eq!(
+            category_head.entities[0]
+                .attributes
+                .get("pcgen_entity_type_key")
+                .and_then(Value::as_str),
+            Some("pcgen:entity:ability")
+        );
+
+        let template_like = parse_text_to_catalog(
+            "No Swim Speed VISIBLE:NO !PREMOVE:1,Swim=1 MOVECLONE:Walk,Swim,*1",
+            "templates.lst",
+            "lst",
+        );
+        assert_eq!(
+            template_like.entities[0]
+                .attributes
+                .get("pcgen_entity_type_key")
+                .and_then(Value::as_str),
+            Some("pcgen:entity:template")
+        );
+
+        let age_template = parse_text_to_catalog(
+            "Timeless Body ~ Adult VISIBLE:NO !PREAGESET:1,Middle-Aged BONUS:STAT|STR,CON,DEX|1",
+            "templates.lst",
+            "lst",
+        );
+        assert_eq!(
+            age_template.entities[0]
+                .attributes
+                .get("pcgen_entity_type_key")
+                .and_then(Value::as_str),
+            Some("pcgen:entity:template")
         );
     }
 

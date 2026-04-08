@@ -370,6 +370,12 @@ fn normalize_bare_directive(value: &str) -> Option<String> {
         return Some(upper);
     }
 
+    // Bare FEAT is not a valid top-level directive in live corpus data and
+    // only appears as malformed text or documentation residue.
+    if upper == "FEAT" {
+        return None;
+    }
+
     match upper.as_str() {
         "AUTOMATIC" | "VISIBLE" | "VIRTUAL" | "PRERULE" | "!PRERULE" | "SET" => Some(upper),
         _ => None,
@@ -384,6 +390,10 @@ fn normalize_key(raw: &str) -> Option<String> {
 
     let key = key.trim_matches(|c: char| c == '(' || c == ')');
     if key.is_empty() {
+        return None;
+    }
+
+    if key.chars().any(|c| c.is_ascii_lowercase()) {
         return None;
     }
 
@@ -414,4 +424,26 @@ fn is_plausible_token_name(token: &str) -> bool {
 
     // Functional token names should contain at least one alphabetic character.
     token.chars().any(|c| c.is_ascii_alphabetic())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{normalize_key, normalize_bare_directive};
+
+    #[test]
+    fn normalize_key_rejects_mixed_case_prose_keys() {
+        assert_eq!(normalize_key("Feat"), None);
+        assert_eq!(normalize_key("Type"), None);
+    }
+
+    #[test]
+    fn normalize_key_accepts_uppercase_tokens() {
+        assert_eq!(normalize_key("FEAT"), Some("FEAT".to_string()));
+        assert_eq!(normalize_key("!PRETYPE"), Some("!PRETYPE".to_string()));
+    }
+
+    #[test]
+    fn normalize_bare_directive_still_ignores_bare_feat() {
+        assert_eq!(normalize_bare_directive("FEAT"), None);
+    }
 }
