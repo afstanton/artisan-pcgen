@@ -777,6 +777,45 @@ mod tests {
                 .and_then(Value::as_str),
             Some("pcgen:entity:equipment")
         );
+
+        let class_like = parse_text_to_catalog(
+            "Psion CAST:MEMORIZE,INT KNOWN:0,1,2 TYPE:Base.Psionic.PC",
+            "class_like.lst",
+            "lst",
+        );
+        assert_eq!(
+            class_like.entities[0]
+                .attributes
+                .get("pcgen_entity_type_key")
+                .and_then(Value::as_str),
+            Some("pcgen:entity:class")
+        );
+
+        let skill_like = parse_text_to_catalog(
+            "Bluff USEUNTRAINED:YES SITUATION:Feint|2 TYPE:Social",
+            "skill_like.lst",
+            "lst",
+        );
+        assert_eq!(
+            skill_like.entities[0]
+                .attributes
+                .get("pcgen_entity_type_key")
+                .and_then(Value::as_str),
+            Some("pcgen:entity:skill")
+        );
+
+        let pcc_like = parse_text_to_catalog(
+            "CAMPAIGN:Sample Campaign\nGAMEMODE:Pathfinder BOOKTYPE:Core",
+            "sample.pcc",
+            "pcc",
+        );
+        assert_eq!(
+            pcc_like.entities[0]
+                .attributes
+                .get("pcgen_entity_type_key")
+                .and_then(Value::as_str),
+            Some("pcgen:entity:pcc")
+        );
     }
 
     #[test]

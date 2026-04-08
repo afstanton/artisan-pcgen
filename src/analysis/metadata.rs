@@ -95,6 +95,7 @@ fn extract_metadata_pairs(line: &str) -> Vec<(String, String)> {
         "GAMEMODE",
         "BOOKTYPE",
         "SETTING",
+        "RANK",
     ];
 
     let mut marks: Vec<(usize, &'static str)> = Vec::new();

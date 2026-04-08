@@ -37,6 +37,18 @@ pub(crate) fn infer_entity_type_key(head: &str, clauses: &[ParsedClause]) -> Str
         return format!("pcgen:entity:{}", decl_key.to_ascii_lowercase());
     }
 
+    if looks_like_pcc(head, clauses) {
+        return "pcgen:entity:pcc".to_string();
+    }
+
+    if looks_like_class(clauses) {
+        return "pcgen:entity:class".to_string();
+    }
+
+    if looks_like_skill(clauses) {
+        return "pcgen:entity:skill".to_string();
+    }
+
     if looks_like_spell(clauses) {
         return "pcgen:entity:spell".to_string();
     }
@@ -83,6 +95,66 @@ fn has_token(clauses: &[ParsedClause], key: &str) -> bool {
             ParsedClause::KeyValue { key: k, .. } if k.eq_ignore_ascii_case(key)
         )
     })
+}
+
+fn head_key(head: &str) -> Option<String> {
+    parse_head_key_value(head).map(|(key, _)| key.to_ascii_uppercase())
+}
+
+fn looks_like_pcc(head: &str, clauses: &[ParsedClause]) -> bool {
+    let pcc_head_keys = [
+        "CAMPAIGN",
+        "SOURCELONG",
+        "SOURCE",
+        "SOURCESHORT",
+        "SOURCEWEB",
+        "SOURCEDATE",
+        "PUBNAMELONG",
+        "PUBNAMESHORT",
+        "PUBNAMEWEB",
+        "GAMEMODE",
+        "SETTING",
+        "BOOKTYPE",
+        "STATUS",
+        "URL",
+        "ALLOWDUPES",
+        "HIDETYPE",
+        "FORWARDREF",
+        "ISLICENSED",
+        "COVER",
+        "LOGO",
+        "LICENSE",
+    ];
+
+    if let Some(key) = head_key(head)
+        && pcc_head_keys.iter().any(|k| *k == key)
+    {
+        return true;
+    }
+
+    has_token(clauses, "BOOKTYPE")
+        || has_token(clauses, "GAMEMODE")
+        || has_token(clauses, "SETTING")
+        || has_token(clauses, "URL")
+        || has_token(clauses, "ALLOWDUPES")
+        || has_token(clauses, "HIDETYPE")
+        || has_token(clauses, "FORWARDREF")
+}
+
+fn looks_like_class(clauses: &[ParsedClause]) -> bool {
+    has_token(clauses, "CAST")
+        || has_token(clauses, "KNOWN")
+        || has_token(clauses, "STARTSKILLPTS")
+        || has_token(clauses, "SPELLTYPE")
+        || has_token(clauses, "SPECIALTYKNOWN")
+        || has_token(clauses, "SUBCLASSLEVEL")
+        || has_token(clauses, "SUBSTITUTIONCLASS")
+        || has_token(clauses, "SUBSTITUTIONLEVEL")
+        || has_token(clauses, "PROHIBITCOST")
+}
+
+fn looks_like_skill(clauses: &[ParsedClause]) -> bool {
+    has_token(clauses, "USEUNTRAINED") || has_token(clauses, "SITUATION")
 }
 
 fn looks_like_spell(clauses: &[ParsedClause]) -> bool {

@@ -23,6 +23,21 @@ pub(crate) fn project_clause_attributes(
             "TYPE" => {
                 attributes.insert("pcgen_type".to_string(), Value::String(value.clone()));
             }
+            "SOURCE" => {
+                attributes.insert("pcgen_source".to_string(), Value::String(value.clone()));
+            }
+            "SOURCELONG" => {
+                attributes.insert("pcgen_source_long".to_string(), Value::String(value.clone()));
+            }
+            "SOURCESHORT" => {
+                attributes.insert("pcgen_source_short".to_string(), Value::String(value.clone()));
+            }
+            "SOURCEWEB" => {
+                attributes.insert("pcgen_source_web".to_string(), Value::String(value.clone()));
+            }
+            "SOURCEDATE" => {
+                attributes.insert("pcgen_source_date".to_string(), Value::String(value.clone()));
+            }
             "ADDSPELLLEVEL" => set_i64_or_string(attributes, "pcgen_addspelllevel", value),
             "MULT" => {
                 attributes.insert("pcgen_mult".to_string(), Value::String(value.clone()));

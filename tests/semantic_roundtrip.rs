@@ -143,6 +143,16 @@ fn semantic_snapshot(catalog: &artisan_pcgen::ParsedCatalog) -> Value {
             attributes.insert("head".to_string(), Value::String(entity.name.clone()));
         }
 
+        if let Some(Value::Array(clauses)) = attributes.get_mut("clauses") {
+            clauses.sort_by(|a, b| {
+                let a_key = a.get("key").and_then(Value::as_str).unwrap_or("");
+                let b_key = b.get("key").and_then(Value::as_str).unwrap_or("");
+                let a_value = a.get("value").and_then(Value::as_str).unwrap_or("");
+                let b_value = b.get("value").and_then(Value::as_str).unwrap_or("");
+                a_key.cmp(b_key).then_with(|| a_value.cmp(b_value))
+            });
+        }
+
         entities.push(json!({
             "entity_type": type_key,
             "name": entity.name,

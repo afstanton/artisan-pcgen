@@ -6,6 +6,7 @@
 //! (serializing artisan `Entity` values back to `.lst` text).
 
 pub mod ability;
+pub mod abilitycategory;
 pub mod class;
 pub mod equipment;
 pub mod feat;
@@ -16,6 +17,7 @@ pub mod spell;
 pub mod template;
 
 pub use ability::ABILITY_SCHEMA;
+pub use abilitycategory::ABILITYCATEGORY_SCHEMA;
 pub use class::CLASS_SCHEMA;
 pub use equipment::EQUIPMENT_SCHEMA;
 pub use feat::FEAT_SCHEMA;
@@ -352,6 +354,7 @@ impl EntitySchema {
 
 static ALL_SCHEMAS: &[&EntitySchema] = &[
     &ability::ABILITY_SCHEMA,
+    &abilitycategory::ABILITYCATEGORY_SCHEMA,
     &class::CLASS_SCHEMA,
     &equipment::EQUIPMENT_SCHEMA,
     &feat::FEAT_SCHEMA,
