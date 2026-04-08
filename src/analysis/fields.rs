@@ -23,6 +23,13 @@ pub(crate) fn project_clause_attributes(
             "TYPE" => {
                 attributes.insert("pcgen_type".to_string(), Value::String(value.clone()));
             }
+            "ADDSPELLLEVEL" => set_i64_or_string(attributes, "pcgen_addspelllevel", value),
+            "MULT" => {
+                attributes.insert("pcgen_mult".to_string(), Value::String(value.clone()));
+            }
+            "STACK" => {
+                attributes.insert("pcgen_stack".to_string(), Value::String(value.clone()));
+            }
             "HITDIE" => set_i64_or_string(attributes, "pcgen_hitdie", value),
             "ABB" => {
                 attributes.insert("pcgen_abbreviation".to_string(), Value::String(value.clone()));

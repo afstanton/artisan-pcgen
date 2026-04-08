@@ -37,6 +37,25 @@ pub(crate) fn infer_entity_type_key(head: &str, clauses: &[ParsedClause]) -> Str
         return format!("pcgen:entity:{}", decl_key.to_ascii_lowercase());
     }
 
+    if looks_like_spell(clauses) {
+        return "pcgen:entity:spell".to_string();
+    }
+    if looks_like_equipment(clauses) {
+        return "pcgen:entity:equipment".to_string();
+    }
+    if looks_like_ability(clauses) {
+        return "pcgen:entity:ability".to_string();
+    }
+    if looks_like_feat(clauses) {
+        return "pcgen:entity:feat".to_string();
+    }
+    if looks_like_template(clauses) {
+        return "pcgen:entity:template".to_string();
+    }
+    if looks_like_race(clauses) {
+        return "pcgen:entity:race".to_string();
+    }
+
     if let Some(value) = find_key_value(clauses, "TYPE") {
         let normalized = value
             .split('.')
@@ -45,6 +64,11 @@ pub(crate) fn infer_entity_type_key(head: &str, clauses: &[ParsedClause]) -> Str
             .trim()
             .to_ascii_lowercase()
             .replace(' ', "-");
+
+        if let Some(entity_key) = map_type_root_to_entity_key(&normalized) {
+            return entity_key.to_string();
+        }
+
         if !normalized.is_empty() {
             return format!("pcgen:type:{normalized}");
         }
@@ -52,7 +76,82 @@ pub(crate) fn infer_entity_type_key(head: &str, clauses: &[ParsedClause]) -> Str
     "pcgen:type:unresolved".to_string()
 }
 
+fn has_token(clauses: &[ParsedClause], key: &str) -> bool {
+    clauses.iter().any(|clause| {
+        matches!(
+            clause,
+            ParsedClause::KeyValue { key: k, .. } if k.eq_ignore_ascii_case(key)
+        )
+    })
+}
+
+fn looks_like_spell(clauses: &[ParsedClause]) -> bool {
+    has_token(clauses, "SCHOOL")
+        || has_token(clauses, "COMPS")
+        || has_token(clauses, "CT")
+        || has_token(clauses, "SAVEINFO")
+        || has_token(clauses, "SPELLRES")
+        || has_token(clauses, "TARGETAREA")
+        || has_token(clauses, "SPELLPOINTCOST")
+        || has_token(clauses, "PPCOST")
+}
+
+fn looks_like_equipment(clauses: &[ParsedClause]) -> bool {
+    has_token(clauses, "WT")
+        || has_token(clauses, "WIELD")
+        || has_token(clauses, "PROFICIENCY")
+        || has_token(clauses, "SPROP")
+        || has_token(clauses, "QUALITY")
+        || has_token(clauses, "REACH")
+        || has_token(clauses, "ALTCRITMULT")
+        || has_token(clauses, "SPELLFAILURE")
+}
+
+fn looks_like_ability(clauses: &[ParsedClause]) -> bool {
+    has_token(clauses, "CATEGORY")
+        && (has_token(clauses, "ADDSPELLLEVEL")
+            || has_token(clauses, "SPELLS")
+            || has_token(clauses, "EQMOD")
+            || has_token(clauses, "BENEFIT")
+            || has_token(clauses, "STACK")
+            || has_token(clauses, "MULT"))
+}
+
+fn looks_like_feat(clauses: &[ParsedClause]) -> bool {
+    has_token(clauses, "MODIFYFEATCHOICE")
+}
+
+fn looks_like_template(clauses: &[ParsedClause]) -> bool {
+    has_token(clauses, "ADDLEVEL") || has_token(clauses, "REPEATLEVEL")
+}
+
+fn looks_like_race(clauses: &[ParsedClause]) -> bool {
+    has_token(clauses, "MONSTERCLASS") || has_token(clauses, "STARTFEATS")
+}
+
+fn map_type_root_to_entity_key(root: &str) -> Option<&'static str> {
+    match root {
+        "spell" => Some("pcgen:entity:spell"),
+        "feat" => Some("pcgen:entity:feat"),
+        "race" => Some("pcgen:entity:race"),
+        "template" => Some("pcgen:entity:template"),
+        "ability" => Some("pcgen:entity:ability"),
+        "class" => Some("pcgen:entity:class"),
+        "skill" => Some("pcgen:entity:skill"),
+        "equipment" | "gear" | "item" | "weapon" | "armor" | "shield" => {
+            Some("pcgen:entity:equipment")
+        }
+        _ => None,
+    }
+}
+
 pub(crate) fn derive_entity_name(head: &str, clauses: &[ParsedClause]) -> Option<String> {
+    if looks_like_ability(clauses)
+        && let Some(key_value) = find_key_value(clauses, "KEY")
+    {
+        return Some(key_value);
+    }
+
     let (decl_key, decl_value) = declared_entity(head)?;
 
     match decl_key.as_str() {

@@ -738,6 +738,48 @@ mod tests {
     }
 
     #[test]
+    fn infer_name_only_entities_to_schema_backed_entity_keys() {
+        let ability = parse_text_to_catalog(
+            "Nightblade Spellcraft CATEGORY:Special Ability ADDSPELLLEVEL:1 TYPE:Special.Magic",
+            "ability.lst",
+            "lst",
+        );
+        assert_eq!(
+            ability.entities[0]
+                .attributes
+                .get("pcgen_entity_type_key")
+                .and_then(Value::as_str),
+            Some("pcgen:entity:ability")
+        );
+
+        let spell = parse_text_to_catalog(
+            "Magic Missile SCHOOL:Evocation COMPS:V,S TYPE:Spell.Arcane",
+            "spell.lst",
+            "lst",
+        );
+        assert_eq!(
+            spell.entities[0]
+                .attributes
+                .get("pcgen_entity_type_key")
+                .and_then(Value::as_str),
+            Some("pcgen:entity:spell")
+        );
+
+        let equipment = parse_text_to_catalog(
+            "Longsword WT:4 WIELD:OneHanded SPROP:Martial melee weapon TYPE:Weapon.Martial",
+            "equipment.lst",
+            "lst",
+        );
+        assert_eq!(
+            equipment.entities[0]
+                .attributes
+                .get("pcgen_entity_type_key")
+                .and_then(Value::as_str),
+            Some("pcgen:entity:equipment")
+        );
+    }
+
+    #[test]
     fn parse_text_extracts_publisher_and_source_metadata_from_whitespace_tokens() {
         let text = concat!(
             "CAMPAIGN:Star Wars Saga Edition Core Rulebook\n",

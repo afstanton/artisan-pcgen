@@ -130,10 +130,23 @@ fn semantic_snapshot(catalog: &artisan_pcgen::ParsedCatalog) -> Value {
             .get(&type_id)
             .cloned()
             .unwrap_or_else(|| "unknown".to_string());
+
+        let mut attributes = entity.attributes.clone();
+        if let Some(schema) = artisan_pcgen::schema::schema_for_entity_type_key(
+            attributes
+                .get("pcgen_entity_type_key")
+                .and_then(Value::as_str)
+                .unwrap_or(""),
+        )
+            && matches!(schema.head_format, artisan_pcgen::schema::HeadFormat::NameOnly)
+        {
+            attributes.insert("head".to_string(), Value::String(entity.name.clone()));
+        }
+
         entities.push(json!({
             "entity_type": type_key,
             "name": entity.name,
-            "attributes": entity.attributes,
+            "attributes": attributes,
             "effects": entity.effects,
             "prerequisites": entity.prerequisites,
             "rule_hooks": entity.rule_hooks,
@@ -236,17 +249,20 @@ fn roundtrip_fixtures_use_zero_raw_clause_fallback_for_schema_entities() {
 
         let parsed = parse_file(&file).expect("parse fixture");
         for entity in &parsed.entities {
-            let Some(type_key) = entity
+            let type_key = entity
                 .attributes
                 .get("pcgen_entity_type_key")
                 .and_then(Value::as_str)
-            else {
-                continue;
-            };
+                .unwrap_or("pcgen:type:unresolved");
 
-            let Some(schema) = artisan_pcgen::schema::schema_for_entity_type_key(type_key) else {
-                continue;
-            };
+            let schema = artisan_pcgen::schema::schema_for_entity_type_key(type_key).unwrap_or_else(|| {
+                panic!(
+                    "{} / {} has no schema for inferred type key {}",
+                    file.display(),
+                    entity.name,
+                    type_key
+                )
+            });
 
             let fallbacks = fallback_keys_for_entity(entity, schema);
             assert!(
