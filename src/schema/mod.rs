@@ -7,6 +7,8 @@
 
 pub mod ability;
 pub mod abilitycategory;
+pub mod startpack;
+pub mod system;
 pub mod class;
 pub mod equipment;
 pub mod feat;
@@ -18,6 +20,12 @@ pub mod template;
 
 pub use ability::ABILITY_SCHEMA;
 pub use abilitycategory::ABILITYCATEGORY_SCHEMA;
+pub use startpack::STARTPACK_SCHEMA;
+pub use system::{
+    BONUSFEATLEVELSTARTINTERVAL_SCHEMA, BONUSSPELLLEVEL_SCHEMA,
+    BONUSSTACKS_SCHEMA, BONUSSTATLEVELSTARTINTERVAL_SCHEMA, ICON_SYSTEM_SCHEMA,
+    PREVIEWDIR_SCHEMA, PREVIEWSHEET_SCHEMA,
+};
 pub use class::CLASS_SCHEMA;
 pub use equipment::EQUIPMENT_SCHEMA;
 pub use feat::FEAT_SCHEMA;
@@ -290,16 +298,17 @@ impl GlobalGroup {
         match self {
             // Prerequisites use prefix matching
             GlobalGroup::Prerequisites => {
-                upper_key.starts_with("PRE") || upper_key.starts_with("!PRE")
+                (upper_key.starts_with("PRE") || upper_key.starts_with("!PRE"))
+                    && !matches!(upper_key, "PREREQUISITE" | "PREREQUISITES")
             }
             // ADD uses prefix matching too (ADD:ABILITY, ADD:FEAT, etc.)
-            GlobalGroup::Add => upper_key == "ADD" || upper_key.starts_with("ADD:"),
+            GlobalGroup::Add => upper_key == "ADD",
             // CHOOSE uses prefix matching (CHOOSE:ABILITY, CHOOSE:FEAT, etc.)
-            GlobalGroup::Choose => upper_key == "CHOOSE" || upper_key.starts_with("CHOOSE"),
+            GlobalGroup::Choose => upper_key == "CHOOSE",
             // BONUS uses prefix matching (BONUS:COMBAT, BONUS:SKILL, etc.)
-            GlobalGroup::Bonus => upper_key == "BONUS" || upper_key.starts_with("BONUS"),
+            GlobalGroup::Bonus => upper_key == "BONUS",
             // TEMPLATE uses prefix matching
-            GlobalGroup::Template => upper_key == "TEMPLATE" || upper_key.starts_with("TEMPLATE"),
+            GlobalGroup::Template => upper_key == "TEMPLATE",
             // SourceMeta: exact match against any of the known keys
             GlobalGroup::SourceMeta => self.token_key_prefixes().contains(&upper_key),
             // All others: exact match
@@ -355,6 +364,14 @@ impl EntitySchema {
 static ALL_SCHEMAS: &[&EntitySchema] = &[
     &ability::ABILITY_SCHEMA,
     &abilitycategory::ABILITYCATEGORY_SCHEMA,
+    &startpack::STARTPACK_SCHEMA,
+    &system::BONUSSPELLLEVEL_SCHEMA,
+    &system::BONUSSTACKS_SCHEMA,
+    &system::BONUSFEATLEVELSTARTINTERVAL_SCHEMA,
+    &system::BONUSSTATLEVELSTARTINTERVAL_SCHEMA,
+    &system::PREVIEWDIR_SCHEMA,
+    &system::PREVIEWSHEET_SCHEMA,
+    &system::ICON_SYSTEM_SCHEMA,
     &class::CLASS_SCHEMA,
     &equipment::EQUIPMENT_SCHEMA,
     &feat::FEAT_SCHEMA,

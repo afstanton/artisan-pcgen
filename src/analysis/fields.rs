@@ -38,6 +38,8 @@ pub(crate) fn project_clause_attributes(
             "SOURCEDATE" => {
                 attributes.insert("pcgen_source_date".to_string(), Value::String(value.clone()));
             }
+            "BASESTATSCORE" => set_i64_or_string(attributes, "pcgen_basestatscore", value),
+            "STATRANGE" => set_i64_or_string(attributes, "pcgen_statrange", value),
             "ADDSPELLLEVEL" => set_i64_or_string(attributes, "pcgen_addspelllevel", value),
             "MULT" => {
                 attributes.insert("pcgen_mult".to_string(), Value::String(value.clone()));
@@ -74,6 +76,10 @@ pub(crate) fn project_clause_attributes(
             "XTRASKILLPTSPERLVL" => {
                 set_i64_or_string(attributes, "pcgen_xtraskillptsperlvl", value)
             }
+            "GENDERLOCK" => {
+                attributes.insert("pcgen_genderlock".to_string(), Value::String(value.clone()));
+            }
+            "BONUSSKILLPOINTS" => set_i64_or_string(attributes, "pcgen_bonusskillpoints", value),
             "ADDLEVEL" => {
                 attributes.insert("pcgen_addlevel".to_string(), Value::String(value.clone()));
             }

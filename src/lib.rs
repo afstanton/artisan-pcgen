@@ -816,6 +816,71 @@ mod tests {
                 .and_then(Value::as_str),
             Some("pcgen:entity:pcc")
         );
+
+        let feat = parse_text_to_catalog(
+            "Power Attack CATEGORY:FEAT PRESTAT:1,STR=13 TYPE:General.Fighter",
+            "feat.lst",
+            "lst",
+        );
+        assert_eq!(
+            feat.entities[0]
+                .attributes
+                .get("pcgen_entity_type_key")
+                .and_then(Value::as_str),
+            Some("pcgen:entity:feat")
+        );
+
+        let template = parse_text_to_catalog(
+            "Male Clone VISIBLE:NO GENDERLOCK:Male",
+            "templates.lst",
+            "lst",
+        );
+        assert_eq!(
+            template.entities[0]
+                .attributes
+                .get("pcgen_entity_type_key")
+                .and_then(Value::as_str),
+            Some("pcgen:entity:template")
+        );
+
+        let startpack = parse_text_to_catalog(
+            "STARTPACK:AquaticElfLang2 !PRELANG:1,Aquan",
+            "kits.lst",
+            "lst",
+        );
+        assert_eq!(
+            startpack.entities[0]
+                .attributes
+                .get("pcgen_entity_type_key")
+                .and_then(Value::as_str),
+            Some("pcgen:entity:startpack")
+        );
+
+        let bonus_spell_level = parse_text_to_catalog(
+            "BONUSSPELLLEVEL:1 BASESTATSCORE:12 STATRANGE:8",
+            "statsandchecks.lst",
+            "lst",
+        );
+        assert_eq!(
+            bonus_spell_level.entities[0]
+                .attributes
+                .get("pcgen_entity_type_key")
+                .and_then(Value::as_str),
+            Some("pcgen:system:bonusspelllevel")
+        );
+
+        let preview_sheet = parse_text_to_catalog(
+            "PREVIEWSHEET:Standard.htm.ftl",
+            "miscinfo.lst",
+            "lst",
+        );
+        assert_eq!(
+            preview_sheet.entities[0]
+                .attributes
+                .get("pcgen_entity_type_key")
+                .and_then(Value::as_str),
+            Some("pcgen:system:previewsheet")
+        );
     }
 
     #[test]

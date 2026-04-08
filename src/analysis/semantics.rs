@@ -33,6 +33,12 @@ pub(crate) fn project_semantics(
 }
 
 pub(crate) fn infer_entity_type_key(head: &str, clauses: &[ParsedClause]) -> String {
+    if let Some((head_key, _)) = parse_head_key_value(head)
+        && let Some(schema) = crate::schema::schema_for_head_token(&head_key)
+    {
+        return schema.entity_type_key.to_string();
+    }
+
     if let Some((decl_key, _)) = declared_entity(head) {
         return format!("pcgen:entity:{}", decl_key.to_ascii_lowercase());
     }
@@ -144,6 +150,8 @@ fn looks_like_pcc(head: &str, clauses: &[ParsedClause]) -> bool {
 fn looks_like_class(clauses: &[ParsedClause]) -> bool {
     has_token(clauses, "CAST")
         || has_token(clauses, "KNOWN")
+        || has_token(clauses, "ADDDOMAINS")
+        || has_token(clauses, "DOMAIN")
         || has_token(clauses, "STARTSKILLPTS")
         || has_token(clauses, "SPELLTYPE")
         || has_token(clauses, "SPECIALTYKNOWN")
@@ -184,6 +192,7 @@ fn looks_like_ability(clauses: &[ParsedClause]) -> bool {
         && (has_token(clauses, "ADDSPELLLEVEL")
             || has_token(clauses, "SPELLS")
             || has_token(clauses, "EQMOD")
+            || has_token(clauses, "CSKILL")
             || has_token(clauses, "BENEFIT")
             || has_token(clauses, "STACK")
             || has_token(clauses, "MULT"))
@@ -191,10 +200,15 @@ fn looks_like_ability(clauses: &[ParsedClause]) -> bool {
 
 fn looks_like_feat(clauses: &[ParsedClause]) -> bool {
     has_token(clauses, "MODIFYFEATCHOICE")
+        || find_key_value(clauses, "CATEGORY")
+            .is_some_and(|value| value.trim().eq_ignore_ascii_case("FEAT"))
 }
 
 fn looks_like_template(clauses: &[ParsedClause]) -> bool {
-    has_token(clauses, "ADDLEVEL") || has_token(clauses, "REPEATLEVEL")
+    has_token(clauses, "ADDLEVEL")
+        || has_token(clauses, "REPEATLEVEL")
+        || has_token(clauses, "GENDERLOCK")
+        || has_token(clauses, "BONUSSKILLPOINTS")
 }
 
 fn looks_like_race(clauses: &[ParsedClause]) -> bool {
@@ -251,6 +265,7 @@ pub(crate) fn declared_entity(head: &str) -> Option<(String, String)> {
         "ABILITY" | "SKILL" | "GEAR" | "CLASS" | "STARTPACK" | "ABILITYCATEGORY" => {
             Some((key_upper, value))
         }
+        _ if crate::schema::schema_for_head_token(&key_upper).is_some() => Some((key_upper, value)),
         _ => None,
     }
 }
