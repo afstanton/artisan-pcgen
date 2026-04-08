@@ -102,6 +102,49 @@ fn parse_segments_with_generated_parser(line: &str) -> Vec<String> {
 }
 
 fn parse_clause(segment: &str) -> ParsedClause {
+    let parser = super::clause_grammar::ClausePiecesParser::new();
+    let parse_result: Result<Vec<Option<String>>, ParseError<usize, super::parser_tokens::ClauseToken, String>> =
+        parser.parse(parser_tokens::clause_tokens(segment));
+
+    if let Ok(parts) = parse_result {
+        let mut key = String::new();
+        let mut value = String::new();
+        let mut seen_colon = false;
+
+        for part in parts {
+            match part {
+                None => {
+                    if seen_colon {
+                        value.push(':');
+                    } else {
+                        seen_colon = true;
+                    }
+                }
+                Some(piece) => {
+                    if seen_colon {
+                        value.push_str(&piece);
+                    } else {
+                        key.push_str(&piece);
+                    }
+                }
+            }
+        }
+
+        if seen_colon {
+            let key_trimmed = key.trim().to_string();
+            if !key_trimmed.is_empty() {
+                return ParsedClause::KeyValue {
+                    key: key_trimmed,
+                    value: value.trim().to_string(),
+                };
+            }
+            return ParsedClause::Bare(format!("{}:{}", key, value).trim().to_string());
+        }
+
+        return ParsedClause::Bare(key.trim().to_string());
+    }
+
+    // Keep a conservative fallback to avoid dropping data if the generated parser fails.
     let tokens = parser_tokens::clause_tokens(segment);
     let mut key = String::new();
     let mut value = String::new();

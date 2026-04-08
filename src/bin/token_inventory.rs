@@ -1,3 +1,7 @@
+use artisan_pcgen::{
+    ParsedClause, TokenSupportLevel, classify_clause_handling, classify_token_key_support,
+    parse_line,
+};
 use std::collections::HashMap;
 use std::fs;
 use std::io;
@@ -12,7 +16,9 @@ fn main() -> io::Result<()> {
         std::process::exit(1);
     }
 
-    let mut token_counts: HashMap<String, usize> = HashMap::new();
+    let mut semantic_counts: HashMap<String, usize> = HashMap::new();
+    let mut policy_supported_counts: HashMap<String, usize> = HashMap::new();
+    let mut unhandled_counts: HashMap<String, usize> = HashMap::new();
     let mut file_count = 0;
     let mut total_lines = 0;
     let mut fixed_count = 0;
@@ -24,7 +30,14 @@ fn main() -> io::Result<()> {
         for subdir in &["data", "system"] {
             let path = root.join(subdir);
             if path.exists() && path.is_dir() {
-                let (_, fixes) = scan_directory(&path, &mut token_counts, &mut file_count, &mut total_lines)?;
+                let (_, fixes) = scan_directory(
+                    &path,
+                    &mut semantic_counts,
+                    &mut policy_supported_counts,
+                    &mut unhandled_counts,
+                    &mut file_count,
+                    &mut total_lines,
+                )?;
                 fixed_count += fixes;
             }
         }
@@ -33,17 +46,44 @@ fn main() -> io::Result<()> {
     println!("\n=== Token Inventory Summary ===");
     println!("Files scanned: {}", file_count);
     println!("Total lines processed: {}", total_lines);
-    println!("Unique tokens: {}", token_counts.len());
+    println!(
+        "Unique observed token keys: {}",
+        semantic_counts.len() + policy_supported_counts.len() + unhandled_counts.len()
+    );
+    println!("Unique semantically interpreted token keys: {}", semantic_counts.len());
+    println!(
+        "Unique policy-supported-only token keys: {}",
+        policy_supported_counts.len()
+    );
+    println!("Unique unhandled tokens: {}", unhandled_counts.len());
     if fixed_count > 0 {
         println!("Files with UTF-8 encoding issues fixed: {}", fixed_count);
     }
     println!();
 
-    let mut tokens: Vec<_> = token_counts.iter().collect();
-    tokens.sort_by(|a, b| b.1.cmp(a.1));
+    let mut semantic_tokens: Vec<_> = semantic_counts.iter().collect();
+    semantic_tokens.sort_by(|a, b| b.1.cmp(a.1));
 
-    println!("=== Tokens by Frequency ===");
-    for (token, count) in tokens {
+    println!("=== Semantically Interpreted Tokens by Frequency ===");
+    for (token, count) in semantic_tokens {
+        println!("{:6} | {}", count, token);
+    }
+
+    let mut policy_tokens: Vec<_> = policy_supported_counts.iter().collect();
+    policy_tokens.sort_by(|a, b| b.1.cmp(a.1));
+
+    println!();
+    println!("=== Policy-Supported-Only Tokens by Frequency ===");
+    for (token, count) in policy_tokens {
+        println!("{:6} | {}", count, token);
+    }
+
+    let mut unhandled: Vec<_> = unhandled_counts.iter().collect();
+    unhandled.sort_by(|a, b| b.1.cmp(a.1));
+
+    println!();
+    println!("=== Unhandled Tokens by Frequency ===");
+    for (token, count) in unhandled {
         println!("{:6} | {}", count, token);
     }
 
@@ -52,7 +92,9 @@ fn main() -> io::Result<()> {
 
 fn scan_directory(
     path: &Path,
-    token_counts: &mut HashMap<String, usize>,
+    semantic_counts: &mut HashMap<String, usize>,
+    policy_supported_counts: &mut HashMap<String, usize>,
+    unhandled_counts: &mut HashMap<String, usize>,
     file_count: &mut usize,
     total_lines: &mut usize,
 ) -> io::Result<(usize, usize)> {
@@ -74,12 +116,29 @@ fn scan_directory(
                     continue;
                 }
             }
-            let (_, f) = scan_directory(&path, token_counts, file_count, total_lines)?;
+            let (_, f) =
+                scan_directory(
+                    &path,
+                    semantic_counts,
+                    policy_supported_counts,
+                    unhandled_counts,
+                    file_count,
+                    total_lines,
+                )?;
             fix_count += f;
         } else if let Some(ext) = path.extension() {
             let ext_str = ext.to_string_lossy();
             if ext_str == "lst" || ext_str == "pcc" || ext_str == "pcg" {
-                if let Ok(fixed) = process_file(&path, token_counts, file_count, total_lines) {
+                if let Ok(fixed) =
+                    process_file(
+                        &path,
+                        semantic_counts,
+                        policy_supported_counts,
+                        unhandled_counts,
+                        file_count,
+                        total_lines,
+                    )
+                {
                     if fixed {
                         fix_count += 1;
                     }
@@ -93,7 +152,9 @@ fn scan_directory(
 
 fn process_file(
     path: &Path,
-    token_counts: &mut HashMap<String, usize>,
+    semantic_counts: &mut HashMap<String, usize>,
+    policy_supported_counts: &mut HashMap<String, usize>,
+    unhandled_counts: &mut HashMap<String, usize>,
     file_count: &mut usize,
     total_lines: &mut usize,
 ) -> io::Result<bool> {
@@ -112,15 +173,39 @@ fn process_file(
             continue;
         }
 
-        // Parse pipe-delimited tokens
-        for token in trimmed.split('|') {
-            let token = token.trim();
-            if !token.is_empty() {
-                // Extract the key part (before any colon or parentheses)
-                let token_key = extract_token_key(token);
-                if !token_key.is_empty() {
-                    *token_counts.entry(token_key).or_insert(0) += 1;
+        let parsed = parse_line(trimmed);
+
+        if let Some(head_key) = extract_head_key(&parsed.head) {
+            match classify_token_key_support(&head_key, false) {
+                TokenSupportLevel::SemanticallyInterpreted => {
+                    *semantic_counts.entry(head_key).or_insert(0) += 1;
                 }
+                TokenSupportLevel::PolicySupported => {
+                    *policy_supported_counts.entry(head_key).or_insert(0) += 1;
+                }
+                TokenSupportLevel::Unhandled(token_key) => {
+                    *unhandled_counts.entry(token_key).or_insert(0) += 1;
+                }
+                TokenSupportLevel::Artifact => {}
+            }
+        }
+
+        for (clause_index, clause) in parsed.clauses.iter().enumerate() {
+            match classify_clause_handling(clause) {
+                TokenSupportLevel::SemanticallyInterpreted => {
+                    if let Some(token_key) = extract_token_key(clause, clause_index) {
+                        *semantic_counts.entry(token_key).or_insert(0) += 1;
+                    }
+                }
+                TokenSupportLevel::PolicySupported => {
+                    if let Some(token_key) = extract_token_key(clause, clause_index) {
+                        *policy_supported_counts.entry(token_key).or_insert(0) += 1;
+                    }
+                }
+                TokenSupportLevel::Unhandled(token_key) => {
+                    *unhandled_counts.entry(token_key).or_insert(0) += 1;
+                }
+                TokenSupportLevel::Artifact => {}
             }
         }
     }
@@ -128,28 +213,83 @@ fn process_file(
     Ok(was_fixed)
 }
 
-fn extract_token_key(token: &str) -> String {
-    // Extract the main token key, handling various formats:
-    // - ABILITY:CATEGORY=Foo → ABILITY
-    // - BONUS:COMBAT|AC|+2 → BONUS
-    // - CHOOSE:STRING → CHOOSE
-    // - SKILL|Acrobatics|1 → SKILL
-    // - Something(text) → Something
+fn extract_head_key(head: &str) -> Option<String> {
+    let token = head.split('\t').next().unwrap_or(head).trim();
+    let colon_idx = token.find(':')?;
+    normalize_key(&token[..colon_idx])
+}
 
-    // First, handle cases where there's a tab or multiple spaces
-    let token = token.split('\t').next().unwrap_or(token).trim();
+fn extract_token_key(clause: &ParsedClause, clause_index: usize) -> Option<String> {
+    match clause {
+        ParsedClause::KeyValue { key, .. } => normalize_key(key),
+        ParsedClause::Bare(value) => {
+            // Only consider first bare clause as a possible directive token.
+            // Later bare clauses are usually positional values split from another token.
+            if clause_index > 0 {
+                return None;
+            }
+            normalize_bare_directive(value)
+        }
+    }
+}
 
-    // Extract before:
-    if let Some(colon_idx) = token.find(':') {
-        return token[..colon_idx].to_uppercase();
+fn normalize_bare_directive(value: &str) -> Option<String> {
+    let token = value.split('\t').next().unwrap_or(value).trim();
+    if token.is_empty() || token.contains(' ') {
+        return None;
     }
 
-    // Extract before (
-    if let Some(paren_idx) = token.find('(') {
-        return token[..paren_idx].to_uppercase();
+    let upper = token.to_ascii_uppercase();
+    if !is_plausible_token_name(&upper) {
+        return None;
     }
 
-    // For pipes within a token, usually the first part is the key
-    // But we want to preserve the structure, so just uppercase what we have
-    token.to_uppercase()
+    if upper.starts_with("PRE") || upper.starts_with("!PRE") {
+        return Some(upper);
+    }
+
+    match upper.as_str() {
+        "AUTOMATIC" | "VISIBLE" | "VIRTUAL" | "PRERULE" | "!PRERULE" | "SET" => Some(upper),
+        _ => None,
+    }
+}
+
+fn normalize_key(raw: &str) -> Option<String> {
+    let key = raw.trim();
+    if key.is_empty() {
+        return None;
+    }
+
+    let key = key.trim_matches(|c: char| c == '(' || c == ')');
+    if key.is_empty() {
+        return None;
+    }
+
+    let upper = key.to_ascii_uppercase();
+    if !is_plausible_token_name(&upper) {
+        return None;
+    }
+
+    Some(upper)
+}
+
+fn is_plausible_token_name(token: &str) -> bool {
+    if token.is_empty() {
+        return false;
+    }
+
+    if !token
+        .chars()
+        .all(|c| c.is_ascii_alphanumeric() || matches!(c, '_' | '!' | '-' | '.'))
+    {
+        return false;
+    }
+
+    // Exclude value-like fragments such as "1", "23", "10".
+    if token.chars().all(|c| c.is_ascii_digit()) {
+        return false;
+    }
+
+    // Functional token names should contain at least one alphabetic character.
+    token.chars().any(|c| c.is_ascii_alphabetic())
 }

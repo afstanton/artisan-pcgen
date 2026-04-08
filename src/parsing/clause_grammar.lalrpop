@@ -1,0 +1,20 @@
+grammar;
+
+extern {
+    type Location = usize;
+    type Error = String;
+
+    enum crate::parsing::parser_tokens::ClauseToken {
+        ":" => crate::parsing::parser_tokens::ClauseToken::Colon,
+        "piece" => crate::parsing::parser_tokens::ClauseToken::Piece(<String>),
+    }
+}
+
+pub ClausePieces: Vec<Option<String>> = {
+    <parts:PieceOrColon*> => parts,
+};
+
+PieceOrColon: Option<String> = {
+    "piece" => Some(<>),
+    ":" => None,
+};

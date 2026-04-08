@@ -139,6 +139,44 @@ pub enum ParsedClause {
     KeyValue { key: String, value: String },
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum TokenSupportLevel {
+    SemanticallyInterpreted,
+    PolicySupported,
+    Unhandled(String),
+    Artifact,
+}
+
+pub fn classify_clause_handling(clause: &ParsedClause) -> TokenSupportLevel {
+    match analysis::token_policy::classify_clause_token(clause) {
+        analysis::token_policy::ClauseSupportLevel::SemanticallyInterpreted => {
+            TokenSupportLevel::SemanticallyInterpreted
+        }
+        analysis::token_policy::ClauseSupportLevel::PolicySupported => {
+            TokenSupportLevel::PolicySupported
+        }
+        analysis::token_policy::ClauseSupportLevel::Unhandled(token_key) => {
+            TokenSupportLevel::Unhandled(token_key)
+        }
+        analysis::token_policy::ClauseSupportLevel::Artifact => TokenSupportLevel::Artifact,
+    }
+}
+
+pub fn classify_token_key_support(token_key: &str, is_bare: bool) -> TokenSupportLevel {
+    match analysis::token_policy::classify_token_key(token_key, is_bare) {
+        analysis::token_policy::ClauseSupportLevel::SemanticallyInterpreted => {
+            TokenSupportLevel::SemanticallyInterpreted
+        }
+        analysis::token_policy::ClauseSupportLevel::PolicySupported => {
+            TokenSupportLevel::PolicySupported
+        }
+        analysis::token_policy::ClauseSupportLevel::Unhandled(token_key) => {
+            TokenSupportLevel::Unhandled(token_key)
+        }
+        analysis::token_policy::ClauseSupportLevel::Artifact => TokenSupportLevel::Artifact,
+    }
+}
+
 pub fn parse_file(path: &Path) -> io::Result<ParsedCatalog> {
     let bytes = fs::read(path)?;
     let text = String::from_utf8_lossy(&bytes).to_string();
@@ -173,6 +211,7 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
     let mut metadata = metadata::PcgenMetadata::default();
     let mut entities = Vec::new();
     let mut citations = Vec::new();
+    let mut skipped_unknown_clause_counts: BTreeMap<String, usize> = BTreeMap::new();
     for (line_number, raw_line) in text.lines().enumerate() {
         let trimmed = raw_line.trim();
         if trimmed.is_empty() || trimmed.starts_with('#') {
@@ -181,6 +220,20 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
 
         let parsed_line = parse_line(trimmed);
         metadata::collect_metadata(&parsed_line, trimmed, &mut metadata);
+        let mut supported_clauses = Vec::new();
+        for clause in &parsed_line.clauses {
+            match analysis::token_policy::classify_clause_token(clause) {
+                analysis::token_policy::ClauseSupportLevel::SemanticallyInterpreted
+                | analysis::token_policy::ClauseSupportLevel::PolicySupported => {
+                    supported_clauses.push(clause.clone());
+                }
+                analysis::token_policy::ClauseSupportLevel::Unhandled(token_key) => {
+                    *skipped_unknown_clause_counts.entry(token_key).or_insert(0) += 1;
+                }
+                analysis::token_policy::ClauseSupportLevel::Artifact => {}
+            }
+        }
+
         let name = parsed_line
             .head
             .trim()
@@ -199,14 +252,14 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
         attributes.insert("head".to_string(), Value::String(parsed_line.head.clone()));
         attributes.insert(
             "clauses".to_string(),
-            json!(line_codec::clauses_to_json(&parsed_line.clauses)),
+            json!(line_codec::clauses_to_json(&supported_clauses)),
         );
         attributes.insert("line_number".to_string(), json!(line_number + 1));
         attributes.insert("pcgen_line_number".to_string(), json!(line_number + 1));
         attributes.insert("source_format".to_string(), Value::String(ext.to_string()));
 
         let mut entity_citations = Vec::new();
-        if let Some(source_page) = line_codec::find_key_value(&parsed_line.clauses, "SOURCEPAGE") {
+        if let Some(source_page) = line_codec::find_key_value(&supported_clauses, "SOURCEPAGE") {
             attributes.insert(
                 "pcgen_source_page".to_string(),
                 Value::String(source_page.clone()),
@@ -235,12 +288,12 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
             entity_citations.push(citation_id);
         }
 
-        let inferred_type_key = semantics::infer_entity_type_key(&parsed_line.clauses);
+        let inferred_type_key = semantics::infer_entity_type_key(&supported_clauses);
         attributes.insert(
             "pcgen_entity_type_key".to_string(),
             Value::String(inferred_type_key.clone()),
         );
-        let mechanical_signals = signals::extract_mechanical_signals(&parsed_line.clauses);
+        let mechanical_signals = signals::extract_mechanical_signals(&supported_clauses);
         if !mechanical_signals.is_empty() {
             attributes.insert("pcgen_mechanical_signals".to_string(), json!(mechanical_signals));
         }
@@ -253,7 +306,7 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
 
         let mut effects = Vec::new();
         let mut prerequisites = Vec::new();
-        semantics::project_semantics(&parsed_line.clauses, &mut effects, &mut prerequisites);
+        semantics::project_semantics(&supported_clauses, &mut effects, &mut prerequisites);
 
         entities.push(Entity {
             id: entity_id,
@@ -268,6 +321,17 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
             completeness: CompletenessState::Descriptive,
             provenance: None,
         });
+    }
+
+    if !skipped_unknown_clause_counts.is_empty() {
+        let total_skipped: usize = skipped_unknown_clause_counts.values().sum();
+        eprintln!(
+            "PCGen parse skipped {total_skipped} unknown clauses across {} token kinds while parsing {source_name}",
+            skipped_unknown_clause_counts.len()
+        );
+        for (token_key, count) in skipped_unknown_clause_counts {
+            eprintln!("  UNKNOWN {count:>6} | {token_key}");
+        }
     }
 
     let publisher_name = metadata
