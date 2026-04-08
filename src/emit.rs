@@ -163,6 +163,8 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
             for effect in &entity.effects {
                 if effect.kind.eq_ignore_ascii_case("BONUS") {
                     parts.push(format!("BONUS:{}", effect.target));
+                } else if effect.kind.eq_ignore_ascii_case("TEMPBONUS") {
+                    parts.push(format!("TEMPBONUS:{}", effect.target));
                 }
             }
         }
@@ -177,6 +179,8 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
             for effect in &entity.effects {
                 if effect.kind.eq_ignore_ascii_case("CHOOSE") {
                     parts.push(format!("CHOOSE:{}", effect.target));
+                } else if effect.kind.eq_ignore_ascii_case("SELECT") {
+                    parts.push(format!("SELECT:{}", effect.target));
                 }
             }
         }
@@ -230,6 +234,13 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
             if let Some(desc) = desc {
                 parts.push(format!("DESC:{desc}"));
             }
+            if let Some(tempdesc) = entity
+                .attributes
+                .get("pcgen_tempdesc")
+                .and_then(Value::as_str)
+            {
+                parts.push(format!("TEMPDESC:{tempdesc}"));
+            }
         }
         GlobalGroup::Fact => {
             if let Some(facts) = entity
@@ -246,6 +257,20 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
                     }
                 }
             }
+            if let Some(factsets) = entity
+                .attributes
+                .get("pcgen_factsets")
+                .and_then(Value::as_array)
+            {
+                for factset in factsets {
+                    if let (Some(k), Some(v)) = (
+                        factset.get("key").and_then(Value::as_str),
+                        factset.get("value").and_then(Value::as_str),
+                    ) {
+                        parts.push(format!("FACTSET:{k}|{v}"));
+                    }
+                }
+            }
         }
         GlobalGroup::SourcePage => {
             if let Some(sp) = entity
@@ -254,6 +279,15 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
                 .and_then(Value::as_str)
             {
                 parts.push(format!("SOURCEPAGE:{sp}"));
+            }
+        }
+        GlobalGroup::SourceLink => {
+            if let Some(sl) = entity
+                .attributes
+                .get("pcgen_source_link")
+                .and_then(Value::as_str)
+            {
+                parts.push(format!("SOURCELINK:{sl}"));
             }
         }
         GlobalGroup::OutputName => {

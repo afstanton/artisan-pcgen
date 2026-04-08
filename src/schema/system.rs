@@ -67,3 +67,35 @@ pub static ICON_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
     tokens: &[],
     globals: &[],
 };
+
+pub static ALIGN_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:align",
+    head_token: Some("ALIGN"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[],
+    globals: &[],
+};
+
+pub static STAT_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:stat",
+    head_token: Some("STAT"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[],
+    globals: &[],
+};
+
+pub static RACE_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:race",
+    head_token: Some("RACE"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[],
+    globals: &[],
+};
+
+pub static NAME_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:name",
+    head_token: Some("NAME"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[],
+    globals: &[],
+};

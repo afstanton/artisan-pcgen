@@ -247,10 +247,13 @@ fn unparse_emits_pcgen_metadata_lines_for_pcc() {
     assert!(generated.contains("MAXVER:6.10.0"));
     assert!(generated.contains("NEWKEY:SOURCEPAGE"));
     assert!(generated.contains("DATAFORMAT:LST"));
+    assert!(generated.contains("DISPLAYNAME:Source Metadata Label"));
     assert!(generated.contains("EXPLANATION:Core rules metadata"));
     assert!(generated.contains("REQUIRED:YES"));
     assert!(generated.contains("SELECTABLE:YES"));
     assert!(generated.contains("NAMEISPI:YES"));
+    assert!(generated.contains("COPYRIGHT:Open Game License v1.0a, Section 15 excerpt"));
+    assert!(generated.contains("FACTDEF:RACE|BaseSize"));
 }
 
 #[test]

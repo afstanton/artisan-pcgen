@@ -21,7 +21,13 @@ pub(crate) fn project_semantics(
                 continue;
             }
 
-            if key == "BONUS" || key == "AUTO" || key == "DEFINE" || key == "CHOOSE" {
+            if key == "BONUS"
+                || key == "TEMPBONUS"
+                || key == "AUTO"
+                || key == "DEFINE"
+                || key == "CHOOSE"
+                || key == "SELECT"
+            {
                 effects.push(Effect {
                     kind: key.clone(),
                     target: value.clone(),
@@ -125,9 +131,11 @@ fn looks_like_pcc(head: &str, clauses: &[ParsedClause]) -> bool {
         "GAMEMODE",
         "SETTING",
         "BOOKTYPE",
+        "FACTDEF",
         "STATUS",
         "OPTION",
         "DATAFORMAT",
+        "DISPLAYNAME",
         "EXPLANATION",
         "REQUIRED",
         "SELECTABLE",
@@ -141,6 +149,7 @@ fn looks_like_pcc(head: &str, clauses: &[ParsedClause]) -> bool {
         "ISLICENSED",
         "COVER",
         "LOGO",
+        "COPYRIGHT",
         "LICENSE",
     ];
 
@@ -151,11 +160,13 @@ fn looks_like_pcc(head: &str, clauses: &[ParsedClause]) -> bool {
     }
 
     has_token(clauses, "BOOKTYPE")
+        || has_token(clauses, "FACTDEF")
         || has_token(clauses, "GAMEMODE")
         || has_token(clauses, "SETTING")
         || has_token(clauses, "URL")
         || has_token(clauses, "OPTION")
         || has_token(clauses, "DATAFORMAT")
+        || has_token(clauses, "DISPLAYNAME")
         || has_token(clauses, "EXPLANATION")
         || has_token(clauses, "REQUIRED")
         || has_token(clauses, "SELECTABLE")
@@ -165,6 +176,7 @@ fn looks_like_pcc(head: &str, clauses: &[ParsedClause]) -> bool {
         || has_token(clauses, "ALLOWDUPES")
         || has_token(clauses, "HIDETYPE")
         || has_token(clauses, "FORWARDREF")
+        || has_token(clauses, "COPYRIGHT")
 }
 
 fn looks_like_class(clauses: &[ParsedClause]) -> bool {

@@ -17,6 +17,7 @@ static ABILITYCATEGORY_TOKENS: &[TokenDef] = &[
         required: false,
     },
     TokenDef::text("DISPLAYLOCATION", "pcgen_displaylocation"),
+    TokenDef::text("DISPLAYNAME", "pcgen_displayname"),
     TokenDef::text("EDITABLE", "pcgen_editable"),
     TokenDef::text("EDITPOOL", "pcgen_editpool"),
     TokenDef::text("FRACTIONALPOOL", "pcgen_fractionalpool"),
@@ -36,6 +37,7 @@ static ABILITYCATEGORY_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::Define,
     GlobalGroup::Prerequisites,
     GlobalGroup::SourcePage,
+    GlobalGroup::SourceLink,
     GlobalGroup::OutputName,
     GlobalGroup::SourceMeta,
 ];

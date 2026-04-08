@@ -89,6 +89,8 @@ static CLASS_TOKENS: &[TokenDef] = &[
         required: false,
     },
     TokenDef::text("VISIBLE", "pcgen_visible"),
+    TokenDef::text("UDAM", "pcgen_udam"),
+    TokenDef::integer("UMULT", "pcgen_umult"),
     // Sub-class / substitution
     TokenDef::integer("PROHIBITCOST", "pcgen_prohibitcost"),
     TokenDef::text("SUBCLASSLEVEL", "pcgen_subclasslevel"),
@@ -108,6 +110,7 @@ static CLASS_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::Define,
     GlobalGroup::Prerequisites,
     GlobalGroup::SourcePage,
+    GlobalGroup::SourceLink,
     GlobalGroup::OutputName,
     GlobalGroup::CSkill,
     GlobalGroup::Sab,

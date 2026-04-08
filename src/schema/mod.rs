@@ -25,9 +25,10 @@ pub use ability::ABILITY_SCHEMA;
 pub use abilitycategory::ABILITYCATEGORY_SCHEMA;
 pub use startpack::STARTPACK_SCHEMA;
 pub use system::{
-    BONUSFEATLEVELSTARTINTERVAL_SCHEMA, BONUSSPELLLEVEL_SCHEMA,
+    ALIGN_SYSTEM_SCHEMA, BONUSFEATLEVELSTARTINTERVAL_SCHEMA, BONUSSPELLLEVEL_SCHEMA,
     BONUSSTACKS_SCHEMA, BONUSSTATLEVELSTARTINTERVAL_SCHEMA, ICON_SYSTEM_SCHEMA,
-    PREVIEWDIR_SCHEMA, PREVIEWSHEET_SCHEMA,
+    NAME_SYSTEM_SCHEMA, PREVIEWDIR_SCHEMA, PREVIEWSHEET_SCHEMA, RACE_SYSTEM_SCHEMA,
+    STAT_SYSTEM_SCHEMA,
 };
 pub use class::CLASS_SCHEMA;
 pub use equipment::EQUIPMENT_SCHEMA;
@@ -243,6 +244,8 @@ pub enum GlobalGroup {
     Prerequisites,
     /// `SOURCEPAGE:x` — source page citation
     SourcePage,
+    /// `SOURCELINK:x` — source reference URL
+    SourceLink,
     /// `OUTPUTNAME:x` — display name override
     OutputName,
     /// `SORTKEY:x` — sort/display ordering hint
@@ -268,15 +271,16 @@ impl GlobalGroup {
         match self {
             GlobalGroup::Type => &["TYPE"],
             GlobalGroup::Key => &["KEY"],
-            GlobalGroup::Desc => &["DESC"],
-            GlobalGroup::Fact => &["FACT"],
-            GlobalGroup::Bonus => &["BONUS"],
+            GlobalGroup::Desc => &["DESC", "TEMPDESC"],
+            GlobalGroup::Fact => &["FACT", "FACTSET"],
+            GlobalGroup::Bonus => &["BONUS", "TEMPBONUS"],
             GlobalGroup::Add => &["ADD"],
-            GlobalGroup::Choose => &["CHOOSE"],
+            GlobalGroup::Choose => &["CHOOSE", "SELECT"],
             GlobalGroup::Auto => &["AUTO"],
             GlobalGroup::Define => &["DEFINE", "DEFINESTAT"],
             GlobalGroup::Prerequisites => &["PRE", "!PRE"],
             GlobalGroup::SourcePage => &["SOURCEPAGE"],
+            GlobalGroup::SourceLink => &["SOURCELINK"],
             GlobalGroup::OutputName => &["OUTPUTNAME"],
             GlobalGroup::SortKey => &["SORTKEY"],
             GlobalGroup::Template => &["TEMPLATE"],
@@ -298,6 +302,7 @@ impl GlobalGroup {
                 "GAMEMODE",
                 "SETTING",
                 "BOOKTYPE",
+                "FACTDEF",
             ],
         }
     }
@@ -313,11 +318,12 @@ impl GlobalGroup {
             // ADD uses prefix matching too (ADD:ABILITY, ADD:FEAT, etc.)
             GlobalGroup::Add => upper_key == "ADD",
             // CHOOSE uses prefix matching (CHOOSE:ABILITY, CHOOSE:FEAT, etc.)
-            GlobalGroup::Choose => upper_key == "CHOOSE",
+            GlobalGroup::Choose => upper_key == "CHOOSE" || upper_key == "SELECT",
             // BONUS uses prefix matching (BONUS:COMBAT, BONUS:SKILL, etc.)
-            GlobalGroup::Bonus => upper_key == "BONUS",
+            GlobalGroup::Bonus => upper_key == "BONUS" || upper_key == "TEMPBONUS",
             // TEMPLATE uses prefix matching
             GlobalGroup::Template => upper_key == "TEMPLATE",
+            GlobalGroup::SourceLink => upper_key == "SOURCELINK",
             // SourceMeta: exact match against any of the known keys
             GlobalGroup::SourceMeta => self.token_key_prefixes().contains(&upper_key),
             // All others: exact match
@@ -381,6 +387,10 @@ static ALL_SCHEMAS: &[&EntitySchema] = &[
     &system::PREVIEWDIR_SCHEMA,
     &system::PREVIEWSHEET_SCHEMA,
     &system::ICON_SYSTEM_SCHEMA,
+    &system::ALIGN_SYSTEM_SCHEMA,
+    &system::STAT_SYSTEM_SCHEMA,
+    &system::RACE_SYSTEM_SCHEMA,
+    &system::NAME_SYSTEM_SCHEMA,
     &class::CLASS_SCHEMA,
     &equipment::EQUIPMENT_SCHEMA,
     &feat::FEAT_SCHEMA,

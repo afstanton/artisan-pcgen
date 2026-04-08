@@ -45,6 +45,7 @@ static FEAT_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::Define,
     GlobalGroup::Prerequisites,
     GlobalGroup::SourcePage,
+    GlobalGroup::SourceLink,
     GlobalGroup::OutputName,
     GlobalGroup::CSkill,
     GlobalGroup::Sab,

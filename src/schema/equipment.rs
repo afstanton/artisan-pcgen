@@ -37,7 +37,22 @@ static EQUIPMENT_TOKENS: &[TokenDef] = &[
     TokenDef::text("ALTCRITMULT", "pcgen_altcritmult"),
     TokenDef::text("ALTCRITRANGE", "pcgen_altcritrange"),
     TokenDef::text("ALTEQMOD", "pcgen_alteqmod"),
+    TokenDef {
+        key: "ITYPE",
+        grammar: TokenGrammar::DotList,
+        cardinality: Cardinality::Once,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_itype"),
+        required: false,
+    },
+    TokenDef::text("NAMEOPT", "pcgen_nameopt"),
     TokenDef::pipe_positional("PROFICIENCY", PROFICIENCY_SLOTS, "pcgen_proficiency"),
+    TokenDef {
+        key: "REPLACES",
+        grammar: TokenGrammar::CommaList,
+        cardinality: Cardinality::Once,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_replaces"),
+        required: false,
+    },
     // Container
     TokenDef::text("CONTAINS", "pcgen_contains"),
     TokenDef::text("BASEQTY", "pcgen_baseqty"),
@@ -76,6 +91,7 @@ static EQUIPMENT_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::Define,
     GlobalGroup::Prerequisites,
     GlobalGroup::SourcePage,
+    GlobalGroup::SourceLink,
     GlobalGroup::OutputName,
     GlobalGroup::SourceMeta,
 ];

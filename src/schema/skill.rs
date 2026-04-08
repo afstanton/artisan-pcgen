@@ -39,6 +39,7 @@ static SKILL_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::Define,
     GlobalGroup::Prerequisites,
     GlobalGroup::SourcePage,
+    GlobalGroup::SourceLink,
     GlobalGroup::OutputName,
     GlobalGroup::SourceMeta,
 ];

@@ -9,6 +9,7 @@ pub(crate) fn project_clause_attributes(
     attributes: &mut IndexMap<String, Value>,
 ) {
     let mut facts = Vec::new();
+        let mut factsets = Vec::new();
     let mut equipment_modifiers = Vec::new();
     let mut class_lists = Vec::new();
     let mut spell_blocks = Vec::new();
@@ -36,6 +37,9 @@ pub(crate) fn project_clause_attributes(
             "SOURCEWEB" => {
                 attributes.insert("pcgen_source_web".to_string(), Value::String(value.clone()));
             }
+            "SOURCELINK" => {
+                attributes.insert("pcgen_source_link".to_string(), Value::String(value.clone()));
+            }
             "SOURCEDATE" => {
                 attributes.insert("pcgen_source_date".to_string(), Value::String(value.clone()));
             }
@@ -50,6 +54,9 @@ pub(crate) fn project_clause_attributes(
             }
             "BENEFIT" => {
                 attributes.insert("pcgen_benefit".to_string(), Value::String(value.clone()));
+            }
+            "TEMPDESC" => {
+                attributes.insert("pcgen_tempdesc".to_string(), Value::String(value.clone()));
             }
             "SPELLLEVEL" => {
                 attributes.insert("pcgen_spelllevel".to_string(), Value::String(value.clone()));
@@ -150,6 +157,10 @@ pub(crate) fn project_clause_attributes(
             "VISIBLE" => {
                 attributes.insert("pcgen_visible".to_string(), Value::String(value.clone()));
             }
+            "UDAM" => {
+                attributes.insert("pcgen_udam".to_string(), Value::String(value.clone()));
+            }
+            "UMULT" => set_i64_or_string(attributes, "pcgen_umult", value),
             "REMOVABLE" => {
                 attributes.insert("pcgen_removable".to_string(), Value::String(value.clone()));
             }
@@ -251,8 +262,15 @@ pub(crate) fn project_clause_attributes(
             "NEWKEY" => {
                 attributes.insert("pcgen_newkey".to_string(), Value::String(value.clone()));
             }
+            "COPYRIGHT" => append_string_attr(attributes, "pcgen_copyright", value),
+            "FACTDEF" => {
+                attributes.insert("pcgen_factdef".to_string(), Value::String(value.clone()));
+            }
             "DATAFORMAT" => {
                 attributes.insert("pcgen_dataformat".to_string(), Value::String(value.clone()));
+            }
+            "DISPLAYNAME" => {
+                attributes.insert("pcgen_displayname".to_string(), Value::String(value.clone()));
             }
             "EXPLANATION" => {
                 attributes.insert("pcgen_explanation".to_string(), Value::String(value.clone()));
@@ -326,6 +344,9 @@ pub(crate) fn project_clause_attributes(
             "SR" => {
                 attributes.insert("pcgen_sr".to_string(), Value::String(value.clone()));
             }
+            "CR" => {
+                attributes.insert("pcgen_cr".to_string(), Value::String(value.clone()));
+            }
             "WIELD" => {
                 attributes.insert("pcgen_wield".to_string(), Value::String(value.clone()));
             }
@@ -383,8 +404,17 @@ pub(crate) fn project_clause_attributes(
             "ALTEQMOD" => {
                 attributes.insert("pcgen_alteqmod".to_string(), Value::String(value.clone()));
             }
+            "ITYPE" => {
+                attributes.insert("pcgen_itype".to_string(), Value::String(value.clone()));
+            }
+            "NAMEOPT" => {
+                attributes.insert("pcgen_nameopt".to_string(), Value::String(value.clone()));
+            }
             "PROFICIENCY" => {
-                attributes.insert("pcgen_proficiency".to_string(), Value::String(value.clone()));
+                attributes.insert("pcgen_proficiency".to_string(), parse_pipe_series(value));
+            }
+            "REPLACES" => {
+                attributes.insert("pcgen_replaces".to_string(), Value::String(value.clone()));
             }
             "CONTAINS" => {
                 attributes.insert("pcgen_contains".to_string(), Value::String(value.clone()));
@@ -409,6 +439,7 @@ pub(crate) fn project_clause_attributes(
             "SPROP" => sprop_values.push(Value::String(value.clone())),
             "PAGEUSAGE" => page_usage_values.push(Value::String(value.clone())),
             "FACT" => facts.push(parse_fact(value)),
+            "FACTSET" => factsets.push(parse_fact(value)),
             "EQMOD" => equipment_modifiers.push(parse_pipe_series(value)),
             "CLASSES" => class_lists.push(parse_pipe_series(value)),
             "SPELLS" => spell_blocks.push(parse_spells(value)),
@@ -436,6 +467,9 @@ pub(crate) fn project_clause_attributes(
     }
     if !page_usage_values.is_empty() {
         attributes.insert("pcgen_pageusage".to_string(), Value::Array(page_usage_values));
+    }
+    if !factsets.is_empty() {
+        attributes.insert("pcgen_factsets".to_string(), Value::Array(factsets));
     }
 
     project_dual_name_fields(head_name, attributes);

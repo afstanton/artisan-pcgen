@@ -6,7 +6,10 @@ OPTION:pcgen.options.optionSourcesAllowMultiLine=true
 MAXVER:6.10.0
 NEWKEY:SOURCEPAGE
 DATAFORMAT:LST
+DISPLAYNAME:Source Metadata Label
 EXPLANATION:Core rules metadata
 REQUIRED:YES
 SELECTABLE:YES
 NAMEISPI:YES
+COPYRIGHT:Open Game License v1.0a, Section 15 excerpt
+FACTDEF:RACE|BaseSize DATAFORMAT:SIZEADJUSTMENT VISIBLE:YES REQUIRED:NO EXPLANATION:All races must define a base size.
