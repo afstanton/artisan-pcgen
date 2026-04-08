@@ -5,7 +5,7 @@
 //! - `docs/listfilepages/systemfilestagpages/gamemodemiscinfolist.html`
 //! - `docs/listfilepages/systemfilestagpages/equipiconslst.html`
 
-use crate::schema::{EntitySchema, HeadFormat, TokenDef};
+use crate::schema::{EntitySchema, GlobalGroup, HeadFormat, TokenDef};
 
 static BONUSSPELLLEVEL_TOKENS: &[TokenDef] = &[
     TokenDef::integer("BASESTATSCORE", "pcgen_basestatscore"),
@@ -71,16 +71,34 @@ pub static ICON_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
 pub static ALIGN_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
     entity_type_key: "pcgen:system:align",
     head_token: Some("ALIGN"),
-    head_format: HeadFormat::TokenPrefixed,
-    tokens: &[],
-    globals: &[],
+    head_format: HeadFormat::NameOnly,
+    tokens: &[
+        TokenDef::text("ABB", "pcgen_abbreviation"),
+        TokenDef::text("VALIDFORDEITY", "pcgen_validfordeity"),
+        TokenDef::text("VALIDFORFOLLOWER", "pcgen_validforfollower"),
+    ],
+    globals: &[GlobalGroup::Key, GlobalGroup::SortKey],
 };
 
 pub static STAT_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
     entity_type_key: "pcgen:system:stat",
     head_token: Some("STAT"),
+    head_format: HeadFormat::NameOnly,
+    tokens: &[
+        TokenDef::text("ABB", "pcgen_abbreviation"),
+        TokenDef::text("STATMOD", "pcgen_statmod"),
+    ],
+    globals: &[GlobalGroup::Key, GlobalGroup::SortKey],
+};
+
+pub static SIZEADJUSTMENT_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:sizeadjustment",
+    head_token: Some("SIZENAME"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[],
+    tokens: &[
+        TokenDef::text("SIZENUM", "pcgen_sizenum"),
+        TokenDef::text("ISDEFAULTSIZE", "pcgen_isdefaultsize"),
+    ],
     globals: &[],
 };
 

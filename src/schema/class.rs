@@ -23,6 +23,7 @@ static CLASS_TOKENS: &[TokenDef] = &[
     TokenDef::text("SPELLTYPE", "pcgen_spelltype"),
     TokenDef::text("SPELLSTAT", "pcgen_spellstat"),
     TokenDef::text("BONUSSPELLSTAT", "pcgen_bonusspellstat"),
+    TokenDef::yesno("MEMORIZE", "pcgen_memorize"),
     TokenDef {
         key: "CAST",
         grammar: TokenGrammar::CommaList,
@@ -89,6 +90,12 @@ static CLASS_TOKENS: &[TokenDef] = &[
         required: false,
     },
     TokenDef::text("VISIBLE", "pcgen_visible"),
+    TokenDef::pipe_list_repeatable("COMPANIONLIST", "pcgen_companionlist"),
+    TokenDef::pipe_positional_repeatable(
+        "FOLLOWERS",
+        &["type", "limit"],
+        "pcgen_followers",
+    ),
     TokenDef::text("UDAM", "pcgen_udam"),
     TokenDef::integer("UMULT", "pcgen_umult"),
     // Sub-class / substitution
@@ -112,8 +119,11 @@ static CLASS_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::SourcePage,
     GlobalGroup::SourceLink,
     GlobalGroup::OutputName,
+    GlobalGroup::LangBonus,
     GlobalGroup::CSkill,
     GlobalGroup::Sab,
+    GlobalGroup::ChangeProf,
+    GlobalGroup::ServesAs,
     GlobalGroup::Qualify,
     GlobalGroup::Template,
     GlobalGroup::SourceMeta,

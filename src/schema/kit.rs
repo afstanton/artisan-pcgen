@@ -54,5 +54,9 @@ pub static KIT_SCHEMA: EntitySchema = EntitySchema {
     head_token: Some("KIT"),
     head_format: HeadFormat::TokenPrefixed,
     tokens: KIT_TOKENS,
-    globals: &[GlobalGroup::Prerequisites, GlobalGroup::SourceMeta],
+    globals: &[
+        GlobalGroup::Prerequisites,
+        GlobalGroup::LangBonus,
+        GlobalGroup::SourceMeta,
+    ],
 };

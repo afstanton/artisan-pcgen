@@ -57,6 +57,22 @@ pub(crate) fn infer_entity_type_key(head: &str, clauses: &[ParsedClause]) -> Str
         return "pcgen:entity:pcc".to_string();
     }
 
+    if looks_like_system_align(clauses) {
+        return "pcgen:system:align".to_string();
+    }
+
+    if looks_like_system_stat(clauses) {
+        return "pcgen:system:stat".to_string();
+    }
+
+    if looks_like_class_level(head, clauses) {
+        return "pcgen:entity:classlevel".to_string();
+    }
+
+    if looks_like_deity(clauses) {
+        return "pcgen:entity:deity".to_string();
+    }
+
     if looks_like_class(clauses) {
         return "pcgen:entity:class".to_string();
     }
@@ -182,6 +198,7 @@ fn looks_like_pcc(head: &str, clauses: &[ParsedClause]) -> bool {
 fn looks_like_class(clauses: &[ParsedClause]) -> bool {
     has_token(clauses, "CAST")
         || has_token(clauses, "KNOWN")
+        || has_token(clauses, "MEMORIZE")
         || has_token(clauses, "SPELLSTAT")
         || has_token(clauses, "ADDDOMAINS")
         || has_token(clauses, "DOMAIN")
@@ -193,6 +210,29 @@ fn looks_like_class(clauses: &[ParsedClause]) -> bool {
         || has_token(clauses, "SUBSTITUTIONCLASS")
         || has_token(clauses, "SUBSTITUTIONLEVEL")
         || has_token(clauses, "PROHIBITCOST")
+}
+
+fn looks_like_system_align(clauses: &[ParsedClause]) -> bool {
+    has_token(clauses, "VALIDFORDEITY") || has_token(clauses, "VALIDFORFOLLOWER")
+}
+
+fn looks_like_system_stat(clauses: &[ParsedClause]) -> bool {
+    has_token(clauses, "STATMOD")
+}
+
+fn looks_like_class_level(head: &str, clauses: &[ParsedClause]) -> bool {
+    let normalized_head = head.trim();
+    !normalized_head.is_empty()
+        && normalized_head.chars().all(|ch| ch.is_ascii_digit())
+        && (has_token(clauses, "DONOTADD")
+            || has_token(clauses, "UDAM")
+            || has_token(clauses, "UMULT"))
+}
+
+fn looks_like_deity(clauses: &[ParsedClause]) -> bool {
+    has_token(clauses, "DEITYWEAP")
+    || has_token(clauses, "GROUP")
+    || (has_token(clauses, "ALIGN") && has_token(clauses, "DOMAINS"))
 }
 
 fn looks_like_skill(clauses: &[ParsedClause]) -> bool {

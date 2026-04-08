@@ -91,6 +91,13 @@ static RACE_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Attribute("pcgen_weaponbonus"),
         required: false,
     },
+    TokenDef {
+        key: "GROUP",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_group"),
+        required: false,
+    },
 ];
 
 static RACE_GLOBALS: &[GlobalGroup] = &[
@@ -107,8 +114,11 @@ static RACE_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::SourcePage,
     GlobalGroup::SourceLink,
     GlobalGroup::OutputName,
+    GlobalGroup::LangBonus,
     GlobalGroup::CSkill,
     GlobalGroup::Sab,
+    GlobalGroup::ChangeProf,
+    GlobalGroup::ServesAs,
     GlobalGroup::Qualify,
     GlobalGroup::Template,
     GlobalGroup::SourceMeta,

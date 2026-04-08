@@ -30,6 +30,12 @@ static FEAT_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Effect,
         required: false,
     },
+    TokenDef::pipe_list_repeatable("COMPANIONLIST", "pcgen_companionlist"),
+    TokenDef::pipe_positional_repeatable(
+        "FOLLOWERS",
+        &["type", "limit"],
+        "pcgen_followers",
+    ),
     TokenDef::text("VISIBLE", "pcgen_visible"),
 ];
 
@@ -49,6 +55,8 @@ static FEAT_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::OutputName,
     GlobalGroup::CSkill,
     GlobalGroup::Sab,
+    GlobalGroup::ChangeProf,
+    GlobalGroup::ServesAs,
     GlobalGroup::Qualify,
     GlobalGroup::SourceMeta,
 ];

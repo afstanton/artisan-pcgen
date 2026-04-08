@@ -45,6 +45,9 @@ pub(crate) fn project_clause_attributes(
             }
             "BASESTATSCORE" => set_i64_or_string(attributes, "pcgen_basestatscore", value),
             "STATRANGE" => set_i64_or_string(attributes, "pcgen_statrange", value),
+            "STATMOD" => {
+                attributes.insert("pcgen_statmod".to_string(), Value::String(value.clone()));
+            }
             "ADDSPELLLEVEL" => set_i64_or_string(attributes, "pcgen_addspelllevel", value),
             "MULT" => {
                 attributes.insert("pcgen_mult".to_string(), Value::String(value.clone()));
@@ -123,6 +126,9 @@ pub(crate) fn project_clause_attributes(
             "BONUSSPELLSTAT" => {
                 attributes.insert("pcgen_bonusspellstat".to_string(), Value::String(value.clone()));
             }
+            "MEMORIZE" => {
+                attributes.insert("pcgen_memorize".to_string(), parse_yes_no_or_string(value));
+            }
             "CAST" => append_string_attr(attributes, "pcgen_cast", value),
             "KNOWN" => append_string_attr(attributes, "pcgen_known", value),
             "KNOWNSPELLS" => {
@@ -145,6 +151,13 @@ pub(crate) fn project_clause_attributes(
             "DOMAIN" => {
                 attributes.insert("pcgen_domains".to_string(), Value::String(value.clone()));
             }
+            "ALIGN" => {
+                attributes.insert("pcgen_align".to_string(), Value::String(value.clone()));
+            }
+            "DEITYWEAP" => {
+                attributes.insert("pcgen_deityweap".to_string(), Value::String(value.clone()));
+            }
+            "GROUP" => append_string_attr(attributes, "pcgen_group", value),
             "ALLOWBASECLASS" => {
                 attributes.insert("pcgen_allowbaseclass".to_string(), parse_yes_no_or_string(value));
             }
@@ -161,6 +174,9 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_udam".to_string(), Value::String(value.clone()));
             }
             "UMULT" => set_i64_or_string(attributes, "pcgen_umult", value),
+            "DONOTADD" => append_string_attr(attributes, "pcgen_donotadd", value),
+            "COMPANIONLIST" => append_string_attr(attributes, "pcgen_companionlist", value),
+            "FOLLOWERS" => append_string_attr(attributes, "pcgen_followers", value),
             "REMOVABLE" => {
                 attributes.insert("pcgen_removable".to_string(), Value::String(value.clone()));
             }
@@ -192,6 +208,9 @@ pub(crate) fn project_clause_attributes(
             "KEY" => {
                 attributes.insert("pcgen_key".to_string(), Value::String(value.clone()));
             }
+            "LANGBONUS" => append_string_attr(attributes, "pcgen_langbonus", value),
+            "CHANGEPROF" => append_string_attr(attributes, "pcgen_changeprof", value),
+            "SERVESAS" => append_string_attr(attributes, "pcgen_servesas", value),
             "OUTPUTNAME" => {
                 attributes.insert("pcgen_outputname".to_string(), Value::String(value.clone()));
             }
@@ -228,6 +247,24 @@ pub(crate) fn project_clause_attributes(
             }
             "SORTKEY" => {
                 attributes.insert("pcgen_sortkey".to_string(), Value::String(value.clone()));
+            }
+            "VALIDFORDEITY" => {
+                attributes.insert("pcgen_validfordeity".to_string(), Value::String(value.clone()));
+            }
+            "VALIDFORFOLLOWER" => {
+                attributes.insert(
+                    "pcgen_validforfollower".to_string(),
+                    Value::String(value.clone()),
+                );
+            }
+            "SIZENUM" => {
+                attributes.insert("pcgen_sizenum".to_string(), Value::String(value.clone()));
+            }
+            "ISDEFAULTSIZE" => {
+                attributes.insert(
+                    "pcgen_isdefaultsize".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "TARGETAREA" => {
                 attributes.insert("pcgen_targetarea".to_string(), Value::String(value.clone()));

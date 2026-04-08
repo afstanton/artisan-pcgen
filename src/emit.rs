@@ -308,6 +308,30 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
                 parts.push(format!("SORTKEY:{sk}"));
             }
         }
+        GlobalGroup::LangBonus => {
+            if let Some(values) = entity.attributes.get("pcgen_langbonus").and_then(Value::as_array)
+            {
+                for value in values.iter().filter_map(Value::as_str) {
+                    parts.push(format!("LANGBONUS:{value}"));
+                }
+            }
+        }
+        GlobalGroup::ChangeProf => {
+            if let Some(values) = entity.attributes.get("pcgen_changeprof").and_then(Value::as_array)
+            {
+                for value in values.iter().filter_map(Value::as_str) {
+                    parts.push(format!("CHANGEPROF:{value}"));
+                }
+            }
+        }
+        GlobalGroup::ServesAs => {
+            if let Some(values) = entity.attributes.get("pcgen_servesas").and_then(Value::as_array)
+            {
+                for value in values.iter().filter_map(Value::as_str) {
+                    parts.push(format!("SERVESAS:{value}"));
+                }
+            }
+        }
         // Template, CSkill, Sab, Qualify, SourceMeta: not yet mapped from artisan model
         GlobalGroup::Template
         | GlobalGroup::CSkill

@@ -88,6 +88,12 @@ static TEMPLATE_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Attribute("pcgen_weaponbonus"),
         required: false,
     },
+    TokenDef::pipe_list_repeatable("COMPANIONLIST", "pcgen_companionlist"),
+    TokenDef::pipe_positional_repeatable(
+        "FOLLOWERS",
+        &["type", "limit"],
+        "pcgen_followers",
+    ),
 ];
 
 static TEMPLATE_GLOBALS: &[GlobalGroup] = &[
@@ -104,8 +110,11 @@ static TEMPLATE_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::SourcePage,
     GlobalGroup::SourceLink,
     GlobalGroup::OutputName,
+    GlobalGroup::LangBonus,
     GlobalGroup::CSkill,
     GlobalGroup::Sab,
+    GlobalGroup::ChangeProf,
+    GlobalGroup::ServesAs,
     GlobalGroup::Qualify,
     GlobalGroup::Template,
     GlobalGroup::SourceMeta,

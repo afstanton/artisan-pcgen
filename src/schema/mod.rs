@@ -7,9 +7,11 @@
 
 pub mod ability;
 pub mod abilitycategory;
+pub mod classlevel;
 pub mod startpack;
 pub mod system;
 pub mod class;
+pub mod deity;
 pub mod equipment;
 pub mod feat;
 pub mod gear;
@@ -23,14 +25,16 @@ pub mod token_aliases;
 
 pub use ability::ABILITY_SCHEMA;
 pub use abilitycategory::ABILITYCATEGORY_SCHEMA;
+pub use classlevel::CLASSLEVEL_SCHEMA;
 pub use startpack::STARTPACK_SCHEMA;
 pub use system::{
     ALIGN_SYSTEM_SCHEMA, BONUSFEATLEVELSTARTINTERVAL_SCHEMA, BONUSSPELLLEVEL_SCHEMA,
     BONUSSTACKS_SCHEMA, BONUSSTATLEVELSTARTINTERVAL_SCHEMA, ICON_SYSTEM_SCHEMA,
     NAME_SYSTEM_SCHEMA, PREVIEWDIR_SCHEMA, PREVIEWSHEET_SCHEMA, RACE_SYSTEM_SCHEMA,
-    STAT_SYSTEM_SCHEMA,
+    SIZEADJUSTMENT_SYSTEM_SCHEMA, STAT_SYSTEM_SCHEMA,
 };
 pub use class::CLASS_SCHEMA;
+pub use deity::DEITY_SCHEMA;
 pub use equipment::EQUIPMENT_SCHEMA;
 pub use feat::FEAT_SCHEMA;
 pub use gear::GEAR_SCHEMA;
@@ -258,6 +262,12 @@ pub enum GlobalGroup {
     Sab,
     /// `QUALIFY:type|...` — qualification grant (repeatable)
     Qualify,
+    /// `LANGBONUS:x` — bonus language choices (repeatable)
+    LangBonus,
+    /// `CHANGEPROF:x` — remap proficiency category (repeatable)
+    ChangeProf,
+    /// `SERVESAS:x` — entity stands in for one or more others (repeatable)
+    ServesAs,
     /// Source/publisher metadata tokens (PCC-style, valid at top of any file)
     SourceMeta,
 }
@@ -287,6 +297,9 @@ impl GlobalGroup {
             GlobalGroup::CSkill => &["CSKILL"],
             GlobalGroup::Sab => &["SAB"],
             GlobalGroup::Qualify => &["QUALIFY"],
+            GlobalGroup::LangBonus => &["LANGBONUS"],
+            GlobalGroup::ChangeProf => &["CHANGEPROF"],
+            GlobalGroup::ServesAs => &["SERVESAS"],
             GlobalGroup::SourceMeta => &[
                 "CAMPAIGN",
                 "SOURCELONG",
@@ -379,6 +392,7 @@ impl EntitySchema {
 static ALL_SCHEMAS: &[&EntitySchema] = &[
     &ability::ABILITY_SCHEMA,
     &abilitycategory::ABILITYCATEGORY_SCHEMA,
+    &classlevel::CLASSLEVEL_SCHEMA,
     &startpack::STARTPACK_SCHEMA,
     &system::BONUSSPELLLEVEL_SCHEMA,
     &system::BONUSSTACKS_SCHEMA,
@@ -389,9 +403,11 @@ static ALL_SCHEMAS: &[&EntitySchema] = &[
     &system::ICON_SYSTEM_SCHEMA,
     &system::ALIGN_SYSTEM_SCHEMA,
     &system::STAT_SYSTEM_SCHEMA,
+    &system::SIZEADJUSTMENT_SYSTEM_SCHEMA,
     &system::RACE_SYSTEM_SCHEMA,
     &system::NAME_SYSTEM_SCHEMA,
     &class::CLASS_SCHEMA,
+    &deity::DEITY_SCHEMA,
     &equipment::EQUIPMENT_SCHEMA,
     &feat::FEAT_SCHEMA,
     &gear::GEAR_SCHEMA,

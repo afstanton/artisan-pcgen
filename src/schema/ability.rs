@@ -77,6 +77,12 @@ static ABILITY_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Attribute("pcgen_eqmods"),
         required: false,
     },
+    TokenDef::pipe_list_repeatable("COMPANIONLIST", "pcgen_companionlist"),
+    TokenDef::pipe_positional_repeatable(
+        "FOLLOWERS",
+        &["type", "limit"],
+        "pcgen_followers",
+    ),
 ];
 
 static ABILITY_GLOBALS: &[GlobalGroup] = &[
@@ -95,6 +101,8 @@ static ABILITY_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::OutputName,
     GlobalGroup::CSkill,
     GlobalGroup::Sab,
+    GlobalGroup::ChangeProf,
+    GlobalGroup::ServesAs,
     GlobalGroup::Qualify,
     GlobalGroup::SourceMeta,
 ];

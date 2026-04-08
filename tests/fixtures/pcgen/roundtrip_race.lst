@@ -1,1 +1,1 @@
-Feral Hound	STARTFEATS:1	SIZE:M	FACE:5,5	VISION:Low-Light Vision|Scent	LEGS:4	HANDS:2	NATURALATTACKS:Bite,Weapon.Natural.Melee.Piercing,*1,1d6	DR:5/Silver	SR:11	CR:1	MONSTERCLASS:Animal:2	RACETYPE:Animal	TYPE:Animal	SOURCEPAGE:42
+Feral Hound	STARTFEATS:1	SIZE:M	FACE:5,5	VISION:Low-Light Vision|Scent	LEGS:4	HANDS:2	NATURALATTACKS:Bite,Weapon.Natural.Melee.Piercing,*1,1d6	DR:5/Silver	SR:11	CR:1	MONSTERCLASS:Animal:2	RACETYPE:Animal	LANGBONUS:TYPE=Spoken,Canine,Huntspeech	TYPE:Animal	SOURCEPAGE:42
