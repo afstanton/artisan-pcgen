@@ -47,7 +47,14 @@ static TEMPLATE_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Attribute("pcgen_move"),
         required: false,
     },
-    TokenDef {
+       TokenDef {
+           key: "MOVECLONE",
+           grammar: TokenGrammar::Text,
+           cardinality: Cardinality::Repeatable,
+           artisan_mapping: ArtisanMapping::Attribute("pcgen_moveclone"),
+           required: false,
+       },
+       TokenDef {
         key: "NATURALATTACKS",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,

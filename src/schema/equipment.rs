@@ -10,12 +10,14 @@ use crate::schema::{
 
 static QUALITY_SLOTS: &[&str] = &["name", "value"];
 static PROFICIENCY_SLOTS: &[&str] = &["type", "name"];
+static CHARGES_SLOTS: &[&str] = &["min", "max"];
 
 static EQUIPMENT_TOKENS: &[TokenDef] = &[
     // Weight and cost
     TokenDef::text("WT", "pcgen_weight"),
     TokenDef::text("COST", "pcgen_cost"),
     TokenDef::text("BASEITEM", "pcgen_baseitem"),
+    TokenDef::pipe_positional("CHARGES", CHARGES_SLOTS, "pcgen_charges"),
     // Size and wield
     TokenDef::text("SIZE", "pcgen_size"),
     TokenDef::text("WIELD", "pcgen_wield"),

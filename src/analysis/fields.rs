@@ -143,6 +143,7 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_addlevel".to_string(), Value::String(value.clone()));
             }
             "REPEATLEVEL" => append_string_attr(attributes, "pcgen_repeatlevel", value),
+            "MOVECLONE" => append_string_attr(attributes, "pcgen_moveclone", value),
             "HD" => set_i64_or_string(attributes, "pcgen_hitdie", value),
             "HITDIE" => set_i64_or_string(attributes, "pcgen_hitdie", value),
             "MAXLEVEL" => {
@@ -521,6 +522,7 @@ pub(crate) fn project_clause_attributes(
             "QUALITY" => append_string_attr(attributes, "pcgen_qualities", value),
             "SPROP" => sprop_values.push(Value::String(value.clone())),
             "PAGEUSAGE" => page_usage_values.push(Value::String(value.clone())),
+            "CHARGES" => append_string_attr(attributes, "pcgen_charges", value),
             "FACT" => facts.push(parse_fact(value)),
             "FACTSET" => factsets.push(parse_fact(value)),
             "EQMOD" => equipment_modifiers.push(parse_pipe_series(value)),
@@ -528,6 +530,7 @@ pub(crate) fn project_clause_attributes(
             "SPELLS" => spell_blocks.push(parse_spells(value)),
             "SPELLKNOWN" => append_string_attr(attributes, "pcgen_spellknown", value),
             "MOVE" => append_string_attr(attributes, "pcgen_move", value),
+            "MOVECLONE" => append_string_attr(attributes, "pcgen_moveclone", value),
             "NATURALATTACKS" => append_string_attr(attributes, "pcgen_naturalattacks", value),
             _ => {}
         }

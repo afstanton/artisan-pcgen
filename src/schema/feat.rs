@@ -37,7 +37,14 @@ static FEAT_TOKENS: &[TokenDef] = &[
         "pcgen_followers",
     ),
     TokenDef::text("VISIBLE", "pcgen_visible"),
-];
+       TokenDef {
+           key: "MOVECLONE",
+           grammar: TokenGrammar::Text,
+           cardinality: Cardinality::Repeatable,
+           artisan_mapping: ArtisanMapping::Attribute("pcgen_moveclone"),
+           required: false,
+       },
+    ];
 
 static FEAT_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::Type,
