@@ -104,6 +104,20 @@ static CLASS_TOKENS: &[TokenDef] = &[
     TokenDef::text("SUBCLASSLEVEL", "pcgen_subclasslevel"),
     TokenDef::text("SUBSTITUTIONCLASS", "pcgen_substitutionclass"),
     TokenDef::text("SUBSTITUTIONLEVEL", "pcgen_substitutionlevel"),
+    TokenDef {
+        key: "EXCLASS",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_exclass"),
+        required: false,
+    },
+    TokenDef {
+        key: "EXCHANGELEVEL",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_exchangelevel"),
+        required: false,
+    },
 ];
 
 static CLASS_GLOBALS: &[GlobalGroup] = &[

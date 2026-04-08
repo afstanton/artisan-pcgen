@@ -62,6 +62,13 @@ static SPELL_TOKENS: &[TokenDef] = &[
     TokenDef::text("DURATION", "pcgen_duration"),
     TokenDef::text("SAVEINFO", "pcgen_saveinfo"),
     TokenDef::text("SPELLRES", "pcgen_spellres"),
+    TokenDef {
+        key: "TEMPVALUE",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_tempvalue"),
+        required: false,
+    },
     // Cost and variants
     TokenDef::text("COST", "pcgen_cost"),
     TokenDef::text("XPCOST", "pcgen_xpcost"),

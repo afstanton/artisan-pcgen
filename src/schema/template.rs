@@ -63,6 +63,13 @@ static TEMPLATE_TOKENS: &[TokenDef] = &[
     },
     TokenDef::text("GENDERLOCK", "pcgen_genderlock"),
     TokenDef::integer("BONUSSKILLPOINTS", "pcgen_bonusskillpoints"),
+    TokenDef {
+        key: "TEMPVALUE",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_tempvalue"),
+        required: false,
+    },
     // Level-based
     TokenDef::pipe_positional("ADDLEVEL", ADDLEVEL_SLOTS, "pcgen_addlevel"),
     TokenDef {

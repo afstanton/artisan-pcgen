@@ -149,6 +149,10 @@ fn looks_like_pcc(head: &str, clauses: &[ParsedClause]) -> bool {
         "GAMEMODE",
         "SETTING",
         "BOOKTYPE",
+        "GENRE",
+        "ISOGL",
+        "INFOTEXT",
+        "EQUIPMENT",
         "RANK",
         "FACTDEF",
         "STATUS",
@@ -179,6 +183,10 @@ fn looks_like_pcc(head: &str, clauses: &[ParsedClause]) -> bool {
     }
 
     has_token(clauses, "BOOKTYPE")
+        || has_token(clauses, "GENRE")
+        || has_token(clauses, "ISOGL")
+        || has_token(clauses, "INFOTEXT")
+        || has_token(clauses, "EQUIPMENT")
         || has_token(clauses, "FACTDEF")
         || has_token(clauses, "GAMEMODE")
         || has_token(clauses, "SETTING")
@@ -212,6 +220,8 @@ fn looks_like_class(clauses: &[ParsedClause]) -> bool {
         || has_token(clauses, "SUBCLASSLEVEL")
         || has_token(clauses, "SUBSTITUTIONCLASS")
         || has_token(clauses, "SUBSTITUTIONLEVEL")
+        || has_token(clauses, "EXCLASS")
+        || has_token(clauses, "EXCHANGELEVEL")
         || has_token(clauses, "PROHIBITCOST")
 }
 
@@ -323,6 +333,7 @@ fn looks_like_template(clauses: &[ParsedClause]) -> bool {
 fn looks_like_race(clauses: &[ParsedClause]) -> bool {
     has_token(clauses, "MONSTERCLASS")
         || has_token(clauses, "STARTFEATS")
+    || has_token(clauses, "SKILLMULT")
         || has_token(clauses, "MONCCSKILL")
 }
 

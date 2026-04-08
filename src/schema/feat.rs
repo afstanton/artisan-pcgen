@@ -24,6 +24,13 @@ static FEAT_TOKENS: &[TokenDef] = &[
     TokenDef::text("MULT", "pcgen_mult"),
     TokenDef::text("STACK", "pcgen_stack"),
     TokenDef {
+        key: "TEMPVALUE",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_tempvalue"),
+        required: false,
+    },
+    TokenDef {
         key: "TEMPLATE",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Repeatable,

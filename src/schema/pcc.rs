@@ -49,6 +49,13 @@ static PCC_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::None,
         required: false,
     },
+    TokenDef {
+        key: "EQUIPMENT",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::None,
+        required: false,
+    },
     // Legal
     TokenDef::text("ISLICENSED", "pcgen_islicensed"),
     TokenDef {
@@ -59,6 +66,15 @@ static PCC_TOKENS: &[TokenDef] = &[
         required: false,
     },
     TokenDef::text("STATUS", "pcgen_status"),
+    TokenDef::text("GENRE", "pcgen_genre"),
+    TokenDef::text("ISOGL", "pcgen_isogl"),
+    TokenDef {
+        key: "INFOTEXT",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::None,
+        required: false,
+    },
     TokenDef::text("RANK", "pcgen_rank"),
     TokenDef::text("DESC", "pcgen_desc"),
     TokenDef {

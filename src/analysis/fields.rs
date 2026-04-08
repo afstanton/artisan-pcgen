@@ -46,6 +46,12 @@ pub(crate) fn project_clause_attributes(
             "GAMEMODE" => {
                 attributes.insert("pcgen_gamemode".to_string(), Value::String(value.clone()));
             }
+            "GENRE" => {
+                attributes.insert("pcgen_genre".to_string(), Value::String(value.clone()));
+            }
+            "ISOGL" => {
+                attributes.insert("pcgen_isogl".to_string(), parse_yes_no_or_string(value));
+            }
             "PUBNAMESHORT" => {
                 attributes.insert(
                     "pcgen_publisher_short".to_string(),
@@ -124,6 +130,7 @@ pub(crate) fn project_clause_attributes(
             }
             "MONCSKILL" => append_string_attr(attributes, "pcgen_moncskill", value),
             "MONCCSKILL" => append_string_attr(attributes, "pcgen_monccskill", value),
+            "SKILLMULT" => append_string_attr(attributes, "pcgen_skillmult", value),
             "STARTFEATS" => set_i64_or_string(attributes, "pcgen_startfeats", value),
             "HITDICEADVANCEMENT" => {
                 attributes.insert(
@@ -239,6 +246,8 @@ pub(crate) fn project_clause_attributes(
                     Value::String(value.clone()),
                 );
             }
+            "EXCLASS" => append_string_attr(attributes, "pcgen_exclass", value),
+            "EXCHANGELEVEL" => append_string_attr(attributes, "pcgen_exchangelevel", value),
             "CATEGORY" => {
                 attributes.insert("pcgen_category".to_string(), Value::String(value.clone()));
             }
@@ -328,6 +337,7 @@ pub(crate) fn project_clause_attributes(
             "SPELLRES" => {
                 attributes.insert("pcgen_spellres".to_string(), Value::String(value.clone()));
             }
+            "TEMPVALUE" => append_string_attr(attributes, "pcgen_tempvalue", value),
             "XPCOST" => {
                 attributes.insert("pcgen_xpcost".to_string(), Value::String(value.clone()));
             }

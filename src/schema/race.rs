@@ -37,6 +37,13 @@ static RACE_TOKENS: &[TokenDef] = &[
     TokenDef::integer("LEVELADJUSTMENT", "pcgen_leveladjustment"),
     TokenDef::integer("STARTFEATS", "pcgen_startfeats"),
     TokenDef::integer("XTRASKILLPTSPERLVL", "pcgen_xtraskillptsperlvl"),
+    TokenDef {
+        key: "SKILLMULT",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_skillmult"),
+        required: false,
+    },
     TokenDef::text("HITDIE", "pcgen_hitdie"),
     TokenDef::text("HITDICEADVANCEMENT", "pcgen_hitdiceadvancement"),
     TokenDef {
