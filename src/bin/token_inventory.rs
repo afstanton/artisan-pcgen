@@ -60,6 +60,13 @@ fn main() -> io::Result<()> {
         fully_structured_counts.len()
     );
     println!(
+        "Unique semantically interpreted but not fully-structured token keys: {}",
+        semantic_counts
+            .keys()
+            .filter(|k| !fully_structured_counts.contains_key(*k))
+            .count()
+    );
+    println!(
         "Unique fallback-needed token keys: {}",
         fallback_needed_counts.len()
     );
@@ -82,6 +89,12 @@ fn main() -> io::Result<()> {
     let mut fallback_tokens: Vec<_> = fallback_needed_counts.iter().collect();
     fallback_tokens.sort_by(|a, b| b.1.cmp(a.1));
 
+    let mut semantic_not_fully_structured_tokens: Vec<_> = semantic_counts
+        .iter()
+        .filter(|(token, _)| !fully_structured_counts.contains_key(*token))
+        .collect();
+    semantic_not_fully_structured_tokens.sort_by(|a, b| b.1.cmp(a.1));
+
     println!("=== Semantically Interpreted Tokens by Frequency ===");
     for (token, count) in semantic_tokens {
         println!("{:6} | {}", count, token);
@@ -96,6 +109,12 @@ fn main() -> io::Result<()> {
     println!();
     println!("=== Fallback-Needed Tokens by Frequency ===");
     for (token, count) in fallback_tokens {
+        println!("{:6} | {}", count, token);
+    }
+
+    println!();
+    println!("=== Semantically Interpreted But Not Fully-Structured Tokens by Frequency ===");
+    for (token, count) in semantic_not_fully_structured_tokens {
         println!("{:6} | {}", count, token);
     }
 
