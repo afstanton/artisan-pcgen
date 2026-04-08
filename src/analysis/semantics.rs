@@ -131,6 +131,7 @@ fn looks_like_pcc(head: &str, clauses: &[ParsedClause]) -> bool {
         "EXPLANATION",
         "REQUIRED",
         "SELECTABLE",
+        "NAMEISPI",
         "URL",
         "ALLOWDUPES",
         "MAXVER",
@@ -158,6 +159,7 @@ fn looks_like_pcc(head: &str, clauses: &[ParsedClause]) -> bool {
         || has_token(clauses, "EXPLANATION")
         || has_token(clauses, "REQUIRED")
         || has_token(clauses, "SELECTABLE")
+        || has_token(clauses, "NAMEISPI")
         || has_token(clauses, "MAXVER")
         || has_token(clauses, "NEWKEY")
         || has_token(clauses, "ALLOWDUPES")

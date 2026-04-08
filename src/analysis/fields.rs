@@ -4,6 +4,7 @@ use serde_json::{Map, Value, json};
 use crate::ParsedClause;
 
 pub(crate) fn project_clause_attributes(
+    head_name: &str,
     clauses: &[ParsedClause],
     attributes: &mut IndexMap<String, Value>,
 ) {
@@ -180,6 +181,9 @@ pub(crate) fn project_clause_attributes(
             "KEY" => {
                 attributes.insert("pcgen_key".to_string(), Value::String(value.clone()));
             }
+            "OUTPUTNAME" => {
+                attributes.insert("pcgen_outputname".to_string(), Value::String(value.clone()));
+            }
             "RANK" => {
                 if let Ok(rank) = value.trim().parse::<i64>() {
                     attributes.insert("pcgen_rank".to_string(), json!(rank));
@@ -258,6 +262,9 @@ pub(crate) fn project_clause_attributes(
             }
             "SELECTABLE" => {
                 attributes.insert("pcgen_selectable".to_string(), Value::String(value.clone()));
+            }
+            "NAMEISPI" => {
+                attributes.insert("pcgen_nameispi".to_string(), Value::String(value.clone()));
             }
             "ABILITYLIST" => append_string_attr(attributes, "pcgen_abilitylist", value),
             "DISPLAYLOCATION" => {
@@ -429,6 +436,54 @@ pub(crate) fn project_clause_attributes(
     }
     if !page_usage_values.is_empty() {
         attributes.insert("pcgen_pageusage".to_string(), Value::Array(page_usage_values));
+    }
+
+    project_dual_name_fields(head_name, attributes);
+}
+
+fn project_dual_name_fields(head_name: &str, attributes: &mut IndexMap<String, Value>) {
+    let Some(name_is_pi_raw) = attributes.get("pcgen_nameispi") else {
+        return;
+    };
+
+    let is_pi_name = bool_like_from_value(name_is_pi_raw).unwrap_or(false);
+
+    if is_pi_name {
+        attributes.insert(
+            "pcgen_name_pi".to_string(),
+            Value::String(head_name.to_string()),
+        );
+
+        if let Some(open_name) = open_name_candidate(attributes, head_name) {
+            attributes.insert("pcgen_name_open".to_string(), Value::String(open_name));
+        }
+        return;
+    }
+
+    attributes.insert(
+        "pcgen_name_open".to_string(),
+        Value::String(head_name.to_string()),
+    );
+}
+
+fn open_name_candidate(attributes: &IndexMap<String, Value>, head_name: &str) -> Option<String> {
+    ["pcgen_outputname", "pcgen_key"]
+        .iter()
+        .filter_map(|key| attributes.get(*key).and_then(Value::as_str))
+        .map(str::trim)
+        .find(|value| !value.is_empty() && !value.eq_ignore_ascii_case(head_name))
+        .map(ToString::to_string)
+}
+
+fn bool_like_from_value(value: &Value) -> Option<bool> {
+    match value {
+        Value::Bool(b) => Some(*b),
+        Value::String(s) => match s.trim().to_ascii_uppercase().as_str() {
+            "YES" | "Y" | "TRUE" => Some(true),
+            "NO" | "N" | "FALSE" => Some(false),
+            _ => None,
+        },
+        _ => None,
     }
 }
 

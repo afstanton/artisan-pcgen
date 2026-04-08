@@ -245,6 +245,9 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
         } else {
             name
         };
+        let head_name = semantics::declared_entity(&parsed_line.head)
+            .map(|(_, value)| value)
+            .unwrap_or_else(|| parsed_line.head.trim().to_string());
         let entity_id = deterministic_id(
             ENTITY_NAMESPACE,
             &format!("{source_name}:{ext}:{}:{trimmed}", line_number + 1),
@@ -263,7 +266,7 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
         attributes.insert("line_number".to_string(), json!(line_number + 1));
         attributes.insert("pcgen_line_number".to_string(), json!(line_number + 1));
         attributes.insert("source_format".to_string(), Value::String(ext.to_string()));
-        fields::project_clause_attributes(&supported_clauses, &mut attributes);
+        fields::project_clause_attributes(&head_name, &supported_clauses, &mut attributes);
 
         let mut entity_citations = Vec::new();
         if let Some(source_page) = line_codec::find_key_value(&supported_clauses, "SOURCEPAGE") {
@@ -753,6 +756,43 @@ mod tests {
     }
 
     #[test]
+    fn parse_text_projects_pi_and_open_names_when_marked_pi() {
+        let catalog = parse_text_to_catalog(
+            "Legacy Name NAMEISPI:YES OUTPUTNAME:Open Name KEY:Legacy Key CATEGORY:Special Ability",
+            "namepi.lst",
+            "lst",
+        );
+
+        let entity = &catalog.entities[0];
+        assert_eq!(entity.name, "Legacy Key");
+        assert_eq!(
+            entity.attributes.get("pcgen_name_pi").and_then(Value::as_str),
+            Some("Legacy Name")
+        );
+        assert_eq!(
+            entity.attributes.get("pcgen_name_open").and_then(Value::as_str),
+            Some("Open Name")
+        );
+    }
+
+    #[test]
+    fn parse_text_projects_open_name_from_head_when_not_pi() {
+        let catalog = parse_text_to_catalog(
+            "Open Name NAMEISPI:NO CATEGORY:Special Ability",
+            "nameopen.lst",
+            "lst",
+        );
+
+        let entity = &catalog.entities[0];
+        assert_eq!(entity.name, "Open Name");
+        assert_eq!(
+            entity.attributes.get("pcgen_name_open").and_then(Value::as_str),
+            Some("Open Name")
+        );
+        assert!(entity.attributes.get("pcgen_name_pi").is_none());
+    }
+
+    #[test]
     fn infer_name_only_entities_to_schema_backed_entity_keys() {
         let ability = parse_text_to_catalog(
             "Nightblade Spellcraft CATEGORY:Special Ability ADDSPELLLEVEL:1 TYPE:Special.Magic",
@@ -1115,6 +1155,7 @@ mod tests {
             assert!(any_schema_knows_token("EXPLANATION"));
             assert!(any_schema_knows_token("REQUIRED"));
             assert!(any_schema_knows_token("SELECTABLE"));
+            assert!(any_schema_knows_token("NAMEISPI"));
             assert!(any_schema_knows_token("LEGS"));
             assert!(any_schema_knows_token("HANDS"));
             assert!(any_schema_knows_token("FACE"));

@@ -250,6 +250,7 @@ fn unparse_emits_pcgen_metadata_lines_for_pcc() {
     assert!(generated.contains("EXPLANATION:Core rules metadata"));
     assert!(generated.contains("REQUIRED:YES"));
     assert!(generated.contains("SELECTABLE:YES"));
+    assert!(generated.contains("NAMEISPI:YES"));
 }
 
 #[test]
