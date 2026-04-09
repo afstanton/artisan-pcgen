@@ -60,6 +60,9 @@ pub fn emit_entity(entity: &Entity, schema: &EntitySchema) -> String {
 
     // --- Entity-specific tokens ---
     for token_def in schema.tokens {
+        if should_skip_duplicate_head_token(entity, schema, token_def) {
+            continue;
+        }
         emit_token_def(token_def, entity, &mut parts, &mut emitted_attribute_fields);
     }
 
@@ -118,6 +121,9 @@ pub fn emittable_keys_for_entity(entity: &Entity, schema: &EntitySchema) -> Vec<
     }
 
     for token_def in schema.tokens {
+        if should_skip_duplicate_head_token(entity, schema, token_def) {
+            continue;
+        }
         match token_def.artisan_mapping {
             ArtisanMapping::Attribute(field) => {
                 if let Some(value) = entity.attributes.get(field)
@@ -232,6 +238,44 @@ fn emitted_head_key(entity: &Entity, schema: &EntitySchema) -> Option<String> {
             None
         }
     }
+}
+
+fn should_skip_duplicate_head_token(
+    entity: &Entity,
+    schema: &EntitySchema,
+    token_def: &TokenDef,
+) -> bool {
+    if !matches!(schema.head_format, HeadFormat::TokenPrefixed) {
+        return false;
+    }
+
+    if !schema
+        .head_token
+        .is_some_and(|head| head.eq_ignore_ascii_case(token_def.key))
+    {
+        return false;
+    }
+
+    let ArtisanMapping::Attribute(field) = token_def.artisan_mapping else {
+        return false;
+    };
+
+    let Some(value) = entity.attributes.get(field) else {
+        return false;
+    };
+
+    let serialized = serialize_value(value, token_def.grammar, token_def.cardinality);
+    if serialized.len() != 1 {
+        return false;
+    }
+
+    let head_name = entity
+        .attributes
+        .get("pcgen_key")
+        .and_then(Value::as_str)
+        .unwrap_or(entity.name.as_str());
+
+    serialized[0] == head_name
 }
 
 fn collect_emittable_global_keys(

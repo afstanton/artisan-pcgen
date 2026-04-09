@@ -104,6 +104,36 @@ pub static DEFAULTVARIABLEVALUE_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
+pub static WEAPONCATEGORY_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:weaponcategory",
+    head_token: Some("WEAPONCATEGORY"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[],
+    globals: &[],
+};
+
+pub static ROLLMETHOD_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:rollmethod",
+    head_token: Some("ROLLMETHOD"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::text("METHOD", "pcgen_method")],
+    globals: &[GlobalGroup::SortKey],
+};
+
+static CLASSTYPE_SYSTEM_TOKENS: &[TokenDef] = &[
+    TokenDef::text("CRFORMULA", "pcgen_crformula"),
+    TokenDef::yesno("ISMONSTER", "pcgen_ismonster"),
+    TokenDef::yesno("XPPENALTY", "pcgen_xppenalty"),
+];
+
+pub static CLASSTYPE_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:classtype",
+    head_token: Some("CLASSTYPE"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: CLASSTYPE_SYSTEM_TOKENS,
+    globals: &[],
+};
+
 static ACTYPE_SYSTEM_TOKENS: &[TokenDef] = &[TokenDef {
     key: "REMOVE",
     grammar: TokenGrammar::Text,
@@ -250,6 +280,7 @@ pub static NAME_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
         TokenDef::text("PARM", "pcgen_parm"),
         TokenDef::text("VAR", "pcgen_var"),
         TokenDef::yesno("DEFAULT", "pcgen_default"),
+        TokenDef::text("EXCLUDE", "pcgen_exclude"),
     ],
     globals: &[],
 };

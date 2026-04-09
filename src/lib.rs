@@ -267,6 +267,9 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
         attributes.insert("pcgen_line_number".to_string(), json!(line_number + 1));
         attributes.insert("source_format".to_string(), Value::String(ext.to_string()));
         fields::project_clause_attributes(&head_name, &supported_clauses, &mut attributes);
+        if let Some((decl_key, decl_value)) = semantics::declared_entity(&parsed_line.head) {
+            fields::project_decl_token_value(&decl_key, &decl_value, &mut attributes);
+        }
 
         let mut entity_citations = Vec::new();
         if let Some(source_page) = line_codec::find_key_value(&supported_clauses, "SOURCEPAGE") {
@@ -1156,6 +1159,11 @@ mod tests {
             assert!(any_schema_knows_token("EXPLANATION"));
             assert!(any_schema_knows_token("REQUIRED"));
             assert!(any_schema_knows_token("SELECTABLE"));
+            assert!(any_schema_knows_token("FACTSETDEF"));
+            assert!(any_schema_knows_token("LOCAL"));
+            assert!(any_schema_knows_token("GLOBAL"));
+            assert!(any_schema_knows_token("BIOSET"));
+            assert!(any_schema_knows_token("EXCLUDE"));
             assert!(any_schema_knows_token("NAMEISPI"));
             assert!(any_schema_knows_token("DESCISPI"));
             assert!(any_schema_knows_token("COPYRIGHT"));
@@ -1239,14 +1247,24 @@ mod tests {
             assert!(any_schema_knows_token("FUNDS"));
             assert!(any_schema_knows_token("LANGUAGE"));
             assert!(any_schema_knows_token("EQUIPMOD"));
+            assert!(any_schema_knows_token("DATACONTROL"));
+            assert!(any_schema_knows_token("COMPANIONMOD"));
             assert!(any_schema_knows_token("WEAPONPROF"));
             assert!(any_schema_knows_token("ARMORPROF"));
             assert!(any_schema_knows_token("SHIELDPROF"));
+            assert!(any_schema_knows_token("GENDER"));
+            assert!(any_schema_knows_token("TOTALCOST"));
             assert!(any_schema_knows_token("METHOD"));
             assert!(any_schema_knows_token("SIZEMULT"));
             assert!(any_schema_knows_token("ENCUMBRANCE"));
             assert!(any_schema_knows_token("DEFAULTVARIABLEVALUE"));
             assert!(any_schema_knows_token("POINTS"));
+            assert!(any_schema_knows_token("WEAPONCATEGORY"));
+            assert!(any_schema_knows_token("ROLLMETHOD"));
+            assert!(any_schema_knows_token("CLASSTYPE"));
+            assert!(any_schema_knows_token("CRFORMULA"));
+            assert!(any_schema_knows_token("ISMONSTER"));
+            assert!(any_schema_knows_token("XPPENALTY"));
             assert!(any_schema_knows_token("SPELL"));
             assert!(any_schema_knows_token("WEAPONTYPE"));
             assert!(any_schema_knows_token("TABLE"));

@@ -67,6 +67,12 @@ pub(crate) fn project_clause_attributes(
             }
             "PCC" => append_string_attr(attributes, "pcgen_pcc", value),
             "CHOICE" => append_string_attr(attributes, "pcgen_choice", value),
+            "BIOSET" => append_string_attr(attributes, "pcgen_bioset_catalog", value),
+            "DATACONTROL" => append_string_attr(attributes, "pcgen_datacontrol_catalog", value),
+            "COMPANIONMOD" => append_string_attr(attributes, "pcgen_companionmod_catalog", value),
+            "PRECAMPAIGN" => {
+                append_value_attr(attributes, "pcgen_precampaign", parse_pipe_series(value));
+            }
             "BASESTATSCORE" => set_i64_or_string(attributes, "pcgen_basestatscore", value),
             "STATRANGE" => set_i64_or_string(attributes, "pcgen_statrange", value),
             "STATMOD" => {
@@ -446,7 +452,19 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_location".to_string(), Value::String(value.clone()));
             }
             "QTY" => set_i64_or_string(attributes, "pcgen_qty", value),
+            "GENDER" => {
+                attributes.insert("pcgen_gender".to_string(), Value::String(value.clone()));
+            }
+            "EXCLUDE" => {
+                attributes.insert("pcgen_exclude".to_string(), Value::String(value.clone()));
+            }
             "POINTS" => set_i64_or_string(attributes, "pcgen_points", value),
+            "METHOD" => {
+                attributes.insert("pcgen_method".to_string(), Value::String(value.clone()));
+            }
+            "TOTALCOST" => {
+                attributes.insert("pcgen_totalcost".to_string(), Value::String(value.clone()));
+            }
             "EQUIPMOD" => {
                 append_value_attr(attributes, "pcgen_equipmod_catalog", parse_pipe_series(value));
             }
@@ -464,6 +482,15 @@ pub(crate) fn project_clause_attributes(
             }
             "DEITY" => {
                 attributes.insert("pcgen_deity".to_string(), parse_pipe_series(value));
+            }
+            "CRFORMULA" => {
+                attributes.insert("pcgen_crformula".to_string(), Value::String(value.clone()));
+            }
+            "ISMONSTER" => {
+                attributes.insert("pcgen_ismonster".to_string(), parse_yes_no_or_string(value));
+            }
+            "XPPENALTY" => {
+                attributes.insert("pcgen_xppenalty".to_string(), parse_yes_no_or_string(value));
             }
             "FREE" => {
                 attributes.insert("pcgen_free".to_string(), parse_yes_no_or_string(value));
@@ -683,6 +710,28 @@ pub(crate) fn project_clause_attributes(
     project_dual_name_fields(head_name, attributes);
 }
 
+pub(crate) fn project_decl_token_value(
+    decl_token: &str,
+    decl_value: &str,
+    attributes: &mut IndexMap<String, Value>,
+) {
+    match decl_token.to_ascii_uppercase().as_str() {
+        "LOCAL" => {
+            attributes.insert("pcgen_local".to_string(), parse_local_definition(decl_value));
+        }
+        "GLOBAL" => {
+            attributes.insert("pcgen_global".to_string(), parse_global_definition(decl_value));
+        }
+        "FACTSETDEF" => {
+            attributes.insert(
+                "pcgen_factsetdef".to_string(),
+                parse_factsetdef_definition(decl_value),
+            );
+        }
+        _ => {}
+    }
+}
+
 fn project_dual_name_fields(head_name: &str, attributes: &mut IndexMap<String, Value>) {
     let Some(name_is_pi_raw) = attributes.get("pcgen_nameispi") else {
         return;
@@ -843,4 +892,63 @@ fn parse_spells(input: &str) -> Value {
         out.insert("spells".to_string(), Value::Array(spells));
     }
     Value::Object(out)
+}
+
+fn parse_local_definition(input: &str) -> Value {
+    let mut out = Map::new();
+    out.insert("raw".to_string(), Value::String(input.to_string()));
+
+    let mut parts = input.splitn(2, '|');
+    let scope = parts.next().unwrap_or_default().trim();
+    let binding = parts.next().unwrap_or_default().trim();
+
+    if !scope.is_empty() {
+        out.insert("scope".to_string(), Value::String(scope.to_string()));
+    }
+    if !binding.is_empty() {
+        out.insert("binding".to_string(), parse_variable_binding(binding));
+    }
+
+    Value::Object(out)
+}
+
+fn parse_global_definition(input: &str) -> Value {
+    json!({
+        "raw": input,
+        "binding": parse_variable_binding(input),
+    })
+}
+
+fn parse_factsetdef_definition(input: &str) -> Value {
+    let mut out = Map::new();
+    out.insert("raw".to_string(), Value::String(input.to_string()));
+
+    let mut parts = input.splitn(2, '|');
+    let subject = parts.next().unwrap_or_default().trim();
+    let field = parts.next().unwrap_or_default().trim();
+
+    if !subject.is_empty() {
+        out.insert("subject".to_string(), Value::String(subject.to_string()));
+    }
+    if !field.is_empty() {
+        out.insert("field".to_string(), Value::String(field.to_string()));
+    }
+
+    Value::Object(out)
+}
+
+fn parse_variable_binding(input: &str) -> Value {
+    let trimmed = input.trim();
+    if let Some((kind, name)) = trimmed.split_once('=') {
+        return json!({
+            "raw": trimmed,
+            "kind": kind.trim(),
+            "name": name.trim(),
+        });
+    }
+
+    json!({
+        "raw": trimmed,
+        "name": trimmed,
+    })
 }

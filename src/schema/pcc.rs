@@ -11,6 +11,14 @@ use crate::schema::{
     ArtisanMapping, Cardinality, EntitySchema, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
 };
 
+static PRECAMPAIGN_TOKEN: TokenDef = TokenDef {
+    key: "PRECAMPAIGN",
+    grammar: TokenGrammar::PipeList,
+    cardinality: Cardinality::Repeatable,
+    artisan_mapping: ArtisanMapping::Attribute("pcgen_precampaign"),
+    required: false,
+};
+
 static PCC_TOKENS: &[TokenDef] = &[
     // Source identification
     TokenDef::text("CAMPAIGN", "pcgen_campaign"),
@@ -61,6 +69,20 @@ static PCC_TOKENS: &[TokenDef] = &[
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
         artisan_mapping: ArtisanMapping::None,
+        required: false,
+    },
+    TokenDef {
+        key: "DATACONTROL",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_datacontrol_catalog"),
+        required: false,
+    },
+    TokenDef {
+        key: "COMPANIONMOD",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_companionmod_catalog"),
         required: false,
     },
     TokenDef {
@@ -165,7 +187,7 @@ static PCC_TOKENS: &[TokenDef] = &[
         key: "PRECAMPAIGN",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::None,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_precampaign"),
         required: false,
     },
     TokenDef {
@@ -188,14 +210,41 @@ pub static PCC_SCHEMA: EntitySchema = EntitySchema {
     globals: PCC_GLOBALS,
 };
 
-static LANGUAGE_INCLUDE_TOKENS: &[TokenDef] = &[TokenDef::text_required("LANGUAGE", "pcgen_language_catalog")];
-static EQUIPMOD_INCLUDE_TOKENS: &[TokenDef] = &[TokenDef::text_required("EQUIPMOD", "pcgen_equipmod_catalog")];
+static LANGUAGE_INCLUDE_TOKENS: &[TokenDef] = &[
+    TokenDef::text_required("LANGUAGE", "pcgen_language_catalog"),
+    PRECAMPAIGN_TOKEN,
+];
+static BIOSET_INCLUDE_TOKENS: &[TokenDef] = &[
+    TokenDef::text_required("BIOSET", "pcgen_bioset_catalog"),
+    PRECAMPAIGN_TOKEN,
+];
+static EQUIPMOD_INCLUDE_TOKENS: &[TokenDef] = &[
+    TokenDef::text_required("EQUIPMOD", "pcgen_equipmod_catalog"),
+    PRECAMPAIGN_TOKEN,
+];
+static DATACONTROL_INCLUDE_TOKENS: &[TokenDef] = &[
+    TokenDef::text_required("DATACONTROL", "pcgen_datacontrol_catalog"),
+    PRECAMPAIGN_TOKEN,
+];
+static COMPANIONMOD_INCLUDE_TOKENS: &[TokenDef] = &[
+    TokenDef::text_required("COMPANIONMOD", "pcgen_companionmod_catalog"),
+    PRECAMPAIGN_TOKEN,
+];
 static WEAPONPROF_INCLUDE_TOKENS: &[TokenDef] =
-    &[TokenDef::text_required("WEAPONPROF", "pcgen_weaponprof_catalog")];
+    &[
+        TokenDef::text_required("WEAPONPROF", "pcgen_weaponprof_catalog"),
+        PRECAMPAIGN_TOKEN,
+    ];
 static ARMORPROF_INCLUDE_TOKENS: &[TokenDef] =
-    &[TokenDef::text_required("ARMORPROF", "pcgen_armorprof_catalog")];
+    &[
+        TokenDef::text_required("ARMORPROF", "pcgen_armorprof_catalog"),
+        PRECAMPAIGN_TOKEN,
+    ];
 static SHIELDPROF_INCLUDE_TOKENS: &[TokenDef] =
-    &[TokenDef::text_required("SHIELDPROF", "pcgen_shieldprof_catalog")];
+    &[
+        TokenDef::text_required("SHIELDPROF", "pcgen_shieldprof_catalog"),
+        PRECAMPAIGN_TOKEN,
+    ];
 
 pub static LANGUAGE_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
     entity_type_key: "pcgen:entity:pcc-language-include",
@@ -205,11 +254,35 @@ pub static LANGUAGE_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
     globals: PCC_GLOBALS,
 };
 
+pub static BIOSET_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:entity:pcc-bioset-include",
+    head_token: Some("BIOSET"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: BIOSET_INCLUDE_TOKENS,
+    globals: PCC_GLOBALS,
+};
+
 pub static EQUIPMOD_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
     entity_type_key: "pcgen:entity:pcc-equipmod-include",
     head_token: Some("EQUIPMOD"),
     head_format: HeadFormat::TokenPrefixed,
     tokens: EQUIPMOD_INCLUDE_TOKENS,
+    globals: PCC_GLOBALS,
+};
+
+pub static DATACONTROL_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:entity:pcc-datacontrol-include",
+    head_token: Some("DATACONTROL"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: DATACONTROL_INCLUDE_TOKENS,
+    globals: PCC_GLOBALS,
+};
+
+pub static COMPANIONMOD_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:entity:pcc-companionmod-include",
+    head_token: Some("COMPANIONMOD"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: COMPANIONMOD_INCLUDE_TOKENS,
     globals: PCC_GLOBALS,
 };
 
