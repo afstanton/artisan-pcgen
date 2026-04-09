@@ -64,6 +64,7 @@ pub(crate) fn project_clause_attributes(
             "BOOKTYPE" => {
                 attributes.insert("pcgen_booktype".to_string(), Value::String(value.clone()));
             }
+            "PCC" => append_string_attr(attributes, "pcgen_pcc", value),
             "BASESTATSCORE" => set_i64_or_string(attributes, "pcgen_basestatscore", value),
             "STATRANGE" => set_i64_or_string(attributes, "pcgen_statrange", value),
             "STATMOD" => {
@@ -359,6 +360,9 @@ pub(crate) fn project_clause_attributes(
             "MAXVER" => {
                 attributes.insert("pcgen_maxver".to_string(), Value::String(value.clone()));
             }
+            "MAXDEVVER" => {
+                attributes.insert("pcgen_maxdevver".to_string(), Value::String(value.clone()));
+            }
             "NEWKEY" => {
                 attributes.insert("pcgen_newkey".to_string(), Value::String(value.clone()));
             }
@@ -504,11 +508,18 @@ pub(crate) fn project_clause_attributes(
             "ALTEQMOD" => {
                 attributes.insert("pcgen_alteqmod".to_string(), Value::String(value.clone()));
             }
+            "PLUS" => set_i64_or_string(attributes, "pcgen_plus", value),
             "ITYPE" => {
                 attributes.insert("pcgen_itype".to_string(), Value::String(value.clone()));
             }
             "NAMEOPT" => {
                 attributes.insert("pcgen_nameopt".to_string(), Value::String(value.clone()));
+            }
+            "FORMATCAT" => {
+                attributes.insert("pcgen_formatcat".to_string(), Value::String(value.clone()));
+            }
+            "ASSIGNTOALL" => {
+                attributes.insert("pcgen_assigntoall".to_string(), parse_yes_no_or_string(value));
             }
             "PROFICIENCY" => {
                 attributes.insert("pcgen_proficiency".to_string(), parse_pipe_series(value));

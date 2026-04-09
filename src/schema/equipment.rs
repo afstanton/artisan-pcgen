@@ -40,6 +40,7 @@ static EQUIPMENT_TOKENS: &[TokenDef] = &[
     TokenDef::text("ALTCRITMULT", "pcgen_altcritmult"),
     TokenDef::text("ALTCRITRANGE", "pcgen_altcritrange"),
     TokenDef::text("ALTEQMOD", "pcgen_alteqmod"),
+    TokenDef::integer("PLUS", "pcgen_plus"),
     TokenDef {
         key: "ITYPE",
         grammar: TokenGrammar::DotList,
@@ -48,6 +49,8 @@ static EQUIPMENT_TOKENS: &[TokenDef] = &[
         required: false,
     },
     TokenDef::text("NAMEOPT", "pcgen_nameopt"),
+    TokenDef::text("FORMATCAT", "pcgen_formatcat"),
+    TokenDef::yesno("ASSIGNTOALL", "pcgen_assigntoall"),
     TokenDef::pipe_positional("PROFICIENCY", PROFICIENCY_SLOTS, "pcgen_proficiency"),
     TokenDef {
         key: "REPLACES",

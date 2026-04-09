@@ -50,6 +50,13 @@ static PCC_TOKENS: &[TokenDef] = &[
         required: false,
     },
     TokenDef {
+        key: "PCC",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_pcc"),
+        required: false,
+    },
+    TokenDef {
         key: "EQUIPMENT",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
@@ -95,6 +102,7 @@ static PCC_TOKENS: &[TokenDef] = &[
     TokenDef::text("SELECTABLE", "pcgen_selectable"),
     TokenDef::text("NAMEISPI", "pcgen_nameispi"),
     TokenDef::text("MAXVER", "pcgen_maxver"),
+    TokenDef::text("MAXDEVVER", "pcgen_maxdevver"),
     TokenDef::text("NEWKEY", "pcgen_newkey"),
     TokenDef {
         key: "FORWARDREF",

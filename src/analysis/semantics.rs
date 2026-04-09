@@ -174,6 +174,8 @@ fn looks_like_pcc(head: &str, clauses: &[ParsedClause]) -> bool {
         "LOGO",
         "COPYRIGHT",
         "LICENSE",
+        "PCC",
+        "MAXDEVVER",
     ];
 
     if let Some(key) = head_key(head)
@@ -200,9 +202,11 @@ fn looks_like_pcc(head: &str, clauses: &[ParsedClause]) -> bool {
         || has_token(clauses, "NAMEISPI")
         || has_token(clauses, "MAXVER")
         || has_token(clauses, "NEWKEY")
+        || has_token(clauses, "MAXDEVVER")
         || has_token(clauses, "ALLOWDUPES")
         || has_token(clauses, "HIDETYPE")
         || has_token(clauses, "FORWARDREF")
+        || has_token(clauses, "PCC")
         || has_token(clauses, "COPYRIGHT")
 }
 
@@ -272,6 +276,9 @@ fn looks_like_equipment(clauses: &[ParsedClause]) -> bool {
         || has_token(clauses, "REACH")
         || has_token(clauses, "ALTCRITMULT")
         || has_token(clauses, "SPELLFAILURE")
+        || has_token(clauses, "PLUS")
+        || has_token(clauses, "FORMATCAT")
+        || has_token(clauses, "ASSIGNTOALL")
 }
 
 fn looks_like_ability(clauses: &[ParsedClause]) -> bool {

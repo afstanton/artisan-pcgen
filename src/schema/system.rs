@@ -60,6 +60,14 @@ pub static PREVIEWSHEET_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
+pub static LOAD_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:load",
+    head_token: Some("LOAD"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[],
+    globals: &[],
+};
+
 pub static ICON_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
     entity_type_key: "pcgen:system:icon",
     head_token: Some("ICON"),
