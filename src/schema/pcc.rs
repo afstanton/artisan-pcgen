@@ -63,6 +63,13 @@ static PCC_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::None,
         required: false,
     },
+    TokenDef {
+        key: "SPELL",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::None,
+        required: false,
+    },
     // Legal
     TokenDef::text("ISLICENSED", "pcgen_islicensed"),
     TokenDef {

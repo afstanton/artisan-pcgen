@@ -153,6 +153,7 @@ fn looks_like_pcc(head: &str, clauses: &[ParsedClause]) -> bool {
         "ISOGL",
         "INFOTEXT",
         "EQUIPMENT",
+        "SPELL",
         "RANK",
         "FACTDEF",
         "STATUS",
