@@ -3,7 +3,8 @@
 //! Each schema captures the complete token grammar for one PCGen entity type,
 //! derived from the official PCGen LST documentation. The same schema drives
 //! both parsing (token classification, value interpretation) and emission
-//! (serializing artisan `Entity` values back to `.lst` text).
+//! (serializing artisan `Entity` values back to line-oriented PCGen text,
+//! including `.lst`, `.pcc`, and `.pcg`).
 
 pub mod ability;
 pub mod abilitycategory;
@@ -233,7 +234,8 @@ impl TokenDef {
 // Head format
 // ---------------------------------------------------------------------------
 
-/// How the record head for this entity type is formatted in a `.lst` file.
+/// How the record head for this entity type is formatted in a line-oriented
+/// PCGen file (`.lst`, `.pcc`, or `.pcg`).
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum HeadFormat {
     /// Entity name only: `Toughness` (abilities, feats, spells, races, …).
@@ -384,7 +386,7 @@ pub struct EntitySchema {
     /// PCGen head token for token-prefixed entities, e.g. `"CLASS"`, `"SKILL"`.
     /// `None` for name-only entities (abilities, feats, spells, races, …).
     pub head_token: Option<&'static str>,
-    /// How the head record is formatted in `.lst` output.
+    /// How the head record is formatted in line-oriented PCGen output.
     pub head_format: HeadFormat,
     /// Entity-type-specific token definitions, in preferred emission order.
     pub tokens: &'static [TokenDef],

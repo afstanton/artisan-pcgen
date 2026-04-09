@@ -1,12 +1,12 @@
 //! Schema-driven PCGen entity emitter.
 //!
-//! Produces valid PCGen `.lst` text from artisan `Entity` values using the
+//! Produces valid PCGen line-oriented text (`.lst`, `.pcc`, `.pcg`) from artisan `Entity` values using the
 //! registered `EntitySchema` for each entity type. The schema defines which
 //! tokens to emit, in what order, and how to serialize each artisan field.
 //!
 //! # Output format
 //! Top-level tokens are separated by `\t`. Within a token's value, the
-//! separator is `|` (pipe), matching standard PCGen `.lst` format.
+//! separator is `|` (pipe), matching standard PCGen line format.
 
 use artisan_core::Entity;
 use serde_json::Value;
@@ -20,7 +20,7 @@ use crate::{
 };
 use std::collections::{BTreeSet, HashSet};
 
-/// Emit a PCGen `.lst` line for `entity` using the provided `schema`.
+/// Emit a PCGen line for `entity` using the provided `schema`.
 ///
 /// Returns the full line text with tab-separated top-level tokens.
 pub fn emit_entity(entity: &Entity, schema: &EntitySchema) -> String {

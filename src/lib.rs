@@ -71,6 +71,10 @@ impl PcgenLoader {
         Ok(parse_text_to_catalog(input, "inline", "lst").entities)
     }
 
+    pub fn parse_pcg(input: &str) -> Result<Vec<Entity>, String> {
+        Ok(parse_text_to_catalog(input, "inline", "pcg").entities)
+    }
+
     pub fn parse_entity_candidates(input: &str) -> Result<Vec<ParsedEntityCandidate>, String> {
         Self::parse_entity_candidates_with_context(input, None, None)
     }

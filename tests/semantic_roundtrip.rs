@@ -79,7 +79,12 @@ fn collect_all_fixture_files(root: &Path) -> io::Result<Vec<PathBuf>> {
 
 fn collect_all_files_recursive(path: &Path, out: &mut Vec<PathBuf>) -> io::Result<()> {
     if path.is_file() {
-        out.push(path.to_path_buf());
+        if let Some(ext) = path.extension().and_then(|e| e.to_str()) {
+            let ext = ext.to_ascii_lowercase();
+            if ext == "lst" || ext == "pcc" || ext == "pcg" {
+                out.push(path.to_path_buf());
+            }
+        }
         return Ok(());
     }
 
