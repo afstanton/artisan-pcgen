@@ -1197,6 +1197,16 @@ mod tests {
             assert!(any_schema_knows_token("COPYRIGHT"));
             assert!(any_schema_knows_token("FACTDEF"));
             assert!(any_schema_knows_token("FACTSET"));
+            assert!(any_schema_knows_token("PANTHEON"));
+            assert!(any_schema_knows_token("COPYMASTERBAB"));
+            assert!(any_schema_knows_token("COPYMASTERCHECK"));
+            assert!(any_schema_knows_token("COPYMASTERHP"));
+            assert!(any_schema_knows_token("USEMASTERSKILL"));
+            assert!(any_schema_knows_token("ALIGNMENTFEATURE"));
+            assert!(any_schema_knows_token("CURRENCYUNITABBREV"));
+            assert!(any_schema_knows_token("MENUENTRY"));
+            assert!(any_schema_knows_token("DISPLAYORDER"));
+            assert!(any_schema_knows_token("DIESIZES"));
             assert!(any_schema_knows_token("ALIGN"));
             assert!(any_schema_knows_token("STAT"));
             assert!(any_schema_knows_token("RACE"));

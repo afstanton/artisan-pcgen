@@ -224,6 +224,9 @@ pub(crate) fn project_clause_attributes(
             "DEITYWEAP" => {
                 attributes.insert("pcgen_deityweap".to_string(), Value::String(value.clone()));
             }
+            "PANTHEON" => {
+                attributes.insert("pcgen_pantheon".to_string(), Value::String(value.clone()));
+            }
             "GROUP" => append_string_attr(attributes, "pcgen_group", value),
             "ALLOWBASECLASS" => {
                 attributes.insert("pcgen_allowbaseclass".to_string(), parse_yes_no_or_string(value));
@@ -460,6 +463,30 @@ pub(crate) fn project_clause_attributes(
             }
             "QTY" => set_i64_or_string(attributes, "pcgen_qty", value),
             "COUNT" => set_i64_or_string(attributes, "pcgen_count", value),
+            "COPYMASTERBAB" => {
+                attributes.insert(
+                    "pcgen_copymasterbab".to_string(),
+                    Value::String(value.clone()),
+                );
+            }
+            "COPYMASTERCHECK" => {
+                attributes.insert(
+                    "pcgen_copymastercheck".to_string(),
+                    Value::String(value.clone()),
+                );
+            }
+            "COPYMASTERHP" => {
+                attributes.insert(
+                    "pcgen_copymasterhp".to_string(),
+                    Value::String(value.clone()),
+                );
+            }
+            "USEMASTERSKILL" => {
+                attributes.insert(
+                    "pcgen_usemasterskill".to_string(),
+                    parse_yes_no_or_string(value),
+                );
+            }
             "GENDER" => {
                 attributes.insert("pcgen_gender".to_string(), Value::String(value.clone()));
             }
@@ -800,6 +827,33 @@ pub(crate) fn project_decl_token_value(
         }
         "UNITSET" => {
             attributes.insert("pcgen_unitset".to_string(), Value::String(decl_value.to_string()));
+        }
+        "ALIGNMENTFEATURE" => {
+            attributes.insert(
+                "pcgen_alignmentfeature".to_string(),
+                parse_yes_no_or_string(decl_value),
+            );
+        }
+        "CURRENCYUNITABBREV" => {
+            attributes.insert(
+                "pcgen_currencyunitabbrev".to_string(),
+                Value::String(decl_value.to_string()),
+            );
+        }
+        "MENUENTRY" => {
+            attributes.insert(
+                "pcgen_menuentry".to_string(),
+                Value::String(decl_value.to_string()),
+            );
+        }
+        "DISPLAYORDER" => {
+            set_i64_or_string(attributes, "pcgen_displayorder", decl_value);
+        }
+        "DIESIZES" => {
+            attributes.insert(
+                "pcgen_diesizes".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         _ => {}
     }

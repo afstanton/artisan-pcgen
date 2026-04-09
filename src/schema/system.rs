@@ -46,6 +46,49 @@ pub static BONUSSTATLEVELSTARTINTERVAL_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
+pub static ALIGNMENTFEATURE_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:alignmentfeature",
+    head_token: Some("ALIGNMENTFEATURE"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::yesno("ALIGNMENTFEATURE", "pcgen_alignmentfeature")],
+    globals: &[],
+};
+
+pub static CURRENCYUNITABBREV_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:currencyunitabbrev",
+    head_token: Some("CURRENCYUNITABBREV"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::text_required(
+        "CURRENCYUNITABBREV",
+        "pcgen_currencyunitabbrev",
+    )],
+    globals: &[],
+};
+
+pub static MENUENTRY_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:menuentry",
+    head_token: Some("MENUENTRY"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::text_required("MENUENTRY", "pcgen_menuentry")],
+    globals: &[],
+};
+
+pub static DISPLAYORDER_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:displayorder",
+    head_token: Some("DISPLAYORDER"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::text_required("DISPLAYORDER", "pcgen_displayorder")],
+    globals: &[],
+};
+
+pub static DIESIZES_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:diesizes",
+    head_token: Some("DIESIZES"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::text_required("DIESIZES", "pcgen_diesizes")],
+    globals: &[],
+};
+
 pub static PREVIEWDIR_SCHEMA: EntitySchema = EntitySchema {
     entity_type_key: "pcgen:system:previewdir",
     head_token: Some("PREVIEWDIR"),

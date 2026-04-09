@@ -10,6 +10,10 @@ use crate::schema::{ArtisanMapping, Cardinality, EntitySchema, GlobalGroup, Head
 static FOLLOWER_TOKENS: &[TokenDef] = &[
     TokenDef::text("HD", "pcgen_hitdie"),
     TokenDef::text("RACETYPE", "pcgen_racetype"),
+    TokenDef::text("COPYMASTERBAB", "pcgen_copymasterbab"),
+    TokenDef::text("COPYMASTERCHECK", "pcgen_copymastercheck"),
+    TokenDef::text("COPYMASTERHP", "pcgen_copymasterhp"),
+    TokenDef::yesno("USEMASTERSKILL", "pcgen_usemasterskill"),
     TokenDef {
         key: "ABILITY",
         grammar: TokenGrammar::PipeList,
