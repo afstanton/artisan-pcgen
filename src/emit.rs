@@ -306,6 +306,15 @@ fn collect_emittable_global_keys(
                 keys.insert("DEFINESTAT".to_string());
             }
         }
+        GlobalGroup::Modify => {
+            let has_projected_modify = entity.attributes.contains_key("pcgen_modify_variable")
+                && entity.attributes.contains_key("pcgen_modify_operation")
+                && entity.attributes.contains_key("pcgen_modify_value");
+            let has_raw_modify = entity.attributes.contains_key("pcgen_modify");
+            if has_projected_modify || has_raw_modify {
+                keys.insert("MODIFY".to_string());
+            }
+        }
         GlobalGroup::Prerequisites => {
             for prereq in &entity.prerequisites {
                 keys.insert(prereq.kind.to_ascii_uppercase());
@@ -515,6 +524,47 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
                     parts.push(format!("DEFINE:{}", effect.target));
                 } else if effect.kind.eq_ignore_ascii_case("DEFINESTAT") {
                     parts.push(format!("DEFINESTAT:{}", effect.target));
+                }
+            }
+        }
+        GlobalGroup::Modify => {
+            if let (Some(variables), Some(operations), Some(values)) = (
+                entity
+                    .attributes
+                    .get("pcgen_modify_variable")
+                    .and_then(Value::as_array),
+                entity
+                    .attributes
+                    .get("pcgen_modify_operation")
+                    .and_then(Value::as_array),
+                entity
+                    .attributes
+                    .get("pcgen_modify_value")
+                    .and_then(Value::as_array),
+            ) {
+                let count = variables.len().min(operations.len()).min(values.len());
+                for index in 0..count {
+                    if let (Some(variable), Some(operation), Some(value)) = (
+                        variables[index].as_str(),
+                        operations[index].as_str(),
+                        values[index].as_str(),
+                    ) {
+                        parts.push(format!("MODIFY:{variable}|{operation}|{value}"));
+                    }
+                }
+            } else if let Some(value) = entity
+                .attributes
+                .get("pcgen_modify")
+                .and_then(Value::as_str)
+            {
+                parts.push(format!("MODIFY:{value}"));
+            } else if let Some(values) = entity
+                .attributes
+                .get("pcgen_modify")
+                .and_then(Value::as_array)
+            {
+                for value in values.iter().filter_map(Value::as_str) {
+                    parts.push(format!("MODIFY:{value}"));
                 }
             }
         }

@@ -19,6 +19,7 @@ static SKILL_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::Choose,
     GlobalGroup::Auto,
     GlobalGroup::Define,
+    GlobalGroup::Modify,
     GlobalGroup::Prerequisites,
     GlobalGroup::SourcePage,
     GlobalGroup::SourceLink,

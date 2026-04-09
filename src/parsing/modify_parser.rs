@@ -50,10 +50,10 @@ impl ModifyOp {
 pub fn parse_modify(input: &str) -> Result<ModifyExpression, String> {
     // Use the lexer/tokenizer
     let (var, op_str, val) = tokenize(input)?;
-    
+
     let operation = ModifyOp::from_str(&op_str)
         .ok_or_else(|| format!("Unknown operation: {}. Expected ADD, SET, or SOLVE", op_str))?;
-    
+
     Ok(ModifyExpression {
         variable: var,
         operation,

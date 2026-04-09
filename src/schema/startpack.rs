@@ -33,6 +33,7 @@ pub static STARTPACK_SCHEMA: EntitySchema = EntitySchema {
         GlobalGroup::Choose,
         GlobalGroup::Auto,
         GlobalGroup::Define,
+        GlobalGroup::Modify,
         GlobalGroup::LangBonus,
         GlobalGroup::SourceMeta,
     ],

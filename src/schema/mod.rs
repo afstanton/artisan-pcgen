@@ -255,6 +255,8 @@ pub enum GlobalGroup {
     Auto,
     /// `DEFINE:var|formula` — variable definition (repeatable)
     Define,
+    /// `MODIFY:var|op|value` — variable modification (repeatable)
+    Modify,
     /// All `PRExxx:` and `!PRExxx:` prerequisite tokens (repeatable)
     Prerequisites,
     /// `SOURCEPAGE:x` — source page citation
@@ -299,6 +301,7 @@ impl GlobalGroup {
             GlobalGroup::Choose => &["CHOOSE", "SELECT"],
             GlobalGroup::Auto => &["AUTO"],
             GlobalGroup::Define => &["DEFINE", "DEFINESTAT"],
+            GlobalGroup::Modify => &["MODIFY"],
             GlobalGroup::Prerequisites => &["PRE", "!PRE"],
             GlobalGroup::SourcePage => &["SOURCEPAGE"],
             GlobalGroup::SourceLink => &["SOURCELINK"],
