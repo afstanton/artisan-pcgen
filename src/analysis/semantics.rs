@@ -228,7 +228,6 @@ fn looks_like_class(clauses: &[ParsedClause]) -> bool {
         || has_token(clauses, "SUBSTITUTIONLEVEL")
         || has_token(clauses, "EXCLASS")
         || has_token(clauses, "EXCHANGELEVEL")
-        || has_token(clauses, "ROLE")
         || has_token(clauses, "PROHIBITCOST")
 }
 
