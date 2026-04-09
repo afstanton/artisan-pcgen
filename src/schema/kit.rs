@@ -38,6 +38,7 @@ static KIT_TOKENS: &[TokenDef] = &[
     },
     TokenDef::text("LOCATION", "pcgen_location"),
     TokenDef::text("QTY", "pcgen_qty"),
+    TokenDef::integer("COUNT", "pcgen_count"),
     TokenDef::yesno("FREE", "pcgen_free"),
     TokenDef::text("SIZE", "pcgen_size"),
     TokenDef {

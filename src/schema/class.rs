@@ -126,6 +126,8 @@ static CLASS_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Attribute("pcgen_exchangelevel"),
         required: false,
     },
+    TokenDef::pipe_list_repeatable("CCSKILL", "pcgen_ccskill"),
+    TokenDef::pipe_list_repeatable("UNENCUMBEREDMOVE", "pcgen_unencumberedmove"),
     TokenDef::text("ROLE", "pcgen_role"),
 ];
 

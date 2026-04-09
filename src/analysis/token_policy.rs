@@ -88,6 +88,12 @@ fn is_plausible_token_name(token: &str) -> bool {
         return false;
     }
 
+    // Titles like "Part I:" and "Part II:" in prose can be split into fake
+    // key/value clauses. Treat standalone Roman numerals as artifacts.
+    if is_standalone_roman_numeral(token) {
+        return false;
+    }
+
     if !token
         .chars()
         .all(|c| c.is_ascii_alphanumeric() || matches!(c, '_' | '!' | '-' | '.'))
@@ -100,6 +106,24 @@ fn is_plausible_token_name(token: &str) -> bool {
     }
 
     token.chars().any(|c| c.is_ascii_alphabetic())
+}
+
+fn is_standalone_roman_numeral(token: &str) -> bool {
+    matches!(
+        token,
+        "I"
+            | "II"
+            | "III"
+            | "IV"
+            | "V"
+            | "VI"
+            | "VII"
+            | "VIII"
+            | "IX"
+            | "X"
+            | "XI"
+            | "XII"
+    )
 }
 
 #[cfg(test)]
@@ -161,6 +185,22 @@ mod tests {
         assert!(matches!(
             classify_token_key("EQUIPMENT.PART", false),
             ClauseSupportLevel::PolicySupported
+        ));
+    }
+
+    #[test]
+    fn classify_token_key_rejects_standalone_roman_numerals() {
+        assert!(matches!(
+            classify_token_key("I", false),
+            ClauseSupportLevel::Artifact
+        ));
+        assert!(matches!(
+            classify_token_key("II", false),
+            ClauseSupportLevel::Artifact
+        ));
+        assert!(matches!(
+            classify_token_key("IV", false),
+            ClauseSupportLevel::Artifact
         ));
     }
 }

@@ -70,6 +70,8 @@ pub(crate) fn project_clause_attributes(
             "BIOSET" => append_string_attr(attributes, "pcgen_bioset_catalog", value),
             "DATACONTROL" => append_string_attr(attributes, "pcgen_datacontrol_catalog", value),
             "COMPANIONMOD" => append_string_attr(attributes, "pcgen_companionmod_catalog", value),
+            "ALIGNMENT" => append_string_attr(attributes, "pcgen_alignment_catalog", value),
+            "SAVE" => append_string_attr(attributes, "pcgen_save_catalog", value),
             "PRECAMPAIGN" => {
                 append_value_attr(attributes, "pcgen_precampaign", parse_pipe_series(value));
             }
@@ -142,6 +144,7 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_monsterclass".to_string(), Value::String(value.clone()));
             }
             "MONCSKILL" => append_string_attr(attributes, "pcgen_moncskill", value),
+            "CCSKILL" => append_string_attr(attributes, "pcgen_ccskill", value),
             "MONCCSKILL" => append_string_attr(attributes, "pcgen_monccskill", value),
             "SKILLMULT" => append_string_attr(attributes, "pcgen_skillmult", value),
             "STARTFEATS" => set_i64_or_string(attributes, "pcgen_startfeats", value),
@@ -203,6 +206,7 @@ pub(crate) fn project_clause_attributes(
             "SPELLLIST" => {
                 attributes.insert("pcgen_spelllist".to_string(), Value::String(value.clone()));
             }
+            "MAXCOST" => set_i64_or_string(attributes, "pcgen_maxcost", value),
             "PROHIBITSPELL" => append_string_attr(attributes, "pcgen_prohibitspell", value),
             "KNOWNSPELLSFROMSPECIALTY" => {
                 attributes.insert(
@@ -383,6 +387,9 @@ pub(crate) fn project_clause_attributes(
             }
             "VALUES" => append_string_attr(attributes, "pcgen_values", value),
             "COPYRIGHT" => append_string_attr(attributes, "pcgen_copyright", value),
+            "LSTEXCLUDE" => {
+                append_value_attr(attributes, "pcgen_lstexclude", parse_pipe_series(value));
+            }
             "FACTDEF" => {
                 attributes.insert("pcgen_factdef".to_string(), Value::String(value.clone()));
             }
@@ -452,15 +459,46 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_location".to_string(), Value::String(value.clone()));
             }
             "QTY" => set_i64_or_string(attributes, "pcgen_qty", value),
+            "COUNT" => set_i64_or_string(attributes, "pcgen_count", value),
             "GENDER" => {
                 attributes.insert("pcgen_gender".to_string(), Value::String(value.clone()));
             }
             "EXCLUDE" => {
                 attributes.insert("pcgen_exclude".to_string(), Value::String(value.clone()));
             }
+            "SUBREGION" => {
+                attributes.insert("pcgen_subregion".to_string(), Value::String(value.clone()));
+            }
             "POINTS" => set_i64_or_string(attributes, "pcgen_points", value),
             "METHOD" => {
                 attributes.insert("pcgen_method".to_string(), Value::String(value.clone()));
+            }
+            "DISTANCEUNIT" => {
+                attributes.insert("pcgen_distanceunit".to_string(), Value::String(value.clone()));
+            }
+            "DISTANCEFACTOR" => {
+                attributes.insert("pcgen_distancefactor".to_string(), Value::String(value.clone()));
+            }
+            "DISTANCEPATTERN" => {
+                attributes.insert("pcgen_distancepattern".to_string(), Value::String(value.clone()));
+            }
+            "HEIGHTUNIT" => {
+                attributes.insert("pcgen_heightunit".to_string(), Value::String(value.clone()));
+            }
+            "HEIGHTFACTOR" => {
+                attributes.insert("pcgen_heightfactor".to_string(), Value::String(value.clone()));
+            }
+            "HEIGHTPATTERN" => {
+                attributes.insert("pcgen_heightpattern".to_string(), Value::String(value.clone()));
+            }
+            "WEIGHTUNIT" => {
+                attributes.insert("pcgen_weightunit".to_string(), Value::String(value.clone()));
+            }
+            "WEIGHTFACTOR" => {
+                attributes.insert("pcgen_weightfactor".to_string(), Value::String(value.clone()));
+            }
+            "WEIGHTPATTERN" => {
+                attributes.insert("pcgen_weightpattern".to_string(), Value::String(value.clone()));
             }
             "TOTALCOST" => {
                 attributes.insert("pcgen_totalcost".to_string(), Value::String(value.clone()));
@@ -528,6 +566,14 @@ pub(crate) fn project_clause_attributes(
             "CR" => {
                 attributes.insert("pcgen_cr".to_string(), Value::String(value.clone()));
             }
+            "CRMOD" => {
+                if value.contains('|') {
+                    append_value_attr(attributes, "pcgen_crmod", parse_crmod_definition(value));
+                } else {
+                    set_i64_or_string(attributes, "pcgen_crmod", value);
+                }
+            }
+            "CRMODPRIORITY" => set_i64_or_string(attributes, "pcgen_crmodpriority", value),
             "REGION" => {
                 attributes.insert("pcgen_region".to_string(), Value::String(value.clone()));
             }
@@ -625,8 +671,14 @@ pub(crate) fn project_clause_attributes(
             "PROFICIENCY" => {
                 attributes.insert("pcgen_proficiency".to_string(), parse_pipe_series(value));
             }
+            "ARMORTYPE" => {
+                append_value_attr(attributes, "pcgen_armortype", parse_transition_pair(value));
+            }
             "REPLACES" => {
                 attributes.insert("pcgen_replaces".to_string(), Value::String(value.clone()));
+            }
+            "UNENCUMBEREDMOVE" => {
+                append_value_attr(attributes, "pcgen_unencumberedmove", parse_pipe_series(value));
             }
             "CONTAINS" => {
                 attributes.insert("pcgen_contains".to_string(), Value::String(value.clone()));
@@ -727,6 +779,27 @@ pub(crate) fn project_decl_token_value(
                 "pcgen_factsetdef".to_string(),
                 parse_factsetdef_definition(decl_value),
             );
+        }
+        "SPELLRANGE" => {
+            attributes.insert(
+                "pcgen_spellrange".to_string(),
+                parse_spellrange_definition(decl_value),
+            );
+        }
+        "OUTPUTSHEET" => {
+            attributes.insert(
+                "pcgen_outputsheet".to_string(),
+                parse_outputsheet_definition(decl_value),
+            );
+        }
+        "INFOSHEET" => {
+            attributes.insert(
+                "pcgen_infosheet".to_string(),
+                parse_infosheet_definition(decl_value),
+            );
+        }
+        "UNITSET" => {
+            attributes.insert("pcgen_unitset".to_string(), Value::String(decl_value.to_string()));
         }
         _ => {}
     }
@@ -932,6 +1005,109 @@ fn parse_factsetdef_definition(input: &str) -> Value {
     }
     if !field.is_empty() {
         out.insert("field".to_string(), Value::String(field.to_string()));
+    }
+
+    Value::Object(out)
+}
+
+fn parse_spellrange_definition(input: &str) -> Value {
+    let mut out = Map::new();
+    out.insert("raw".to_string(), Value::String(input.to_string()));
+
+    let mut parts = input.splitn(2, '|');
+    let range_name = parts.next().unwrap_or_default().trim();
+    let formula = parts.next().unwrap_or_default().trim();
+
+    if !range_name.is_empty() {
+        out.insert("name".to_string(), Value::String(range_name.to_string()));
+    }
+    if !formula.is_empty() {
+        out.insert("formula".to_string(), Value::String(formula.to_string()));
+    }
+
+    Value::Object(out)
+}
+
+fn parse_transition_pair(input: &str) -> Value {
+    let mut out = Map::new();
+    out.insert("raw".to_string(), Value::String(input.to_string()));
+
+    let mut parts = input.splitn(2, '|');
+    let from = parts.next().unwrap_or_default().trim();
+    let to = parts.next().unwrap_or_default().trim();
+
+    if !from.is_empty() {
+        out.insert("from".to_string(), Value::String(from.to_string()));
+    }
+    if !to.is_empty() {
+        out.insert("to".to_string(), Value::String(to.to_string()));
+    }
+
+    Value::Object(out)
+}
+
+fn parse_outputsheet_definition(input: &str) -> Value {
+    let mut out = Map::new();
+    out.insert("raw".to_string(), Value::String(input.to_string()));
+
+    let mut parts = input.splitn(2, '|');
+    let kind = parts.next().unwrap_or_default().trim();
+    let path = parts.next().unwrap_or_default().trim();
+
+    if !kind.is_empty() {
+        out.insert("kind".to_string(), Value::String(kind.to_string()));
+    }
+    if !path.is_empty() {
+        out.insert("path".to_string(), Value::String(path.to_string()));
+    }
+
+    Value::Object(out)
+}
+
+fn parse_infosheet_definition(input: &str) -> Value {
+    let mut out = Map::new();
+    out.insert("raw".to_string(), Value::String(input.to_string()));
+
+    let mut parts = input.splitn(2, '|');
+    let kind = parts.next().unwrap_or_default().trim();
+    let path = parts.next().unwrap_or_default().trim();
+
+    if !kind.is_empty() {
+        out.insert("kind".to_string(), Value::String(kind.to_string()));
+    }
+    if !path.is_empty() {
+        out.insert("path".to_string(), Value::String(path.to_string()));
+    }
+
+    Value::Object(out)
+}
+
+fn parse_crmod_definition(input: &str) -> Value {
+    let mut out = Map::new();
+    out.insert("raw".to_string(), Value::String(input.to_string()));
+
+    let mut parts = input.splitn(2, '|');
+    let scope = parts.next().unwrap_or_default().trim();
+    let modifier = parts.next().unwrap_or_default().trim();
+
+    if !scope.is_empty() {
+        let class_types: Vec<Value> = scope
+            .split('.')
+            .map(str::trim)
+            .filter(|part| !part.is_empty())
+            .map(|part| Value::String(part.to_string()))
+            .collect();
+        if !class_types.is_empty() {
+            out.insert("class_types".to_string(), Value::Array(class_types));
+        }
+    }
+
+    if !modifier.is_empty() {
+        if let Ok(num) = modifier.parse::<i64>() {
+            out.insert("modifier".to_string(), json!(num));
+        } else {
+            out.insert("modifier".to_string(), Value::String(modifier.to_string()));
+        }
     }
 
     Value::Object(out)

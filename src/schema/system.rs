@@ -104,6 +104,51 @@ pub static DEFAULTVARIABLEVALUE_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
+pub static SPELLRANGE_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:spellrange",
+    head_token: Some("SPELLRANGE"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::text_required("SPELLRANGE", "pcgen_spellrange")],
+    globals: &[],
+};
+
+pub static OUTPUTSHEET_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:outputsheet",
+    head_token: Some("OUTPUTSHEET"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::text_required("OUTPUTSHEET", "pcgen_outputsheet")],
+    globals: &[],
+};
+
+pub static INFOSHEET_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:infosheet",
+    head_token: Some("INFOSHEET"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::text_required("INFOSHEET", "pcgen_infosheet")],
+    globals: &[],
+};
+
+static UNITSET_SYSTEM_TOKENS: &[TokenDef] = &[
+    TokenDef::text_required("UNITSET", "pcgen_unitset"),
+    TokenDef::text("DISTANCEUNIT", "pcgen_distanceunit"),
+    TokenDef::text("DISTANCEFACTOR", "pcgen_distancefactor"),
+    TokenDef::text("DISTANCEPATTERN", "pcgen_distancepattern"),
+    TokenDef::text("HEIGHTUNIT", "pcgen_heightunit"),
+    TokenDef::text("HEIGHTFACTOR", "pcgen_heightfactor"),
+    TokenDef::text("HEIGHTPATTERN", "pcgen_heightpattern"),
+    TokenDef::text("WEIGHTUNIT", "pcgen_weightunit"),
+    TokenDef::text("WEIGHTFACTOR", "pcgen_weightfactor"),
+    TokenDef::text("WEIGHTPATTERN", "pcgen_weightpattern"),
+];
+
+pub static UNITSET_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:unitset",
+    head_token: Some("UNITSET"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: UNITSET_SYSTEM_TOKENS,
+    globals: &[],
+};
+
 pub static WEAPONCATEGORY_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
     entity_type_key: "pcgen:system:weaponcategory",
     head_token: Some("WEAPONCATEGORY"),
@@ -121,6 +166,8 @@ pub static ROLLMETHOD_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
 };
 
 static CLASSTYPE_SYSTEM_TOKENS: &[TokenDef] = &[
+    TokenDef::text("CRMOD", "pcgen_crmod"),
+    TokenDef::integer("CRMODPRIORITY", "pcgen_crmodpriority"),
     TokenDef::text("CRFORMULA", "pcgen_crformula"),
     TokenDef::yesno("ISMONSTER", "pcgen_ismonster"),
     TokenDef::yesno("XPPENALTY", "pcgen_xppenalty"),

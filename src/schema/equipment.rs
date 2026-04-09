@@ -11,6 +11,7 @@ use crate::schema::{
 static QUALITY_SLOTS: &[&str] = &["name", "value"];
 static PROFICIENCY_SLOTS: &[&str] = &["type", "name"];
 static CHARGES_SLOTS: &[&str] = &["min", "max"];
+static ARMORTYPE_SLOTS: &[&str] = &["from", "to"];
 
 static EQUIPMENT_TOKENS: &[TokenDef] = &[
     // Weight and cost
@@ -58,6 +59,7 @@ static EQUIPMENT_TOKENS: &[TokenDef] = &[
     TokenDef::text("NAMEOPT", "pcgen_nameopt"),
     TokenDef::text("FORMATCAT", "pcgen_formatcat"),
     TokenDef::yesno("ASSIGNTOALL", "pcgen_assigntoall"),
+    TokenDef::pipe_positional_repeatable("ARMORTYPE", ARMORTYPE_SLOTS, "pcgen_armortype"),
     TokenDef::pipe_positional("PROFICIENCY", PROFICIENCY_SLOTS, "pcgen_proficiency"),
     TokenDef {
         key: "REPLACES",

@@ -10,6 +10,8 @@ use crate::schema::{
 static SUBCLASS_TOKENS: &[TokenDef] = &[
     TokenDef::text("COST", "pcgen_cost"),
     TokenDef::pipe_list_repeatable("CHOICE", "pcgen_choice"),
+    TokenDef::pipe_list_repeatable("CCSKILL", "pcgen_ccskill"),
+    TokenDef::pipe_list_repeatable("UNENCUMBEREDMOVE", "pcgen_unencumberedmove"),
     TokenDef::pipe_positional_repeatable("SPELLLIST", &["level", "list"], "pcgen_spelllist"),
     TokenDef::text("KNOWNSPELLSFROMSPECIALTY", "pcgen_knownspellsfromspecialty"),
     TokenDef::integer("PROHIBITCOST", "pcgen_prohibitcost"),

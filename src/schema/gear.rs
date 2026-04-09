@@ -10,6 +10,7 @@ static GEAR_TOKENS: &[TokenDef] = &[
     TokenDef::text("OPTION", "pcgen_option"),
     TokenDef::text("LOOKUP", "pcgen_lookup"),
     TokenDef::text("SIZE", "pcgen_size"),
+    TokenDef::text("MAXCOST", "pcgen_maxcost"),
     TokenDef {
         key: "EQMOD",
         grammar: TokenGrammar::PipeList,

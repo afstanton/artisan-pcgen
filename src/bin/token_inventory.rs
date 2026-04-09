@@ -521,6 +521,9 @@ fn normalize_key(raw: &str) -> Option<String> {
     }
 
     let upper = key.to_ascii_uppercase();
+    if is_standalone_roman_numeral(&upper) {
+        return None;
+    }
     if !is_plausible_token_name(&upper) {
         return None;
     }
@@ -549,6 +552,24 @@ fn is_plausible_token_name(token: &str) -> bool {
     token.chars().any(|c| c.is_ascii_alphabetic())
 }
 
+fn is_standalone_roman_numeral(token: &str) -> bool {
+    matches!(
+        token,
+        "I"
+            | "II"
+            | "III"
+            | "IV"
+            | "V"
+            | "VI"
+            | "VII"
+            | "VIII"
+            | "IX"
+            | "X"
+            | "XI"
+            | "XII"
+    )
+}
+
 #[cfg(test)]
 mod tests {
     use super::{normalize_key, normalize_bare_directive};
@@ -563,6 +584,13 @@ mod tests {
     fn normalize_key_accepts_uppercase_tokens() {
         assert_eq!(normalize_key("FEAT"), Some("FEAT".to_string()));
         assert_eq!(normalize_key("!PRETYPE"), Some("!PRETYPE".to_string()));
+    }
+
+    #[test]
+    fn normalize_key_rejects_standalone_roman_numerals() {
+        assert_eq!(normalize_key("I"), None);
+        assert_eq!(normalize_key("II"), None);
+        assert_eq!(normalize_key("IV"), None);
     }
 
     #[test]

@@ -38,6 +38,7 @@ static TEMPLATE_TOKENS: &[TokenDef] = &[
     TokenDef::text("SR", "pcgen_sr"),
     TokenDef::text("CR", "pcgen_cr"),
     TokenDef::text("REGION", "pcgen_region"),
+    TokenDef::text("SUBREGION", "pcgen_subregion"),
     TokenDef::text("VISIBLE", "pcgen_visible"),
     TokenDef::text("REMOVABLE", "pcgen_removable"),
     TokenDef::text("HITDIE", "pcgen_hitdie"),
@@ -104,6 +105,8 @@ static TEMPLATE_TOKENS: &[TokenDef] = &[
         required: false,
     },
     TokenDef::pipe_list_repeatable("COMPANIONLIST", "pcgen_companionlist"),
+    TokenDef::pipe_list_repeatable("CCSKILL", "pcgen_ccskill"),
+    TokenDef::pipe_list_repeatable("UNENCUMBEREDMOVE", "pcgen_unencumberedmove"),
     TokenDef::pipe_positional_repeatable(
         "FOLLOWERS",
         &["type", "limit"],

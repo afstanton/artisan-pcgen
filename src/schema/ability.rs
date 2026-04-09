@@ -93,6 +93,8 @@ static ABILITY_TOKENS: &[TokenDef] = &[
         required: false,
     },
     TokenDef::pipe_list_repeatable("COMPANIONLIST", "pcgen_companionlist"),
+    TokenDef::pipe_list_repeatable("CCSKILL", "pcgen_ccskill"),
+    TokenDef::pipe_list_repeatable("UNENCUMBEREDMOVE", "pcgen_unencumberedmove"),
     TokenDef::pipe_positional_repeatable(
         "FOLLOWERS",
         &["type", "limit"],

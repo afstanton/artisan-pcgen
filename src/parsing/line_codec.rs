@@ -106,7 +106,7 @@ fn split_top_level_segments(line: &str) -> Vec<String> {
 
     // Fast path: lines with no whitespace cannot have whitespace token separators.
     if !trimmed.chars().any(char::is_whitespace) {
-        return parse_segments_with_generated_parser(trimmed);
+        return merge_token_prefixed_head_segments(parse_segments_with_generated_parser(trimmed));
     }
 
     let whitespace_segments = split_on_whitespace_token_starts_trimmed(trimmed);
@@ -114,7 +114,38 @@ fn split_top_level_segments(line: &str) -> Vec<String> {
         return whitespace_segments;
     }
 
-    parse_segments_with_generated_parser(trimmed)
+    merge_token_prefixed_head_segments(parse_segments_with_generated_parser(trimmed))
+}
+
+fn merge_token_prefixed_head_segments(mut segments: Vec<String>) -> Vec<String> {
+    if segments.len() < 2 {
+        return segments;
+    }
+
+    let Some((head_key, _)) = parse_head_key_value(&segments[0]) else {
+        return segments;
+    };
+
+    let Some(schema) = crate::schema::schema_for_head_token(&head_key) else {
+        return segments;
+    };
+
+    if !matches!(schema.head_format, crate::schema::HeadFormat::TokenPrefixed) {
+        return segments;
+    }
+
+    let mut merged_head = segments.remove(0);
+    while let Some(next) = segments.first() {
+        if looks_like_token_start(next, 0) {
+            break;
+        }
+        merged_head.push('|');
+        merged_head.push_str(&segments.remove(0));
+    }
+
+    let mut merged = vec![merged_head];
+    merged.extend(segments);
+    merged
 }
 
 fn split_on_whitespace_token_starts_trimmed(trimmed: &str) -> Vec<String> {

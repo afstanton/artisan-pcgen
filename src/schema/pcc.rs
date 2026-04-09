@@ -100,6 +100,20 @@ static PCC_TOKENS: &[TokenDef] = &[
         required: false,
     },
     TokenDef {
+        key: "ALIGNMENT",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_alignment_catalog"),
+        required: false,
+    },
+    TokenDef {
+        key: "SAVE",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_save_catalog"),
+        required: false,
+    },
+    TokenDef {
         key: "SPELL",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
@@ -191,6 +205,13 @@ static PCC_TOKENS: &[TokenDef] = &[
         required: false,
     },
     TokenDef {
+        key: "LSTEXCLUDE",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_lstexclude"),
+        required: false,
+    },
+    TokenDef {
         key: "URL",
         grammar: TokenGrammar::PipePositional(&["text", "url", "label"]),
         cardinality: Cardinality::Repeatable,
@@ -212,6 +233,14 @@ pub static PCC_SCHEMA: EntitySchema = EntitySchema {
 
 static LANGUAGE_INCLUDE_TOKENS: &[TokenDef] = &[
     TokenDef::text_required("LANGUAGE", "pcgen_language_catalog"),
+    PRECAMPAIGN_TOKEN,
+];
+static ALIGNMENT_INCLUDE_TOKENS: &[TokenDef] = &[
+    TokenDef::text_required("ALIGNMENT", "pcgen_alignment_catalog"),
+    PRECAMPAIGN_TOKEN,
+];
+static SAVE_INCLUDE_TOKENS: &[TokenDef] = &[
+    TokenDef::text_required("SAVE", "pcgen_save_catalog"),
     PRECAMPAIGN_TOKEN,
 ];
 static BIOSET_INCLUDE_TOKENS: &[TokenDef] = &[
@@ -245,12 +274,38 @@ static SHIELDPROF_INCLUDE_TOKENS: &[TokenDef] =
         TokenDef::text_required("SHIELDPROF", "pcgen_shieldprof_catalog"),
         PRECAMPAIGN_TOKEN,
     ];
+static LSTEXCLUDE_INCLUDE_TOKENS: &[TokenDef] = &[
+    TokenDef {
+        key: "LSTEXCLUDE",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_lstexclude"),
+        required: true,
+    },
+    PRECAMPAIGN_TOKEN,
+];
 
 pub static LANGUAGE_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
     entity_type_key: "pcgen:entity:pcc-language-include",
     head_token: Some("LANGUAGE"),
     head_format: HeadFormat::TokenPrefixed,
     tokens: LANGUAGE_INCLUDE_TOKENS,
+    globals: PCC_GLOBALS,
+};
+
+pub static ALIGNMENT_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:entity:pcc-alignment-include",
+    head_token: Some("ALIGNMENT"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: ALIGNMENT_INCLUDE_TOKENS,
+    globals: PCC_GLOBALS,
+};
+
+pub static SAVE_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:entity:pcc-save-include",
+    head_token: Some("SAVE"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: SAVE_INCLUDE_TOKENS,
     globals: PCC_GLOBALS,
 };
 
@@ -307,5 +362,13 @@ pub static SHIELDPROF_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
     head_token: Some("SHIELDPROF"),
     head_format: HeadFormat::TokenPrefixed,
     tokens: SHIELDPROF_INCLUDE_TOKENS,
+    globals: PCC_GLOBALS,
+};
+
+pub static LSTEXCLUDE_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:entity:pcc-lstexclude-include",
+    head_token: Some("LSTEXCLUDE"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: LSTEXCLUDE_INCLUDE_TOKENS,
     globals: PCC_GLOBALS,
 };

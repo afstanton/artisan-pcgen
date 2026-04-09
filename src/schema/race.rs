@@ -33,6 +33,7 @@ static RACE_TOKENS: &[TokenDef] = &[
     TokenDef::text("DR", "pcgen_dr"),
     TokenDef::text("SR", "pcgen_sr"),
     TokenDef::text("CR", "pcgen_cr"),
+    TokenDef::pipe_positional_repeatable("CRMOD", &["class_types", "modifier"], "pcgen_crmod"),
     TokenDef::text("REACH", "pcgen_reach"),
     TokenDef::integer("LEVELADJUSTMENT", "pcgen_leveladjustment"),
     TokenDef::integer("STARTFEATS", "pcgen_startfeats"),
@@ -113,6 +114,8 @@ static RACE_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Attribute("pcgen_group"),
         required: false,
     },
+    TokenDef::pipe_list_repeatable("CCSKILL", "pcgen_ccskill"),
+    TokenDef::pipe_list_repeatable("UNENCUMBEREDMOVE", "pcgen_unencumberedmove"),
 ];
 
 static RACE_GLOBALS: &[GlobalGroup] = &[
