@@ -17,7 +17,18 @@ pub(crate) fn classify_clause_token(clause: &ParsedClause) -> ClauseSupportLevel
 }
 
 pub(crate) fn classify_token_key(input: &str, is_bare: bool) -> ClauseSupportLevel {
-    let token = input.trim().to_ascii_uppercase();
+    let raw = input.trim();
+    if raw.is_empty() {
+        return ClauseSupportLevel::Artifact;
+    }
+
+    // Real PCGen token keys are uppercase. Lowercase or mixed-case segments are
+    // typically prose or URL schemes that were split out of a value.
+    if raw.chars().any(|c| c.is_ascii_lowercase()) {
+        return ClauseSupportLevel::Artifact;
+    }
+
+    let token = raw.to_ascii_uppercase();
 
     if !is_plausible_token_name(&token) {
         return ClauseSupportLevel::Artifact;
@@ -77,4 +88,39 @@ fn is_plausible_token_name(token: &str) -> bool {
     }
 
     token.chars().any(|c| c.is_ascii_alphabetic())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{ClauseSupportLevel, classify_clause_token, classify_token_key};
+    use crate::ParsedClause;
+
+    #[test]
+    fn classify_token_key_rejects_lowercase_url_scheme() {
+        assert!(matches!(
+            classify_token_key("http", false),
+            ClauseSupportLevel::Artifact
+        ));
+    }
+
+    #[test]
+    fn classify_token_key_rejects_mixed_case_text() {
+        assert!(matches!(
+            classify_token_key("SourceWeb", false),
+            ClauseSupportLevel::Artifact
+        ));
+    }
+
+    #[test]
+    fn classify_clause_token_treats_url_fragment_as_artifact() {
+        let clause = ParsedClause::KeyValue {
+            key: "http".to_string(),
+            value: "//example.com".to_string(),
+        };
+
+        assert!(matches!(
+            classify_clause_token(&clause),
+            ClauseSupportLevel::Artifact
+        ));
+    }
 }
