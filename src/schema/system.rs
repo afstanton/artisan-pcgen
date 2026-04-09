@@ -68,6 +68,20 @@ pub static LOAD_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
+static LEVEL_SYSTEM_TOKENS: &[TokenDef] = &[
+    TokenDef::text("MINXP", "pcgen_minxp"),
+    TokenDef::text("CSKILLMAX", "pcgen_cskillmax"),
+    TokenDef::text("CCSKILLMAX", "pcgen_ccskillmax"),
+];
+
+pub static LEVEL_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:level",
+    head_token: Some("LEVEL"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: LEVEL_SYSTEM_TOKENS,
+    globals: &[],
+};
+
 pub static ICON_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
     entity_type_key: "pcgen:system:icon",
     head_token: Some("ICON"),

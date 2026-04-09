@@ -101,6 +101,7 @@ static PCC_TOKENS: &[TokenDef] = &[
     TokenDef::text("REQUIRED", "pcgen_required"),
     TokenDef::text("SELECTABLE", "pcgen_selectable"),
     TokenDef::text("NAMEISPI", "pcgen_nameispi"),
+    TokenDef::text("DESCISPI", "pcgen_descispi"),
     TokenDef::text("MAXVER", "pcgen_maxver"),
     TokenDef::text("MAXDEVVER", "pcgen_maxdevver"),
     TokenDef::text("NEWKEY", "pcgen_newkey"),

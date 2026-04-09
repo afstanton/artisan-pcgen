@@ -335,6 +335,9 @@ fn collect_emittable_global_keys(
             {
                 keys.insert("TEMPDESC".to_string());
             }
+            if bool_like_attribute(entity, "pcgen_descispi").is_some() {
+                keys.insert("DESCISPI".to_string());
+            }
         }
         GlobalGroup::Fact => {
             if entity
@@ -553,6 +556,9 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
                 .and_then(Value::as_str)
             {
                 parts.push(format!("TEMPDESC:{tempdesc}"));
+            }
+            if let Some(desc_is_pi) = bool_like_attribute(entity, "pcgen_descispi") {
+                parts.push(format!("DESCISPI:{}", if desc_is_pi { "YES" } else { "NO" }));
             }
         }
         GlobalGroup::Fact => {
@@ -822,6 +828,19 @@ fn raw_clause_values_for_key(entity: &Entity, key: &str) -> Vec<String> {
             _ => None,
         })
         .collect()
+}
+
+fn bool_like_attribute(entity: &Entity, key: &str) -> Option<bool> {
+    let value = entity.attributes.get(key)?;
+    match value {
+        Value::Bool(b) => Some(*b),
+        Value::String(s) => match s.trim().to_ascii_uppercase().as_str() {
+            "YES" | "Y" | "TRUE" => Some(true),
+            "NO" | "N" | "FALSE" => Some(false),
+            _ => None,
+        },
+        _ => None,
+    }
 }
 
 // ---------------------------------------------------------------------------

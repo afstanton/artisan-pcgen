@@ -1157,6 +1157,7 @@ mod tests {
             assert!(any_schema_knows_token("REQUIRED"));
             assert!(any_schema_knows_token("SELECTABLE"));
             assert!(any_schema_knows_token("NAMEISPI"));
+            assert!(any_schema_knows_token("DESCISPI"));
             assert!(any_schema_knows_token("COPYRIGHT"));
             assert!(any_schema_knows_token("FACTDEF"));
             assert!(any_schema_knows_token("FACTSET"));
@@ -1167,6 +1168,9 @@ mod tests {
             assert!(any_schema_knows_token("ITYPE"));
             assert!(any_schema_knows_token("NAMEOPT"));
             assert!(any_schema_knows_token("TEMPDESC"));
+            assert!(any_schema_knows_token("MINXP"));
+            assert!(any_schema_knows_token("CSKILLMAX"));
+            assert!(any_schema_knows_token("CCSKILLMAX"));
             assert!(any_schema_knows_token("TEMPBONUS"));
             assert!(any_schema_knows_token("SELECT"));
             assert!(any_schema_knows_token("SOURCELINK"));

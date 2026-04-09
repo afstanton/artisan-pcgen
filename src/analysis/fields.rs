@@ -83,6 +83,9 @@ pub(crate) fn project_clause_attributes(
             "TEMPDESC" => {
                 attributes.insert("pcgen_tempdesc".to_string(), Value::String(value.clone()));
             }
+            "DESCISPI" => {
+                attributes.insert("pcgen_descispi".to_string(), parse_yes_no_or_string(value));
+            }
             "SPELLLEVEL" => {
                 attributes.insert("pcgen_spelllevel".to_string(), Value::String(value.clone()));
             }
@@ -412,6 +415,15 @@ pub(crate) fn project_clause_attributes(
             }
             "POOL" => {
                 attributes.insert("pcgen_pool".to_string(), Value::String(value.clone()));
+            }
+            "MINXP" => {
+                attributes.insert("pcgen_minxp".to_string(), Value::String(value.clone()));
+            }
+            "CSKILLMAX" => {
+                attributes.insert("pcgen_cskillmax".to_string(), Value::String(value.clone()));
+            }
+            "CCSKILLMAX" => {
+                attributes.insert("pcgen_ccskillmax".to_string(), Value::String(value.clone()));
             }
             "EQUIPBUY" => append_string_attr(attributes, "pcgen_equipbuy", value),
             "LOCATION" => {
