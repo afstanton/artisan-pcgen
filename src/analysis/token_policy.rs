@@ -38,7 +38,7 @@ pub(crate) fn classify_token_key(input: &str, is_bare: bool) -> ClauseSupportLev
     // due to sentence punctuation and should not be treated as standalone tokens.
     if matches!(
         token.as_str(),
-        "EFFECTS" | "DC" | "SCREAM" | "TARGET" | "THROW" | "AC" | "ACTIVATION" | "GRANTED"
+        "EFFECTS" | "DC" | "SCREAM" | "TARGET" | "THROW" | "AC" | "ACTIVATION" | "GRANTED" | "USAGE"
     ) {
         return ClauseSupportLevel::Artifact;
     }
@@ -195,6 +195,10 @@ mod tests {
         ));
         assert!(matches!(
             classify_token_key("GRANTED", false),
+            ClauseSupportLevel::Artifact
+        ));
+        assert!(matches!(
+            classify_token_key("USAGE", false),
             ClauseSupportLevel::Artifact
         ));
     }

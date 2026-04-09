@@ -1,1 +1,2 @@
 STARTPACK:Starter Bundle	APPLY:INSTANT	LOOKUP:Minor Special Ability (P/S),roll("1d100")	LOOKUP:Select Armor,LIST	LANGBONUS:Dwarven|Elvish	PRECLASS:1,Fighter=1	BONUS:SKILL|Ride|2	AUTO:FEAT|Alertness	DEFINE:KitTier|1
+LANGAUTO:Common|Dwarven|Uluik

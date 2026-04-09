@@ -79,6 +79,13 @@ static PCC_TOKENS: &[TokenDef] = &[
         required: false,
     },
     TokenDef {
+        key: "DATATABLE",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_datatable_catalog"),
+        required: false,
+    },
+    TokenDef {
         key: "COMPANIONMOD",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
@@ -256,6 +263,10 @@ static DATACONTROL_INCLUDE_TOKENS: &[TokenDef] = &[
     TokenDef::text_required("DATACONTROL", "pcgen_datacontrol_catalog"),
     PRECAMPAIGN_TOKEN,
 ];
+static DATATABLE_INCLUDE_TOKENS: &[TokenDef] = &[
+    TokenDef::text_required("DATATABLE", "pcgen_datatable_catalog"),
+    PRECAMPAIGN_TOKEN,
+];
 static COMPANIONMOD_INCLUDE_TOKENS: &[TokenDef] = &[
     TokenDef::text_required("COMPANIONMOD", "pcgen_companionmod_catalog"),
     PRECAMPAIGN_TOKEN,
@@ -335,6 +346,14 @@ pub static DATACONTROL_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
     head_token: Some("DATACONTROL"),
     head_format: HeadFormat::TokenPrefixed,
     tokens: DATACONTROL_INCLUDE_TOKENS,
+    globals: PCC_GLOBALS,
+};
+
+pub static DATATABLE_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:entity:pcc-datatable-include",
+    head_token: Some("DATATABLE"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: DATATABLE_INCLUDE_TOKENS,
     globals: PCC_GLOBALS,
 };
 

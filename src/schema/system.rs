@@ -97,11 +97,27 @@ pub static DEFAULTUNITSET_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
+pub static DEFAULTDATASET_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:defaultdataset",
+    head_token: Some("DEFAULTDATASET"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::text_required("DEFAULTDATASET", "pcgen_defaultdataset")],
+    globals: &[],
+};
+
 pub static ALLOWEDMODES_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
     entity_type_key: "pcgen:system:allowedmodes",
     head_token: Some("ALLOWEDMODES"),
     head_format: HeadFormat::TokenPrefixed,
     tokens: &[TokenDef::text_required("ALLOWEDMODES", "pcgen_allowedmodes")],
+    globals: &[],
+};
+
+pub static GAMEMODEKEY_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:gamemodekey",
+    head_token: Some("GAMEMODEKEY"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::text_required("GAMEMODEKEY", "pcgen_gamemodekey")],
     globals: &[],
 };
 
@@ -636,6 +652,30 @@ pub static NAME_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
         TokenDef::yesno("DEFAULT", "pcgen_default"),
         TokenDef::text("EXCLUDE", "pcgen_exclude"),
     ],
+    globals: &[],
+};
+
+pub static STARTTABLE_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:starttable",
+    head_token: Some("STARTTABLE"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[],
+    globals: &[],
+};
+
+pub static ENDTABLE_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:endtable",
+    head_token: Some("ENDTABLE"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::text("ENDTABLE", "pcgen_endtable")],
+    globals: &[],
+};
+
+pub static MOVEMENT_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:movement",
+    head_token: Some("MOVEMENT"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[],
     globals: &[],
 };
 

@@ -29,6 +29,14 @@ static FUNDS_TOKENS: &[TokenDef] = &[
 
 static GENDER_TOKENS: &[TokenDef] = &[TokenDef::text_required("GENDER", "pcgen_gender")];
 
+static LANGAUTO_TOKENS: &[TokenDef] = &[TokenDef {
+    key: "LANGAUTO",
+    grammar: TokenGrammar::PipeList,
+    cardinality: Cardinality::Once,
+    artisan_mapping: ArtisanMapping::Attribute("pcgen_langauto"),
+    required: true,
+}];
+
 static TOTALCOST_TOKENS: &[TokenDef] =
     &[TokenDef::text_required("TOTALCOST", "pcgen_totalcost")];
 
@@ -66,6 +74,17 @@ pub static GENDER_STARTPACK_SCHEMA: EntitySchema = EntitySchema {
     head_token: Some("GENDER"),
     head_format: HeadFormat::TokenPrefixed,
     tokens: GENDER_TOKENS,
+    globals: &[
+        GlobalGroup::Prerequisites,
+        GlobalGroup::SourceMeta,
+    ],
+};
+
+pub static LANGAUTO_STARTPACK_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:entity:startpack-langauto",
+    head_token: Some("LANGAUTO"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: LANGAUTO_TOKENS,
     globals: &[
         GlobalGroup::Prerequisites,
         GlobalGroup::SourceMeta,

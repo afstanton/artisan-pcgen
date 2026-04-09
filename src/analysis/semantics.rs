@@ -251,8 +251,7 @@ fn looks_like_class_level(head: &str, clauses: &[ParsedClause]) -> bool {
 
 fn looks_like_deity(clauses: &[ParsedClause]) -> bool {
     has_token(clauses, "DEITYWEAP")
-    || has_token(clauses, "GROUP")
-    || (has_token(clauses, "ALIGN") && has_token(clauses, "DOMAINS"))
+        || (has_token(clauses, "ALIGN") && has_token(clauses, "DOMAINS"))
 }
 
 fn looks_like_skill(clauses: &[ParsedClause]) -> bool {
@@ -346,7 +345,9 @@ fn looks_like_template(clauses: &[ParsedClause]) -> bool {
 fn looks_like_race(clauses: &[ParsedClause]) -> bool {
     has_token(clauses, "MONSTERCLASS")
         || has_token(clauses, "STARTFEATS")
-    || has_token(clauses, "SKILLMULT")
+        || has_token(clauses, "SKILLMULT")
+        || has_token(clauses, "RACETYPE")
+        || has_token(clauses, "GRANT")
         || has_token(clauses, "MONCCSKILL")
 }
 

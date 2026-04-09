@@ -481,6 +481,7 @@ fn deterministic_id(namespace: Uuid, key: &str) -> CanonicalId {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::schema;
 
     #[test]
     fn parse_line_splits_clauses_and_key_values() {
@@ -918,6 +919,32 @@ mod tests {
             Some("pcgen:entity:startpack")
         );
 
+        let startpack_langauto = parse_text_to_catalog(
+            "LANGAUTO:Common|Dwarven|Uluik",
+            "kits.lst",
+            "lst",
+        );
+        assert_eq!(
+            startpack_langauto.entities[0]
+                .attributes
+                .get("pcgen_entity_type_key")
+                .and_then(Value::as_str),
+            Some("pcgen:entity:startpack-langauto")
+        );
+
+        let ancestry_like = parse_text_to_catalog(
+            "Dwarf FACT:BaseSize|M SIZE:M MOVE:Walk,0 RACETYPE:Humanoid TYPE:Humanoid GRANT:MOVEMENT|Walk",
+            "ancestry.lst",
+            "lst",
+        );
+        assert_eq!(
+            ancestry_like.entities[0]
+                .attributes
+                .get("pcgen_entity_type_key")
+                .and_then(Value::as_str),
+            Some("pcgen:entity:race")
+        );
+
         let bonus_spell_level = parse_text_to_catalog(
             "BONUSSPELLLEVEL:1 BASESTATSCORE:12 STATRANGE:8",
             "statsandchecks.lst",
@@ -982,6 +1009,32 @@ mod tests {
                 .and_then(Value::as_str),
             Some("pcgen:entity:template")
         );
+    }
+
+    #[test]
+    fn ancestry_like_race_lines_emit_grant_structurally() {
+        let catalog = parse_text_to_catalog(
+            "Dwarf\t\tSORTKEY:A_PC_RACE\tFACT:BaseSize|M\tSIZE:M\tMOVE:Walk,0\tFACT:Speed|20\tBONUS:HP|CURRENTMAX|10|TYPE=Ancestry\tBONUS:VAR|Walk_Race|20\tABILITY:Ancestry|AUTOMATIC|Dwarf\tGROUP:RaceType_Humanoid\tRACETYPE:Humanoid\tTYPE:Humanoid\tGRANT:MOVEMENT|Walk\tMODIFY:RaceType_Humanoid|SET|True\tMODIFYOTHER:PC.MOVEMENT|Walk|Speed|SET|20",
+            "ancestry.lst",
+            "lst",
+        );
+
+        let entity = &catalog.entities[0];
+        assert_eq!(
+            entity
+                .attributes
+                .get("pcgen_entity_type_key")
+                .and_then(Value::as_str),
+            Some("pcgen:entity:race")
+        );
+
+        let race_schema = schema::schema_for_entity_type_key("pcgen:entity:race")
+            .expect("race schema should exist");
+        let emittable = emittable_keys_for_entity(entity, race_schema);
+        assert!(emittable.iter().any(|key| key == "GRANT"));
+
+        let emitted = emit_entity(entity, race_schema);
+        assert!(emitted.contains("GRANT:MOVEMENT|Walk"));
     }
 
     #[test]
@@ -1243,6 +1296,13 @@ mod tests {
             assert!(any_schema_knows_token("LANGAUTO"));
             assert!(any_schema_knows_token("SELECTION"));
             assert!(any_schema_knows_token("GRANT"));
+            assert!(any_schema_knows_token("ITEMCREATE"));
+            assert!(any_schema_knows_token("STARTTABLE"));
+            assert!(any_schema_knows_token("MOVEMENT"));
+            assert!(any_schema_knows_token("DATATABLE"));
+            assert!(any_schema_knows_token("DEFAULTDATASET"));
+            assert!(any_schema_knows_token("GAMEMODEKEY"));
+            assert!(any_schema_knows_token("ENDTABLE"));
             assert!(any_schema_knows_token("ALIGN"));
             assert!(any_schema_knows_token("STAT"));
             assert!(any_schema_knows_token("RACE"));

@@ -72,6 +72,7 @@ pub(crate) fn project_clause_attributes(
             "CHOICE" => append_string_attr(attributes, "pcgen_choice", value),
             "BIOSET" => append_string_attr(attributes, "pcgen_bioset_catalog", value),
             "DATACONTROL" => append_string_attr(attributes, "pcgen_datacontrol_catalog", value),
+            "DATATABLE" => append_string_attr(attributes, "pcgen_datatable_catalog", value),
             "COMPANIONMOD" => append_string_attr(attributes, "pcgen_companionmod_catalog", value),
             "ALIGNMENT" => append_string_attr(attributes, "pcgen_alignment_catalog", value),
             "SAVE" => append_string_attr(attributes, "pcgen_save_catalog", value),
@@ -188,6 +189,9 @@ pub(crate) fn project_clause_attributes(
             }
             "SPELLSTAT" => {
                 attributes.insert("pcgen_spellstat".to_string(), Value::String(value.clone()));
+            }
+            "ITEMCREATE" => {
+                attributes.insert("pcgen_itemcreate".to_string(), Value::String(value.clone()));
             }
             "BONUSSPELLSTAT" => {
                 attributes.insert("pcgen_bonusspellstat".to_string(), Value::String(value.clone()));
@@ -405,6 +409,12 @@ pub(crate) fn project_clause_attributes(
             "DISPLAYNAME" => {
                 attributes.insert("pcgen_displayname".to_string(), Value::String(value.clone()));
             }
+            "DEFAULTDATASET" => {
+                attributes.insert(
+                    "pcgen_defaultdataset".to_string(),
+                    Value::String(value.clone()),
+                );
+            }
             "EXPLANATION" => {
                 attributes.insert("pcgen_explanation".to_string(), Value::String(value.clone()));
             }
@@ -435,6 +445,9 @@ pub(crate) fn project_clause_attributes(
                     "pcgen_fractionalpool".to_string(),
                     Value::String(value.clone()),
                 );
+            }
+            "GAMEMODEKEY" => {
+                attributes.insert("pcgen_gamemodekey".to_string(), Value::String(value.clone()));
             }
             "PLURAL" => {
                 attributes.insert("pcgen_plural".to_string(), Value::String(value.clone()));
@@ -1014,6 +1027,39 @@ pub(crate) fn project_decl_token_value(
                 "pcgen_eqsizepenalty".to_string(),
                 Value::String(decl_value.to_string()),
             );
+        }
+        "STARTTABLE" => {
+            attributes.insert(
+                "pcgen_starttable".to_string(),
+                Value::String(decl_value.to_string()),
+            );
+        }
+        "ENDTABLE" => {
+            attributes.insert(
+                "pcgen_endtable".to_string(),
+                Value::String(decl_value.to_string()),
+            );
+        }
+        "MOVEMENT" => {
+            attributes.insert(
+                "pcgen_movement".to_string(),
+                Value::String(decl_value.to_string()),
+            );
+        }
+        "DEFAULTDATASET" => {
+            attributes.insert(
+                "pcgen_defaultdataset".to_string(),
+                Value::String(decl_value.to_string()),
+            );
+        }
+        "GAMEMODEKEY" => {
+            attributes.insert(
+                "pcgen_gamemodekey".to_string(),
+                Value::String(decl_value.to_string()),
+            );
+        }
+        "LANGAUTO" => {
+            attributes.insert("pcgen_langauto".to_string(), parse_pipe_series(decl_value));
         }
         "RESIZABLEEQUIPTYPE" => {
             attributes.insert(
