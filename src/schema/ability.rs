@@ -20,6 +20,7 @@ static ABILITY_TOKENS: &[TokenDef] = &[
     TokenDef::text("BENEFIT", "pcgen_benefit"),
     TokenDef::text("COST", "pcgen_cost"),
     TokenDef::text("SPELLLEVEL", "pcgen_spelllevel"),
+    TokenDef::text("NEWCATEGORY", "pcgen_newcategory"),
     TokenDef::text("INFO", "pcgen_info"),
     TokenDef::text("MULT", "pcgen_mult"),
     TokenDef::text("STACK", "pcgen_stack"),

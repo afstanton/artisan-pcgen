@@ -372,6 +372,10 @@ pub(crate) fn project_clause_attributes(
             "NEWKEY" => {
                 attributes.insert("pcgen_newkey".to_string(), Value::String(value.clone()));
             }
+            "NEWCATEGORY" => {
+                attributes.insert("pcgen_newcategory".to_string(), Value::String(value.clone()));
+            }
+            "VALUES" => append_string_attr(attributes, "pcgen_values", value),
             "COPYRIGHT" => append_string_attr(attributes, "pcgen_copyright", value),
             "FACTDEF" => {
                 attributes.insert("pcgen_factdef".to_string(), Value::String(value.clone()));

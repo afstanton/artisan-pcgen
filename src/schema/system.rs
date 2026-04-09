@@ -220,6 +220,30 @@ pub static NAME_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
+pub static WEAPONTYPE_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:weapontype",
+    head_token: Some("WEAPONTYPE"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[],
+    globals: &[],
+};
+
+static TABLE_SYSTEM_TOKENS: &[TokenDef] = &[TokenDef {
+    key: "VALUES",
+    grammar: TokenGrammar::Text,
+    cardinality: Cardinality::Repeatable,
+    artisan_mapping: ArtisanMapping::Attribute("pcgen_values"),
+    required: false,
+}];
+
+pub static TABLE_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:table",
+    head_token: Some("TABLE"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: TABLE_SYSTEM_TOKENS,
+    globals: &[],
+};
+
 static SUBSTITUTION_CLASS_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::Bonus,
     GlobalGroup::Add,
