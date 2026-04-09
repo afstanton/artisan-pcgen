@@ -31,7 +31,7 @@ pub use ability::ABILITY_SCHEMA;
 pub use abilitycategory::ABILITYCATEGORY_SCHEMA;
 pub use classlevel::CLASSLEVEL_SCHEMA;
 pub use companionmod::{FOLLOWER_COMPANIONMOD_SCHEMA, MASTERBONUSRACE_COMPANIONMOD_SCHEMA};
-pub use startpack::STARTPACK_SCHEMA;
+pub use startpack::{FUNDS_STARTPACK_SCHEMA, STARTPACK_SCHEMA};
 pub use biosettings::BIOSETTINGS_SCHEMA;
 pub use system::{
     ACTYPE_SYSTEM_SCHEMA, AGESET_SYSTEM_SCHEMA, ALIGN_SYSTEM_SCHEMA, BASEDICE_SYSTEM_SCHEMA,
@@ -50,7 +50,10 @@ pub use feat::FEAT_SCHEMA;
 pub use gear::GEAR_SCHEMA;
 pub use kit::KIT_SCHEMA;
 pub use modify::MODIFY_SCHEMA;
-pub use pcc::PCC_SCHEMA;
+pub use pcc::{
+    ARMORPROF_INCLUDE_SCHEMA, EQUIPMOD_INCLUDE_SCHEMA, LANGUAGE_INCLUDE_SCHEMA, PCC_SCHEMA,
+    SHIELDPROF_INCLUDE_SCHEMA, WEAPONPROF_INCLUDE_SCHEMA,
+};
 pub use race::RACE_SCHEMA;
 pub use skill::SKILL_SCHEMA;
 pub use spell::SPELL_SCHEMA;
@@ -411,6 +414,7 @@ static ALL_SCHEMAS: &[&EntitySchema] = &[
     &companionmod::FOLLOWER_COMPANIONMOD_SCHEMA,
     &companionmod::MASTERBONUSRACE_COMPANIONMOD_SCHEMA,
     &startpack::STARTPACK_SCHEMA,
+    &startpack::FUNDS_STARTPACK_SCHEMA,
     &biosettings::BIOSETTINGS_SCHEMA,
     &system::BONUSSPELLLEVEL_SCHEMA,
     &system::BONUSSTACKS_SCHEMA,
@@ -446,6 +450,11 @@ static ALL_SCHEMAS: &[&EntitySchema] = &[
     &kit::KIT_SCHEMA,
     &modify::MODIFY_SCHEMA,
     &pcc::PCC_SCHEMA,
+    &pcc::LANGUAGE_INCLUDE_SCHEMA,
+    &pcc::EQUIPMOD_INCLUDE_SCHEMA,
+    &pcc::WEAPONPROF_INCLUDE_SCHEMA,
+    &pcc::ARMORPROF_INCLUDE_SCHEMA,
+    &pcc::SHIELDPROF_INCLUDE_SCHEMA,
     &race::RACE_SCHEMA,
     &skill::SKILL_SCHEMA,
     &spell::SPELL_SCHEMA,

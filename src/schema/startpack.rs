@@ -21,6 +21,11 @@ static STARTPACK_TOKENS: &[TokenDef] = &[
     },
 ];
 
+static FUNDS_TOKENS: &[TokenDef] = &[
+    TokenDef::text_required("FUNDS", "pcgen_funds"),
+    TokenDef::text("QTY", "pcgen_qty"),
+];
+
 pub static STARTPACK_SCHEMA: EntitySchema = EntitySchema {
     entity_type_key: "pcgen:entity:startpack",
     head_token: Some("STARTPACK"),
@@ -35,6 +40,17 @@ pub static STARTPACK_SCHEMA: EntitySchema = EntitySchema {
         GlobalGroup::Define,
         GlobalGroup::Modify,
         GlobalGroup::LangBonus,
+        GlobalGroup::SourceMeta,
+    ],
+};
+
+pub static FUNDS_STARTPACK_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:entity:startpack-funds",
+    head_token: Some("FUNDS"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: FUNDS_TOKENS,
+    globals: &[
+        GlobalGroup::Prerequisites,
         GlobalGroup::SourceMeta,
     ],
 };

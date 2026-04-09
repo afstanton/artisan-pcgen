@@ -64,10 +64,45 @@ static PCC_TOKENS: &[TokenDef] = &[
         required: false,
     },
     TokenDef {
+        key: "EQUIPMOD",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_equipmod_catalog"),
+        required: false,
+    },
+    TokenDef {
+        key: "LANGUAGE",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_language_catalog"),
+        required: false,
+    },
+    TokenDef {
         key: "SPELL",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
         artisan_mapping: ArtisanMapping::None,
+        required: false,
+    },
+    TokenDef {
+        key: "WEAPONPROF",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_weaponprof_catalog"),
+        required: false,
+    },
+    TokenDef {
+        key: "ARMORPROF",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_armorprof_catalog"),
+        required: false,
+    },
+    TokenDef {
+        key: "SHIELDPROF",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_shieldprof_catalog"),
         required: false,
     },
     // Legal
@@ -150,5 +185,54 @@ pub static PCC_SCHEMA: EntitySchema = EntitySchema {
     head_token: None,
     head_format: HeadFormat::NameOnly,
     tokens: PCC_TOKENS,
+    globals: PCC_GLOBALS,
+};
+
+static LANGUAGE_INCLUDE_TOKENS: &[TokenDef] = &[TokenDef::text_required("LANGUAGE", "pcgen_language_catalog")];
+static EQUIPMOD_INCLUDE_TOKENS: &[TokenDef] = &[TokenDef::text_required("EQUIPMOD", "pcgen_equipmod_catalog")];
+static WEAPONPROF_INCLUDE_TOKENS: &[TokenDef] =
+    &[TokenDef::text_required("WEAPONPROF", "pcgen_weaponprof_catalog")];
+static ARMORPROF_INCLUDE_TOKENS: &[TokenDef] =
+    &[TokenDef::text_required("ARMORPROF", "pcgen_armorprof_catalog")];
+static SHIELDPROF_INCLUDE_TOKENS: &[TokenDef] =
+    &[TokenDef::text_required("SHIELDPROF", "pcgen_shieldprof_catalog")];
+
+pub static LANGUAGE_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:entity:pcc-language-include",
+    head_token: Some("LANGUAGE"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: LANGUAGE_INCLUDE_TOKENS,
+    globals: PCC_GLOBALS,
+};
+
+pub static EQUIPMOD_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:entity:pcc-equipmod-include",
+    head_token: Some("EQUIPMOD"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: EQUIPMOD_INCLUDE_TOKENS,
+    globals: PCC_GLOBALS,
+};
+
+pub static WEAPONPROF_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:entity:pcc-weaponprof-include",
+    head_token: Some("WEAPONPROF"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: WEAPONPROF_INCLUDE_TOKENS,
+    globals: PCC_GLOBALS,
+};
+
+pub static ARMORPROF_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:entity:pcc-armorprof-include",
+    head_token: Some("ARMORPROF"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: ARMORPROF_INCLUDE_TOKENS,
+    globals: PCC_GLOBALS,
+};
+
+pub static SHIELDPROF_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:entity:pcc-shieldprof-include",
+    head_token: Some("SHIELDPROF"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: SHIELDPROF_INCLUDE_TOKENS,
     globals: PCC_GLOBALS,
 };

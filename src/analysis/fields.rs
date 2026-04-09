@@ -446,6 +446,21 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_location".to_string(), Value::String(value.clone()));
             }
             "QTY" => set_i64_or_string(attributes, "pcgen_qty", value),
+            "EQUIPMOD" => {
+                append_value_attr(attributes, "pcgen_equipmod_catalog", parse_pipe_series(value));
+            }
+            "LANGUAGE" => {
+                append_value_attr(attributes, "pcgen_language_catalog", parse_pipe_series(value));
+            }
+            "WEAPONPROF" => {
+                append_value_attr(attributes, "pcgen_weaponprof_catalog", parse_pipe_series(value));
+            }
+            "ARMORPROF" => {
+                append_value_attr(attributes, "pcgen_armorprof_catalog", parse_pipe_series(value));
+            }
+            "SHIELDPROF" => {
+                append_value_attr(attributes, "pcgen_shieldprof_catalog", parse_pipe_series(value));
+            }
             "FREE" => {
                 attributes.insert("pcgen_free".to_string(), parse_yes_no_or_string(value));
             }
@@ -725,6 +740,19 @@ fn append_string_attr(attributes: &mut IndexMap<String, Value>, key: &str, value
                 key.to_string(),
                 Value::Array(vec![Value::String(value.to_string())]),
             );
+        }
+    }
+}
+
+fn append_value_attr(attributes: &mut IndexMap<String, Value>, key: &str, value: Value) {
+    match attributes.get_mut(key) {
+        Some(Value::Array(existing)) => existing.push(value),
+        Some(existing) => {
+            let prior = existing.clone();
+            attributes.insert(key.to_string(), Value::Array(vec![prior, value]));
+        }
+        None => {
+            attributes.insert(key.to_string(), Value::Array(vec![value]));
         }
     }
 }

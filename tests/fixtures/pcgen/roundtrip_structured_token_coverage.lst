@@ -158,9 +158,15 @@ ISOGL:YES
 INFOTEXT:Supports 6.8.0
 EQUIPMENT:coverage_equip.lst
 PCC:../core/core_rulebook.pcc
+EQUIPMOD:coverage_equipmods.lst
+LANGUAGE:coverage_languages.lst
+WEAPONPROF:coverage_weaponprofs.lst
+ARMORPROF:coverage_armorprofs.lst
+SHIELDPROF:coverage_shieldprofs.lst
 MAXDEVVER:6.8.0
 LOAD:0|0
 LEVEL:1	MINXP:0	CSKILLMAX:1	CCSKILLMAX:1
+FUNDS:gp	QTY:100
 CoverageEquipment_PLUS_FORMATCAT_ASSIGNTOALL	WT:1	PLUS:1	FORMATCAT:MIDDLE	ASSIGNTOALL:YES
 CLASS:Coverage_EXCLASS	SPELLSTAT:INT	EXCLASS:CoverageAlt
 CLASS:Coverage_EXCHANGELEVEL	SPELLSTAT:INT	EXCHANGELEVEL:CoverageSwap
