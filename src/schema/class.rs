@@ -92,6 +92,13 @@ static CLASS_TOKENS: &[TokenDef] = &[
     },
     TokenDef::text("VISIBLE", "pcgen_visible"),
     TokenDef::pipe_list_repeatable("COMPANIONLIST", "pcgen_companionlist"),
+    TokenDef {
+        key: "DEITY",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Once,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_deity"),
+        required: false,
+    },
     TokenDef::pipe_positional_repeatable(
         "FOLLOWERS",
         &["type", "limit"],

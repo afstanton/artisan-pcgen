@@ -446,6 +446,7 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_location".to_string(), Value::String(value.clone()));
             }
             "QTY" => set_i64_or_string(attributes, "pcgen_qty", value),
+            "POINTS" => set_i64_or_string(attributes, "pcgen_points", value),
             "EQUIPMOD" => {
                 append_value_attr(attributes, "pcgen_equipmod_catalog", parse_pipe_series(value));
             }
@@ -460,6 +461,9 @@ pub(crate) fn project_clause_attributes(
             }
             "SHIELDPROF" => {
                 append_value_attr(attributes, "pcgen_shieldprof_catalog", parse_pipe_series(value));
+            }
+            "DEITY" => {
+                attributes.insert("pcgen_deity".to_string(), parse_pipe_series(value));
             }
             "FREE" => {
                 attributes.insert("pcgen_free".to_string(), parse_yes_no_or_string(value));

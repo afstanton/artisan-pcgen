@@ -70,6 +70,40 @@ pub static LOAD_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
+static METHOD_SYSTEM_TOKENS: &[TokenDef] = &[TokenDef::integer("POINTS", "pcgen_points")];
+
+pub static METHOD_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:method",
+    head_token: Some("METHOD"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: METHOD_SYSTEM_TOKENS,
+    globals: &[],
+};
+
+pub static SIZEMULT_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:sizemult",
+    head_token: Some("SIZEMULT"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[],
+    globals: &[],
+};
+
+pub static ENCUMBRANCE_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:encumbrance",
+    head_token: Some("ENCUMBRANCE"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[],
+    globals: &[],
+};
+
+pub static DEFAULTVARIABLEVALUE_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:defaultvariablevalue",
+    head_token: Some("DEFAULTVARIABLEVALUE"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[],
+    globals: &[],
+};
+
 static ACTYPE_SYSTEM_TOKENS: &[TokenDef] = &[TokenDef {
     key: "REMOVE",
     grammar: TokenGrammar::Text,

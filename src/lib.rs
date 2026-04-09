@@ -1242,6 +1242,11 @@ mod tests {
             assert!(any_schema_knows_token("WEAPONPROF"));
             assert!(any_schema_knows_token("ARMORPROF"));
             assert!(any_schema_knows_token("SHIELDPROF"));
+            assert!(any_schema_knows_token("METHOD"));
+            assert!(any_schema_knows_token("SIZEMULT"));
+            assert!(any_schema_knows_token("ENCUMBRANCE"));
+            assert!(any_schema_knows_token("DEFAULTVARIABLEVALUE"));
+            assert!(any_schema_knows_token("POINTS"));
             assert!(any_schema_knows_token("SPELL"));
             assert!(any_schema_knows_token("WEAPONTYPE"));
             assert!(any_schema_knows_token("TABLE"));
