@@ -24,6 +24,7 @@ static SKILL_TOKENS: &[TokenDef] = &[
     TokenDef::text("RANK", "pcgen_rank"),
     TokenDef::yesno("FREE", "pcgen_free"),
     TokenDef::yesno("USEUNTRAINED", "pcgen_useuntrained"),
+    TokenDef::yesno("EXCLUSIVE", "pcgen_exclusive"),
     TokenDef::text("KEYSTAT", "pcgen_keystat"),
     TokenDef::text("ACHECK", "pcgen_accheck"),
     TokenDef::text("VISIBLE", "pcgen_visible"),

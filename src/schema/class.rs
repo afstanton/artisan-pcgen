@@ -118,6 +118,7 @@ static CLASS_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Attribute("pcgen_exchangelevel"),
         required: false,
     },
+    TokenDef::text("ROLE", "pcgen_role"),
 ];
 
 static CLASS_GLOBALS: &[GlobalGroup] = &[

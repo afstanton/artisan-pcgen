@@ -228,6 +228,7 @@ fn looks_like_class(clauses: &[ParsedClause]) -> bool {
         || has_token(clauses, "SUBSTITUTIONLEVEL")
         || has_token(clauses, "EXCLASS")
         || has_token(clauses, "EXCHANGELEVEL")
+        || has_token(clauses, "ROLE")
         || has_token(clauses, "PROHIBITCOST")
 }
 
@@ -255,7 +256,9 @@ fn looks_like_deity(clauses: &[ParsedClause]) -> bool {
 }
 
 fn looks_like_skill(clauses: &[ParsedClause]) -> bool {
-    has_token(clauses, "USEUNTRAINED") || has_token(clauses, "SITUATION")
+    has_token(clauses, "USEUNTRAINED")
+        || has_token(clauses, "SITUATION")
+        || has_token(clauses, "EXCLUSIVE")
 }
 
 fn looks_like_spell(clauses: &[ParsedClause]) -> bool {
@@ -332,6 +335,7 @@ fn looks_like_template(clauses: &[ParsedClause]) -> bool {
     || has_token(clauses, "VISION")
     || has_token(clauses, "SUBRACE")
     || has_token(clauses, "REMOVABLE")
+    || has_token(clauses, "REGION")
     || has_token(clauses, "SR")
     || has_token(clauses, "!PREMOVE")
     || has_token(clauses, "!PREVISION")

@@ -416,6 +416,15 @@ pub(crate) fn project_clause_attributes(
             "POOL" => {
                 attributes.insert("pcgen_pool".to_string(), Value::String(value.clone()));
             }
+            "PARM" => {
+                attributes.insert("pcgen_parm".to_string(), Value::String(value.clone()));
+            }
+            "VAR" => {
+                attributes.insert("pcgen_var".to_string(), Value::String(value.clone()));
+            }
+            "DEFAULT" => {
+                attributes.insert("pcgen_default".to_string(), parse_yes_no_or_string(value));
+            }
             "MINXP" => {
                 attributes.insert("pcgen_minxp".to_string(), Value::String(value.clone()));
             }
@@ -437,6 +446,9 @@ pub(crate) fn project_clause_attributes(
             "SITUATION" => append_string_attr(attributes, "pcgen_situations", value),
             "USEUNTRAINED" => {
                 attributes.insert("pcgen_useuntrained".to_string(), parse_yes_no_or_string(value));
+            }
+            "EXCLUSIVE" => {
+                attributes.insert("pcgen_exclusive".to_string(), parse_yes_no_or_string(value));
             }
             "KEYSTAT" => {
                 attributes.insert("pcgen_keystat".to_string(), Value::String(value.clone()));
@@ -462,6 +474,24 @@ pub(crate) fn project_clause_attributes(
             }
             "CR" => {
                 attributes.insert("pcgen_cr".to_string(), Value::String(value.clone()));
+            }
+            "REGION" => {
+                attributes.insert("pcgen_region".to_string(), Value::String(value.clone()));
+            }
+            "ROLE" => {
+                attributes.insert("pcgen_role".to_string(), Value::String(value.clone()));
+            }
+            "NUMBER" => {
+                attributes.insert("pcgen_number".to_string(), Value::String(value.clone()));
+            }
+            "CONTEXT" => {
+                attributes.insert("pcgen_context".to_string(), Value::String(value.clone()));
+            }
+            "UP" => {
+                attributes.insert("pcgen_up".to_string(), Value::String(value.clone()));
+            }
+            "DOWN" => {
+                attributes.insert("pcgen_down".to_string(), Value::String(value.clone()));
             }
             "WIELD" => {
                 attributes.insert("pcgen_wield".to_string(), Value::String(value.clone()));
@@ -533,6 +563,11 @@ pub(crate) fn project_clause_attributes(
             "ASSIGNTOALL" => {
                 attributes.insert("pcgen_assigntoall".to_string(), parse_yes_no_or_string(value));
             }
+            "SWITCH" => append_string_attr(attributes, "pcgen_switch", value),
+            "SIZEDIFF" => set_i64_or_string(attributes, "pcgen_sizediff", value),
+            "FINESSABLE" => {
+                attributes.insert("pcgen_finessable".to_string(), parse_yes_no_or_string(value));
+            }
             "PROFICIENCY" => {
                 attributes.insert("pcgen_proficiency".to_string(), parse_pipe_series(value));
             }
@@ -551,6 +586,7 @@ pub(crate) fn project_clause_attributes(
             "ICON" => {
                 attributes.insert("pcgen_icon".to_string(), Value::String(value.clone()));
             }
+            "REMOVE" => append_string_attr(attributes, "pcgen_remove", value),
             "NUMPAGES" => {
                 if let Ok(num) = value.trim().parse::<i64>() {
                     attributes.insert("pcgen_numpages".to_string(), json!(num));

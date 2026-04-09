@@ -5,7 +5,9 @@
 //! - `docs/listfilepages/systemfilestagpages/gamemodemiscinfolist.html`
 //! - `docs/listfilepages/systemfilestagpages/equipiconslst.html`
 
-use crate::schema::{EntitySchema, GlobalGroup, HeadFormat, TokenDef};
+use crate::schema::{
+    ArtisanMapping, Cardinality, EntitySchema, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
+};
 
 static BONUSSPELLLEVEL_TOKENS: &[TokenDef] = &[
     TokenDef::integer("BASESTATSCORE", "pcgen_basestatscore"),
@@ -63,6 +65,80 @@ pub static PREVIEWSHEET_SCHEMA: EntitySchema = EntitySchema {
 pub static LOAD_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
     entity_type_key: "pcgen:system:load",
     head_token: Some("LOAD"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[],
+    globals: &[],
+};
+
+static ACTYPE_SYSTEM_TOKENS: &[TokenDef] = &[TokenDef {
+    key: "REMOVE",
+    grammar: TokenGrammar::Text,
+    cardinality: Cardinality::Repeatable,
+    artisan_mapping: ArtisanMapping::Attribute("pcgen_remove"),
+    required: false,
+}];
+
+pub static ACTYPE_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:actype",
+    head_token: Some("ACTYPE"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: ACTYPE_SYSTEM_TOKENS,
+    globals: &[GlobalGroup::Add],
+};
+
+static BASEDICE_SYSTEM_TOKENS: &[TokenDef] = &[
+    TokenDef::text("UP", "pcgen_up"),
+    TokenDef::text("DOWN", "pcgen_down"),
+];
+
+pub static BASEDICE_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:basedice",
+    head_token: Some("BASEDICE"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: BASEDICE_SYSTEM_TOKENS,
+    globals: &[],
+};
+
+static WIELDCATEGORY_SYSTEM_TOKENS: &[TokenDef] = &[
+    TokenDef::text("SWITCH", "pcgen_switch"),
+    TokenDef::text("SIZEDIFF", "pcgen_sizediff"),
+    TokenDef::yesno("FINESSABLE", "pcgen_finessable"),
+];
+
+pub static WIELDCATEGORY_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:wieldcategory",
+    head_token: Some("WIELDCATEGORY"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: WIELDCATEGORY_SYSTEM_TOKENS,
+    globals: &[GlobalGroup::Prerequisites],
+};
+
+static TAB_SYSTEM_TOKENS: &[TokenDef] = &[TokenDef::text("CONTEXT", "pcgen_context")];
+
+pub static TAB_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:tab",
+    head_token: Some("TAB"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: TAB_SYSTEM_TOKENS,
+    globals: &[],
+};
+
+static EQSLOT_SYSTEM_TOKENS: &[TokenDef] = &[
+    TokenDef::text("CONTAINS", "pcgen_contains"),
+    TokenDef::text("NUMBER", "pcgen_number"),
+];
+
+pub static EQSLOT_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:eqslot",
+    head_token: Some("EQSLOT"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: EQSLOT_SYSTEM_TOKENS,
+    globals: &[],
+};
+
+pub static AGESET_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:ageset",
+    head_token: Some("AGESET"),
     head_format: HeadFormat::TokenPrefixed,
     tokens: &[],
     globals: &[],
@@ -136,7 +212,11 @@ pub static NAME_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
     entity_type_key: "pcgen:system:name",
     head_token: Some("NAME"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[],
+    tokens: &[
+        TokenDef::text("PARM", "pcgen_parm"),
+        TokenDef::text("VAR", "pcgen_var"),
+        TokenDef::yesno("DEFAULT", "pcgen_default"),
+    ],
     globals: &[],
 };
 
