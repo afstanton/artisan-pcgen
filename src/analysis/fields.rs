@@ -2,6 +2,7 @@ use indexmap::IndexMap;
 use serde_json::{Map, Value, json};
 
 use crate::ParsedClause;
+use crate::parsing::parse_modify;
 
 pub(crate) fn project_clause_attributes(
     head_name: &str,
@@ -608,6 +609,24 @@ pub(crate) fn project_clause_attributes(
             "SPELLKNOWN" => append_string_attr(attributes, "pcgen_spellknown", value),
             "MOVE" => append_string_attr(attributes, "pcgen_move", value),
             "NATURALATTACKS" => append_string_attr(attributes, "pcgen_naturalattacks", value),
+            "MODIFY" => {
+                // Parse MODIFY expressions: VarName|Operation|Value
+                match parse_modify(value) {
+                    Ok(expr) => {
+                        append_string_attr(attributes, "pcgen_modify_variable", &expr.variable);
+                        append_string_attr(
+                            attributes,
+                            "pcgen_modify_operation",
+                            &expr.operation.to_string(),
+                        );
+                        append_string_attr(attributes, "pcgen_modify_value", &expr.value);
+                    }
+                    Err(_) => {
+                        // Fallback: store raw MODIFY value if parsing fails
+                        append_string_attr(attributes, "pcgen_modify", value);
+                    }
+                }
+            }
             _ => {}
         }
     }

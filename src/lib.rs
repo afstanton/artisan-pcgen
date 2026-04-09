@@ -1233,6 +1233,7 @@ mod tests {
             assert!(any_schema_knows_token("SUBRACE"));
             assert!(any_schema_knows_token("REMOVABLE"));
             assert!(any_schema_knows_token("SUBCLASS"));
+            assert!(any_schema_knows_token("MODIFY"));
             assert!(any_schema_knows_token("SPELL"));
             assert!(!any_schema_knows_token("XYZZY"));
             assert!(!any_schema_knows_token("NOTAREALTOKEN"));
