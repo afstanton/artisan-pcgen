@@ -567,6 +567,22 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
                     parts.push(format!("MODIFY:{value}"));
                 }
             }
+
+            if let Some(value) = entity
+                .attributes
+                .get("pcgen_modifyother")
+                .and_then(Value::as_str)
+            {
+                parts.push(format!("MODIFYOTHER:{value}"));
+            } else if let Some(values) = entity
+                .attributes
+                .get("pcgen_modifyother")
+                .and_then(Value::as_array)
+            {
+                for value in values.iter().filter_map(Value::as_str) {
+                    parts.push(format!("MODIFYOTHER:{value}"));
+                }
+            }
         }
         GlobalGroup::Prerequisites => {
             for prereq in &entity.prerequisites {

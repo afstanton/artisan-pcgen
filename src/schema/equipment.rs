@@ -29,6 +29,13 @@ static EQUIPMENT_TOKENS: &[TokenDef] = &[
     TokenDef::text("SLOTS", "pcgen_slots"),
     // Weapon properties
     TokenDef::text("DAMAGE", "pcgen_damage"),
+    TokenDef {
+        key: "PART",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_part"),
+        required: false,
+    },
     TokenDef::text("ALTDAMAGE", "pcgen_altdamage"),
     TokenDef::text("ALTTYPE", "pcgen_alttype"),
     TokenDef::text("CRITMULT", "pcgen_critmult"),

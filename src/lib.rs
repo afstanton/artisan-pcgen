@@ -1234,6 +1234,8 @@ mod tests {
             assert!(any_schema_knows_token("REMOVABLE"));
             assert!(any_schema_knows_token("SUBCLASS"));
             assert!(any_schema_knows_token("MODIFY"));
+            assert!(any_schema_knows_token("MODIFYOTHER"));
+            assert!(any_schema_knows_token("PART"));
             assert!(any_schema_knows_token("SPELL"));
             assert!(any_schema_knows_token("WEAPONTYPE"));
             assert!(any_schema_knows_token("TABLE"));

@@ -34,6 +34,12 @@ pub(crate) fn classify_token_key(input: &str, is_bare: bool) -> ClauseSupportLev
         return ClauseSupportLevel::Artifact;
     }
 
+    // "EFFECTS:" appears in corpus prose (e.g., "DIMINISHED EFFECTS:" inside DESC)
+    // and should not be treated as a standalone token key.
+    if token == "EFFECTS" {
+        return ClauseSupportLevel::Artifact;
+    }
+
     // Schema-driven lookup: any registered schema that knows this token
     // classifies it as semantically interpreted.
     if crate::schema::any_schema_knows_token(&token) {
@@ -120,6 +126,14 @@ mod tests {
 
         assert!(matches!(
             classify_clause_token(&clause),
+            ClauseSupportLevel::Artifact
+        ));
+    }
+
+    #[test]
+    fn classify_token_key_treats_effects_as_artifact() {
+        assert!(matches!(
+            classify_token_key("EFFECTS", false),
             ClauseSupportLevel::Artifact
         ));
     }

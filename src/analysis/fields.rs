@@ -521,6 +521,7 @@ pub(crate) fn project_clause_attributes(
             "SLOTS" => {
                 attributes.insert("pcgen_slots".to_string(), Value::String(value.clone()));
             }
+            "PART" => append_string_attr(attributes, "pcgen_part", value),
             "DAMAGE" => {
                 attributes.insert("pcgen_damage".to_string(), Value::String(value.clone()));
             }
@@ -631,6 +632,7 @@ pub(crate) fn project_clause_attributes(
                     }
                 }
             }
+            "MODIFYOTHER" => append_string_attr(attributes, "pcgen_modifyother", value),
             _ => {}
         }
     }

@@ -2,28 +2,28 @@
 === Token Inventory Summary ===
 Files scanned: 9443
 Total lines processed: 847515
-Unique observed token keys: 645
-Unique semantically interpreted token keys: 395
-Unique fully-structured canonical token keys: 395
+Unique observed token keys: 644
+Unique semantically interpreted token keys: 397
+Unique fully-structured canonical token keys: 397
 Unique semantically interpreted but not fully-structured token keys: 0
 Unique fallback-needed token keys: 0
 Unique policy-supported-only token keys: 3
-Unique unhandled tokens: 247
-Unique tokens represented in fixture files: 401
+Unique unhandled tokens: 244
+Unique tokens represented in fixture files: 403
 Files with UTF-8 encoding issues fixed: 60
 
 === Fixture Tokens by Frequency ===
    125 | CLASS
     15 | TYPE
-    11 | CATEGORY
+    12 | CATEGORY
     10 | SOURCEPAGE
      8 | BONUS
      8 | MONSTERCLASS
+     7 | COST
      7 | DEFINE
      7 | DESC
      7 | KEY
      6 | AUTO
-     6 | COST
      6 | FACT
      6 | GENDERLOCK
      6 | SPELLSTAT
@@ -34,6 +34,7 @@ Files with UTF-8 encoding issues fixed: 60
      4 | CHOOSE
      4 | GAMEMODE
      4 | SIZE
+     4 | WT
      3 | CASTTIME
      3 | COMPS
      3 | DURATION
@@ -51,7 +52,6 @@ Files with UTF-8 encoding issues fixed: 60
      3 | STARTFEATS
      3 | TARGETAREA
      3 | TEMPVALUE
-     3 | WT
      2 | ABILITY
      2 | ADD
      2 | AGEDIEROLL
@@ -233,6 +233,7 @@ Files with UTF-8 encoding issues fixed: 60
      1 | MAXVER
      1 | MEMORIZE
      1 | MINXP
+     1 | MODIFYOTHER
      1 | MODS
      1 | MODTOSKILLS
      1 | MONNONSKILLHD
@@ -248,6 +249,7 @@ Files with UTF-8 encoding issues fixed: 60
      1 | OUTPUTNAME
      1 | PAGEUSAGE
      1 | PARM
+     1 | PART
      1 | PCC
      1 | PLURAL
      1 | PLUS
@@ -580,14 +582,15 @@ Files with UTF-8 encoding issues fixed: 60
   1145 | SIZENAME
   1133 | LEVEL
   1101 | SKILLMULT
+  1081 | PART
   1076 | SUBRACE
   1014 | COMPANIONLIST
    971 | SLOTS
    930 | LOAD
    909 | PRELEVEL
    884 | SERVESAS
-   874 | INFOTEXT
    874 | SITUATION
+   874 | INFOTEXT
    872 | CAMPAIGN
    869 | PUBNAMELONG
    868 | PUBNAMESHORT
@@ -595,8 +598,8 @@ Files with UTF-8 encoding issues fixed: 60
    833 | BOOKTYPE
    832 | REMOVABLE
    825 | ABB
-   817 | PREDEITY
    817 | PUBNAMEWEB
+   817 | PREDEITY
    802 | ISOGL
    762 | GAMEMODE
    760 | ABILITYLIST
@@ -649,9 +652,9 @@ Files with UTF-8 encoding issues fixed: 60
    418 | UP
    406 | PROHIBITSPELL
    404 | FAVOREDCLASS
+   403 | BASESTATSCORE
    403 | !PRECLASS
    403 | BONUSSPELLLEVEL
-   403 | BASESTATSCORE
    391 | PREREGION
    390 | VALUES
    390 | TABLE
@@ -668,11 +671,12 @@ Files with UTF-8 encoding issues fixed: 60
    313 | WEAPONTYPE
    310 | SPELLLIST
    305 | ADDLEVEL
+   304 | MODIFYOTHER
    302 | HAIR
    301 | EYES
    297 | HITDIE
-   295 | ADDSPELLLEVEL
    295 | SKINTONE
+   295 | ADDSPELLLEVEL
    293 | DONOTADD
    279 | ALTCRITMULT
    274 | ALTCRITRANGE
@@ -693,8 +697,8 @@ Files with UTF-8 encoding issues fixed: 60
    185 | REMOVE
    181 | PRELANG
    172 | REACHMULT
-   167 | XPCOST
    167 | FUMBLERANGE
+   167 | XPCOST
    154 | PRERULE
    152 | CHOICE
    149 | ALTEQMOD
@@ -735,9 +739,9 @@ Files with UTF-8 encoding issues fixed: 60
     48 | PRESA
     47 | PRESIZELTEQ
     46 | !PRELANG
-    43 | VALIDFORDEITY
     43 | WEAPONBONUS
     43 | VALIDFORFOLLOWER
+    43 | VALIDFORDEITY
     42 | ISDEFAULTSIZE
     41 | PREDEITYDOMAIN
     39 | PREPROFWITHARMOR
@@ -748,11 +752,11 @@ Files with UTF-8 encoding issues fixed: 60
     36 | PREITEM
     35 | PREVIEWDIR
     33 | GROUP
-    32 | !PRESUBCLASS
     32 | SIZEDIFF
-    31 | BONUSSTATLEVELSTARTINTERVAL
-    31 | BONUSSTACKS
+    32 | !PRESUBCLASS
     31 | BONUSFEATLEVELSTARTINTERVAL
+    31 | BONUSSTACKS
+    31 | BONUSSTATLEVELSTARTINTERVAL
     30 | !PRESKILL
     27 | PRESPELLSCHOOLSUB
     26 | PREHANDSGTEQ
@@ -760,57 +764,57 @@ Files with UTF-8 encoding issues fixed: 60
     24 | LICENSE
     20 | !PREMOVE
     19 | PREBASESIZEGTEQ
-    17 | PRESPELLDESCRIPTOR
     17 | PREPROFWITHSHIELD
+    17 | PRESPELLDESCRIPTOR
     16 | PRECHECK
     15 | PRECHARACTERTYPE
     15 | PREEQUIP
     14 | PREHANDSEQ
     14 | PREDEITYALIGN
-    14 | ADDDOMAINS
     14 | PREHD
+    14 | ADDDOMAINS
     13 | !PREVISION
     12 | ALLOWDUPES
     11 | !PREMULT
     11 | PREHANDSGT
      8 | PRESPELLBOOK
-     7 | PREWIELD
      7 | PRESRGTEQ
-     6 | ATTACKCYCLE
-     6 | EXCHANGELEVEL
-     6 | PREDR
+     7 | PREWIELD
      6 | PREBASESIZELT
-     5 | !PREDEITY
-     5 | PREAGESET
-     5 | !PREDOMAIN
-     5 | CT
+     6 | ATTACKCYCLE
+     6 | PREDR
+     6 | EXCHANGELEVEL
      5 | !PREAGESET
+     5 | PREAGESET
+     5 | CT
+     5 | !PREDOMAIN
+     5 | !PREDEITY
      5 | !PREEQUIP
-     3 | PREHANDS
-     3 | BONUSSKILLPOINTS
-     3 | PRESIZELT
      3 | !PRESA
+     3 | BONUSSKILLPOINTS
+     3 | PREHANDS
+     3 | PRESIZELT
      3 | PREREACHGTEQ
      2 | !PRECHECK
-     2 | !PRESPELLSCHOOLSUB
-     2 | !PRESPELL
-     2 | PREUATT
      2 | MONCCSKILL
-     2 | !PRESPELLTYPE
-     2 | !PRESPELLCAST
-     2 | PRECLASSLEVELMAX
-     2 | PREHP
-     2 | !PREDR
-     2 | PREARMORTYPE
-     2 | !PRECLASSLEVELMAX
-     2 | PRESIZENEQ
      2 | PRESIZEGT
-     1 | PREREACH
-     1 | !PRESPELLDESCRIPTOR
-     1 | !PREKIT
+     2 | PRESIZENEQ
+     2 | !PRESPELLCAST
+     2 | PREUATT
+     2 | !PRESPELLTYPE
+     2 | !PRESPELL
+     2 | PREARMORTYPE
+     2 | PREHP
+     2 | !PRECLASSLEVELMAX
+     2 | PRECLASSLEVELMAX
+     2 | !PRESPELLSCHOOLSUB
+     2 | !PREDR
      1 | !PREREGION
+     1 | !PREKIT
      1 | PRESRLT
      1 | REPEATLEVEL
+     1 | !PRESPELLDESCRIPTOR
+     1 | PREREACH
 
 === Fully-Structured Canonical Tokens by Frequency ===
 247381 | TYPE
@@ -965,9 +969,10 @@ Files with UTF-8 encoding issues fixed: 60
   1146 | SUBCLASSLEVEL
   1145 | SIZENAME
   1101 | SKILLMULT
+  1081 | PART
   1076 | SUBRACE
-  1039 | MAXVER
   1039 | NEWKEY
+  1039 | MAXVER
    977 | COMPANIONLIST
    973 | LEVELADJUSTMENT
    957 | TEMPDESC
@@ -1029,8 +1034,8 @@ Files with UTF-8 encoding issues fixed: 60
    403 | STATRANGE
    403 | BASESTATSCORE
    403 | BONUSSPELLLEVEL
-   390 | TABLE
    390 | VALUES
+   390 | TABLE
    389 | PREREGION
    384 | PARM
    361 | PRESIZEEQ
@@ -1050,8 +1055,8 @@ Files with UTF-8 encoding issues fixed: 60
    302 | HAIR
    301 | EYES
    300 | SPELLLIST
-   295 | SKINTONE
    295 | ADDSPELLLEVEL
+   295 | SKINTONE
    294 | TEMPVALUE
    285 | UDAM
    280 | DOMAIN
@@ -1079,37 +1084,37 @@ Files with UTF-8 encoding issues fixed: 60
    172 | REACHMULT
    167 | FUMBLERANGE
    165 | XPCOST
-   152 | CHOICE
    152 | PRERULE
+   152 | CHOICE
    150 | REMOVE
    149 | LEVELSPERFEAT
    145 | SIZENUM
    143 | PRECHECKBASE
    143 | HITDIE
    138 | ALTEQMOD
-   136 | PRELANG
-   136 | MAXDEVVER
    136 | !PRETEMPLATE
+   136 | MAXDEVVER
    136 | !PREWEAPONPROF
+   136 | PRELANG
    129 | MOVECLONE
-   128 | CHANGEPROF
    128 | PRELEVELMAX
+   128 | CHANGEPROF
    122 | MONNONSKILLHD
    116 | ROLE
    113 | SPELLBOOK
    107 | SPECIALTYKNOWN
    106 | PRESPELLCAST
    105 | PROHIBITCOST
-   103 | !PRECSKILL
    103 | PRE
+   103 | !PRECSKILL
     93 | !PRERACE
     89 | PREDOMAIN
     84 | PROHIBITSPELL
     82 | PRESKILLTOT
     78 | BONUSSPELLSTAT
     77 | ICON
-    76 | PRECSKILL
     76 | DONOTADD
+    76 | PRECSKILL
     74 | ISLICENSED
     74 | PREVARNEQ
     71 | KNOWNSPELLSFROMSPECIALTY
@@ -1126,23 +1131,23 @@ Files with UTF-8 encoding issues fixed: 60
     54 | PRELEGSLTEQ
     53 | PAGEUSAGE
     45 | PRESA
-    44 | !PRECAMPAIGN
     44 | !PRESTAT
-    43 | VALIDFORDEITY
+    44 | !PRECAMPAIGN
     43 | VALIDFORFOLLOWER
+    43 | VALIDFORDEITY
     41 | PREDEITYDOMAIN
     40 | PRESIZELTEQ
     38 | PREPROFWITHARMOR
     37 | PREATT
-    36 | PREITEM
     36 | GENDERLOCK
     36 | PREVIEWSHEET
+    36 | PREITEM
     35 | PREVIEWDIR
     33 | GROUP
     32 | SIZEDIFF
+    31 | BONUSSTACKS
     31 | BONUSFEATLEVELSTARTINTERVAL
     31 | BONUSSTATLEVELSTARTINTERVAL
-    31 | BONUSSTACKS
     30 | !PRESUBCLASS
     28 | PREVISION
     28 | WEAPONBONUS
@@ -1157,57 +1162,58 @@ Files with UTF-8 encoding issues fixed: 60
     17 | PRESPELLDESCRIPTOR
     17 | PREPROFWITHSHIELD
     16 | PRECHECK
-    15 | PRECHARACTERTYPE
     15 | PREEQUIP
+    15 | PRECHARACTERTYPE
     14 | PREHANDSEQ
-    13 | PREDEITYALIGN
-    13 | ADDDOMAINS
     13 | !PREVISION
+    13 | ADDDOMAINS
+    13 | PREDEITYALIGN
     12 | UMULT
-    12 | PREHD
     12 | ALLOWDUPES
+    12 | PREHD
+    11 | MODIFYOTHER
     11 | !PREMULT
     11 | PREHANDSGT
      9 | CHARGES
      8 | PRESPELLBOOK
      7 | PREWIELD
-     6 | ATTACKCYCLE
-     6 | PRESRGTEQ
      6 | EXCHANGELEVEL
+     6 | PRESRGTEQ
      6 | PREBASESIZELT
-     5 | !PREDOMAIN
+     6 | ATTACKCYCLE
      5 | CT
-     5 | !PREAGESET
      5 | PREDR
-     5 | !PREDEITY
+     5 | !PREAGESET
+     5 | !PREDOMAIN
      5 | PREAGESET
+     5 | !PREDEITY
      4 | !PRELANG
-     3 | PREREACHGTEQ
-     3 | !PRESA
-     3 | BONUSSKILLPOINTS
      3 | PREHANDS
-     2 | !PRECLASSLEVELMAX
-     2 | PREUATT
+     3 | PREREACHGTEQ
+     3 | BONUSSKILLPOINTS
+     3 | !PRESA
+     2 | !PRESPELLCAST
+     2 | !PRESPELL
+     2 | !PRESPELLTYPE
+     2 | MONCCSKILL
      2 | PRECLASSLEVELMAX
      2 | !PRECHECK
-     2 | !PRESPELLCAST
-     2 | PRESIZELT
      2 | PRESIZENEQ
-     2 | !PRESPELLSCHOOLSUB
-     2 | MONCCSKILL
-     2 | PRESIZEGT
+     2 | PRESIZELT
      2 | !PREEQUIP
      2 | PREHP
-     2 | !PRESPELLTYPE
+     2 | !PRECLASSLEVELMAX
+     2 | PREUATT
+     2 | !PRESPELLSCHOOLSUB
      2 | PREARMORTYPE
-     2 | !PRESPELL
-     1 | PRESRLT
-     1 | !PREKIT
-     1 | !PRESPELLDESCRIPTOR
-     1 | PREREACH
-     1 | !PREREGION
-     1 | !PREDR
+     2 | PRESIZEGT
      1 | REPEATLEVEL
+     1 | !PREKIT
+     1 | !PREREGION
+     1 | PREREACH
+     1 | !PRESPELLDESCRIPTOR
+     1 | !PREDR
+     1 | PRESRLT
 
 === Fallback-Needed Tokens by Frequency ===
 
@@ -1219,9 +1225,6 @@ Files with UTF-8 encoding issues fixed: 60
      2 | PREAPPFEAT
 
 === Unhandled Tokens by Frequency ===
-  1081 | PART
-   367 | EFFECTS
-   304 | MODIFYOTHER
    296 | EQUIPMOD
    271 | WEAPONPROF
    264 | DC
@@ -1234,9 +1237,9 @@ Files with UTF-8 encoding issues fixed: 60
    212 | ENCUMBRANCE
    189 | WEAPONCATEGORY
    172 | ROLLMETHOD
-   151 | CRFORMULA
-   151 | CLASSTYPE
    151 | ISMONSTER
+   151 | CLASSTYPE
+   151 | CRFORMULA
    149 | GENDER
    148 | XPPENALTY
    147 | DATACONTROL
@@ -1247,8 +1250,8 @@ Files with UTF-8 encoding issues fixed: 60
    109 | LOCAL
    106 | EXCLUDE
     90 | BIOSET
-    85 | FACTSETDEF
     85 | GLOBAL
+    85 | FACTSETDEF
     84 | SPELLRANGE
     82 | SUBREGION
     79 | ARMORTYPE
@@ -1256,20 +1259,20 @@ Files with UTF-8 encoding issues fixed: 60
     73 | SHIELDPROF
     70 | OUTPUTSHEET
     69 | INFOSHEET
-    67 | DISTANCEPATTERN
-    67 | WEIGHTPATTERN
-    67 | UNITSET
-    67 | WEIGHTUNIT
-    67 | HEIGHTUNIT
-    67 | HEIGHTPATTERN
-    67 | DISTANCEUNIT
-    67 | HEIGHTFACTOR
     67 | WEIGHTFACTOR
+    67 | HEIGHTPATTERN
+    67 | HEIGHTUNIT
+    67 | HEIGHTFACTOR
+    67 | DISTANCEPATTERN
     67 | DISTANCEFACTOR
+    67 | DISTANCEUNIT
+    67 | UNITSET
+    67 | WEIGHTPATTERN
+    67 | WEIGHTUNIT
     65 | CRMOD
     62 | CRMODPRIORITY
-    61 | UNENCUMBEREDMOVE
     61 | LSTEXCLUDE
+    61 | UNENCUMBEREDMOVE
     58 | CCSKILL
     51 | II
     45 | SAVE
@@ -1277,192 +1280,192 @@ Files with UTF-8 encoding issues fixed: 60
     41 | POINTS
     39 | ALIGNMENT
     37 | MAXCOST
-    36 | TARGET
     36 | ACTIVATION
     36 | THROW
     36 | AC
-    35 | CURRENCYUNITABBREV
-    35 | DIESIZES
-    35 | ALIGNMENTFEATURE
-    35 | PANTHEON
-    35 | COPYMASTERCHECK
-    35 | MENUENTRY
+    36 | TARGET
     35 | DISPLAYORDER
-    34 | BABMINVAL
+    35 | DIESIZES
+    35 | CURRENCYUNITABBREV
+    35 | PANTHEON
+    35 | ALIGNMENTFEATURE
+    35 | MENUENTRY
+    35 | COPYMASTERCHECK
     34 | DEFAULTUNITSET
-    34 | BABMAXATT
-    34 | BABATTCYC
-    34 | SHIELD
     34 | ALLOWEDMODES
+    34 | BABATTCYC
+    34 | LOADMULT
+    34 | BABMAXATT
     34 | ACNAME
     34 | TORSO
-    34 | DOMAINFEATURE
-    34 | LOADMULT
     34 | NUMSLOTS
+    34 | SHIELD
     34 | HEAD
-    33 | SQUARESIZE
-    33 | WEAPONREACH
-    33 | RANGEPENALTY
+    34 | BABMINVAL
+    34 | DOMAINFEATURE
     33 | SKILLMULTIPLIER
+    33 | RANGEPENALTY
+    33 | SQUARESIZE
     33 | LEVELMSG
+    33 | WEAPONREACH
     32 | WEAPONNONPROFPENALTY
-    30 | COPYMASTERHP
     30 | SHORTRANGE
+    30 | COPYMASTERHP
     29 | CHARACTERTYPE
     29 | COPYMASTERBAB
     29 | SPELLBASEDC
     28 | SYMBOL
-    28 | USEMASTERSKILL
     28 | ITEMCREATE
-    26 | RESIZABLEEQUIPTYPE
+    28 | USEMASTERSKILL
     26 | III
+    26 | RESIZABLEEQUIPTYPE
     21 | CRSTEPS
-    20 | MONSTERROLEDEFAULT
-    20 | EQUIPMENT.PART
     20 | CRTHRESHOLD
+    20 | MONSTERROLEDEFAULT
     20 | MONSTERROLES
+    20 | EQUIPMENT.PART
     18 | XPTABLE
     17 | EQSIZEPENALTY
     16 | SHOWINMENU
     15 | GRANTED
-    13 | GRANT
-    13 | IV
-    13 | SKILLCOST_CROSSCLASS
     13 | MAXNONEPICLEVEL
+    13 | IV
+    13 | GRANT
+    13 | SKILLCOST_CROSSCLASS
     12 | PLUSCOST
     12 | USAGE
-    11 | SELECTION
     11 | LANGAUTO
     11 | STARTTABLE
-    10 | MOVEMENT
-    10 | COSTPRE
-    10 | SKILLCOST_CLASS
-    10 | HP
-    10 | FORTIFICATION
+    11 | SELECTION
     10 | NOTE
+    10 | MOVEMENT
+    10 | SKILLCOST_CLASS
     10 | HEALING
+    10 | FORTIFICATION
+    10 | HP
+    10 | COSTPRE
      9 | VARIABLE
      8 | DEFAULTDATASET
-     7 | HEIGHT
      7 | PROHIBITED
-     7 | BASEAGEADD
+     7 | HEIGHT
      7 | GAMEMODEKEY
+     7 | BASEAGEADD
      6 | SCORE
      6 | WIDTH
-     6 | LEFTMARGIN
-     6 | BOTTOMMARGIN
      6 | TOPMARGIN
+     6 | BOTTOMMARGIN
      6 | RIGHTMARGIN
-     5 | XPAWARD
+     6 | LEFTMARGIN
+     5 | DATATABLE
+     5 | SKILLCOST_EXCLUSIVE
      5 | SPELLBASECONCENTRATION
      5 | ENDTABLE
-     5 | SKILLCOST_EXCLUSIVE
-     5 | DATATABLE
+     5 | XPAWARD
      5 | ISMATURE
-     4 | GLOBALMODIFIER
      4 | DYNAMICSCOPE
-     4 | VALUE
      4 | FUNCTION
+     4 | GLOBALMODIFIER
      4 | DYNAMIC
-     3 | VI
-     3 | D1
+     4 | VALUE
      3 | AGE
-     3 | F
-     3 | CHANNEL
-     3 | D1.5
-     3 | VII
      3 | D0
+     3 | VI
+     3 | CHANNEL
+     3 | VII
      3 | V
-     2 | HIDDENFEATTYPES
-     2 | STATMODSAVE
+     3 | D1.5
+     3 | F
+     3 | D1
      2 | IX
-     2 | IV.PRECLASS
-     2 | HASSUBCLASS
-     2 | SERVEAS
      2 | DIVINITY
+     2 | IV.PRECLASS
+     2 | HIDDENFEATTYPES
      2 | USETEMPMODS
-     2 | VIII
-     2 | STATINPUT
-     2 | HIDDENEQUIPTYPES
      2 | R
+     2 | HASSUBCLASS
      2 | POOLPOINTS
-     1 | PORTRAIT
-     1 | CANCASTPERDAY
-     1 | CHARACTERCOMP
-     1 | FEATPOOL
-     1 | CHARACTERBIO
-     1 | SKILLFILTER
-     1 | IE
-     1 | SKILLSOUTPUTORDER
-     1 | PURCHASEPOINTS
-     1 | USEHIGHERPREPPED
-     1 | AUTORESIZEGEAR
-     1 | CHARACTERDMNOTES
-     1 | HELP
-     1 | BIRTHPLACE
-     1 | ARMS
-     1 | PERSONALITYTRAIT2
-     1 | PHOBIAS
-     1 | POOLPOINTSAVAIL
-     1 | CITY
-     1 | INTERESTS
-     1 | SKILLSGAINED
-     1 | ALTHP
-     1 | EXPERIENCETABLE
-     1 | HITPOINTS
-     1 | NONPP
-     1 | CP
-     1 | TABNAME
-     1 | IGNORECOST
-     1 | DESC.CLEAR
-     1 | LOADCOMPANIONS
-     1 | ALLOWDEBT
-     1 | SKILLLIST
-     1 | RESTRICTION
+     2 | STATMODSAVE
+     2 | SERVEAS
+     2 | VIII
+     2 | HIDDENEQUIPTYPES
+     2 | STATINPUT
      1 | HAIRCOLOR
-     1 | WEIGHT
-     1 | USERPOOL
-     1 | VERSION
+     1 | INTERESTS
+     1 | POOLPOINTSAVAIL
+     1 | CHARACTERDMNOTES
+     1 | USEHIGHERPREPPED
+     1 | ALTHP
      1 | CALCEQUIPSET
-     1 | ID
-     1 | CLASSABILITIESLEVEL
-     1 | TABLABEL
-     1 | RINGS
-     1 | EXPRESSION
-     1 | COMMENT
-     1 | FOLIO
-     1 | USEHIGHERKNOWN
+     1 | EXPERIENCETABLE
+     1 | WEIGHT
      1 | PERSONALITYTRAIT1
-     1 | EYECOLOR
-     1 | PP
-     1 | SERVAAS
-     1 | CHARACTERMAGIC
-     1 | BIRTHDAY
-     1 | VEHICLE
-     1 | CHARACTERASSET
-     1 | STR
-     1 | HANDED
-     1 | VIIBLE
-     1 | APPLIEDTO
-     1 | SPEECHPATTERN
-     1 | CHARACTERDESC
-     1 | PCGVERSION
-     1 | PLAYERNAME
-     1 | MONEY
-     1 | SUPPRESSBIOFIELDS
-     1 | ALTCRITICAL
-     1 | CREATUREHANDS
-     1 | AUTOSPELLS
-     1 | SELUNE
-     1 | SKILLPOOL
-     1 | SKILLSREMAINING
      1 | EXPERIENCE
-     1 | WWII
-     1 | CATCHPHRASE
-     1 | EQUIPSET
+     1 | PURCHASEPOINTS
      1 | SPECIAL
-     1 | CHARACTERNAME
+     1 | CHARACTERMAGIC
+     1 | USEHIGHERKNOWN
+     1 | CHARACTERCOMP
+     1 | SKILLSREMAINING
+     1 | PERSONALITYTRAIT2
+     1 | CREATUREHANDS
+     1 | RESTRICTION
+     1 | PORTRAIT
+     1 | APPLIEDTO
+     1 | CHARACTERASSET
+     1 | SUPPRESSBIOFIELDS
+     1 | MONEY
+     1 | WWII
+     1 | SPEECHPATTERN
+     1 | VERSION
      1 | HAIRSTYLE
-     1 | SPELLBASE
-     1 | ISPI
+     1 | USERPOOL
+     1 | SKILLSGAINED
+     1 | SKILLFILTER
+     1 | CHARACTERNAME
+     1 | HELP
+     1 | VEHICLE
+     1 | AUTOSPELLS
+     1 | CATCHPHRASE
+     1 | SERVAAS
+     1 | ALTCRITICAL
+     1 | HANDED
      1 | SKINCOLOR
+     1 | IE
+     1 | SPELLBASE
+     1 | ID
+     1 | FOLIO
+     1 | BIRTHPLACE
+     1 | SKILLPOOL
+     1 | STR
+     1 | PHOBIAS
+     1 | CHARACTERBIO
+     1 | VIIBLE
+     1 | DESC.CLEAR
+     1 | CLASSABILITIESLEVEL
+     1 | CITY
+     1 | PLAYERNAME
+     1 | CHARACTERDESC
+     1 | ISPI
+     1 | EYECOLOR
+     1 | FEATPOOL
+     1 | NONPP
+     1 | RINGS
+     1 | TABLABEL
+     1 | HITPOINTS
+     1 | AUTORESIZEGEAR
+     1 | SKILLSOUTPUTORDER
+     1 | LOADCOMPANIONS
+     1 | COMMENT
+     1 | ALLOWDEBT
+     1 | IGNORECOST
+     1 | TABNAME
+     1 | CANCASTPERDAY
+     1 | ARMS
+     1 | SELUNE
+     1 | PP
+     1 | SKILLLIST
+     1 | CP
+     1 | PCGVERSION
+     1 | EXPRESSION
+     1 | BIRTHDAY
+     1 | EQUIPSET
