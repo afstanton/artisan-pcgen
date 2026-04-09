@@ -89,6 +89,62 @@ pub static DIESIZES_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
+pub static DEFAULTUNITSET_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:defaultunitset",
+    head_token: Some("DEFAULTUNITSET"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::text_required("DEFAULTUNITSET", "pcgen_defaultunitset")],
+    globals: &[],
+};
+
+pub static ALLOWEDMODES_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:allowedmodes",
+    head_token: Some("ALLOWEDMODES"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::text_required("ALLOWEDMODES", "pcgen_allowedmodes")],
+    globals: &[],
+};
+
+pub static BABMAXATT_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:babmaxatt",
+    head_token: Some("BABMAXATT"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::integer("BABMAXATT", "pcgen_babmaxatt")],
+    globals: &[],
+};
+
+pub static BABMINVAL_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:babminval",
+    head_token: Some("BABMINVAL"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::integer("BABMINVAL", "pcgen_babminval")],
+    globals: &[],
+};
+
+pub static BABATTCYC_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:babattcyc",
+    head_token: Some("BABATTCYC"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::integer("BABATTCYC", "pcgen_babattcyc")],
+    globals: &[],
+};
+
+pub static ACNAME_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:acname",
+    head_token: Some("ACNAME"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::text_required("ACNAME", "pcgen_acname")],
+    globals: &[],
+};
+
+pub static DOMAINFEATURE_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:domainfeature",
+    head_token: Some("DOMAINFEATURE"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::yesno("DOMAINFEATURE", "pcgen_domainfeature")],
+    globals: &[],
+};
+
 pub static PREVIEWDIR_SCHEMA: EntitySchema = EntitySchema {
     entity_type_key: "pcgen:system:previewdir",
     head_token: Some("PREVIEWDIR"),
@@ -110,6 +166,31 @@ pub static LOAD_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
     head_token: Some("LOAD"),
     head_format: HeadFormat::TokenPrefixed,
     tokens: &[],
+    globals: &[],
+};
+
+pub static LOADMULT_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:loadmult",
+    head_token: Some("LOADMULT"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::integer("LOADMULT", "pcgen_loadmult")],
+    globals: &[],
+};
+
+static NUMSLOTS_SYSTEM_TOKENS: &[TokenDef] = &[
+    TokenDef::text_required("NUMSLOTS", "pcgen_numslots"),
+    TokenDef::integer("HEAD", "pcgen_headslots"),
+    TokenDef::integer("HANDS", "pcgen_hands"),
+    TokenDef::integer("TORSO", "pcgen_torsoslots"),
+    TokenDef::integer("LEGS", "pcgen_legs"),
+    TokenDef::integer("SHIELD", "pcgen_shieldslots"),
+];
+
+pub static NUMSLOTS_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:numslots",
+    head_token: Some("NUMSLOTS"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: NUMSLOTS_SYSTEM_TOKENS,
     globals: &[],
 };
 

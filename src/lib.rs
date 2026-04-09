@@ -1207,6 +1207,18 @@ mod tests {
             assert!(any_schema_knows_token("MENUENTRY"));
             assert!(any_schema_knows_token("DISPLAYORDER"));
             assert!(any_schema_knows_token("DIESIZES"));
+            assert!(any_schema_knows_token("DEFAULTUNITSET"));
+            assert!(any_schema_knows_token("ALLOWEDMODES"));
+            assert!(any_schema_knows_token("BABMAXATT"));
+            assert!(any_schema_knows_token("BABMINVAL"));
+            assert!(any_schema_knows_token("BABATTCYC"));
+            assert!(any_schema_knows_token("ACNAME"));
+            assert!(any_schema_knows_token("DOMAINFEATURE"));
+            assert!(any_schema_knows_token("LOADMULT"));
+            assert!(any_schema_knows_token("NUMSLOTS"));
+            assert!(any_schema_knows_token("HEAD"));
+            assert!(any_schema_knows_token("TORSO"));
+            assert!(any_schema_knows_token("SHIELD"));
             assert!(any_schema_knows_token("ALIGN"));
             assert!(any_schema_knows_token("STAT"));
             assert!(any_schema_knows_token("RACE"));

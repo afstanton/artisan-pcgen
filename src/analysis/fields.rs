@@ -500,6 +500,29 @@ pub(crate) fn project_clause_attributes(
             "METHOD" => {
                 attributes.insert("pcgen_method".to_string(), Value::String(value.clone()));
             }
+            "DEFAULTUNITSET" => {
+                attributes.insert(
+                    "pcgen_defaultunitset".to_string(),
+                    Value::String(value.clone()),
+                );
+            }
+            "ALLOWEDMODES" => {
+                attributes.insert("pcgen_allowedmodes".to_string(), Value::String(value.clone()));
+            }
+            "BABMAXATT" => set_i64_or_string(attributes, "pcgen_babmaxatt", value),
+            "BABMINVAL" => set_i64_or_string(attributes, "pcgen_babminval", value),
+            "BABATTCYC" => set_i64_or_string(attributes, "pcgen_babattcyc", value),
+            "ACNAME" => {
+                attributes.insert("pcgen_acname".to_string(), Value::String(value.clone()));
+            }
+            "DOMAINFEATURE" => {
+                attributes.insert("pcgen_domainfeature".to_string(), parse_yes_no_or_string(value));
+            }
+            "LOADMULT" => set_i64_or_string(attributes, "pcgen_loadmult", value),
+            "NUMSLOTS" => {
+                attributes.insert("pcgen_numslots".to_string(), Value::String(value.clone()));
+            }
+            "HEAD" => set_i64_or_string(attributes, "pcgen_headslots", value),
             "DISTANCEUNIT" => {
                 attributes.insert("pcgen_distanceunit".to_string(), Value::String(value.clone()));
             }
@@ -579,10 +602,16 @@ pub(crate) fn project_clause_attributes(
             }
             "VISION" => append_string_attr(attributes, "pcgen_vision", value),
             "LEGS" => {
-                attributes.insert("pcgen_legs".to_string(), Value::String(value.clone()));
+                set_i64_or_string(attributes, "pcgen_legs", value);
             }
             "HANDS" => {
-                attributes.insert("pcgen_hands".to_string(), Value::String(value.clone()));
+                set_i64_or_string(attributes, "pcgen_hands", value);
+            }
+            "TORSO" => {
+                set_i64_or_string(attributes, "pcgen_torsoslots", value);
+            }
+            "SHIELD" => {
+                set_i64_or_string(attributes, "pcgen_shieldslots", value);
             }
             "DR" => {
                 attributes.insert("pcgen_dr".to_string(), Value::String(value.clone()));
@@ -852,6 +881,37 @@ pub(crate) fn project_decl_token_value(
         "DIESIZES" => {
             attributes.insert(
                 "pcgen_diesizes".to_string(),
+                Value::String(decl_value.to_string()),
+            );
+        }
+        "DEFAULTUNITSET" => {
+            attributes.insert(
+                "pcgen_defaultunitset".to_string(),
+                Value::String(decl_value.to_string()),
+            );
+        }
+        "ALLOWEDMODES" => {
+            attributes.insert(
+                "pcgen_allowedmodes".to_string(),
+                Value::String(decl_value.to_string()),
+            );
+        }
+        "BABMAXATT" => set_i64_or_string(attributes, "pcgen_babmaxatt", decl_value),
+        "BABMINVAL" => set_i64_or_string(attributes, "pcgen_babminval", decl_value),
+        "BABATTCYC" => set_i64_or_string(attributes, "pcgen_babattcyc", decl_value),
+        "ACNAME" => {
+            attributes.insert("pcgen_acname".to_string(), Value::String(decl_value.to_string()));
+        }
+        "DOMAINFEATURE" => {
+            attributes.insert(
+                "pcgen_domainfeature".to_string(),
+                parse_yes_no_or_string(decl_value),
+            );
+        }
+        "LOADMULT" => set_i64_or_string(attributes, "pcgen_loadmult", decl_value),
+        "NUMSLOTS" => {
+            attributes.insert(
+                "pcgen_numslots".to_string(),
                 Value::String(decl_value.to_string()),
             );
         }

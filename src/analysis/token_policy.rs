@@ -34,9 +34,12 @@ pub(crate) fn classify_token_key(input: &str, is_bare: bool) -> ClauseSupportLev
         return ClauseSupportLevel::Artifact;
     }
 
-    // "EFFECTS:" appears in corpus prose (e.g., "DIMINISHED EFFECTS:" inside DESC)
-    // and should not be treated as a standalone token key.
-    if token == "EFFECTS" {
+    // These pseudo-keys commonly appear inside free-text fields (SPROP/DESC)
+    // due to sentence punctuation and should not be treated as standalone tokens.
+    if matches!(
+        token.as_str(),
+        "EFFECTS" | "DC" | "SCREAM" | "TARGET" | "THROW" | "AC" | "ACTIVATION"
+    ) {
         return ClauseSupportLevel::Artifact;
     }
 
@@ -164,6 +167,30 @@ mod tests {
     fn classify_token_key_treats_effects_as_artifact() {
         assert!(matches!(
             classify_token_key("EFFECTS", false),
+            ClauseSupportLevel::Artifact
+        ));
+        assert!(matches!(
+            classify_token_key("DC", false),
+            ClauseSupportLevel::Artifact
+        ));
+        assert!(matches!(
+            classify_token_key("SCREAM", false),
+            ClauseSupportLevel::Artifact
+        ));
+        assert!(matches!(
+            classify_token_key("TARGET", false),
+            ClauseSupportLevel::Artifact
+        ));
+        assert!(matches!(
+            classify_token_key("THROW", false),
+            ClauseSupportLevel::Artifact
+        ));
+        assert!(matches!(
+            classify_token_key("AC", false),
+            ClauseSupportLevel::Artifact
+        ));
+        assert!(matches!(
+            classify_token_key("ACTIVATION", false),
             ClauseSupportLevel::Artifact
         ));
     }
