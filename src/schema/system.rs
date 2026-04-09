@@ -145,6 +145,144 @@ pub static DOMAINFEATURE_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
+pub static LEVELMSG_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:levelmsg",
+    head_token: Some("LEVELMSG"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::text_required("LEVELMSG", "pcgen_levelmsg")],
+    globals: &[],
+};
+
+pub static SHORTRANGE_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:shortrange",
+    head_token: Some("SHORTRANGE"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::integer("SHORTRANGE", "pcgen_shortrange")],
+    globals: &[],
+};
+
+pub static RANGEPENALTY_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:rangepenalty",
+    head_token: Some("RANGEPENALTY"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::integer("RANGEPENALTY", "pcgen_rangepenalty")],
+    globals: &[],
+};
+
+pub static SQUARESIZE_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:squaresize",
+    head_token: Some("SQUARESIZE"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::integer("SQUARESIZE", "pcgen_squaresize")],
+    globals: &[],
+};
+
+pub static SKILLMULTIPLIER_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:skillmultiplier",
+    head_token: Some("SKILLMULTIPLIER"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::text_required("SKILLMULTIPLIER", "pcgen_skillmultiplier")],
+    globals: &[],
+};
+
+pub static SPELLBASEDC_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:spellbasedc",
+    head_token: Some("SPELLBASEDC"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::text_required("SPELLBASEDC", "pcgen_spellbasedc")],
+    globals: &[],
+};
+
+pub static WEAPONNONPROFPENALTY_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:weaponnonprofpenalty",
+    head_token: Some("WEAPONNONPROFPENALTY"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::integer(
+        "WEAPONNONPROFPENALTY",
+        "pcgen_weaponnonprofpenalty",
+    )],
+    globals: &[],
+};
+
+pub static WEAPONREACH_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:weaponreach",
+    head_token: Some("WEAPONREACH"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::text_required("WEAPONREACH", "pcgen_weaponreach")],
+    globals: &[],
+};
+
+pub static CHARACTERTYPE_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:charactertype",
+    head_token: Some("CHARACTERTYPE"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef {
+        key: "CHARACTERTYPE",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Once,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_charactertype"),
+        required: true,
+    }],
+    globals: &[],
+};
+
+pub static CRTHRESHOLD_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:crthreshold",
+    head_token: Some("CRTHRESHOLD"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::text_required("CRTHRESHOLD", "pcgen_crthreshold")],
+    globals: &[],
+};
+
+pub static CRSTEPS_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:crsteps",
+    head_token: Some("CRSTEPS"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::text_required("CRSTEPS", "pcgen_crsteps")],
+    globals: &[],
+};
+
+pub static MONSTERROLES_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:monsterroles",
+    head_token: Some("MONSTERROLES"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef {
+        key: "MONSTERROLES",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Once,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_monsterroles"),
+        required: true,
+    }],
+    globals: &[],
+};
+
+pub static MONSTERROLEDEFAULT_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:monsterroledefault",
+    head_token: Some("MONSTERROLEDEFAULT"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::text_required(
+        "MONSTERROLEDEFAULT",
+        "pcgen_monsterroledefault",
+    )],
+    globals: &[],
+};
+
+pub static XPTABLE_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:xptable",
+    head_token: Some("XPTABLE"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::text_required("XPTABLE", "pcgen_xptable")],
+    globals: &[],
+};
+
+pub static EQSIZEPENALTY_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:eqsizepenalty",
+    head_token: Some("EQSIZEPENALTY"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::text_required("EQSIZEPENALTY", "pcgen_eqsizepenalty")],
+    globals: &[GlobalGroup::Bonus, GlobalGroup::Prerequisites],
+};
+
 pub static PREVIEWDIR_SCHEMA: EntitySchema = EntitySchema {
     entity_type_key: "pcgen:system:previewdir",
     head_token: Some("PREVIEWDIR"),

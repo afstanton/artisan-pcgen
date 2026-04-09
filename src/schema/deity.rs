@@ -33,6 +33,7 @@ static DEITY_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Attribute("pcgen_group"),
         required: false,
     },
+    TokenDef::text("SYMBOL", "pcgen_symbol"),
     TokenDef::text("PANTHEON", "pcgen_pantheon"),
 ];
 

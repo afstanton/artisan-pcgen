@@ -500,6 +500,51 @@ pub(crate) fn project_clause_attributes(
             "METHOD" => {
                 attributes.insert("pcgen_method".to_string(), Value::String(value.clone()));
             }
+            "LEVELMSG" => {
+                attributes.insert("pcgen_levelmsg".to_string(), Value::String(value.clone()));
+            }
+            "SHORTRANGE" => set_i64_or_string(attributes, "pcgen_shortrange", value),
+            "RANGEPENALTY" => set_i64_or_string(attributes, "pcgen_rangepenalty", value),
+            "SQUARESIZE" => set_i64_or_string(attributes, "pcgen_squaresize", value),
+            "SKILLMULTIPLIER" => {
+                attributes.insert(
+                    "pcgen_skillmultiplier".to_string(),
+                    Value::String(value.clone()),
+                );
+            }
+            "SPELLBASEDC" => {
+                attributes.insert("pcgen_spellbasedc".to_string(), Value::String(value.clone()));
+            }
+            "WEAPONNONPROFPENALTY" => {
+                set_i64_or_string(attributes, "pcgen_weaponnonprofpenalty", value)
+            }
+            "WEAPONREACH" => {
+                attributes.insert("pcgen_weaponreach".to_string(), Value::String(value.clone()));
+            }
+            "CHARACTERTYPE" => {
+                attributes.insert("pcgen_charactertype".to_string(), parse_pipe_series(value));
+            }
+            "CRTHRESHOLD" => {
+                attributes.insert("pcgen_crthreshold".to_string(), Value::String(value.clone()));
+            }
+            "CRSTEPS" => {
+                attributes.insert("pcgen_crsteps".to_string(), Value::String(value.clone()));
+            }
+            "MONSTERROLES" => {
+                attributes.insert("pcgen_monsterroles".to_string(), parse_pipe_series(value));
+            }
+            "MONSTERROLEDEFAULT" => {
+                attributes.insert(
+                    "pcgen_monsterroledefault".to_string(),
+                    Value::String(value.clone()),
+                );
+            }
+            "XPTABLE" => {
+                attributes.insert("pcgen_xptable".to_string(), Value::String(value.clone()));
+            }
+            "EQSIZEPENALTY" => {
+                attributes.insert("pcgen_eqsizepenalty".to_string(), Value::String(value.clone()));
+            }
             "DEFAULTUNITSET" => {
                 attributes.insert(
                     "pcgen_defaultunitset".to_string(),
@@ -570,6 +615,9 @@ pub(crate) fn project_clause_attributes(
             }
             "DEITY" => {
                 attributes.insert("pcgen_deity".to_string(), parse_pipe_series(value));
+            }
+            "SYMBOL" => {
+                attributes.insert("pcgen_symbol".to_string(), Value::String(value.clone()));
             }
             "CRFORMULA" => {
                 attributes.insert("pcgen_crformula".to_string(), Value::String(value.clone()));
@@ -881,6 +929,66 @@ pub(crate) fn project_decl_token_value(
         "DIESIZES" => {
             attributes.insert(
                 "pcgen_diesizes".to_string(),
+                Value::String(decl_value.to_string()),
+            );
+        }
+        "LEVELMSG" => {
+            attributes.insert(
+                "pcgen_levelmsg".to_string(),
+                Value::String(decl_value.to_string()),
+            );
+        }
+        "SHORTRANGE" => set_i64_or_string(attributes, "pcgen_shortrange", decl_value),
+        "RANGEPENALTY" => set_i64_or_string(attributes, "pcgen_rangepenalty", decl_value),
+        "SQUARESIZE" => set_i64_or_string(attributes, "pcgen_squaresize", decl_value),
+        "SKILLMULTIPLIER" => {
+            attributes.insert(
+                "pcgen_skillmultiplier".to_string(),
+                Value::String(decl_value.to_string()),
+            );
+        }
+        "SPELLBASEDC" => {
+            attributes.insert(
+                "pcgen_spellbasedc".to_string(),
+                Value::String(decl_value.to_string()),
+            );
+        }
+        "WEAPONNONPROFPENALTY" => {
+            set_i64_or_string(attributes, "pcgen_weaponnonprofpenalty", decl_value)
+        }
+        "WEAPONREACH" => {
+            attributes.insert(
+                "pcgen_weaponreach".to_string(),
+                Value::String(decl_value.to_string()),
+            );
+        }
+        "CHARACTERTYPE" => {
+            attributes.insert("pcgen_charactertype".to_string(), parse_pipe_series(decl_value));
+        }
+        "CRTHRESHOLD" => {
+            attributes.insert(
+                "pcgen_crthreshold".to_string(),
+                Value::String(decl_value.to_string()),
+            );
+        }
+        "CRSTEPS" => {
+            attributes.insert("pcgen_crsteps".to_string(), Value::String(decl_value.to_string()));
+        }
+        "MONSTERROLES" => {
+            attributes.insert("pcgen_monsterroles".to_string(), parse_pipe_series(decl_value));
+        }
+        "MONSTERROLEDEFAULT" => {
+            attributes.insert(
+                "pcgen_monsterroledefault".to_string(),
+                Value::String(decl_value.to_string()),
+            );
+        }
+        "XPTABLE" => {
+            attributes.insert("pcgen_xptable".to_string(), Value::String(decl_value.to_string()));
+        }
+        "EQSIZEPENALTY" => {
+            attributes.insert(
+                "pcgen_eqsizepenalty".to_string(),
                 Value::String(decl_value.to_string()),
             );
         }
