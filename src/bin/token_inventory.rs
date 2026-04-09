@@ -27,6 +27,8 @@ fn main() -> io::Result<()> {
     let mut total_lines = 0;
     let mut fixed_count = 0;
 
+    eprintln!("token_inventory: scanning {} root(s)", args.len() - 1);
+
     for root_arg in &args[1..] {
         let root = Path::new(root_arg);
 
@@ -34,6 +36,7 @@ fn main() -> io::Result<()> {
         for subdir in &["data", "system"] {
             let path = root.join(subdir);
             if path.exists() && path.is_dir() {
+                eprintln!("token_inventory: scanning {}", path.display());
                 let (_, fixes) = scan_directory(
                     &path,
                     &mut semantic_counts,
@@ -177,7 +180,14 @@ fn main() -> io::Result<()> {
 
     let output_path = Path::new(env!("CARGO_MANIFEST_DIR")).join("TOKEN_INVENTORY.txt");
     fs::write(&output_path, &report)?;
-    print!("{report}");
+    eprintln!(
+        "token_inventory: wrote {} (interpreted={}, structured={}, unhandled={}, fixtures={})",
+        output_path.display(),
+        semantic_counts.len(),
+        fully_structured_counts.len(),
+        unhandled_counts.len(),
+        fixture_token_counts.len()
+    );
 
     Ok(())
 }

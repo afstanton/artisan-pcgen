@@ -283,6 +283,51 @@ pub static EQSIZEPENALTY_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
     globals: &[GlobalGroup::Bonus, GlobalGroup::Prerequisites],
 };
 
+pub static RESIZABLEEQUIPTYPE_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:resizableequiptype",
+    head_token: Some("RESIZABLEEQUIPTYPE"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef {
+        key: "RESIZABLEEQUIPTYPE",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Once,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_resizableequiptype"),
+        required: true,
+    }],
+    globals: &[],
+};
+
+pub static SKILLCOST_CROSSCLASS_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:skillcost_crossclass",
+    head_token: Some("SKILLCOST_CROSSCLASS"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::integer(
+        "SKILLCOST_CROSSCLASS",
+        "pcgen_skillcost_crossclass",
+    )],
+    globals: &[],
+};
+
+pub static MAXNONEPICLEVEL_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:maxnonepiclevel",
+    head_token: Some("MAXNONEPICLEVEL"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::integer("MAXNONEPICLEVEL", "pcgen_maxnonepiclevel")],
+    globals: &[],
+};
+
+pub static PLUSCOST_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:pluscost",
+    head_token: Some("PLUSCOST"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::pipe_positional(
+        "PLUSCOST",
+        &["equipment_type", "formula"],
+        "pcgen_pluscost",
+    )],
+    globals: &[],
+};
+
 pub static PREVIEWDIR_SCHEMA: EntitySchema = EntitySchema {
     entity_type_key: "pcgen:system:previewdir",
     head_token: Some("PREVIEWDIR"),

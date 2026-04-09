@@ -176,6 +176,7 @@ static PCC_TOKENS: &[TokenDef] = &[
     TokenDef::text("EXPLANATION", "pcgen_explanation"),
     TokenDef::text("DISPLAYNAME", "pcgen_displayname"),
     TokenDef::text("VISIBLE", "pcgen_visible"),
+    TokenDef::yesno("SHOWINMENU", "pcgen_showinmenu"),
     TokenDef::text("REQUIRED", "pcgen_required"),
     TokenDef::text("SELECTABLE", "pcgen_selectable"),
     TokenDef::text("NAMEISPI", "pcgen_nameispi"),
@@ -284,6 +285,10 @@ static LSTEXCLUDE_INCLUDE_TOKENS: &[TokenDef] = &[
     },
     PRECAMPAIGN_TOKEN,
 ];
+static SHOWINMENU_INCLUDE_TOKENS: &[TokenDef] = &[
+    TokenDef::yesno("SHOWINMENU", "pcgen_showinmenu"),
+    PRECAMPAIGN_TOKEN,
+];
 
 pub static LANGUAGE_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
     entity_type_key: "pcgen:entity:pcc-language-include",
@@ -370,5 +375,13 @@ pub static LSTEXCLUDE_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
     head_token: Some("LSTEXCLUDE"),
     head_format: HeadFormat::TokenPrefixed,
     tokens: LSTEXCLUDE_INCLUDE_TOKENS,
+    globals: PCC_GLOBALS,
+};
+
+pub static SHOWINMENU_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:entity:pcc-showinmenu-include",
+    head_token: Some("SHOWINMENU"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: SHOWINMENU_INCLUDE_TOKENS,
     globals: PCC_GLOBALS,
 };

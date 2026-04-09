@@ -40,6 +40,13 @@ static KIT_TOKENS: &[TokenDef] = &[
     TokenDef::text("QTY", "pcgen_qty"),
     TokenDef::integer("COUNT", "pcgen_count"),
     TokenDef::yesno("FREE", "pcgen_free"),
+    TokenDef {
+        key: "SELECTION",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_selection"),
+        required: false,
+    },
     TokenDef::text("SIZE", "pcgen_size"),
     TokenDef {
         key: "EQMOD",

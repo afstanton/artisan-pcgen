@@ -1,4 +1,5 @@
 CAMPAIGN:Roundtrip Coverage Campaign
 GAMEMODE:Pathfinder
+SHOWINMENU:YES
 SPELL:coverage_spells.lst
 EQUIPMENT:coverage_equipment.lst

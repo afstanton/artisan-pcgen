@@ -1235,6 +1235,14 @@ mod tests {
             assert!(any_schema_knows_token("MONSTERROLEDEFAULT"));
             assert!(any_schema_knows_token("XPTABLE"));
             assert!(any_schema_knows_token("EQSIZEPENALTY"));
+            assert!(any_schema_knows_token("RESIZABLEEQUIPTYPE"));
+            assert!(any_schema_knows_token("SKILLCOST_CROSSCLASS"));
+            assert!(any_schema_knows_token("MAXNONEPICLEVEL"));
+            assert!(any_schema_knows_token("PLUSCOST"));
+            assert!(any_schema_knows_token("SHOWINMENU"));
+            assert!(any_schema_knows_token("LANGAUTO"));
+            assert!(any_schema_knows_token("SELECTION"));
+            assert!(any_schema_knows_token("GRANT"));
             assert!(any_schema_knows_token("ALIGN"));
             assert!(any_schema_knows_token("STAT"));
             assert!(any_schema_knows_token("RACE"));

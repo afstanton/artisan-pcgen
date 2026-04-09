@@ -19,6 +19,13 @@ static CLASS_TOKENS: &[TokenDef] = &[
     TokenDef::integer("STARTSKILLPTS", "pcgen_startskillpts"),
     TokenDef::integer("LEVELSPERFEAT", "pcgen_levelsperfeat"),
     TokenDef::text("ATTACKCYCLE", "pcgen_attackcycle"),
+    TokenDef {
+        key: "LANGAUTO",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_langauto"),
+        required: false,
+    },
     // Spell-related
     TokenDef::text("SPELLTYPE", "pcgen_spelltype"),
     TokenDef::text("SPELLSTAT", "pcgen_spellstat"),
