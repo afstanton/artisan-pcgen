@@ -102,6 +102,7 @@ static CLASS_TOKENS: &[TokenDef] = &[
     // Sub-class / substitution
     TokenDef::integer("PROHIBITCOST", "pcgen_prohibitcost"),
     TokenDef::text("SUBCLASSLEVEL", "pcgen_subclasslevel"),
+    TokenDef::text("SUBCLASS", "pcgen_subclass"),
     TokenDef::text("SUBSTITUTIONCLASS", "pcgen_substitutionclass"),
     TokenDef::text("SUBSTITUTIONLEVEL", "pcgen_substitutionlevel"),
     TokenDef {

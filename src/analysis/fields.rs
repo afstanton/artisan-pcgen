@@ -65,6 +65,7 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_booktype".to_string(), Value::String(value.clone()));
             }
             "PCC" => append_string_attr(attributes, "pcgen_pcc", value),
+            "CHOICE" => append_string_attr(attributes, "pcgen_choice", value),
             "BASESTATSCORE" => set_i64_or_string(attributes, "pcgen_basestatscore", value),
             "STATRANGE" => set_i64_or_string(attributes, "pcgen_statrange", value),
             "STATMOD" => {
@@ -123,6 +124,7 @@ pub(crate) fn project_clause_attributes(
             "SUBRACE" => {
                 attributes.insert("pcgen_subrace".to_string(), Value::String(value.clone()));
             }
+            "SUBCLASS" => append_string_attr(attributes, "pcgen_subclass", value),
             "FAVCLASS" => {
                 attributes.insert("pcgen_favclass".to_string(), Value::String(value.clone()));
             }

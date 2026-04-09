@@ -396,7 +396,7 @@ pub(crate) fn declared_entity(head: &str) -> Option<(String, String)> {
     let key_upper = key.to_ascii_uppercase();
 
     match key_upper.as_str() {
-        "ABILITY" | "SKILL" | "GEAR" | "CLASS" | "STARTPACK" | "ABILITYCATEGORY" => {
+        "ABILITY" | "SKILL" | "GEAR" | "CLASS" | "SUBCLASS" | "STARTPACK" | "ABILITYCATEGORY" => {
             Some((key_upper, value))
         }
         _ if crate::schema::schema_for_head_token(&key_upper).is_some() => Some((key_upper, value)),

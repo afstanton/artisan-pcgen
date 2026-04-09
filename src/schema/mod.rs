@@ -22,6 +22,7 @@ pub mod pcc;
 pub mod race;
 pub mod skill;
 pub mod spell;
+pub mod subclass;
 pub mod template;
 pub mod token_aliases;
 
@@ -50,6 +51,7 @@ pub use pcc::PCC_SCHEMA;
 pub use race::RACE_SCHEMA;
 pub use skill::SKILL_SCHEMA;
 pub use spell::SPELL_SCHEMA;
+pub use subclass::SUBCLASS_SCHEMA;
 pub use template::TEMPLATE_SCHEMA;
 pub use token_aliases::{AliasScope, AliasStatus, TokenAlias, all_token_aliases};
 
@@ -428,6 +430,7 @@ static ALL_SCHEMAS: &[&EntitySchema] = &[
     &system::SUBSTITUTIONCLASS_SYSTEM_SCHEMA,
     &system::SUBSTITUTIONLEVEL_SYSTEM_SCHEMA,
     &class::CLASS_SCHEMA,
+    &subclass::SUBCLASS_SCHEMA,
     &deity::DEITY_SCHEMA,
     &equipment::EQUIPMENT_SCHEMA,
     &feat::FEAT_SCHEMA,
