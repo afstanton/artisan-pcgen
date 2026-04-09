@@ -40,6 +40,12 @@ pub(crate) fn classify_token_key(input: &str, is_bare: bool) -> ClauseSupportLev
         return ClauseSupportLevel::Artifact;
     }
 
+    // Selector-style token used in variable-path contexts; keep distinct from PART
+    // while treating it as intentionally supported syntax.
+    if token == "EQUIPMENT.PART" {
+        return ClauseSupportLevel::PolicySupported;
+    }
+
     // Schema-driven lookup: any registered schema that knows this token
     // classifies it as semantically interpreted.
     if crate::schema::any_schema_knows_token(&token) {
@@ -135,6 +141,26 @@ mod tests {
         assert!(matches!(
             classify_token_key("EFFECTS", false),
             ClauseSupportLevel::Artifact
+        ));
+    }
+
+    #[test]
+    fn classify_token_key_treats_equipment_part_as_policy_supported() {
+        assert!(matches!(
+            classify_token_key("EQUIPMENT.PART", false),
+            ClauseSupportLevel::PolicySupported
+        ));
+    }
+
+    #[test]
+    fn classify_token_key_distinguishes_part_from_equipment_part() {
+        assert!(matches!(
+            classify_token_key("PART", false),
+            ClauseSupportLevel::SemanticallyInterpreted
+        ));
+        assert!(matches!(
+            classify_token_key("EQUIPMENT.PART", false),
+            ClauseSupportLevel::PolicySupported
         ));
     }
 }

@@ -1258,6 +1258,11 @@ mod tests {
             use schema::token_aliases::canonical_lookup_key;
 
             assert_eq!(canonical_lookup_key("CASTTIME", None), "CASTTIME");
+            assert_eq!(canonical_lookup_key("PART", None), "PART");
+            assert_eq!(
+                canonical_lookup_key("EQUIPMENT.PART", None),
+                "EQUIPMENT.PART"
+            );
             assert_eq!(canonical_lookup_key("HD", Some("pcgen:entity:class")), "HITDIE");
             assert_eq!(canonical_lookup_key("HD", Some("pcgen:entity:template")), "HD");
         }
