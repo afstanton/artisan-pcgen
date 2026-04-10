@@ -61,14 +61,14 @@ static ABILITY_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Attribute("pcgen_move"),
         required: false,
     },
-       TokenDef {
-           key: "MOVECLONE",
-           grammar: TokenGrammar::Text,
-           cardinality: Cardinality::Repeatable,
-           artisan_mapping: ArtisanMapping::Attribute("pcgen_moveclone"),
-           required: false,
-       },
-       TokenDef {
+    TokenDef {
+        key: "MOVECLONE",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_moveclone"),
+        required: false,
+    },
+    TokenDef {
         key: "NATURALATTACKS",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
@@ -95,11 +95,7 @@ static ABILITY_TOKENS: &[TokenDef] = &[
     TokenDef::pipe_list_repeatable("COMPANIONLIST", "pcgen_companionlist"),
     TokenDef::pipe_list_repeatable("CCSKILL", "pcgen_ccskill"),
     TokenDef::pipe_list_repeatable("UNENCUMBEREDMOVE", "pcgen_unencumberedmove"),
-    TokenDef::pipe_positional_repeatable(
-        "FOLLOWERS",
-        &["type", "limit"],
-        "pcgen_followers",
-    ),
+    TokenDef::pipe_positional_repeatable("FOLLOWERS", &["type", "limit"], "pcgen_followers"),
 ];
 
 static ABILITY_GLOBALS: &[GlobalGroup] = &[

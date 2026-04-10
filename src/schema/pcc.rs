@@ -198,6 +198,7 @@ static PCC_TOKENS: &[TokenDef] = &[
     TokenDef::text("DISPLAYNAME", "pcgen_displayname"),
     TokenDef::text("VISIBLE", "pcgen_visible"),
     TokenDef::yesno("SHOWINMENU", "pcgen_showinmenu"),
+    TokenDef::yesno("ISMATURE", "pcgen_ismature"),
     TokenDef::text("REQUIRED", "pcgen_required"),
     TokenDef::text("SELECTABLE", "pcgen_selectable"),
     TokenDef::text("NAMEISPI", "pcgen_nameispi"),
@@ -268,6 +269,10 @@ pub static PCC_SCHEMA: EntitySchema = EntitySchema {
 
 static LANGUAGE_INCLUDE_TOKENS: &[TokenDef] = &[
     TokenDef::text_required("LANGUAGE", "pcgen_language_catalog"),
+    PRECAMPAIGN_TOKEN,
+];
+static ISMATURE_INCLUDE_TOKENS: &[TokenDef] = &[
+    TokenDef::yesno("ISMATURE", "pcgen_ismature"),
     PRECAMPAIGN_TOKEN,
 ];
 static ABILITY_INCLUDE_TOKENS: &[TokenDef] = &[
@@ -369,21 +374,18 @@ static COMPANIONMOD_INCLUDE_TOKENS: &[TokenDef] = &[
     TokenDef::text_required("COMPANIONMOD", "pcgen_companionmod_catalog"),
     PRECAMPAIGN_TOKEN,
 ];
-static WEAPONPROF_INCLUDE_TOKENS: &[TokenDef] =
-    &[
-        TokenDef::text_required("WEAPONPROF", "pcgen_weaponprof_catalog"),
-        PRECAMPAIGN_TOKEN,
-    ];
-static ARMORPROF_INCLUDE_TOKENS: &[TokenDef] =
-    &[
-        TokenDef::text_required("ARMORPROF", "pcgen_armorprof_catalog"),
-        PRECAMPAIGN_TOKEN,
-    ];
-static SHIELDPROF_INCLUDE_TOKENS: &[TokenDef] =
-    &[
-        TokenDef::text_required("SHIELDPROF", "pcgen_shieldprof_catalog"),
-        PRECAMPAIGN_TOKEN,
-    ];
+static WEAPONPROF_INCLUDE_TOKENS: &[TokenDef] = &[
+    TokenDef::text_required("WEAPONPROF", "pcgen_weaponprof_catalog"),
+    PRECAMPAIGN_TOKEN,
+];
+static ARMORPROF_INCLUDE_TOKENS: &[TokenDef] = &[
+    TokenDef::text_required("ARMORPROF", "pcgen_armorprof_catalog"),
+    PRECAMPAIGN_TOKEN,
+];
+static SHIELDPROF_INCLUDE_TOKENS: &[TokenDef] = &[
+    TokenDef::text_required("SHIELDPROF", "pcgen_shieldprof_catalog"),
+    PRECAMPAIGN_TOKEN,
+];
 static LSTEXCLUDE_INCLUDE_TOKENS: &[TokenDef] = &[
     TokenDef {
         key: "LSTEXCLUDE",
@@ -404,6 +406,14 @@ pub static LANGUAGE_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
     head_token: Some("LANGUAGE"),
     head_format: HeadFormat::TokenPrefixed,
     tokens: LANGUAGE_INCLUDE_TOKENS,
+    globals: PCC_GLOBALS,
+};
+
+pub static ISMATURE_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:entity:pcc-ismature-include",
+    head_token: Some("ISMATURE"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: ISMATURE_INCLUDE_TOKENS,
     globals: PCC_GLOBALS,
 };
 

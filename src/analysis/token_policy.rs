@@ -38,7 +38,15 @@ pub(crate) fn classify_token_key(input: &str, is_bare: bool) -> ClauseSupportLev
     // due to sentence punctuation and should not be treated as standalone tokens.
     if matches!(
         token.as_str(),
-        "EFFECTS" | "DC" | "SCREAM" | "TARGET" | "THROW" | "AC" | "ACTIVATION" | "GRANTED" | "USAGE"
+        "EFFECTS"
+            | "DC"
+            | "SCREAM"
+            | "TARGET"
+            | "THROW"
+            | "AC"
+            | "ACTIVATION"
+            | "GRANTED"
+            | "USAGE"
     ) {
         return ClauseSupportLevel::Artifact;
     }
@@ -115,7 +123,10 @@ fn is_known_bare_directive(input: &str) -> bool {
         return true;
     }
 
-    matches!(upper.as_str(), "AUTOMATIC" | "VIRTUAL" | "PRERULE" | "!PRERULE" | "SET")
+    matches!(
+        upper.as_str(),
+        "AUTOMATIC" | "VIRTUAL" | "PRERULE" | "!PRERULE" | "SET"
+    )
 }
 
 fn is_plausible_token_name(token: &str) -> bool {
@@ -146,18 +157,7 @@ fn is_plausible_token_name(token: &str) -> bool {
 fn is_standalone_roman_numeral(token: &str) -> bool {
     matches!(
         token,
-        "I"
-            | "II"
-            | "III"
-            | "IV"
-            | "V"
-            | "VI"
-            | "VII"
-            | "VIII"
-            | "IX"
-            | "X"
-            | "XI"
-            | "XII"
+        "I" | "II" | "III" | "IV" | "V" | "VI" | "VII" | "VIII" | "IX" | "X" | "XI" | "XII"
     )
 }
 
@@ -275,7 +275,10 @@ mod tests {
     fn classify_token_key_rejects_output_sheet_layout_tokens() {
         for token in &["LEFTMARGIN", "RIGHTMARGIN", "TOPMARGIN", "BOTTOMMARGIN"] {
             assert!(
-                matches!(classify_token_key(token, false), ClauseSupportLevel::Artifact),
+                matches!(
+                    classify_token_key(token, false),
+                    ClauseSupportLevel::Artifact
+                ),
                 "{token} should be Artifact"
             );
         }
@@ -285,7 +288,10 @@ mod tests {
     fn classify_token_key_rejects_dice_notation_fragments() {
         for token in &["D0", "D1", "D1.5"] {
             assert!(
-                matches!(classify_token_key(token, false), ClauseSupportLevel::Artifact),
+                matches!(
+                    classify_token_key(token, false),
+                    ClauseSupportLevel::Artifact
+                ),
                 "{token} should be Artifact"
             );
         }
@@ -293,9 +299,23 @@ mod tests {
 
     #[test]
     fn classify_token_key_rejects_known_parser_noise() {
-        for token in &["R", "F", "IE", "VIIBLE", "SERVAAS", "SERVEAS", "IV.PRECLASS", "SELUNE", "WWII", "STR"] {
+        for token in &[
+            "R",
+            "F",
+            "IE",
+            "VIIBLE",
+            "SERVAAS",
+            "SERVEAS",
+            "IV.PRECLASS",
+            "SELUNE",
+            "WWII",
+            "STR",
+        ] {
             assert!(
-                matches!(classify_token_key(token, false), ClauseSupportLevel::Artifact),
+                matches!(
+                    classify_token_key(token, false),
+                    ClauseSupportLevel::Artifact
+                ),
                 "{token} should be Artifact"
             );
         }

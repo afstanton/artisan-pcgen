@@ -10,7 +10,7 @@ pub(crate) fn project_clause_attributes(
     attributes: &mut IndexMap<String, Value>,
 ) {
     let mut facts = Vec::new();
-        let mut factsets = Vec::new();
+    let mut factsets = Vec::new();
     let mut equipment_modifiers = Vec::new();
     let mut class_lists = Vec::new();
     let mut spell_blocks = Vec::new();
@@ -30,19 +30,31 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_source".to_string(), Value::String(value.clone()));
             }
             "SOURCELONG" => {
-                attributes.insert("pcgen_source_long".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_source_long".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "SOURCESHORT" => {
-                attributes.insert("pcgen_source_short".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_source_short".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "SOURCEWEB" => {
                 attributes.insert("pcgen_source_web".to_string(), Value::String(value.clone()));
             }
             "SOURCELINK" => {
-                attributes.insert("pcgen_source_link".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_source_link".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "SOURCEDATE" => {
-                attributes.insert("pcgen_source_date".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_source_date".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "GAMEMODE" => {
                 attributes.insert("pcgen_gamemode".to_string(), Value::String(value.clone()));
@@ -60,7 +72,10 @@ pub(crate) fn project_clause_attributes(
                 );
             }
             "SHOWINMENU" => {
-                attributes.insert("pcgen_showinmenu".to_string(), parse_yes_no_or_string(value));
+                attributes.insert(
+                    "pcgen_showinmenu".to_string(),
+                    parse_yes_no_or_string(value),
+                );
             }
             "SETTING" => {
                 attributes.insert("pcgen_setting".to_string(), Value::String(value.clone()));
@@ -145,10 +160,16 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_favclass".to_string(), Value::String(value.clone()));
             }
             "FAVOREDCLASS" => {
-                attributes.insert("pcgen_favoredclass".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_favoredclass".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "MONSTERCLASS" => {
-                attributes.insert("pcgen_monsterclass".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_monsterclass".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "MONCSKILL" => append_string_attr(attributes, "pcgen_moncskill", value),
             "CCSKILL" => append_string_attr(attributes, "pcgen_ccskill", value),
@@ -180,12 +201,18 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_maxlevel".to_string(), Value::String(value.clone()));
             }
             "ABB" => {
-                attributes.insert("pcgen_abbreviation".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_abbreviation".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "STARTSKILLPTS" => set_i64_or_string(attributes, "pcgen_startskillpts", value),
             "LEVELSPERFEAT" => set_i64_or_string(attributes, "pcgen_levelsperfeat", value),
             "ATTACKCYCLE" => {
-                attributes.insert("pcgen_attackcycle".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_attackcycle".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "SPELLTYPE" => {
                 attributes.insert("pcgen_spelltype".to_string(), Value::String(value.clone()));
@@ -197,7 +224,10 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_itemcreate".to_string(), Value::String(value.clone()));
             }
             "BONUSSPELLSTAT" => {
-                attributes.insert("pcgen_bonusspellstat".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_bonusspellstat".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "SPELLBOOK" => {
                 attributes.insert("pcgen_spellbook".to_string(), parse_yes_no_or_string(value));
@@ -208,10 +238,16 @@ pub(crate) fn project_clause_attributes(
             "CAST" => append_string_attr(attributes, "pcgen_cast", value),
             "KNOWN" => append_string_attr(attributes, "pcgen_known", value),
             "KNOWNSPELLS" => {
-                attributes.insert("pcgen_knownspells".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_knownspells".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "SPECIALTYKNOWN" => {
-                attributes.insert("pcgen_specialtyknown".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_specialtyknown".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "SPELLLIST" => {
                 attributes.insert("pcgen_spelllist".to_string(), Value::String(value.clone()));
@@ -240,10 +276,16 @@ pub(crate) fn project_clause_attributes(
             }
             "GROUP" => append_string_attr(attributes, "pcgen_group", value),
             "ALLOWBASECLASS" => {
-                attributes.insert("pcgen_allowbaseclass".to_string(), parse_yes_no_or_string(value));
+                attributes.insert(
+                    "pcgen_allowbaseclass".to_string(),
+                    parse_yes_no_or_string(value),
+                );
             }
             "MODTOSKILLS" => {
-                attributes.insert("pcgen_modtoskills".to_string(), parse_yes_no_or_string(value));
+                attributes.insert(
+                    "pcgen_modtoskills".to_string(),
+                    parse_yes_no_or_string(value),
+                );
             }
             "MONSKILL" => set_i64_or_string(attributes, "pcgen_monskill", value),
             "MONNONSKILLHD" => set_i64_or_string(attributes, "pcgen_monnonskillhd", value),
@@ -263,10 +305,16 @@ pub(crate) fn project_clause_attributes(
             }
             "PROHIBITCOST" => set_i64_or_string(attributes, "pcgen_prohibitcost", value),
             "HASSUBCLASS" => {
-                attributes.insert("pcgen_hassubclass".to_string(), parse_yes_no_or_string(value));
+                attributes.insert(
+                    "pcgen_hassubclass".to_string(),
+                    parse_yes_no_or_string(value),
+                );
             }
             "SUBCLASSLEVEL" => {
-                attributes.insert("pcgen_subclasslevel".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_subclasslevel".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "SUBSTITUTIONCLASS" => {
                 attributes.insert(
@@ -345,7 +393,10 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_sortkey".to_string(), Value::String(value.clone()));
             }
             "VALIDFORDEITY" => {
-                attributes.insert("pcgen_validfordeity".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_validfordeity".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "VALIDFORFOLLOWER" => {
                 attributes.insert(
@@ -384,7 +435,10 @@ pub(crate) fn project_clause_attributes(
             }
             "PPCOST" => set_i64_or_string(attributes, "pcgen_ppcost", value),
             "SPELLPOINTCOST" => {
-                attributes.insert("pcgen_spellpointcost".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_spellpointcost".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "ITEM" => append_string_attr(attributes, "pcgen_items", value),
             "GEAR" => append_string_attr(attributes, "pcgen_gear", value),
@@ -412,7 +466,10 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_newkey".to_string(), Value::String(value.clone()));
             }
             "NEWCATEGORY" => {
-                attributes.insert("pcgen_newcategory".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_newcategory".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "VALUES" => append_string_attr(attributes, "pcgen_values", value),
             "COPYRIGHT" => append_string_attr(attributes, "pcgen_copyright", value),
@@ -429,7 +486,10 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_dataformat".to_string(), Value::String(value.clone()));
             }
             "DISPLAYNAME" => {
-                attributes.insert("pcgen_displayname".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_displayname".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "DEFAULTDATASET" => {
                 attributes.insert(
@@ -438,7 +498,10 @@ pub(crate) fn project_clause_attributes(
                 );
             }
             "EXPLANATION" => {
-                attributes.insert("pcgen_explanation".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_explanation".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "REQUIRED" => {
                 attributes.insert("pcgen_required".to_string(), Value::String(value.clone()));
@@ -469,7 +532,10 @@ pub(crate) fn project_clause_attributes(
                 );
             }
             "GAMEMODEKEY" => {
-                attributes.insert("pcgen_gamemodekey".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_gamemodekey".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "PLURAL" => {
                 attributes.insert("pcgen_plural".to_string(), Value::String(value.clone()));
@@ -539,9 +605,7 @@ pub(crate) fn project_clause_attributes(
             "SKILLCOST_CROSSCLASS" => {
                 set_i64_or_string(attributes, "pcgen_skillcost_crossclass", value)
             }
-            "SKILLCOST_CLASS" => {
-                set_i64_or_string(attributes, "pcgen_skillcost_class", value)
-            }
+            "SKILLCOST_CLASS" => set_i64_or_string(attributes, "pcgen_skillcost_class", value),
             "SKILLCOST_EXCLUSIVE" => {
                 set_i64_or_string(attributes, "pcgen_skillcost_exclusive", value)
             }
@@ -551,6 +615,7 @@ pub(crate) fn project_clause_attributes(
                     Value::String(value.clone()),
                 );
             }
+            "SCORE" => set_i64_or_string(attributes, "pcgen_score", value),
             "XPAWARD" => {
                 attributes.insert("pcgen_xpaward".to_string(), Value::String(value.clone()));
             }
@@ -582,19 +647,28 @@ pub(crate) fn project_clause_attributes(
                 );
             }
             "SPELLBASEDC" => {
-                attributes.insert("pcgen_spellbasedc".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_spellbasedc".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "WEAPONNONPROFPENALTY" => {
                 set_i64_or_string(attributes, "pcgen_weaponnonprofpenalty", value)
             }
             "WEAPONREACH" => {
-                attributes.insert("pcgen_weaponreach".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_weaponreach".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "CHARACTERTYPE" => {
                 attributes.insert("pcgen_charactertype".to_string(), parse_pipe_series(value));
             }
             "CRTHRESHOLD" => {
-                attributes.insert("pcgen_crthreshold".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_crthreshold".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "CRSTEPS" => {
                 attributes.insert("pcgen_crsteps".to_string(), Value::String(value.clone()));
@@ -612,7 +686,10 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_xptable".to_string(), Value::String(value.clone()));
             }
             "EQSIZEPENALTY" => {
-                attributes.insert("pcgen_eqsizepenalty".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_eqsizepenalty".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "DEFAULTUNITSET" => {
                 attributes.insert(
@@ -621,7 +698,10 @@ pub(crate) fn project_clause_attributes(
                 );
             }
             "ALLOWEDMODES" => {
-                attributes.insert("pcgen_allowedmodes".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_allowedmodes".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "BABMAXATT" => set_i64_or_string(attributes, "pcgen_babmaxatt", value),
             "BABMINVAL" => set_i64_or_string(attributes, "pcgen_babminval", value),
@@ -630,7 +710,10 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_acname".to_string(), Value::String(value.clone()));
             }
             "DOMAINFEATURE" => {
-                attributes.insert("pcgen_domainfeature".to_string(), parse_yes_no_or_string(value));
+                attributes.insert(
+                    "pcgen_domainfeature".to_string(),
+                    parse_yes_no_or_string(value),
+                );
             }
             "LOADMULT" => set_i64_or_string(attributes, "pcgen_loadmult", value),
             "NUMSLOTS" => {
@@ -638,49 +721,90 @@ pub(crate) fn project_clause_attributes(
             }
             "HEAD" => set_i64_or_string(attributes, "pcgen_headslots", value),
             "DISTANCEUNIT" => {
-                attributes.insert("pcgen_distanceunit".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_distanceunit".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "DISTANCEFACTOR" => {
-                attributes.insert("pcgen_distancefactor".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_distancefactor".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "DISTANCEPATTERN" => {
-                attributes.insert("pcgen_distancepattern".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_distancepattern".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "HEIGHTUNIT" => {
                 attributes.insert("pcgen_heightunit".to_string(), Value::String(value.clone()));
             }
             "HEIGHTFACTOR" => {
-                attributes.insert("pcgen_heightfactor".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_heightfactor".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "HEIGHTPATTERN" => {
-                attributes.insert("pcgen_heightpattern".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_heightpattern".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "WEIGHTUNIT" => {
                 attributes.insert("pcgen_weightunit".to_string(), Value::String(value.clone()));
             }
             "WEIGHTFACTOR" => {
-                attributes.insert("pcgen_weightfactor".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_weightfactor".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "WEIGHTPATTERN" => {
-                attributes.insert("pcgen_weightpattern".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_weightpattern".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "TOTALCOST" => {
                 attributes.insert("pcgen_totalcost".to_string(), Value::String(value.clone()));
             }
             "EQUIPMOD" => {
-                append_value_attr(attributes, "pcgen_equipmod_catalog", parse_pipe_series(value));
+                append_value_attr(
+                    attributes,
+                    "pcgen_equipmod_catalog",
+                    parse_pipe_series(value),
+                );
             }
             "LANGUAGE" => {
-                append_value_attr(attributes, "pcgen_language_catalog", parse_pipe_series(value));
+                append_value_attr(
+                    attributes,
+                    "pcgen_language_catalog",
+                    parse_pipe_series(value),
+                );
             }
             "WEAPONPROF" => {
-                append_value_attr(attributes, "pcgen_weaponprof_catalog", parse_pipe_series(value));
+                append_value_attr(
+                    attributes,
+                    "pcgen_weaponprof_catalog",
+                    parse_pipe_series(value),
+                );
             }
             "ARMORPROF" => {
-                append_value_attr(attributes, "pcgen_armorprof_catalog", parse_pipe_series(value));
+                append_value_attr(
+                    attributes,
+                    "pcgen_armorprof_catalog",
+                    parse_pipe_series(value),
+                );
             }
             "SHIELDPROF" => {
-                append_value_attr(attributes, "pcgen_shieldprof_catalog", parse_pipe_series(value));
+                append_value_attr(
+                    attributes,
+                    "pcgen_shieldprof_catalog",
+                    parse_pipe_series(value),
+                );
             }
             "DEITY" => {
                 attributes.insert("pcgen_deity".to_string(), parse_pipe_series(value));
@@ -710,7 +834,10 @@ pub(crate) fn project_clause_attributes(
             "VARIANTS" => append_string_attr(attributes, "pcgen_variants", value),
             "SITUATION" => append_string_attr(attributes, "pcgen_situations", value),
             "USEUNTRAINED" => {
-                attributes.insert("pcgen_useuntrained".to_string(), parse_yes_no_or_string(value));
+                attributes.insert(
+                    "pcgen_useuntrained".to_string(),
+                    parse_yes_no_or_string(value),
+                );
             }
             "EXCLUSIVE" => {
                 attributes.insert("pcgen_exclusive".to_string(), parse_yes_no_or_string(value));
@@ -779,7 +906,10 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_edr".to_string(), Value::String(value.clone()));
             }
             "SPELLFAILURE" => {
-                attributes.insert("pcgen_spellfailure".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_spellfailure".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "ACCHECK" => {
                 attributes.insert("pcgen_accheck".to_string(), Value::String(value.clone()));
@@ -810,7 +940,10 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_critrange".to_string(), Value::String(value.clone()));
             }
             "FUMBLERANGE" => {
-                attributes.insert("pcgen_fumblerange".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_fumblerange".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "RATEOFFIRE" => {
                 attributes.insert("pcgen_rateoffire".to_string(), Value::String(value.clone()));
@@ -822,10 +955,16 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_reachmult".to_string(), Value::String(value.clone()));
             }
             "ALTCRITMULT" => {
-                attributes.insert("pcgen_altcritmult".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_altcritmult".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "ALTCRITRANGE" => {
-                attributes.insert("pcgen_altcritrange".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_altcritrange".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "ALTEQMOD" => {
                 attributes.insert("pcgen_alteqmod".to_string(), Value::String(value.clone()));
@@ -841,12 +980,18 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_formatcat".to_string(), Value::String(value.clone()));
             }
             "ASSIGNTOALL" => {
-                attributes.insert("pcgen_assigntoall".to_string(), parse_yes_no_or_string(value));
+                attributes.insert(
+                    "pcgen_assigntoall".to_string(),
+                    parse_yes_no_or_string(value),
+                );
             }
             "SWITCH" => append_string_attr(attributes, "pcgen_switch", value),
             "SIZEDIFF" => set_i64_or_string(attributes, "pcgen_sizediff", value),
             "FINESSABLE" => {
-                attributes.insert("pcgen_finessable".to_string(), parse_yes_no_or_string(value));
+                attributes.insert(
+                    "pcgen_finessable".to_string(),
+                    parse_yes_no_or_string(value),
+                );
             }
             "PROFICIENCY" => {
                 attributes.insert("pcgen_proficiency".to_string(), parse_pipe_series(value));
@@ -858,7 +1003,11 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_replaces".to_string(), Value::String(value.clone()));
             }
             "UNENCUMBEREDMOVE" => {
-                append_value_attr(attributes, "pcgen_unencumberedmove", parse_pipe_series(value));
+                append_value_attr(
+                    attributes,
+                    "pcgen_unencumberedmove",
+                    parse_pipe_series(value),
+                );
             }
             "ISMATURE" => {
                 attributes.insert("pcgen_ismature".to_string(), parse_yes_no_or_string(value));
@@ -887,7 +1036,10 @@ pub(crate) fn project_clause_attributes(
             "SPROP" => sprop_values.push(Value::String(value.clone())),
             "PAGEUSAGE" => page_usage_values.push(Value::String(value.clone())),
             "FORTIFICATION" => {
-                attributes.insert("pcgen_fortification".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_fortification".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "HEALING" => {
                 attributes.insert("pcgen_healing".to_string(), Value::String(value.clone()));
@@ -924,10 +1076,12 @@ pub(crate) fn project_clause_attributes(
         }
     }
 
-    if !facts.is_empty() {
-    }
+    if !facts.is_empty() {}
     if !equipment_modifiers.is_empty() {
-        attributes.insert("pcgen_eqmods".to_string(), Value::Array(equipment_modifiers));
+        attributes.insert(
+            "pcgen_eqmods".to_string(),
+            Value::Array(equipment_modifiers),
+        );
     }
     if !facts.is_empty() {
         attributes.insert("pcgen_facts".to_string(), Value::Array(facts));
@@ -942,7 +1096,10 @@ pub(crate) fn project_clause_attributes(
         attributes.insert("pcgen_sprop".to_string(), Value::Array(sprop_values));
     }
     if !page_usage_values.is_empty() {
-        attributes.insert("pcgen_pageusage".to_string(), Value::Array(page_usage_values));
+        attributes.insert(
+            "pcgen_pageusage".to_string(),
+            Value::Array(page_usage_values),
+        );
     }
     if !factsets.is_empty() {
         attributes.insert("pcgen_factsets".to_string(), Value::Array(factsets));
@@ -968,10 +1125,16 @@ pub(crate) fn project_decl_token_value(
         "HIDETYPE" => append_string_attr(attributes, "pcgen_hidetype", decl_value),
         "URL" => append_string_attr(attributes, "pcgen_url", decl_value),
         "LOCAL" => {
-            attributes.insert("pcgen_local".to_string(), parse_local_definition(decl_value));
+            attributes.insert(
+                "pcgen_local".to_string(),
+                parse_local_definition(decl_value),
+            );
         }
         "GLOBAL" => {
-            attributes.insert("pcgen_global".to_string(), parse_global_definition(decl_value));
+            attributes.insert(
+                "pcgen_global".to_string(),
+                parse_global_definition(decl_value),
+            );
         }
         "FACTSETDEF" => {
             attributes.insert(
@@ -998,7 +1161,10 @@ pub(crate) fn project_decl_token_value(
             );
         }
         "BASEAGEADD" => {
-            attributes.insert("pcgen_baseageadd".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "pcgen_baseageadd".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         "OUTPUTSHEET" => {
             attributes.insert(
@@ -1013,7 +1179,10 @@ pub(crate) fn project_decl_token_value(
             );
         }
         "UNITSET" => {
-            attributes.insert("pcgen_unitset".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "pcgen_unitset".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         "ALIGNMENTFEATURE" => {
             attributes.insert(
@@ -1073,7 +1242,10 @@ pub(crate) fn project_decl_token_value(
             );
         }
         "CHARACTERTYPE" => {
-            attributes.insert("pcgen_charactertype".to_string(), parse_pipe_series(decl_value));
+            attributes.insert(
+                "pcgen_charactertype".to_string(),
+                parse_pipe_series(decl_value),
+            );
         }
         "CRTHRESHOLD" => {
             attributes.insert(
@@ -1082,10 +1254,16 @@ pub(crate) fn project_decl_token_value(
             );
         }
         "CRSTEPS" => {
-            attributes.insert("pcgen_crsteps".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "pcgen_crsteps".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         "MONSTERROLES" => {
-            attributes.insert("pcgen_monsterroles".to_string(), parse_pipe_series(decl_value));
+            attributes.insert(
+                "pcgen_monsterroles".to_string(),
+                parse_pipe_series(decl_value),
+            );
         }
         "MONSTERROLEDEFAULT" => {
             attributes.insert(
@@ -1094,7 +1272,96 @@ pub(crate) fn project_decl_token_value(
             );
         }
         "XPTABLE" => {
-            attributes.insert("pcgen_xptable".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "pcgen_xptable".to_string(),
+                Value::String(decl_value.to_string()),
+            );
+        }
+        "PCGVERSION" => {
+            attributes.insert(
+                "pcgen_pcgversion".to_string(),
+                Value::String(decl_value.to_string()),
+            );
+        }
+        "PURCHASEPOINTS" => {
+            attributes.insert(
+                "pcgen_purchasepoints".to_string(),
+                Value::String(decl_value.to_string()),
+            );
+        }
+        "POOLPOINTS" => set_i64_or_string(attributes, "pcgen_poolpoints", decl_value),
+        "POOLPOINTSAVAIL" => set_i64_or_string(attributes, "pcgen_poolpointsavail", decl_value),
+        "TABLABEL" => set_i64_or_string(attributes, "pcgen_tablabel", decl_value),
+        "AUTOSPELLS" => {
+            attributes.insert(
+                "pcgen_autospells".to_string(),
+                parse_yes_no_or_string(decl_value),
+            );
+        }
+        "USEHIGHERKNOWN" => {
+            attributes.insert(
+                "pcgen_usehigherknown".to_string(),
+                parse_yes_no_or_string(decl_value),
+            );
+        }
+        "USEHIGHERPREPPED" => {
+            attributes.insert(
+                "pcgen_usehigherprepped".to_string(),
+                parse_yes_no_or_string(decl_value),
+            );
+        }
+        "LOADCOMPANIONS" => {
+            attributes.insert(
+                "pcgen_loadcompanions".to_string(),
+                parse_yes_no_or_string(decl_value),
+            );
+        }
+        "USETEMPMODS" => {
+            attributes.insert(
+                "pcgen_usetempmods".to_string(),
+                parse_yes_no_or_string(decl_value),
+            );
+        }
+        "SKILLSOUTPUTORDER" => set_i64_or_string(attributes, "pcgen_skillsoutputorder", decl_value),
+        "SKILLFILTER" => set_i64_or_string(attributes, "pcgen_skillfilter", decl_value),
+        "IGNORECOST" => {
+            attributes.insert(
+                "pcgen_ignorecost".to_string(),
+                parse_yes_no_or_string(decl_value),
+            );
+        }
+        "ALLOWDEBT" => {
+            attributes.insert(
+                "pcgen_allowdebt".to_string(),
+                parse_yes_no_or_string(decl_value),
+            );
+        }
+        "AUTORESIZEGEAR" => {
+            attributes.insert(
+                "pcgen_autoresizegear".to_string(),
+                parse_yes_no_or_string(decl_value),
+            );
+        }
+        "CHARACTERNAME" => {
+            attributes.insert(
+                "pcgen_charactername".to_string(),
+                Value::String(decl_value.to_string()),
+            );
+        }
+        "PLAYERNAME" => {
+            attributes.insert(
+                "pcgen_playername".to_string(),
+                Value::String(decl_value.to_string()),
+            );
+        }
+        "HEIGHT" => set_i64_or_string(attributes, "pcgen_height", decl_value),
+        "WEIGHT" => set_i64_or_string(attributes, "pcgen_weight_value", decl_value),
+        "AGE" => set_i64_or_string(attributes, "pcgen_age", decl_value),
+        "HANDED" => {
+            attributes.insert(
+                "pcgen_handed".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         "EQSIZEPENALTY" => {
             attributes.insert(
@@ -1144,9 +1411,7 @@ pub(crate) fn project_decl_token_value(
         "SKILLCOST_CROSSCLASS" => {
             set_i64_or_string(attributes, "pcgen_skillcost_crossclass", decl_value)
         }
-        "SKILLCOST_CLASS" => {
-            set_i64_or_string(attributes, "pcgen_skillcost_class", decl_value)
-        }
+        "SKILLCOST_CLASS" => set_i64_or_string(attributes, "pcgen_skillcost_class", decl_value),
         "SKILLCOST_EXCLUSIVE" => {
             set_i64_or_string(attributes, "pcgen_skillcost_exclusive", decl_value)
         }
@@ -1157,14 +1422,18 @@ pub(crate) fn project_decl_token_value(
             );
         }
         "XPAWARD" => {
-            attributes.insert("pcgen_xpaward".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "pcgen_xpaward".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         "STATINPUT" => {
-            attributes.insert("pcgen_statinput".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "pcgen_statinput".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
-        "MAXNONEPICLEVEL" => {
-            set_i64_or_string(attributes, "pcgen_maxnonepiclevel", decl_value)
-        }
+        "MAXNONEPICLEVEL" => set_i64_or_string(attributes, "pcgen_maxnonepiclevel", decl_value),
         "PLUSCOST" => {
             attributes.insert("pcgen_pluscost".to_string(), parse_pipe_series(decl_value));
         }
@@ -1184,7 +1453,10 @@ pub(crate) fn project_decl_token_value(
         "BABMINVAL" => set_i64_or_string(attributes, "pcgen_babminval", decl_value),
         "BABATTCYC" => set_i64_or_string(attributes, "pcgen_babattcyc", decl_value),
         "ACNAME" => {
-            attributes.insert("pcgen_acname".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "pcgen_acname".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         "DOMAINFEATURE" => {
             attributes.insert(
@@ -1345,7 +1617,10 @@ fn parse_spells(input: &str) -> Value {
         }
 
         if let Some((key, value)) = part.split_once('=') {
-            assignments.insert(key.trim().to_ascii_lowercase(), Value::String(value.trim().to_string()));
+            assignments.insert(
+                key.trim().to_ascii_lowercase(),
+                Value::String(value.trim().to_string()),
+            );
         } else {
             spells.push(Value::String((*part).to_string()));
         }

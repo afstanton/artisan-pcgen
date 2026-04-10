@@ -1,6 +1,9 @@
 use artisan_core::domain::rules::{Effect, Prerequisite};
 
-use crate::{ParsedClause, parsing::line_codec::{find_key_value, parse_head_key_value}};
+use crate::{
+    ParsedClause,
+    parsing::line_codec::{find_key_value, parse_head_key_value},
+};
 
 pub(crate) fn project_semantics(
     clauses: &[ParsedClause],
@@ -47,7 +50,11 @@ pub(crate) fn infer_entity_type_key(head: &str, clauses: &[ParsedClause]) -> Str
         return schema.entity_type_key.to_string();
     }
 
-    if head.trim_start().to_ascii_uppercase().starts_with("CATEGORY=") {
+    if head
+        .trim_start()
+        .to_ascii_uppercase()
+        .starts_with("CATEGORY=")
+    {
         return "pcgen:entity:ability".to_string();
     }
 
@@ -163,6 +170,7 @@ fn looks_like_pcc(head: &str, clauses: &[ParsedClause]) -> bool {
         "EXPLANATION",
         "REQUIRED",
         "SELECTABLE",
+        "ISMATURE",
         "NAMEISPI",
         "DESCISPI",
         "URL",
@@ -329,17 +337,17 @@ fn looks_like_template(clauses: &[ParsedClause]) -> bool {
         || has_token(clauses, "!PREAGESET")
         || has_token(clauses, "!PREDOMAIN")
         || has_token(clauses, "!PRESPELL")
-    || has_token(clauses, "MOVECLONE")
-    || has_token(clauses, "MOVE")
-    || has_token(clauses, "VISION")
-    || has_token(clauses, "SUBRACE")
-    || has_token(clauses, "REMOVABLE")
-    || has_token(clauses, "REGION")
-    || has_token(clauses, "SR")
-    || has_token(clauses, "!PREMOVE")
-    || has_token(clauses, "!PREVISION")
-    || has_token(clauses, "PRESRLT")
-    || has_token(clauses, "!PREKIT")
+        || has_token(clauses, "MOVECLONE")
+        || has_token(clauses, "MOVE")
+        || has_token(clauses, "VISION")
+        || has_token(clauses, "SUBRACE")
+        || has_token(clauses, "REMOVABLE")
+        || has_token(clauses, "REGION")
+        || has_token(clauses, "SR")
+        || has_token(clauses, "!PREMOVE")
+        || has_token(clauses, "!PREVISION")
+        || has_token(clauses, "PRESRLT")
+        || has_token(clauses, "!PREKIT")
 }
 
 fn looks_like_race(clauses: &[ParsedClause]) -> bool {

@@ -3,6 +3,14 @@
 This backlog is derived from `TOKEN_INVENTORY.txt`, the current schema/projection/emission
 code, and spot checks against the PCGen and BahamutDragon external corpora.
 
+Current inventory status after the latest `.pcg` standalone-token pass:
+
+- `540` semantically interpreted token keys
+- `539` fully structured canonical token keys
+- `1` semantically interpreted but not fully structured token key (`NEWCATEGORY`)
+- `66` unhandled token keys
+- `0` fallback-needed token keys
+
 The immediate goal is narrow and concrete:
 
 - [ ] Generate valid PCGen files from properly structured Artisan entities without relying on raw-clause fallback.
@@ -60,34 +68,45 @@ corpus inspection.
 ### 3a. Class schema additions
 
 - [x] `HASSUBCLASS`
-- [ ] `PROHIBITED` — repeatable pipe-delimited list of prohibited spell schools.
+- [x] `PROHIBITED` — repeatable pipe-delimited list of prohibited spell schools.
       Appears in wizard specialist class lines both in `.lst` files and as a
       sub-token in `.pcg` CLASS lines. Add to `class.rs`.
 
 ### 3b. Equipment / equipmod additions
 
 - [x] `COSTPRE`
-- [ ] `FORTIFICATION` — appears in some third-party equipmod files as an armor
+- [x] `FORTIFICATION` — appears in some third-party equipmod files as an armor
       property token (e.g. `FORTIFICATION:25`). Add as `TokenDef::text` in
       `equipment.rs` globals or as a shared token group.
-- [ ] `HEALING` — same pattern as FORTIFICATION; appears in some equipmod files.
+- [x] `HEALING` — same pattern as FORTIFICATION; appears in some equipmod files.
       Note: "Healing" as an entity NAME in `mic_equipmods.lst` is NOT this token —
       `HEALING:value` as a clause is what generates the unhandled count.
 
-### 3c. Race schema additions
+### 3c. PCC / inventory follow-up
 
-- [ ] `ISMATURE` — boolean `YES/NO` flag marking adult-content races. Add as
-      `TokenDef::yesno` in `race.rs`.
+- [ ] `ISMATURE` — schema support exists for PCC include lines, but inventory
+      still reports it as semantically interpreted rather than fully structured.
+      Investigate the remaining classification/emission mismatch.
 
 ### 3d. NEWCATEGORY — semantically interpreted but not fully-structured
 
-`NEWCATEGORY` (320 corpus hits) has a `TokenDef` in `ability.rs` but is missing
-an explicit projection arm in `fields.rs`. The schema lookup via
-`any_schema_knows_token` classifies it as `SemanticallyInterpreted`, but without
-a `fields.rs` arm it doesn't reach "fully-structured" status.
+`NEWCATEGORY` (320 corpus hits) already has a `TokenDef` and explicit projection
+arm, but inventory still reports it as semantically interpreted rather than fully
+structured. The likely remaining issue is schema selection for migration-style
+`ABILITY:... NEWCATEGORY:...` lines.
 
-- [ ] Add explicit `"NEWCATEGORY"` match arm to `fields.rs` projecting to
-      `pcgen_newcategory`.
+- [ ] Fix schema selection so migration-style `ABILITY:` records use the ability
+      entity schema rather than the PCC include schema when appropriate.
+
+### 3e. Next highest-impact residual tokens
+
+These are the largest remaining unhandled buckets after the latest inventory run.
+
+- [ ] `NOTE` — mainly `.pcg` equipment-set / equipment-record notes
+- [ ] `HP` — `.pcg` / equipmod residuals; likely needs separate handling from `HITPOINTS`
+- [ ] `VARIABLE` — appears both in `.pcc` include lines and `.pcg` pool usage
+- [ ] `WIDTH` — mostly paper/output/profile-style standalone records
+- [ ] `CHANNEL` — low-count but real token family in spell/ability contexts
 
 ---
 
@@ -115,31 +134,31 @@ schema is designed.
 
 ### Configuration / session tokens (standalone)
 
-- [ ] `PCGVERSION` — version string, first line of every `.pcg` file
-- [ ] `POOLPOINTS` — integer, character pool points total
-- [ ] `POOLPOINTSAVAIL` — integer, pool points available (may be negative)
-- [ ] `TABLABEL` — integer, active tab index
-- [ ] `AUTOSPELLS` — Y/N flag
-- [ ] `USEHIGHERKNOWN` — Y/N, whether to use higher-level known spells
-- [ ] `USEHIGHERPREPPED` — Y/N, whether to use higher-level prepped spells
-- [ ] `LOADCOMPANIONS` — Y/N flag
-- [ ] `USETEMPMODS` — Y/N flag
-- [ ] `IGNORECOST` — Y/N flag
-- [ ] `ALLOWDEBT` — Y/N flag
-- [ ] `AUTORESIZEGEAR` — Y/N flag
-- [ ] `SKILLSOUTPUTORDER` — integer preference
-- [ ] `SKILLFILTER` — integer preference
-- [ ] `PURCHASEPOINTS` — text or N
+- [x] `PCGVERSION` — version string, first line of every `.pcg` file
+- [x] `POOLPOINTS` — integer, character pool points total
+- [x] `POOLPOINTSAVAIL` — integer, pool points available (may be negative)
+- [x] `TABLABEL` — integer, active tab index
+- [x] `AUTOSPELLS` — Y/N flag
+- [x] `USEHIGHERKNOWN` — Y/N, whether to use higher-level known spells
+- [x] `USEHIGHERPREPPED` — Y/N, whether to use higher-level prepped spells
+- [x] `LOADCOMPANIONS` — Y/N flag
+- [x] `USETEMPMODS` — Y/N flag
+- [x] `IGNORECOST` — Y/N flag
+- [x] `ALLOWDEBT` — Y/N flag
+- [x] `AUTORESIZEGEAR` — Y/N flag
+- [x] `SKILLSOUTPUTORDER` — integer preference
+- [x] `SKILLFILTER` — integer preference
+- [x] `PURCHASEPOINTS` — text or N
 
 ### Character bio tokens (standalone)
 
-- [ ] `CHARACTERNAME` — display name of the character
+- [x] `CHARACTERNAME` — display name of the character
 - [ ] `TABNAME` — tab label override
-- [ ] `PLAYERNAME` — player's name
-- [ ] `HEIGHT` — integer (inches in Imperial, cm in Metric)
-- [ ] `WEIGHT` — integer (lbs or kg)
-- [ ] `AGE` — integer (years)
-- [ ] `HANDED` — text: Left, Right, Both
+- [x] `PLAYERNAME` — player's name
+- [x] `HEIGHT` — integer (inches in Imperial, cm in Metric)
+- [x] `WEIGHT` — integer (lbs or kg)
+- [x] `AGE` — integer (years)
+- [x] `HANDED` — text: Left, Right, Both
 - [ ] `SKINCOLOR` — free text
 - [ ] `EYECOLOR` — free text
 - [ ] `HAIRCOLOR` — free text
@@ -189,7 +208,7 @@ schema is designed.
 ### Sub-tokens inside STAT lines
 
 - [ ] `STAT` — entity head: `StatAbbreviation`
-- [ ] `SCORE` — base stat score value
+- [x] `SCORE` — base stat score value
 
 ### Sub-tokens inside EQUIPNAME lines
 

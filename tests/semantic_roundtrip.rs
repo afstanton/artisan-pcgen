@@ -1,4 +1,8 @@
-use std::{collections::BTreeMap, fs, io, path::{Path, PathBuf}};
+use std::{
+    collections::BTreeMap,
+    fs, io,
+    path::{Path, PathBuf},
+};
 
 use artisan_pcgen::{
     fallback_keys_for_entity, parse_file, parse_text_to_catalog, unparse_catalog_to_text,
@@ -22,7 +26,11 @@ fn semantic_roundtrip_single_fixture_file() {
 #[test]
 fn semantic_roundtrip_all_fixture_files() {
     let root = fixture_root();
-    assert!(root.exists(), "fixture root does not exist: {}", root.display());
+    assert!(
+        root.exists(),
+        "fixture root does not exist: {}",
+        root.display()
+    );
 
     let files = collect_all_fixture_files(&root).expect("collect fixture files");
     assert!(
@@ -56,7 +64,12 @@ fn assert_semantic_roundtrip_file(path: &Path) -> io::Result<()> {
 
     let before = semantic_snapshot(&first);
     let after = semantic_snapshot(&second);
-    assert_eq!(before, after, "semantic roundtrip mismatch: {}", path.display());
+    assert_eq!(
+        before,
+        after,
+        "semantic roundtrip mismatch: {}",
+        path.display()
+    );
     Ok(())
 }
 
@@ -142,9 +155,10 @@ fn semantic_snapshot(catalog: &artisan_pcgen::ParsedCatalog) -> Value {
                 .get("pcgen_entity_type_key")
                 .and_then(Value::as_str)
                 .unwrap_or(""),
-        )
-            && matches!(schema.head_format, artisan_pcgen::schema::HeadFormat::NameOnly)
-        {
+        ) && matches!(
+            schema.head_format,
+            artisan_pcgen::schema::HeadFormat::NameOnly
+        ) {
             attributes.insert("head".to_string(), Value::String(entity.name.clone()));
         }
 
@@ -277,6 +291,7 @@ fn unparse_emits_structured_pcc_backlog_tokens() {
     assert!(generated.contains("FORWARDREF:RACE|Orc"));
     assert!(generated.contains("HIDETYPE:FEAT|AttackOption|ModifyAC"));
     assert!(generated.contains("URL:WEBSITE|http://example.com/|Example"));
+    assert!(generated.contains("ISMATURE:NO"));
 }
 
 #[test]
@@ -311,13 +326,61 @@ fn unparse_emits_structured_entity_gap_tokens() {
     let parsed = parse_file(&file).expect("parse entity gap fixture");
     let generated = unparse_catalog_to_text(&parsed);
 
-    assert!(generated.contains("HASSUBCLASS:YES"), "HASSUBCLASS should be emitted: {generated}");
-    assert!(generated.contains("COSTPRE:9000"), "COSTPRE should be emitted: {generated}");
-    assert!(generated.contains("BASEAGEADD:3"), "BASEAGEADD should be emitted: {generated}");
-    assert!(generated.contains("PROHIBITED:Necromancy|Enchantment"), "PROHIBITED should be emitted: {generated}");
-    assert!(generated.contains("FORTIFICATION:25"), "FORTIFICATION should be emitted: {generated}");
-    assert!(generated.contains("HEALING:5"), "HEALING should be emitted: {generated}");
-    assert!(generated.contains("ISMATURE:NO"), "ISMATURE should be emitted: {generated}");
+    assert!(
+        generated.contains("HASSUBCLASS:YES"),
+        "HASSUBCLASS should be emitted: {generated}"
+    );
+    assert!(
+        generated.contains("COSTPRE:9000"),
+        "COSTPRE should be emitted: {generated}"
+    );
+    assert!(
+        generated.contains("BASEAGEADD:3"),
+        "BASEAGEADD should be emitted: {generated}"
+    );
+    assert!(
+        generated.contains("PROHIBITED:Necromancy|Enchantment"),
+        "PROHIBITED should be emitted: {generated}"
+    );
+    assert!(
+        generated.contains("FORTIFICATION:25"),
+        "FORTIFICATION should be emitted: {generated}"
+    );
+    assert!(
+        generated.contains("HEALING:5"),
+        "HEALING should be emitted: {generated}"
+    );
+}
+
+#[test]
+fn unparse_emits_structured_pcg_standalone_tokens() {
+    let file = fixture_root().join("roundtrip_pcg_standalone_tokens.pcg");
+    let parsed = parse_file(&file).expect("parse pcg standalone fixture");
+    let generated = unparse_catalog_to_text(&parsed);
+
+    assert!(generated.contains("PCGVERSION:2.0"));
+    assert!(generated.contains("PURCHASEPOINTS:N"));
+    assert!(generated.contains("POOLPOINTS:0"));
+    assert!(generated.contains("POOLPOINTSAVAIL:-1"));
+    assert!(generated.contains("TABLABEL:0"));
+    assert!(generated.contains("AUTOSPELLS:YES"));
+    assert!(generated.contains("USEHIGHERKNOWN:NO"));
+    assert!(generated.contains("USEHIGHERPREPPED:NO"));
+    assert!(generated.contains("LOADCOMPANIONS:NO"));
+    assert!(generated.contains("USETEMPMODS:NO"));
+    assert!(generated.contains("SKILLSOUTPUTORDER:0"));
+    assert!(generated.contains("SKILLFILTER:2"));
+    assert!(generated.contains("IGNORECOST:NO"));
+    assert!(generated.contains("ALLOWDEBT:NO"));
+    assert!(generated.contains("AUTORESIZEGEAR:YES"));
+    assert!(generated.contains("CHARACTERNAME:Sample Hero"));
+    assert!(generated.contains("PLAYERNAME:"));
+    assert!(generated.contains("HEIGHT:72"));
+    assert!(generated.contains("WEIGHT:180"));
+    assert!(generated.contains("AGE:35"));
+    assert!(generated.contains("HANDED:Right"));
+    assert!(generated.contains("STAT:STR"));
+    assert!(generated.contains("SCORE:18"));
 }
 
 #[test]
@@ -327,7 +390,10 @@ fn roundtrip_fixtures_use_zero_raw_clause_fallback_for_schema_entities() {
 
     let mut checked = 0usize;
     for file in files {
-        let name = file.file_name().and_then(|n| n.to_str()).unwrap_or_default();
+        let name = file
+            .file_name()
+            .and_then(|n| n.to_str())
+            .unwrap_or_default();
         if !name.starts_with("roundtrip_") {
             continue;
         }
@@ -340,14 +406,15 @@ fn roundtrip_fixtures_use_zero_raw_clause_fallback_for_schema_entities() {
                 .and_then(Value::as_str)
                 .unwrap_or("pcgen:type:unresolved");
 
-            let schema = artisan_pcgen::schema::schema_for_entity_type_key(type_key).unwrap_or_else(|| {
-                panic!(
-                    "{} / {} has no schema for inferred type key {}",
-                    file.display(),
-                    entity.name,
-                    type_key
-                )
-            });
+            let schema = artisan_pcgen::schema::schema_for_entity_type_key(type_key)
+                .unwrap_or_else(|| {
+                    panic!(
+                        "{} / {} has no schema for inferred type key {}",
+                        file.display(),
+                        entity.name,
+                        type_key
+                    )
+                });
 
             let fallbacks = fallback_keys_for_entity(entity, schema);
             assert!(
@@ -361,5 +428,8 @@ fn roundtrip_fixtures_use_zero_raw_clause_fallback_for_schema_entities() {
         }
     }
 
-    assert!(checked > 0, "expected at least one schema-bound roundtrip fixture entity");
+    assert!(
+        checked > 0,
+        "expected at least one schema-bound roundtrip fixture entity"
+    );
 }

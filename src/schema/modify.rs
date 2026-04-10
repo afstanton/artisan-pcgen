@@ -6,16 +6,16 @@
 //! Format: MODIFY:VarName|Operation|Value
 //! where Operation is ADD, SET, or SOLVE
 
-use crate::schema::{ArtisanMapping, Cardinality, EntitySchema, GlobalGroup, HeadFormat, TokenDef, TokenGrammar};
+use crate::schema::{
+    ArtisanMapping, Cardinality, EntitySchema, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
+};
 
 static MODIFY_TOKENS: &[TokenDef] = &[
     // Note: MODIFY values are complex and can contain formulas. They are stored as-is.
     // The three components (variable, operation, value) are project as separate attributes.
 ];
 
-static MODIFY_GLOBALS: &[GlobalGroup] = &[
-    GlobalGroup::SourceMeta,
-];
+static MODIFY_GLOBALS: &[GlobalGroup] = &[GlobalGroup::SourceMeta];
 
 pub static MODIFY_SCHEMA: EntitySchema = EntitySchema {
     entity_type_key: "pcgen:entity:modify",

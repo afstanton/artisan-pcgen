@@ -4,7 +4,9 @@
 //!
 //! BIOS settings lines are keyed by race selector with `RACENAME:x` heads.
 
-use crate::schema::{ArtisanMapping, Cardinality, EntitySchema, HeadFormat, TokenDef, TokenGrammar};
+use crate::schema::{
+    ArtisanMapping, Cardinality, EntitySchema, HeadFormat, TokenDef, TokenGrammar,
+};
 
 static BIOSETTINGS_TOKENS: &[TokenDef] = &[
     TokenDef::text("BASEAGE", "pcgen_baseage"),

@@ -38,22 +38,18 @@ static FEAT_TOKENS: &[TokenDef] = &[
         required: false,
     },
     TokenDef::pipe_list_repeatable("COMPANIONLIST", "pcgen_companionlist"),
-    TokenDef::pipe_positional_repeatable(
-        "FOLLOWERS",
-        &["type", "limit"],
-        "pcgen_followers",
-    ),
+    TokenDef::pipe_positional_repeatable("FOLLOWERS", &["type", "limit"], "pcgen_followers"),
     TokenDef::pipe_list_repeatable("CCSKILL", "pcgen_ccskill"),
     TokenDef::pipe_list_repeatable("UNENCUMBEREDMOVE", "pcgen_unencumberedmove"),
     TokenDef::text("VISIBLE", "pcgen_visible"),
-       TokenDef {
-           key: "MOVECLONE",
-           grammar: TokenGrammar::Text,
-           cardinality: Cardinality::Repeatable,
-           artisan_mapping: ArtisanMapping::Attribute("pcgen_moveclone"),
-           required: false,
-       },
-    ];
+    TokenDef {
+        key: "MOVECLONE",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_moveclone"),
+        required: false,
+    },
+];
 
 static FEAT_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::Type,

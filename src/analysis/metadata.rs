@@ -14,7 +14,11 @@ pub(crate) struct PcgenMetadata {
     pub(crate) book_type: Option<String>,
 }
 
-pub(crate) fn collect_metadata(parsed_line: &ParsedLine, raw_line: &str, metadata: &mut PcgenMetadata) {
+pub(crate) fn collect_metadata(
+    parsed_line: &ParsedLine,
+    raw_line: &str,
+    metadata: &mut PcgenMetadata,
+) {
     for (key, value) in extract_metadata_pairs(raw_line) {
         match key.as_str() {
             "CAMPAIGN" if metadata.campaign.is_none() => metadata.campaign = Some(value),
@@ -47,7 +51,9 @@ pub(crate) fn collect_metadata(parsed_line: &ParsedLine, raw_line: &str, metadat
     for clause in &parsed_line.clauses {
         if let ParsedClause::KeyValue { key, value } = clause {
             let key_upper = key.to_ascii_uppercase();
-            if metadata.source_title.is_none() && (key_upper == "SOURCELONG" || key_upper == "SOURCE") {
+            if metadata.source_title.is_none()
+                && (key_upper == "SOURCELONG" || key_upper == "SOURCE")
+            {
                 metadata.source_title = Some(value.clone());
             }
             if metadata.source_short.is_none() && key_upper == "SOURCESHORT" {
@@ -60,7 +66,9 @@ pub(crate) fn collect_metadata(parsed_line: &ParsedLine, raw_line: &str, metadat
                 metadata.source_date = Some(value.clone());
             }
             if metadata.publisher_long.is_none()
-                && (key_upper == "PUBNAMELONG" || key_upper == "PUBLISHER" || key_upper == "PUBLISHERNAME")
+                && (key_upper == "PUBNAMELONG"
+                    || key_upper == "PUBLISHER"
+                    || key_upper == "PUBLISHERNAME")
             {
                 metadata.publisher_long = Some(value.clone());
             }

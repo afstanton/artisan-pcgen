@@ -6,8 +6,8 @@
 //!
 //! Uses a lexer-based approach for tokenization and parsing.
 
-use std::fmt;
 use crate::parsing::modify_lexer::tokenize;
+use std::fmt;
 
 /// Represents a parsed MODIFY expression
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -102,7 +102,10 @@ mod tests {
         let result = parse_modify("ABILITYPOOL=Traits|SOLVE|value()+if(count(\"ABILITY\",\"Special Ability\",\"GROUP=Drawback\"))>=1,1,0)").unwrap();
         assert_eq!(result.variable, "ABILITYPOOL=Traits");
         assert_eq!(result.operation, ModifyOp::Solve);
-        assert_eq!(result.value, "value()+if(count(\"ABILITY\",\"Special Ability\",\"GROUP=Drawback\"))>=1,1,0)");
+        assert_eq!(
+            result.value,
+            "value()+if(count(\"ABILITY\",\"Special Ability\",\"GROUP=Drawback\"))>=1,1,0)"
+        );
     }
 
     #[test]

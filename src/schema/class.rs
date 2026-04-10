@@ -116,11 +116,7 @@ static CLASS_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Attribute("pcgen_deity"),
         required: false,
     },
-    TokenDef::pipe_positional_repeatable(
-        "FOLLOWERS",
-        &["type", "limit"],
-        "pcgen_followers",
-    ),
+    TokenDef::pipe_positional_repeatable("FOLLOWERS", &["type", "limit"], "pcgen_followers"),
     TokenDef::text("UDAM", "pcgen_udam"),
     TokenDef::integer("UMULT", "pcgen_umult"),
     // Sub-class / substitution

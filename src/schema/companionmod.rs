@@ -5,7 +5,9 @@
 //! Companion modifier files define two line types using token-prefixed heads:
 //! `FOLLOWER:x=y` and `MASTERBONUSRACE:x`.
 
-use crate::schema::{ArtisanMapping, Cardinality, EntitySchema, GlobalGroup, HeadFormat, TokenDef, TokenGrammar};
+use crate::schema::{
+    ArtisanMapping, Cardinality, EntitySchema, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
+};
 
 static FOLLOWER_TOKENS: &[TokenDef] = &[
     TokenDef::text("HD", "pcgen_hitdie"),

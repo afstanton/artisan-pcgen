@@ -96,7 +96,12 @@ fn main() -> io::Result<()> {
         policy_supported_counts.len()
     )
     .unwrap();
-    writeln!(report, "Unique unhandled tokens: {}", unhandled_counts.len()).unwrap();
+    writeln!(
+        report,
+        "Unique unhandled tokens: {}",
+        unhandled_counts.len()
+    )
+    .unwrap();
     writeln!(
         report,
         "Unique tokens represented in fixture files: {}",
@@ -104,7 +109,12 @@ fn main() -> io::Result<()> {
     )
     .unwrap();
     if fixed_count > 0 {
-        writeln!(report, "Files with UTF-8 encoding issues fixed: {}", fixed_count).unwrap();
+        writeln!(
+            report,
+            "Files with UTF-8 encoding issues fixed: {}",
+            fixed_count
+        )
+        .unwrap();
     }
     writeln!(report).unwrap();
 
@@ -133,13 +143,21 @@ fn main() -> io::Result<()> {
         .collect();
     semantic_not_fully_structured_tokens.sort_by(|a, b| b.1.cmp(a.1));
 
-    writeln!(report, "=== Semantically Interpreted Tokens by Frequency ===").unwrap();
+    writeln!(
+        report,
+        "=== Semantically Interpreted Tokens by Frequency ==="
+    )
+    .unwrap();
     for (token, count) in semantic_tokens {
         writeln!(report, "{:6} | {}", count, token).unwrap();
     }
 
     writeln!(report).unwrap();
-    writeln!(report, "=== Fully-Structured Canonical Tokens by Frequency ===").unwrap();
+    writeln!(
+        report,
+        "=== Fully-Structured Canonical Tokens by Frequency ==="
+    )
+    .unwrap();
     for (token, count) in structured_tokens {
         writeln!(report, "{:6} | {}", count, token).unwrap();
     }
@@ -220,8 +238,21 @@ fn scan_directory(
                     continue;
                 }
             }
-            let (_, f) =
-                scan_directory(
+            let (_, f) = scan_directory(
+                &path,
+                semantic_counts,
+                fully_structured_counts,
+                fallback_needed_counts,
+                policy_supported_counts,
+                unhandled_counts,
+                file_count,
+                total_lines,
+            )?;
+            fix_count += f;
+        } else if let Some(ext) = path.extension() {
+            let ext_str = ext.to_string_lossy();
+            if ext_str == "lst" || ext_str == "pcc" || ext_str == "pcg" {
+                if let Ok(fixed) = process_file(
                     &path,
                     semantic_counts,
                     fully_structured_counts,
@@ -230,23 +261,7 @@ fn scan_directory(
                     unhandled_counts,
                     file_count,
                     total_lines,
-                )?;
-            fix_count += f;
-        } else if let Some(ext) = path.extension() {
-            let ext_str = ext.to_string_lossy();
-            if ext_str == "lst" || ext_str == "pcc" || ext_str == "pcg" {
-                if let Ok(fixed) =
-                    process_file(
-                        &path,
-                        semantic_counts,
-                        fully_structured_counts,
-                        fallback_needed_counts,
-                        policy_supported_counts,
-                        unhandled_counts,
-                        file_count,
-                        total_lines,
-                    )
-                {
+                ) {
                     if fixed {
                         fix_count += 1;
                     }
@@ -413,7 +428,10 @@ fn collect_fixture_token_counts() -> io::Result<HashMap<String, usize>> {
     Ok(counts)
 }
 
-fn collect_fixture_tokens_in_dir(path: &Path, counts: &mut HashMap<String, usize>) -> io::Result<()> {
+fn collect_fixture_tokens_in_dir(
+    path: &Path,
+    counts: &mut HashMap<String, usize>,
+) -> io::Result<()> {
     if !path.is_dir() {
         return Ok(());
     }
@@ -442,7 +460,10 @@ fn collect_fixture_tokens_in_dir(path: &Path, counts: &mut HashMap<String, usize
     Ok(())
 }
 
-fn collect_fixture_tokens_from_file(path: &Path, counts: &mut HashMap<String, usize>) -> io::Result<()> {
+fn collect_fixture_tokens_from_file(
+    path: &Path,
+    counts: &mut HashMap<String, usize>,
+) -> io::Result<()> {
     let bytes = fs::read(path)?;
     let content = String::from_utf8_lossy(&bytes);
 
@@ -565,24 +586,13 @@ fn is_plausible_token_name(token: &str) -> bool {
 fn is_standalone_roman_numeral(token: &str) -> bool {
     matches!(
         token,
-        "I"
-            | "II"
-            | "III"
-            | "IV"
-            | "V"
-            | "VI"
-            | "VII"
-            | "VIII"
-            | "IX"
-            | "X"
-            | "XI"
-            | "XII"
+        "I" | "II" | "III" | "IV" | "V" | "VI" | "VII" | "VIII" | "IX" | "X" | "XI" | "XII"
     )
 }
 
 #[cfg(test)]
 mod tests {
-    use super::{normalize_key, normalize_bare_directive};
+    use super::{normalize_bare_directive, normalize_key};
 
     #[test]
     fn normalize_key_rejects_mixed_case_prose_keys() {

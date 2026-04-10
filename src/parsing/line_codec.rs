@@ -42,7 +42,7 @@ pub(crate) fn parse_head_key_value(head: &str) -> Option<(String, String)> {
     let idx = head.find(':')?;
     let key = head[..idx].trim();
     let value = head[idx + 1..].trim();
-    if key.is_empty() || value.is_empty() {
+    if key.is_empty() {
         return None;
     }
     Some((key.to_string(), value.to_string()))
@@ -90,8 +90,10 @@ pub(crate) fn clauses_from_json(value: &Value) -> Option<Vec<ParsedClause>> {
 
 fn parse_segments_with_generated_parser(line: &str) -> Vec<String> {
     let parser = super::line_grammar::SegmentsParser::new();
-    let parse_result: Result<Vec<String>, ParseError<usize, super::parser_tokens::LineToken, String>> =
-        parser.parse(parser_tokens::line_tokens(line));
+    let parse_result: Result<
+        Vec<String>,
+        ParseError<usize, super::parser_tokens::LineToken, String>,
+    > = parser.parse(parser_tokens::line_tokens(line));
     match parse_result {
         Ok(segments) => normalize_non_empty_segments(segments),
         Err(_) => normalize_non_empty_segments([line.to_string()]),
@@ -159,7 +161,10 @@ fn split_on_whitespace_token_starts_trimmed(trimmed: &str) -> Vec<String> {
             let whitespace_start = scan;
             let mut after_ws = scan;
             while after_ws < trimmed.len() {
-                let ch = trimmed[after_ws..].chars().next().expect("valid char boundary");
+                let ch = trimmed[after_ws..]
+                    .chars()
+                    .next()
+                    .expect("valid char boundary");
                 if !ch.is_whitespace() {
                     break;
                 }
@@ -242,8 +247,10 @@ fn looks_like_token_start(input: &str, start: usize) -> bool {
 
 fn parse_clause(segment: &str) -> ParsedClause {
     let parser = super::clause_grammar::ClausePiecesParser::new();
-    let parse_result: Result<Vec<Option<String>>, ParseError<usize, super::parser_tokens::ClauseToken, String>> =
-        parser.parse(parser_tokens::clause_tokens(segment));
+    let parse_result: Result<
+        Vec<Option<String>>,
+        ParseError<usize, super::parser_tokens::ClauseToken, String>,
+    > = parser.parse(parser_tokens::clause_tokens(segment));
 
     if let Ok(parts) = parse_result {
         return build_clause_from_parts(parts.into_iter().map(ClausePart::from));

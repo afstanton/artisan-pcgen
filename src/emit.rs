@@ -28,11 +28,7 @@ pub fn emit_entity(entity: &Entity, schema: &EntitySchema) -> String {
     let mut emitted_attribute_fields: HashSet<&'static str> = HashSet::new();
 
     // --- Head ---
-    let name = entity
-        .attributes
-        .get("pcgen_key")
-        .and_then(Value::as_str)
-        .unwrap_or(entity.name.as_str());
+    let name = head_name_for_entity(entity);
 
     let head = match schema.head_format {
         HeadFormat::NameOnly => {
@@ -53,7 +49,9 @@ pub fn emit_entity(entity: &Entity, schema: &EntitySchema) -> String {
         }
         HeadFormat::TokenPrefixed => {
             let token = schema.head_token.unwrap_or("");
-            format!("{token}:{name}")
+            let value =
+                token_prefixed_head_value(entity, schema).unwrap_or_else(|| name.to_string());
+            format!("{token}:{value}")
         }
     };
     parts.push(head);
@@ -102,7 +100,11 @@ pub fn fallback_keys_for_entity(entity: &Entity, schema: &EntitySchema) -> Vec<S
 
     // Global TYPE fallback
     if schema.globals.contains(&GlobalGroup::Type)
-        && entity.attributes.get("pcgen_type").and_then(Value::as_str).is_none()
+        && entity
+            .attributes
+            .get("pcgen_type")
+            .and_then(Value::as_str)
+            .is_none()
         && !raw_clause_values_for_key(entity, "TYPE").is_empty()
     {
         keys.insert("TYPE".to_string());
@@ -177,8 +179,7 @@ fn emit_token_def(
             }
 
             if let Some(value) = entity.attributes.get(field) {
-                let serialized =
-                    serialize_value(value, token_def.grammar, token_def.cardinality);
+                let serialized = serialize_value(value, token_def.grammar, token_def.cardinality);
                 for s in serialized {
                     parts.push(format!("{}:{}", token_def.key, s));
                 }
@@ -269,20 +270,41 @@ fn should_skip_duplicate_head_token(
         return false;
     }
 
-    let head_name = entity
+    let Some(head_value) = token_prefixed_head_value(entity, schema) else {
+        return false;
+    };
+
+    serialized[0] == head_value
+}
+
+fn head_name_for_entity(entity: &Entity) -> &str {
+    entity
         .attributes
         .get("pcgen_key")
         .and_then(Value::as_str)
-        .unwrap_or(entity.name.as_str());
-
-    serialized[0] == head_name
+        .unwrap_or(entity.name.as_str())
 }
 
-fn collect_emittable_global_keys(
-    group: GlobalGroup,
-    entity: &Entity,
-    keys: &mut BTreeSet<String>,
-) {
+fn token_prefixed_head_value(entity: &Entity, schema: &EntitySchema) -> Option<String> {
+    if !schema.entity_type_key.starts_with("pcgen:pcg:") {
+        return Some(head_name_for_entity(entity).to_string());
+    }
+
+    let head_token = schema.head_token?;
+    let token_def = schema.token_def(head_token)?;
+    let ArtisanMapping::Attribute(field) = token_def.artisan_mapping else {
+        return Some(head_name_for_entity(entity).to_string());
+    };
+    let value = entity.attributes.get(field)?;
+    let serialized = serialize_value(value, token_def.grammar, token_def.cardinality);
+    if serialized.len() == 1 {
+        Some(serialized[0].clone())
+    } else {
+        Some(head_name_for_entity(entity).to_string())
+    }
+}
+
+fn collect_emittable_global_keys(group: GlobalGroup, entity: &Entity, keys: &mut BTreeSet<String>) {
     match group {
         GlobalGroup::Bonus => {
             if entity
@@ -365,18 +387,36 @@ fn collect_emittable_global_keys(
             }
         }
         GlobalGroup::Type => {
-            if entity.attributes.get("pcgen_type").and_then(Value::as_str).is_some() {
+            if entity
+                .attributes
+                .get("pcgen_type")
+                .and_then(Value::as_str)
+                .is_some()
+            {
                 keys.insert("TYPE".to_string());
             }
         }
         GlobalGroup::Key => {
-            if entity.attributes.get("pcgen_key").and_then(Value::as_str).is_some() {
+            if entity
+                .attributes
+                .get("pcgen_key")
+                .and_then(Value::as_str)
+                .is_some()
+            {
                 keys.insert("KEY".to_string());
             }
         }
         GlobalGroup::Desc => {
-            if entity.attributes.get("pcgen_desc").and_then(Value::as_str).is_some()
-                || entity.attributes.get("description").and_then(Value::as_str).is_some()
+            if entity
+                .attributes
+                .get("pcgen_desc")
+                .and_then(Value::as_str)
+                .is_some()
+                || entity
+                    .attributes
+                    .get("description")
+                    .and_then(Value::as_str)
+                    .is_some()
             {
                 keys.insert("DESC".to_string());
             }
@@ -637,16 +677,12 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
             }
         }
         GlobalGroup::Type => {
-            if let Some(type_val) =
-                entity.attributes.get("pcgen_type").and_then(Value::as_str)
-            {
+            if let Some(type_val) = entity.attributes.get("pcgen_type").and_then(Value::as_str) {
                 parts.push(format!("TYPE:{type_val}"));
             }
         }
         GlobalGroup::Key => {
-            if let Some(key_val) =
-                entity.attributes.get("pcgen_key").and_then(Value::as_str)
-            {
+            if let Some(key_val) = entity.attributes.get("pcgen_key").and_then(Value::as_str) {
                 parts.push(format!("KEY:{key_val}"));
             }
         }
@@ -668,7 +704,10 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
                 parts.push(format!("TEMPDESC:{tempdesc}"));
             }
             if let Some(desc_is_pi) = bool_like_attribute(entity, "pcgen_descispi") {
-                parts.push(format!("DESCISPI:{}", if desc_is_pi { "YES" } else { "NO" }));
+                parts.push(format!(
+                    "DESCISPI:{}",
+                    if desc_is_pi { "YES" } else { "NO" }
+                ));
             }
         }
         GlobalGroup::Fact => {
@@ -738,7 +777,10 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
             }
         }
         GlobalGroup::LangBonus => {
-            if let Some(values) = entity.attributes.get("pcgen_langbonus").and_then(Value::as_array)
+            if let Some(values) = entity
+                .attributes
+                .get("pcgen_langbonus")
+                .and_then(Value::as_array)
             {
                 for value in values.iter().filter_map(Value::as_str) {
                     parts.push(format!("LANGBONUS:{value}"));
@@ -746,7 +788,10 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
             }
         }
         GlobalGroup::CSkill => {
-            if let Some(values) = entity.attributes.get("pcgen_cskill").and_then(Value::as_array)
+            if let Some(values) = entity
+                .attributes
+                .get("pcgen_cskill")
+                .and_then(Value::as_array)
             {
                 for value in values.iter().filter_map(Value::as_str) {
                     parts.push(format!("CSKILL:{value}"));
@@ -754,15 +799,17 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
             }
         }
         GlobalGroup::Sab => {
-            if let Some(values) = entity.attributes.get("pcgen_sab").and_then(Value::as_array)
-            {
+            if let Some(values) = entity.attributes.get("pcgen_sab").and_then(Value::as_array) {
                 for value in values.iter().filter_map(Value::as_str) {
                     parts.push(format!("SAB:{value}"));
                 }
             }
         }
         GlobalGroup::ChangeProf => {
-            if let Some(values) = entity.attributes.get("pcgen_changeprof").and_then(Value::as_array)
+            if let Some(values) = entity
+                .attributes
+                .get("pcgen_changeprof")
+                .and_then(Value::as_array)
             {
                 for value in values.iter().filter_map(Value::as_str) {
                     parts.push(format!("CHANGEPROF:{value}"));
@@ -770,7 +817,10 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
             }
         }
         GlobalGroup::ServesAs => {
-            if let Some(values) = entity.attributes.get("pcgen_servesas").and_then(Value::as_array)
+            if let Some(values) = entity
+                .attributes
+                .get("pcgen_servesas")
+                .and_then(Value::as_array)
             {
                 for value in values.iter().filter_map(Value::as_str) {
                     parts.push(format!("SERVESAS:{value}"));
@@ -778,7 +828,10 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
             }
         }
         GlobalGroup::Qualify => {
-            if let Some(values) = entity.attributes.get("pcgen_qualify").and_then(Value::as_array)
+            if let Some(values) = entity
+                .attributes
+                .get("pcgen_qualify")
+                .and_then(Value::as_array)
             {
                 for value in values.iter().filter_map(Value::as_str) {
                     parts.push(format!("QUALIFY:{value}"));
@@ -786,7 +839,10 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
             }
         }
         GlobalGroup::Template => {
-            if let Some(values) = entity.attributes.get("pcgen_template").and_then(Value::as_array)
+            if let Some(values) = entity
+                .attributes
+                .get("pcgen_template")
+                .and_then(Value::as_array)
             {
                 for value in values.iter().filter_map(Value::as_str) {
                     parts.push(format!("TEMPLATE:{value}"));
@@ -812,7 +868,11 @@ fn serialize_value(value: &Value, grammar: TokenGrammar, cardinality: Cardinalit
         Value::String(s) => vec![s.clone()],
         Value::Number(n) => vec![n.to_string()],
         Value::Bool(b) => match grammar {
-            TokenGrammar::YesNo => vec![if *b { "YES".to_string() } else { "NO".to_string() }],
+            TokenGrammar::YesNo => vec![if *b {
+                "YES".to_string()
+            } else {
+                "NO".to_string()
+            }],
             _ => vec![b.to_string()],
         },
         Value::Array(arr) => serialize_array(arr, grammar, cardinality),
@@ -905,7 +965,11 @@ fn serialize_array(arr: &[Value], grammar: TokenGrammar, cardinality: Cardinalit
                         .filter_map(Value::as_str)
                         .collect::<Vec<_>>()
                         .join("|");
-                    if joined.is_empty() { vec![] } else { vec![joined] }
+                    if joined.is_empty() {
+                        vec![]
+                    } else {
+                        vec![joined]
+                    }
                 }
                 _ => vec![],
             })

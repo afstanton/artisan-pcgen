@@ -4,8 +4,7 @@ use artisan_core::{
     CanonicalId, Entity, EntityType,
     domain::{
         CitationLocator, CitationRecord, PublisherRecord, SourceRecord, SubjectRef,
-        VerificationState,
-        entity::CompletenessState,
+        VerificationState, entity::CompletenessState,
     },
     id::{ExternalId, FormatId},
     reconcile::{ImportCandidate, SourceHint},
@@ -16,14 +15,14 @@ use std::collections::BTreeMap;
 use uuid::Uuid;
 
 mod analysis;
-mod parsing;
 mod emit;
+mod parsing;
 pub mod schema;
 
 use analysis::{fields, metadata, semantics, signals};
-use parsing::line_codec;
-pub use emit::{emit_entity, emit_entity_auto, emittable_keys_for_entity};
 pub use emit::fallback_keys_for_entity;
+pub use emit::{emit_entity, emit_entity_auto, emittable_keys_for_entity};
+use parsing::line_codec;
 
 const ENTITY_TYPE_NAMESPACE: Uuid = Uuid::from_u128(0x6c8fdbf43f4f4a4ba4d846e2bf8b9c10);
 const ENTITY_NAMESPACE: Uuid = Uuid::from_u128(0x5ea8a1062b0842beaf2fcb5966e30f3a);
@@ -188,7 +187,10 @@ pub fn classify_token_key_support(token_key: &str, is_bare: bool) -> TokenSuppor
 pub fn parse_file(path: &Path) -> io::Result<ParsedCatalog> {
     let bytes = fs::read(path)?;
     let text = String::from_utf8_lossy(&bytes).to_string();
-    let source_name = path.file_name().and_then(|f| f.to_str()).unwrap_or("fixture");
+    let source_name = path
+        .file_name()
+        .and_then(|f| f.to_str())
+        .unwrap_or("fixture");
     let ext = path
         .extension()
         .and_then(|e| e.to_str())
@@ -305,14 +307,18 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
             entity_citations.push(citation_id);
         }
 
-        let inferred_type_key = semantics::infer_entity_type_key(&parsed_line.head, &supported_clauses);
+        let inferred_type_key =
+            semantics::infer_entity_type_key(&parsed_line.head, &supported_clauses);
         attributes.insert(
             "pcgen_entity_type_key".to_string(),
             Value::String(inferred_type_key.clone()),
         );
         let mechanical_signals = signals::extract_mechanical_signals(&supported_clauses);
         if !mechanical_signals.is_empty() {
-            attributes.insert("pcgen_mechanical_signals".to_string(), json!(mechanical_signals));
+            attributes.insert(
+                "pcgen_mechanical_signals".to_string(),
+                json!(mechanical_signals),
+            );
         }
 
         let external_id = ExternalId {
@@ -361,7 +367,12 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
         .clone()
         .filter(|s| !s.trim().is_empty())
         .or_else(|| metadata.campaign.clone().filter(|s| !s.trim().is_empty()))
-        .or_else(|| metadata.source_short.clone().filter(|s| !s.trim().is_empty()))
+        .or_else(|| {
+            metadata
+                .source_short
+                .clone()
+                .filter(|s| !s.trim().is_empty())
+        })
         .unwrap_or_else(|| source_name.to_string());
 
     let source_id = deterministic_id(
@@ -372,7 +383,8 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
     let mut publishers = Vec::new();
     let mut publisher_ids = Vec::new();
     if let Some(name) = publisher_name {
-        let publisher_id = deterministic_id(PUBLISHER_NAMESPACE, &format!("pcgen:publisher:{name}"));
+        let publisher_id =
+            deterministic_id(PUBLISHER_NAMESPACE, &format!("pcgen:publisher:{name}"));
         publisher_ids.push(publisher_id);
         publishers.push(PublisherRecord {
             id: publisher_id,
@@ -392,7 +404,8 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
     if let Some(setting) = metadata.setting.filter(|s| !s.trim().is_empty()) {
         for part in setting.split('|') {
             let trimmed = part.trim();
-            if !trimmed.is_empty() && !game_systems.iter().any(|g| g.eq_ignore_ascii_case(trimmed)) {
+            if !trimmed.is_empty() && !game_systems.iter().any(|g| g.eq_ignore_ascii_case(trimmed))
+            {
                 game_systems.push(trimmed.to_string());
             }
         }
@@ -403,7 +416,11 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
         namespace: Some("source".to_string()),
         value: format!("{ext}:{source_name}"),
     }];
-    if let Some(short) = metadata.source_short.clone().filter(|s| !s.trim().is_empty()) {
+    if let Some(short) = metadata
+        .source_short
+        .clone()
+        .filter(|s| !s.trim().is_empty())
+    {
         source_external_ids.push(ExternalId {
             format: FormatId::Pcgen,
             namespace: Some("source_short".to_string()),
@@ -522,9 +539,8 @@ mod tests {
 
     #[test]
     fn parse_line_does_not_split_on_mixed_case_text_that_looks_like_token() {
-        let parsed = parse_line(
-            "Feat Name DESC:This references Type:Combat in prose TYPE:General.Combat",
-        );
+        let parsed =
+            parse_line("Feat Name DESC:This references Type:Combat in prose TYPE:General.Combat");
 
         assert_eq!(parsed.head, "Feat Name");
         assert_eq!(parsed.clauses.len(), 2);
@@ -557,14 +573,18 @@ mod tests {
         );
         assert_eq!(catalog.entities.len(), 1);
         let entity = &catalog.entities[0];
-        assert!(entity
-            .prerequisites
-            .iter()
-            .any(|p| p.kind == "PREVARGTEQ" && p.expression.as_deref() == Some("STR,13")));
-        assert!(entity
-            .effects
-            .iter()
-            .any(|e| e.kind == "BONUS" && e.target == "COMBAT"));
+        assert!(
+            entity
+                .prerequisites
+                .iter()
+                .any(|p| p.kind == "PREVARGTEQ" && p.expression.as_deref() == Some("STR,13"))
+        );
+        assert!(
+            entity
+                .effects
+                .iter()
+                .any(|e| e.kind == "BONUS" && e.target == "COMBAT")
+        );
 
         let catalog = parse_text_to_catalog(
             "No Swim Speed VISIBLE:NO !PREMOVE:1,Swim=1 MOVECLONE:Walk,Swim,*1",
@@ -572,10 +592,12 @@ mod tests {
             "lst",
         );
         let entity = &catalog.entities[0];
-        assert!(entity
-            .prerequisites
-            .iter()
-            .any(|p| p.kind == "!PREMOVE" && p.expression.as_deref() == Some("1,Swim=1")));
+        assert!(
+            entity
+                .prerequisites
+                .iter()
+                .any(|p| p.kind == "!PREMOVE" && p.expression.as_deref() == Some("1,Swim=1"))
+        );
     }
 
     #[test]
@@ -626,7 +648,10 @@ mod tests {
             Some("Nightblade ~ Spells")
         );
         assert_eq!(
-            entity.attributes.get("pcgen_category").and_then(Value::as_str),
+            entity
+                .attributes
+                .get("pcgen_category")
+                .and_then(Value::as_str),
             Some("Special Ability")
         );
         assert_eq!(
@@ -648,7 +673,10 @@ mod tests {
             .and_then(Value::as_array)
             .expect("facts should be projected");
         assert_eq!(facts.len(), 1);
-        assert_eq!(facts[0].get("key").and_then(Value::as_str), Some("ClassType"));
+        assert_eq!(
+            facts[0].get("key").and_then(Value::as_str),
+            Some("ClassType")
+        );
         assert_eq!(facts[0].get("value").and_then(Value::as_str), Some("PC"));
 
         let spells = entity
@@ -656,7 +684,10 @@ mod tests {
             .get("pcgen_spells")
             .and_then(Value::as_array)
             .expect("spells should be projected");
-        assert_eq!(spells[0].get("mode").and_then(Value::as_str), Some("Hellknight"));
+        assert_eq!(
+            spells[0].get("mode").and_then(Value::as_str),
+            Some("Hellknight")
+        );
         assert_eq!(
             spells[0]
                 .get("assignments")
@@ -703,11 +734,17 @@ mod tests {
 
         let entity = &catalog.entities[0];
         assert_eq!(
-            entity.attributes.get("pcgen_school").and_then(Value::as_str),
+            entity
+                .attributes
+                .get("pcgen_school")
+                .and_then(Value::as_str),
             Some("Evocation")
         );
         assert_eq!(
-            entity.attributes.get("pcgen_subschool").and_then(Value::as_str),
+            entity
+                .attributes
+                .get("pcgen_subschool")
+                .and_then(Value::as_str),
             Some("Force")
         );
         assert_eq!(
@@ -715,7 +752,10 @@ mod tests {
             Some("V,S")
         );
         assert_eq!(
-            entity.attributes.get("pcgen_casttime").and_then(Value::as_str),
+            entity
+                .attributes
+                .get("pcgen_casttime")
+                .and_then(Value::as_str),
             Some("1 standard action")
         );
         assert_eq!(
@@ -727,23 +767,38 @@ mod tests {
             Some("Medium")
         );
         assert_eq!(
-            entity.attributes.get("pcgen_targetarea").and_then(Value::as_str),
+            entity
+                .attributes
+                .get("pcgen_targetarea")
+                .and_then(Value::as_str),
             Some("Up to five targets")
         );
         assert_eq!(
-            entity.attributes.get("pcgen_duration").and_then(Value::as_str),
+            entity
+                .attributes
+                .get("pcgen_duration")
+                .and_then(Value::as_str),
             Some("Instantaneous")
         );
         assert_eq!(
-            entity.attributes.get("pcgen_saveinfo").and_then(Value::as_str),
+            entity
+                .attributes
+                .get("pcgen_saveinfo")
+                .and_then(Value::as_str),
             Some("None")
         );
         assert_eq!(
-            entity.attributes.get("pcgen_spellres").and_then(Value::as_str),
+            entity
+                .attributes
+                .get("pcgen_spellres")
+                .and_then(Value::as_str),
             Some("Yes")
         );
         assert_eq!(
-            entity.attributes.get("pcgen_weight").and_then(Value::as_str),
+            entity
+                .attributes
+                .get("pcgen_weight")
+                .and_then(Value::as_str),
             Some("4")
         );
         assert_eq!(
@@ -751,7 +806,10 @@ mod tests {
             Some("Spell.Arcane")
         );
         assert_eq!(
-            entity.attributes.get("pcgen_numpages").and_then(Value::as_i64),
+            entity
+                .attributes
+                .get("pcgen_numpages")
+                .and_then(Value::as_i64),
             Some(1)
         );
 
@@ -760,7 +818,10 @@ mod tests {
             .get("pcgen_sprop")
             .and_then(Value::as_array)
             .expect("sprop should be projected");
-        assert_eq!(sprop.first().and_then(Value::as_str), Some("Martial melee weapon"));
+        assert_eq!(
+            sprop.first().and_then(Value::as_str),
+            Some("Martial melee weapon")
+        );
     }
 
     #[test]
@@ -774,11 +835,17 @@ mod tests {
         let entity = &catalog.entities[0];
         assert_eq!(entity.name, "Legacy Key");
         assert_eq!(
-            entity.attributes.get("pcgen_name_pi").and_then(Value::as_str),
+            entity
+                .attributes
+                .get("pcgen_name_pi")
+                .and_then(Value::as_str),
             Some("Legacy Name")
         );
         assert_eq!(
-            entity.attributes.get("pcgen_name_open").and_then(Value::as_str),
+            entity
+                .attributes
+                .get("pcgen_name_open")
+                .and_then(Value::as_str),
             Some("Open Name")
         );
     }
@@ -794,7 +861,10 @@ mod tests {
         let entity = &catalog.entities[0];
         assert_eq!(entity.name, "Open Name");
         assert_eq!(
-            entity.attributes.get("pcgen_name_open").and_then(Value::as_str),
+            entity
+                .attributes
+                .get("pcgen_name_open")
+                .and_then(Value::as_str),
             Some("Open Name")
         );
         assert!(entity.attributes.get("pcgen_name_pi").is_none());
@@ -919,11 +989,8 @@ mod tests {
             Some("pcgen:entity:startpack")
         );
 
-        let startpack_langauto = parse_text_to_catalog(
-            "LANGAUTO:Common|Dwarven|Uluik",
-            "kits.lst",
-            "lst",
-        );
+        let startpack_langauto =
+            parse_text_to_catalog("LANGAUTO:Common|Dwarven|Uluik", "kits.lst", "lst");
         assert_eq!(
             startpack_langauto.entities[0]
                 .attributes
@@ -958,11 +1025,8 @@ mod tests {
             Some("pcgen:system:bonusspelllevel")
         );
 
-        let preview_sheet = parse_text_to_catalog(
-            "PREVIEWSHEET:Standard.htm.ftl",
-            "miscinfo.lst",
-            "lst",
-        );
+        let preview_sheet =
+            parse_text_to_catalog("PREVIEWSHEET:Standard.htm.ftl", "miscinfo.lst", "lst");
         assert_eq!(
             preview_sheet.entities[0]
                 .attributes
@@ -1046,7 +1110,8 @@ mod tests {
             "SOURCELONG:Star Wars Saga Edition Core Rulebook SOURCESHORT:SWSECR SOURCEWEB:www.wizards.com SOURCEDATE:2007-01\n"
         );
 
-        let catalog = parse_text_to_catalog(text, "a_star_wars_saga_edition_core_rulebook.pcc", "pcc");
+        let catalog =
+            parse_text_to_catalog(text, "a_star_wars_saga_edition_core_rulebook.pcc", "pcc");
 
         assert_eq!(catalog.publishers.len(), 1);
         assert_eq!(catalog.publishers[0].name, "Wizards of the Coast");
@@ -1055,14 +1120,18 @@ mod tests {
             catalog.sources[0].title,
             "Star Wars Saga Edition Core Rulebook"
         );
-        assert!(catalog.sources[0]
-            .game_systems
-            .iter()
-            .any(|g| g == "Starwars_SE"));
-        assert!(catalog.sources[0]
-            .game_systems
-            .iter()
-            .any(|g| g == "Space Opera"));
+        assert!(
+            catalog.sources[0]
+                .game_systems
+                .iter()
+                .any(|g| g == "Starwars_SE")
+        );
+        assert!(
+            catalog.sources[0]
+                .game_systems
+                .iter()
+                .any(|g| g == "Space Opera")
+        );
     }
 
     #[test]
@@ -1085,349 +1154,364 @@ mod tests {
         assert!(strings.contains(&"bonus_target:tohit"));
         assert!(strings.contains(&"effect_key:choose"));
         assert!(strings.contains(&"effect_target:stat"));
-
     }
 
-        // -----------------------------------------------------------------------
-        // Schema + Emitter tests
-        // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
+    // Schema + Emitter tests
+    // -----------------------------------------------------------------------
 
-        #[test]
-        fn schema_registry_looks_up_by_entity_type_key() {
-            let s = schema::schema_for_entity_type_key("pcgen:entity:ability")
-                .expect("ABILITY schema should be registered");
-            assert_eq!(s.entity_type_key, "pcgen:entity:ability");
-            assert!(s.token_def("CATEGORY").is_some());
-            assert!(s.token_def("COST").is_some());
-            assert!(s.knows_token_key("BONUS"));
-            assert!(s.knows_token_key("PREFEAT"));
-            assert!(s.knows_token_key("!PREMULT"));
-            assert!(!s.knows_token_key("XYZZY"));
-        }
+    #[test]
+    fn schema_registry_looks_up_by_entity_type_key() {
+        let s = schema::schema_for_entity_type_key("pcgen:entity:ability")
+            .expect("ABILITY schema should be registered");
+        assert_eq!(s.entity_type_key, "pcgen:entity:ability");
+        assert!(s.token_def("CATEGORY").is_some());
+        assert!(s.token_def("COST").is_some());
+        assert!(s.knows_token_key("BONUS"));
+        assert!(s.knows_token_key("PREFEAT"));
+        assert!(s.knows_token_key("!PREMULT"));
+        assert!(!s.knows_token_key("XYZZY"));
+    }
 
-        #[test]
-        fn schema_for_head_token_looks_up_class_and_skill() {
-            let class_schema = schema::schema_for_head_token("CLASS")
-                .expect("CLASS schema should be registered by head token");
-            assert_eq!(class_schema.head_token, Some("CLASS"));
+    #[test]
+    fn schema_for_head_token_looks_up_class_and_skill() {
+        let class_schema = schema::schema_for_head_token("CLASS")
+            .expect("CLASS schema should be registered by head token");
+        assert_eq!(class_schema.head_token, Some("CLASS"));
 
-            let skill_schema = schema::schema_for_head_token("SKILL")
-                .expect("SKILL schema should be registered by head token");
-            assert_eq!(skill_schema.head_token, Some("SKILL"));
+        let skill_schema = schema::schema_for_head_token("SKILL")
+            .expect("SKILL schema should be registered by head token");
+        assert_eq!(skill_schema.head_token, Some("SKILL"));
 
-            let ability_include_schema = schema::schema_for_head_token("ABILITY")
-                .expect("ABILITY PCC include schema should be registered by head token");
-            assert_eq!(ability_include_schema.head_token, Some("ABILITY"));
-        }
+        let ability_include_schema = schema::schema_for_head_token("ABILITY")
+            .expect("ABILITY PCC include schema should be registered by head token");
+        assert_eq!(ability_include_schema.head_token, Some("ABILITY"));
+    }
 
-        #[test]
-        fn emit_entity_produces_ability_line_from_parsed_entity() {
-            // Parse an ability line, then re-emit it using the schema-driven emitter.
-            let catalog = parse_text_to_catalog(
-                "Toughness\tCATEGORY:General\tTYPE:General\tDESC:You gain extra hit points.",
-                "ability.lst",
-                "lst",
-            );
-            let entity = &catalog.entities[0];
-            // Entity type is inferred from CATEGORY presence → pcgen:type:general (not ability),
-            // so emit_entity_auto won't find a schema; use ABILITY schema directly.
-            let ability_schema = schema::schema_for_entity_type_key("pcgen:entity:ability")
-                .expect("ability schema must exist");
-            let line = emit_entity(entity, ability_schema);
+    #[test]
+    fn emit_entity_produces_ability_line_from_parsed_entity() {
+        // Parse an ability line, then re-emit it using the schema-driven emitter.
+        let catalog = parse_text_to_catalog(
+            "Toughness\tCATEGORY:General\tTYPE:General\tDESC:You gain extra hit points.",
+            "ability.lst",
+            "lst",
+        );
+        let entity = &catalog.entities[0];
+        // Entity type is inferred from CATEGORY presence → pcgen:type:general (not ability),
+        // so emit_entity_auto won't find a schema; use ABILITY schema directly.
+        let ability_schema = schema::schema_for_entity_type_key("pcgen:entity:ability")
+            .expect("ability schema must exist");
+        let line = emit_entity(entity, ability_schema);
 
-            assert!(line.contains("CATEGORY:General"), "line should contain CATEGORY: {line}");
-            assert!(line.contains("DESC:"), "line should contain DESC: {line}");
-        }
+        assert!(
+            line.contains("CATEGORY:General"),
+            "line should contain CATEGORY: {line}"
+        );
+        assert!(line.contains("DESC:"), "line should contain DESC: {line}");
+    }
 
-        #[test]
-        fn emit_entity_auto_produces_class_line_from_declared_entity() {
-            let catalog = parse_text_to_catalog(
-                "CLASS:Psion\tHITDIE:4\tTYPE:Base.Psionic.PC",
-                "class.lst",
-                "lst",
-            );
-            let entity = &catalog.entities[0];
+    #[test]
+    fn emit_entity_auto_produces_class_line_from_declared_entity() {
+        let catalog = parse_text_to_catalog(
+            "CLASS:Psion\tHITDIE:4\tTYPE:Base.Psionic.PC",
+            "class.lst",
+            "lst",
+        );
+        let entity = &catalog.entities[0];
 
-            // CLASS entity type is recognized via declared entity head
-            let line = emit_entity_auto(entity).expect("CLASS entity should have a schema");
+        // CLASS entity type is recognized via declared entity head
+        let line = emit_entity_auto(entity).expect("CLASS entity should have a schema");
 
-            assert!(
-                line.starts_with("CLASS:Psion"),
-                "CLASS line should be prefixed: {line}"
-            );
-            assert!(line.contains("HITDIE:4"), "HD should round-trip as HITDIE: {line}");
-        }
+        assert!(
+            line.starts_with("CLASS:Psion"),
+            "CLASS line should be prefixed: {line}"
+        );
+        assert!(
+            line.contains("HITDIE:4"),
+            "HD should round-trip as HITDIE: {line}"
+        );
+    }
 
-        #[test]
-        fn any_schema_knows_token_covers_previously_hardcoded_tokens() {
-            use schema::any_schema_knows_token;
-            assert!(any_schema_knows_token("TYPE"));
-            assert!(any_schema_knows_token("BONUS"));
-            assert!(any_schema_knows_token("CATEGORY"));
-            assert!(any_schema_knows_token("SOURCELONG"));
-            assert!(any_schema_knows_token("GAMEMODE"));
-            assert!(any_schema_knows_token("PREFEAT"));
-            assert!(any_schema_knows_token("PREVARGTEQ"));
-            assert!(any_schema_knows_token("WT"));
-            assert!(any_schema_knows_token("SCHOOL"));
-            assert!(any_schema_knows_token("RANGE"));
-            assert!(any_schema_knows_token("SPROP"));
-            assert!(any_schema_knows_token("RACETYPE"));
-            assert!(any_schema_knows_token("HITDIE"));
-            assert!(any_schema_knows_token("CLASS"));
-            assert!(any_schema_knows_token("SKILL"));
-            assert!(any_schema_knows_token("STARTPACK"));
-            assert!(any_schema_knows_token("CASTTIME"));
-            assert!(any_schema_knows_token("SORTKEY"));
-            assert!(any_schema_knows_token("SPELLKNOWN"));
-            assert!(any_schema_knows_token("MOVE"));
-            assert!(any_schema_knows_token("NATURALATTACKS"));
-            assert!(any_schema_knows_token("KIT"));
-            assert!(any_schema_knows_token("GEAR"));
-            assert!(any_schema_knows_token("OPTION"));
-            assert!(any_schema_knows_token("EQUIPBUY"));
-            assert!(any_schema_knows_token("ABILITYLIST"));
-            assert!(any_schema_knows_token("DISPLAYLOCATION"));
-            assert!(any_schema_knows_token("DISPLAYNAME"));
-            assert!(any_schema_knows_token("EDITABLE"));
-            assert!(any_schema_knows_token("EDITPOOL"));
-            assert!(any_schema_knows_token("FRACTIONALPOOL"));
-            assert!(any_schema_knows_token("PLURAL"));
-            assert!(any_schema_knows_token("POOL"));
-            assert!(any_schema_knows_token("DAMAGE"));
-            assert!(any_schema_knows_token("CRITMULT"));
-            assert!(any_schema_knows_token("CRITRANGE"));
-            assert!(any_schema_knows_token("ACCHECK"));
-            assert!(any_schema_knows_token("ACHECK"));
-            assert!(any_schema_knows_token("KEYSTAT"));
-            assert!(any_schema_knows_token("MAXDEX"));
-            assert!(any_schema_knows_token("SLOTS"));
-            assert!(any_schema_knows_token("ALTDAMAGE"));
-            assert!(any_schema_knows_token("ALTTYPE"));
-            assert!(any_schema_knows_token("BASEQTY"));
-            assert!(any_schema_knows_token("MODS"));
-            assert!(any_schema_knows_token("HD"));
-            assert!(any_schema_knows_token("MAXLEVEL"));
-            assert!(any_schema_knows_token("SPELLSTAT"));
-            assert!(any_schema_knows_token("SPELLLEVEL"));
-            assert!(any_schema_knows_token("INFO"));
-            assert!(any_schema_knows_token("MAXVER"));
-            assert!(any_schema_knows_token("NEWKEY"));
-            assert!(any_schema_knows_token("DATAFORMAT"));
-            assert!(any_schema_knows_token("EXPLANATION"));
-            assert!(any_schema_knows_token("REQUIRED"));
-            assert!(any_schema_knows_token("SELECTABLE"));
-            assert!(any_schema_knows_token("FACTSETDEF"));
-            assert!(any_schema_knows_token("LOCAL"));
-            assert!(any_schema_knows_token("GLOBAL"));
-            assert!(any_schema_knows_token("BIOSET"));
-            assert!(any_schema_knows_token("EXCLUDE"));
-            assert!(any_schema_knows_token("SPELLRANGE"));
-            assert!(any_schema_knows_token("SUBREGION"));
-            assert!(any_schema_knows_token("ARMORTYPE"));
-            assert!(any_schema_knows_token("COUNT"));
-            assert!(any_schema_knows_token("OUTPUTSHEET"));
-            assert!(any_schema_knows_token("INFOSHEET"));
-            assert!(any_schema_knows_token("UNITSET"));
-            assert!(any_schema_knows_token("DISTANCEUNIT"));
-            assert!(any_schema_knows_token("DISTANCEFACTOR"));
-            assert!(any_schema_knows_token("DISTANCEPATTERN"));
-            assert!(any_schema_knows_token("HEIGHTUNIT"));
-            assert!(any_schema_knows_token("HEIGHTFACTOR"));
-            assert!(any_schema_knows_token("HEIGHTPATTERN"));
-            assert!(any_schema_knows_token("WEIGHTUNIT"));
-            assert!(any_schema_knows_token("WEIGHTFACTOR"));
-            assert!(any_schema_knows_token("WEIGHTPATTERN"));
-            assert!(any_schema_knows_token("CCSKILL"));
-            assert!(any_schema_knows_token("UNENCUMBEREDMOVE"));
-            assert!(any_schema_knows_token("LSTEXCLUDE"));
-            assert!(any_schema_knows_token("CRMOD"));
-            assert!(any_schema_knows_token("CRMODPRIORITY"));
-            assert!(any_schema_knows_token("SAVE"));
-            assert!(any_schema_knows_token("ALIGNMENT"));
-            assert!(any_schema_knows_token("MAXCOST"));
-            assert!(any_schema_knows_token("NAMEISPI"));
-            assert!(any_schema_knows_token("DESCISPI"));
-            assert!(any_schema_knows_token("COPYRIGHT"));
-            assert!(any_schema_knows_token("FACTDEF"));
-            assert!(any_schema_knows_token("FACTSET"));
-            assert!(any_schema_knows_token("PANTHEON"));
-            assert!(any_schema_knows_token("COPYMASTERBAB"));
-            assert!(any_schema_knows_token("COPYMASTERCHECK"));
-            assert!(any_schema_knows_token("COPYMASTERHP"));
-            assert!(any_schema_knows_token("USEMASTERSKILL"));
-            assert!(any_schema_knows_token("ALIGNMENTFEATURE"));
-            assert!(any_schema_knows_token("CURRENCYUNITABBREV"));
-            assert!(any_schema_knows_token("MENUENTRY"));
-            assert!(any_schema_knows_token("DISPLAYORDER"));
-            assert!(any_schema_knows_token("DIESIZES"));
-            assert!(any_schema_knows_token("DEFAULTUNITSET"));
-            assert!(any_schema_knows_token("ALLOWEDMODES"));
-            assert!(any_schema_knows_token("BABMAXATT"));
-            assert!(any_schema_knows_token("BABMINVAL"));
-            assert!(any_schema_knows_token("BABATTCYC"));
-            assert!(any_schema_knows_token("ACNAME"));
-            assert!(any_schema_knows_token("DOMAINFEATURE"));
-            assert!(any_schema_knows_token("LOADMULT"));
-            assert!(any_schema_knows_token("NUMSLOTS"));
-            assert!(any_schema_knows_token("HEAD"));
-            assert!(any_schema_knows_token("TORSO"));
-            assert!(any_schema_knows_token("SHIELD"));
-            assert!(any_schema_knows_token("LEVELMSG"));
-            assert!(any_schema_knows_token("SHORTRANGE"));
-            assert!(any_schema_knows_token("RANGEPENALTY"));
-            assert!(any_schema_knows_token("SQUARESIZE"));
-            assert!(any_schema_knows_token("SKILLMULTIPLIER"));
-            assert!(any_schema_knows_token("SPELLBASEDC"));
-            assert!(any_schema_knows_token("WEAPONNONPROFPENALTY"));
-            assert!(any_schema_knows_token("WEAPONREACH"));
-            assert!(any_schema_knows_token("CHARACTERTYPE"));
-            assert!(any_schema_knows_token("SYMBOL"));
-            assert!(any_schema_knows_token("CRTHRESHOLD"));
-            assert!(any_schema_knows_token("CRSTEPS"));
-            assert!(any_schema_knows_token("MONSTERROLES"));
-            assert!(any_schema_knows_token("MONSTERROLEDEFAULT"));
-            assert!(any_schema_knows_token("XPTABLE"));
-            assert!(any_schema_knows_token("EQSIZEPENALTY"));
-            assert!(any_schema_knows_token("RESIZABLEEQUIPTYPE"));
-            assert!(any_schema_knows_token("SKILLCOST_CROSSCLASS"));
-            assert!(any_schema_knows_token("MAXNONEPICLEVEL"));
-            assert!(any_schema_knows_token("PLUSCOST"));
-            assert!(any_schema_knows_token("SHOWINMENU"));
-            assert!(any_schema_knows_token("LANGAUTO"));
-            assert!(any_schema_knows_token("SELECTION"));
-            assert!(any_schema_knows_token("GRANT"));
-            assert!(any_schema_knows_token("ITEMCREATE"));
-            assert!(any_schema_knows_token("STARTTABLE"));
-            assert!(any_schema_knows_token("MOVEMENT"));
-            assert!(any_schema_knows_token("DATATABLE"));
-            assert!(any_schema_knows_token("DEFAULTDATASET"));
-            assert!(any_schema_knows_token("GAMEMODEKEY"));
-            assert!(any_schema_knows_token("ENDTABLE"));
-            assert!(any_schema_knows_token("ALIGN"));
-            assert!(any_schema_knows_token("STAT"));
-            assert!(any_schema_knows_token("RACE"));
-            assert!(any_schema_knows_token("NAME"));
-            assert!(any_schema_knows_token("ITYPE"));
-            assert!(any_schema_knows_token("NAMEOPT"));
-            assert!(any_schema_knows_token("TEMPDESC"));
-            assert!(any_schema_knows_token("MINXP"));
-            assert!(any_schema_knows_token("CSKILLMAX"));
-            assert!(any_schema_knows_token("CCSKILLMAX"));
-            assert!(any_schema_knows_token("TEMPBONUS"));
-            assert!(any_schema_knows_token("SELECT"));
-            assert!(any_schema_knows_token("SOURCELINK"));
-            assert!(any_schema_knows_token("UDAM"));
-            assert!(any_schema_knows_token("UMULT"));
-            assert!(any_schema_knows_token("DEITYWEAP"));
-            assert!(any_schema_knows_token("GROUP"));
-            assert!(any_schema_knows_token("DONOTADD"));
-            assert!(any_schema_knows_token("MEMORIZE"));
-            assert!(any_schema_knows_token("COMPANIONLIST"));
-            assert!(any_schema_knows_token("FOLLOWERS"));
-            assert!(any_schema_knows_token("LANGBONUS"));
-            assert!(any_schema_knows_token("CHANGEPROF"));
-            assert!(any_schema_knows_token("SERVESAS"));
-            assert!(any_schema_knows_token("VALIDFORDEITY"));
-            assert!(any_schema_knows_token("VALIDFORFOLLOWER"));
-            assert!(any_schema_knows_token("STATMOD"));
-            assert!(any_schema_knows_token("SIZENAME"));
-            assert!(any_schema_knows_token("SIZENUM"));
-            assert!(any_schema_knows_token("ISDEFAULTSIZE"));
-            assert!(any_schema_knows_token("APPLY"));
-            assert!(any_schema_knows_token("LOOKUP"));
-            assert!(any_schema_knows_token("BASEITEM"));
-            assert!(any_schema_knows_token("FOLLOWER"));
-            assert!(any_schema_knows_token("MASTERBONUSRACE"));
-            assert!(any_schema_knows_token("RACENAME"));
-            assert!(any_schema_knows_token("BASEAGE"));
-            assert!(any_schema_knows_token("MAXAGE"));
-            assert!(any_schema_knows_token("AGEDIEROLL"));
-            assert!(any_schema_knows_token("SEX"));
-            assert!(any_schema_knows_token("HAIR"));
-            assert!(any_schema_knows_token("EYES"));
-            assert!(any_schema_knows_token("SKINTONE"));
-            assert!(any_schema_knows_token("LEGS"));
-            assert!(any_schema_knows_token("HANDS"));
-            assert!(any_schema_knows_token("FACE"));
-            assert!(any_schema_knows_token("VISION"));
-            assert!(any_schema_knows_token("DR"));
-            assert!(any_schema_knows_token("SR"));
-            assert!(any_schema_knows_token("CR"));
-            assert!(any_schema_knows_token("ROLE"));
-            assert!(any_schema_knows_token("EXCLUSIVE"));
-            assert!(any_schema_knows_token("REGION"));
-            assert!(any_schema_knows_token("PARM"));
-            assert!(any_schema_knows_token("VAR"));
-            assert!(any_schema_knows_token("DEFAULT"));
-            assert!(any_schema_knows_token("ACTYPE"));
-            assert!(any_schema_knows_token("REMOVE"));
-            assert!(any_schema_knows_token("BASEDICE"));
-            assert!(any_schema_knows_token("UP"));
-            assert!(any_schema_knows_token("DOWN"));
-            assert!(any_schema_knows_token("WIELDCATEGORY"));
-            assert!(any_schema_knows_token("SWITCH"));
-            assert!(any_schema_knows_token("EQSLOT"));
-            assert!(any_schema_knows_token("NUMBER"));
-            assert!(any_schema_knows_token("TAB"));
-            assert!(any_schema_knows_token("CONTEXT"));
-            assert!(any_schema_knows_token("AGESET"));
-            assert!(any_schema_knows_token("REPLACES"));
-            assert!(any_schema_knows_token("SUBRACE"));
-            assert!(any_schema_knows_token("REMOVABLE"));
-            assert!(any_schema_knows_token("SUBCLASS"));
-            assert!(any_schema_knows_token("MODIFY"));
-            assert!(any_schema_knows_token("MODIFYOTHER"));
-            assert!(any_schema_knows_token("PART"));
-            assert!(any_schema_knows_token("FUNDS"));
-            assert!(any_schema_knows_token("LANGUAGE"));
-            assert!(any_schema_knows_token("EQUIPMOD"));
-            assert!(any_schema_knows_token("DATACONTROL"));
-            assert!(any_schema_knows_token("COMPANIONMOD"));
-            assert!(any_schema_knows_token("WEAPONPROF"));
-            assert!(any_schema_knows_token("ARMORPROF"));
-            assert!(any_schema_knows_token("SHIELDPROF"));
-            assert!(any_schema_knows_token("GENDER"));
-            assert!(any_schema_knows_token("TOTALCOST"));
-            assert!(any_schema_knows_token("METHOD"));
-            assert!(any_schema_knows_token("SIZEMULT"));
-            assert!(any_schema_knows_token("ENCUMBRANCE"));
-            assert!(any_schema_knows_token("DEFAULTVARIABLEVALUE"));
-            assert!(any_schema_knows_token("POINTS"));
-            assert!(any_schema_knows_token("WEAPONCATEGORY"));
-            assert!(any_schema_knows_token("ROLLMETHOD"));
-            assert!(any_schema_knows_token("CLASSTYPE"));
-            assert!(any_schema_knows_token("CRFORMULA"));
-            assert!(any_schema_knows_token("ISMONSTER"));
-            assert!(any_schema_knows_token("XPPENALTY"));
-            assert!(any_schema_knows_token("SPELL"));
-            assert!(any_schema_knows_token("WEAPONTYPE"));
-            assert!(any_schema_knows_token("TABLE"));
-            assert!(any_schema_knows_token("VALUES"));
-            assert!(any_schema_knows_token("NEWCATEGORY"));
-            assert!(!any_schema_knows_token("XYZZY"));
-            assert!(!any_schema_knows_token("NOTAREALTOKEN"));
-        }
+    #[test]
+    fn any_schema_knows_token_covers_previously_hardcoded_tokens() {
+        use schema::any_schema_knows_token;
+        assert!(any_schema_knows_token("TYPE"));
+        assert!(any_schema_knows_token("BONUS"));
+        assert!(any_schema_knows_token("CATEGORY"));
+        assert!(any_schema_knows_token("SOURCELONG"));
+        assert!(any_schema_knows_token("GAMEMODE"));
+        assert!(any_schema_knows_token("PREFEAT"));
+        assert!(any_schema_knows_token("PREVARGTEQ"));
+        assert!(any_schema_knows_token("WT"));
+        assert!(any_schema_knows_token("SCHOOL"));
+        assert!(any_schema_knows_token("RANGE"));
+        assert!(any_schema_knows_token("SPROP"));
+        assert!(any_schema_knows_token("RACETYPE"));
+        assert!(any_schema_knows_token("HITDIE"));
+        assert!(any_schema_knows_token("CLASS"));
+        assert!(any_schema_knows_token("SKILL"));
+        assert!(any_schema_knows_token("STARTPACK"));
+        assert!(any_schema_knows_token("CASTTIME"));
+        assert!(any_schema_knows_token("SORTKEY"));
+        assert!(any_schema_knows_token("SPELLKNOWN"));
+        assert!(any_schema_knows_token("MOVE"));
+        assert!(any_schema_knows_token("NATURALATTACKS"));
+        assert!(any_schema_knows_token("KIT"));
+        assert!(any_schema_knows_token("GEAR"));
+        assert!(any_schema_knows_token("OPTION"));
+        assert!(any_schema_knows_token("EQUIPBUY"));
+        assert!(any_schema_knows_token("ABILITYLIST"));
+        assert!(any_schema_knows_token("DISPLAYLOCATION"));
+        assert!(any_schema_knows_token("DISPLAYNAME"));
+        assert!(any_schema_knows_token("EDITABLE"));
+        assert!(any_schema_knows_token("EDITPOOL"));
+        assert!(any_schema_knows_token("FRACTIONALPOOL"));
+        assert!(any_schema_knows_token("PLURAL"));
+        assert!(any_schema_knows_token("POOL"));
+        assert!(any_schema_knows_token("DAMAGE"));
+        assert!(any_schema_knows_token("CRITMULT"));
+        assert!(any_schema_knows_token("CRITRANGE"));
+        assert!(any_schema_knows_token("ACCHECK"));
+        assert!(any_schema_knows_token("ACHECK"));
+        assert!(any_schema_knows_token("KEYSTAT"));
+        assert!(any_schema_knows_token("MAXDEX"));
+        assert!(any_schema_knows_token("SLOTS"));
+        assert!(any_schema_knows_token("ALTDAMAGE"));
+        assert!(any_schema_knows_token("ALTTYPE"));
+        assert!(any_schema_knows_token("BASEQTY"));
+        assert!(any_schema_knows_token("MODS"));
+        assert!(any_schema_knows_token("HD"));
+        assert!(any_schema_knows_token("MAXLEVEL"));
+        assert!(any_schema_knows_token("SPELLSTAT"));
+        assert!(any_schema_knows_token("SPELLLEVEL"));
+        assert!(any_schema_knows_token("INFO"));
+        assert!(any_schema_knows_token("MAXVER"));
+        assert!(any_schema_knows_token("NEWKEY"));
+        assert!(any_schema_knows_token("DATAFORMAT"));
+        assert!(any_schema_knows_token("EXPLANATION"));
+        assert!(any_schema_knows_token("REQUIRED"));
+        assert!(any_schema_knows_token("SELECTABLE"));
+        assert!(any_schema_knows_token("FACTSETDEF"));
+        assert!(any_schema_knows_token("LOCAL"));
+        assert!(any_schema_knows_token("GLOBAL"));
+        assert!(any_schema_knows_token("BIOSET"));
+        assert!(any_schema_knows_token("EXCLUDE"));
+        assert!(any_schema_knows_token("SPELLRANGE"));
+        assert!(any_schema_knows_token("SUBREGION"));
+        assert!(any_schema_knows_token("ARMORTYPE"));
+        assert!(any_schema_knows_token("COUNT"));
+        assert!(any_schema_knows_token("OUTPUTSHEET"));
+        assert!(any_schema_knows_token("INFOSHEET"));
+        assert!(any_schema_knows_token("UNITSET"));
+        assert!(any_schema_knows_token("DISTANCEUNIT"));
+        assert!(any_schema_knows_token("DISTANCEFACTOR"));
+        assert!(any_schema_knows_token("DISTANCEPATTERN"));
+        assert!(any_schema_knows_token("HEIGHTUNIT"));
+        assert!(any_schema_knows_token("HEIGHTFACTOR"));
+        assert!(any_schema_knows_token("HEIGHTPATTERN"));
+        assert!(any_schema_knows_token("WEIGHTUNIT"));
+        assert!(any_schema_knows_token("WEIGHTFACTOR"));
+        assert!(any_schema_knows_token("WEIGHTPATTERN"));
+        assert!(any_schema_knows_token("CCSKILL"));
+        assert!(any_schema_knows_token("UNENCUMBEREDMOVE"));
+        assert!(any_schema_knows_token("LSTEXCLUDE"));
+        assert!(any_schema_knows_token("CRMOD"));
+        assert!(any_schema_knows_token("CRMODPRIORITY"));
+        assert!(any_schema_knows_token("SAVE"));
+        assert!(any_schema_knows_token("ALIGNMENT"));
+        assert!(any_schema_knows_token("MAXCOST"));
+        assert!(any_schema_knows_token("NAMEISPI"));
+        assert!(any_schema_knows_token("DESCISPI"));
+        assert!(any_schema_knows_token("COPYRIGHT"));
+        assert!(any_schema_knows_token("FACTDEF"));
+        assert!(any_schema_knows_token("FACTSET"));
+        assert!(any_schema_knows_token("PANTHEON"));
+        assert!(any_schema_knows_token("COPYMASTERBAB"));
+        assert!(any_schema_knows_token("COPYMASTERCHECK"));
+        assert!(any_schema_knows_token("COPYMASTERHP"));
+        assert!(any_schema_knows_token("USEMASTERSKILL"));
+        assert!(any_schema_knows_token("ALIGNMENTFEATURE"));
+        assert!(any_schema_knows_token("CURRENCYUNITABBREV"));
+        assert!(any_schema_knows_token("MENUENTRY"));
+        assert!(any_schema_knows_token("DISPLAYORDER"));
+        assert!(any_schema_knows_token("DIESIZES"));
+        assert!(any_schema_knows_token("DEFAULTUNITSET"));
+        assert!(any_schema_knows_token("ALLOWEDMODES"));
+        assert!(any_schema_knows_token("BABMAXATT"));
+        assert!(any_schema_knows_token("BABMINVAL"));
+        assert!(any_schema_knows_token("BABATTCYC"));
+        assert!(any_schema_knows_token("ACNAME"));
+        assert!(any_schema_knows_token("DOMAINFEATURE"));
+        assert!(any_schema_knows_token("LOADMULT"));
+        assert!(any_schema_knows_token("NUMSLOTS"));
+        assert!(any_schema_knows_token("HEAD"));
+        assert!(any_schema_knows_token("TORSO"));
+        assert!(any_schema_knows_token("SHIELD"));
+        assert!(any_schema_knows_token("LEVELMSG"));
+        assert!(any_schema_knows_token("SHORTRANGE"));
+        assert!(any_schema_knows_token("RANGEPENALTY"));
+        assert!(any_schema_knows_token("SQUARESIZE"));
+        assert!(any_schema_knows_token("SKILLMULTIPLIER"));
+        assert!(any_schema_knows_token("SPELLBASEDC"));
+        assert!(any_schema_knows_token("WEAPONNONPROFPENALTY"));
+        assert!(any_schema_knows_token("WEAPONREACH"));
+        assert!(any_schema_knows_token("CHARACTERTYPE"));
+        assert!(any_schema_knows_token("SYMBOL"));
+        assert!(any_schema_knows_token("CRTHRESHOLD"));
+        assert!(any_schema_knows_token("CRSTEPS"));
+        assert!(any_schema_knows_token("MONSTERROLES"));
+        assert!(any_schema_knows_token("MONSTERROLEDEFAULT"));
+        assert!(any_schema_knows_token("XPTABLE"));
+        assert!(any_schema_knows_token("EQSIZEPENALTY"));
+        assert!(any_schema_knows_token("RESIZABLEEQUIPTYPE"));
+        assert!(any_schema_knows_token("SKILLCOST_CROSSCLASS"));
+        assert!(any_schema_knows_token("MAXNONEPICLEVEL"));
+        assert!(any_schema_knows_token("PLUSCOST"));
+        assert!(any_schema_knows_token("SHOWINMENU"));
+        assert!(any_schema_knows_token("LANGAUTO"));
+        assert!(any_schema_knows_token("SELECTION"));
+        assert!(any_schema_knows_token("GRANT"));
+        assert!(any_schema_knows_token("ITEMCREATE"));
+        assert!(any_schema_knows_token("STARTTABLE"));
+        assert!(any_schema_knows_token("MOVEMENT"));
+        assert!(any_schema_knows_token("DATATABLE"));
+        assert!(any_schema_knows_token("DEFAULTDATASET"));
+        assert!(any_schema_knows_token("GAMEMODEKEY"));
+        assert!(any_schema_knows_token("ENDTABLE"));
+        assert!(any_schema_knows_token("ALIGN"));
+        assert!(any_schema_knows_token("STAT"));
+        assert!(any_schema_knows_token("RACE"));
+        assert!(any_schema_knows_token("NAME"));
+        assert!(any_schema_knows_token("ITYPE"));
+        assert!(any_schema_knows_token("NAMEOPT"));
+        assert!(any_schema_knows_token("TEMPDESC"));
+        assert!(any_schema_knows_token("MINXP"));
+        assert!(any_schema_knows_token("CSKILLMAX"));
+        assert!(any_schema_knows_token("CCSKILLMAX"));
+        assert!(any_schema_knows_token("TEMPBONUS"));
+        assert!(any_schema_knows_token("SELECT"));
+        assert!(any_schema_knows_token("SOURCELINK"));
+        assert!(any_schema_knows_token("UDAM"));
+        assert!(any_schema_knows_token("UMULT"));
+        assert!(any_schema_knows_token("DEITYWEAP"));
+        assert!(any_schema_knows_token("GROUP"));
+        assert!(any_schema_knows_token("DONOTADD"));
+        assert!(any_schema_knows_token("MEMORIZE"));
+        assert!(any_schema_knows_token("COMPANIONLIST"));
+        assert!(any_schema_knows_token("FOLLOWERS"));
+        assert!(any_schema_knows_token("LANGBONUS"));
+        assert!(any_schema_knows_token("CHANGEPROF"));
+        assert!(any_schema_knows_token("SERVESAS"));
+        assert!(any_schema_knows_token("VALIDFORDEITY"));
+        assert!(any_schema_knows_token("VALIDFORFOLLOWER"));
+        assert!(any_schema_knows_token("STATMOD"));
+        assert!(any_schema_knows_token("SIZENAME"));
+        assert!(any_schema_knows_token("SIZENUM"));
+        assert!(any_schema_knows_token("ISDEFAULTSIZE"));
+        assert!(any_schema_knows_token("APPLY"));
+        assert!(any_schema_knows_token("LOOKUP"));
+        assert!(any_schema_knows_token("BASEITEM"));
+        assert!(any_schema_knows_token("FOLLOWER"));
+        assert!(any_schema_knows_token("MASTERBONUSRACE"));
+        assert!(any_schema_knows_token("RACENAME"));
+        assert!(any_schema_knows_token("BASEAGE"));
+        assert!(any_schema_knows_token("MAXAGE"));
+        assert!(any_schema_knows_token("AGEDIEROLL"));
+        assert!(any_schema_knows_token("SEX"));
+        assert!(any_schema_knows_token("HAIR"));
+        assert!(any_schema_knows_token("EYES"));
+        assert!(any_schema_knows_token("SKINTONE"));
+        assert!(any_schema_knows_token("LEGS"));
+        assert!(any_schema_knows_token("HANDS"));
+        assert!(any_schema_knows_token("FACE"));
+        assert!(any_schema_knows_token("VISION"));
+        assert!(any_schema_knows_token("DR"));
+        assert!(any_schema_knows_token("SR"));
+        assert!(any_schema_knows_token("CR"));
+        assert!(any_schema_knows_token("ROLE"));
+        assert!(any_schema_knows_token("EXCLUSIVE"));
+        assert!(any_schema_knows_token("REGION"));
+        assert!(any_schema_knows_token("PARM"));
+        assert!(any_schema_knows_token("VAR"));
+        assert!(any_schema_knows_token("DEFAULT"));
+        assert!(any_schema_knows_token("ACTYPE"));
+        assert!(any_schema_knows_token("REMOVE"));
+        assert!(any_schema_knows_token("BASEDICE"));
+        assert!(any_schema_knows_token("UP"));
+        assert!(any_schema_knows_token("DOWN"));
+        assert!(any_schema_knows_token("WIELDCATEGORY"));
+        assert!(any_schema_knows_token("SWITCH"));
+        assert!(any_schema_knows_token("EQSLOT"));
+        assert!(any_schema_knows_token("NUMBER"));
+        assert!(any_schema_knows_token("TAB"));
+        assert!(any_schema_knows_token("CONTEXT"));
+        assert!(any_schema_knows_token("AGESET"));
+        assert!(any_schema_knows_token("REPLACES"));
+        assert!(any_schema_knows_token("SUBRACE"));
+        assert!(any_schema_knows_token("REMOVABLE"));
+        assert!(any_schema_knows_token("SUBCLASS"));
+        assert!(any_schema_knows_token("MODIFY"));
+        assert!(any_schema_knows_token("MODIFYOTHER"));
+        assert!(any_schema_knows_token("PART"));
+        assert!(any_schema_knows_token("FUNDS"));
+        assert!(any_schema_knows_token("LANGUAGE"));
+        assert!(any_schema_knows_token("EQUIPMOD"));
+        assert!(any_schema_knows_token("DATACONTROL"));
+        assert!(any_schema_knows_token("COMPANIONMOD"));
+        assert!(any_schema_knows_token("WEAPONPROF"));
+        assert!(any_schema_knows_token("ARMORPROF"));
+        assert!(any_schema_knows_token("SHIELDPROF"));
+        assert!(any_schema_knows_token("GENDER"));
+        assert!(any_schema_knows_token("TOTALCOST"));
+        assert!(any_schema_knows_token("METHOD"));
+        assert!(any_schema_knows_token("SIZEMULT"));
+        assert!(any_schema_knows_token("ENCUMBRANCE"));
+        assert!(any_schema_knows_token("DEFAULTVARIABLEVALUE"));
+        assert!(any_schema_knows_token("POINTS"));
+        assert!(any_schema_knows_token("WEAPONCATEGORY"));
+        assert!(any_schema_knows_token("ROLLMETHOD"));
+        assert!(any_schema_knows_token("CLASSTYPE"));
+        assert!(any_schema_knows_token("CRFORMULA"));
+        assert!(any_schema_knows_token("ISMONSTER"));
+        assert!(any_schema_knows_token("XPPENALTY"));
+        assert!(any_schema_knows_token("SPELL"));
+        assert!(any_schema_knows_token("WEAPONTYPE"));
+        assert!(any_schema_knows_token("TABLE"));
+        assert!(any_schema_knows_token("VALUES"));
+        assert!(any_schema_knows_token("NEWCATEGORY"));
+        assert!(!any_schema_knows_token("XYZZY"));
+        assert!(!any_schema_knows_token("NOTAREALTOKEN"));
+    }
 
-        #[test]
-        fn token_alias_registry_exposes_explicit_rules() {
-            use schema::all_token_aliases;
+    #[test]
+    fn token_alias_registry_exposes_explicit_rules() {
+        use schema::all_token_aliases;
 
-            let aliases = all_token_aliases();
-            assert!(aliases.iter().any(|a| a.alias == "HD" && a.canonical == "HITDIE"));
-        }
+        let aliases = all_token_aliases();
+        assert!(
+            aliases
+                .iter()
+                .any(|a| a.alias == "HD" && a.canonical == "HITDIE")
+        );
+    }
 
-        #[test]
-        fn token_alias_lookup_respects_scope() {
-            use schema::token_aliases::canonical_lookup_key;
+    #[test]
+    fn token_alias_lookup_respects_scope() {
+        use schema::token_aliases::canonical_lookup_key;
 
-            assert_eq!(canonical_lookup_key("CASTTIME", None), "CASTTIME");
-            assert_eq!(canonical_lookup_key("PART", None), "PART");
-            assert_eq!(
-                canonical_lookup_key("EQUIPMENT.PART", None),
-                "EQUIPMENT.PART"
-            );
-            assert_eq!(canonical_lookup_key("HD", Some("pcgen:entity:class")), "HITDIE");
-            assert_eq!(canonical_lookup_key("HD", Some("pcgen:entity:template")), "HD");
-        }
+        assert_eq!(canonical_lookup_key("CASTTIME", None), "CASTTIME");
+        assert_eq!(canonical_lookup_key("PART", None), "PART");
+        assert_eq!(
+            canonical_lookup_key("EQUIPMENT.PART", None),
+            "EQUIPMENT.PART"
+        );
+        assert_eq!(
+            canonical_lookup_key("HD", Some("pcgen:entity:class")),
+            "HITDIE"
+        );
+        assert_eq!(
+            canonical_lookup_key("HD", Some("pcgen:entity:template")),
+            "HD"
+        );
+    }
 }

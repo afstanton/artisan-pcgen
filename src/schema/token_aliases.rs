@@ -42,15 +42,13 @@ pub struct TokenAlias {
 /// keys as equivalent for classification/lookup. Similar-looking names that are
 /// semantically distinct (e.g. ACHECK vs ACCHECK in different docs) should not
 /// be added.
-static TOKEN_ALIASES: &[TokenAlias] = &[
-    TokenAlias {
-        alias: "HD",
-        canonical: "HITDIE",
-        scope: AliasScope::EntityType("pcgen:entity:class"),
-        status: AliasStatus::CompatibilityAlias,
-        note: "Class-line HD shorthand normalized to HITDIE for canonical emission.",
-    },
-];
+static TOKEN_ALIASES: &[TokenAlias] = &[TokenAlias {
+    alias: "HD",
+    canonical: "HITDIE",
+    scope: AliasScope::EntityType("pcgen:entity:class"),
+    status: AliasStatus::CompatibilityAlias,
+    note: "Class-line HD shorthand normalized to HITDIE for canonical emission.",
+}];
 
 /// Exposes all configured token alias rules.
 pub fn all_token_aliases() -> &'static [TokenAlias] {

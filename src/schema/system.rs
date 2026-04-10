@@ -50,7 +50,10 @@ pub static ALIGNMENTFEATURE_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
     entity_type_key: "pcgen:system:alignmentfeature",
     head_token: Some("ALIGNMENTFEATURE"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::yesno("ALIGNMENTFEATURE", "pcgen_alignmentfeature")],
+    tokens: &[TokenDef::yesno(
+        "ALIGNMENTFEATURE",
+        "pcgen_alignmentfeature",
+    )],
     globals: &[],
 };
 
@@ -77,7 +80,10 @@ pub static DISPLAYORDER_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
     entity_type_key: "pcgen:system:displayorder",
     head_token: Some("DISPLAYORDER"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text_required("DISPLAYORDER", "pcgen_displayorder")],
+    tokens: &[TokenDef::text_required(
+        "DISPLAYORDER",
+        "pcgen_displayorder",
+    )],
     globals: &[],
 };
 
@@ -93,7 +99,10 @@ pub static DEFAULTUNITSET_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
     entity_type_key: "pcgen:system:defaultunitset",
     head_token: Some("DEFAULTUNITSET"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text_required("DEFAULTUNITSET", "pcgen_defaultunitset")],
+    tokens: &[TokenDef::text_required(
+        "DEFAULTUNITSET",
+        "pcgen_defaultunitset",
+    )],
     globals: &[],
 };
 
@@ -101,7 +110,10 @@ pub static DEFAULTDATASET_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
     entity_type_key: "pcgen:system:defaultdataset",
     head_token: Some("DEFAULTDATASET"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text_required("DEFAULTDATASET", "pcgen_defaultdataset")],
+    tokens: &[TokenDef::text_required(
+        "DEFAULTDATASET",
+        "pcgen_defaultdataset",
+    )],
     globals: &[],
 };
 
@@ -109,7 +121,10 @@ pub static ALLOWEDMODES_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
     entity_type_key: "pcgen:system:allowedmodes",
     head_token: Some("ALLOWEDMODES"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text_required("ALLOWEDMODES", "pcgen_allowedmodes")],
+    tokens: &[TokenDef::text_required(
+        "ALLOWEDMODES",
+        "pcgen_allowedmodes",
+    )],
     globals: &[],
 };
 
@@ -197,7 +212,10 @@ pub static SKILLMULTIPLIER_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
     entity_type_key: "pcgen:system:skillmultiplier",
     head_token: Some("SKILLMULTIPLIER"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text_required("SKILLMULTIPLIER", "pcgen_skillmultiplier")],
+    tokens: &[TokenDef::text_required(
+        "SKILLMULTIPLIER",
+        "pcgen_skillmultiplier",
+    )],
     globals: &[],
 };
 
@@ -295,7 +313,10 @@ pub static EQSIZEPENALTY_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
     entity_type_key: "pcgen:system:eqsizepenalty",
     head_token: Some("EQSIZEPENALTY"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text_required("EQSIZEPENALTY", "pcgen_eqsizepenalty")],
+    tokens: &[TokenDef::text_required(
+        "EQSIZEPENALTY",
+        "pcgen_eqsizepenalty",
+    )],
     globals: &[GlobalGroup::Bonus, GlobalGroup::Prerequisites],
 };
 
@@ -328,7 +349,10 @@ pub static SKILLCOST_CLASS_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
     entity_type_key: "pcgen:system:skillcost_class",
     head_token: Some("SKILLCOST_CLASS"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::integer("SKILLCOST_CLASS", "pcgen_skillcost_class")],
+    tokens: &[TokenDef::integer(
+        "SKILLCOST_CLASS",
+        "pcgen_skillcost_class",
+    )],
     globals: &[],
 };
 
@@ -374,7 +398,10 @@ pub static MAXNONEPICLEVEL_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
     entity_type_key: "pcgen:system:maxnonepiclevel",
     head_token: Some("MAXNONEPICLEVEL"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::integer("MAXNONEPICLEVEL", "pcgen_maxnonepiclevel")],
+    tokens: &[TokenDef::integer(
+        "MAXNONEPICLEVEL",
+        "pcgen_maxnonepiclevel",
+    )],
     globals: &[],
 };
 
@@ -663,6 +690,7 @@ pub static STAT_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
     head_token: Some("STAT"),
     head_format: HeadFormat::NameOnly,
     tokens: &[
+        TokenDef::integer("SCORE", "pcgen_score"),
         TokenDef::text("ABB", "pcgen_abbreviation"),
         TokenDef::text("STATMOD", "pcgen_statmod"),
     ],

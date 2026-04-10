@@ -9,5 +9,6 @@ INFOTEXT:Supports 6.10.0
 FORWARDREF:RACE|Orc
 HIDETYPE:FEAT|AttackOption|ModifyAC
 URL:WEBSITE|http://example.com/|Example
+ISMATURE:NO
 DYNAMIC:backlog_dynamics.lst
 GLOBALMODIFIER:backlog_globalmods.lst
