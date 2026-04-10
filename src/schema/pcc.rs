@@ -92,7 +92,6 @@ static PCC_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Attribute("pcgen_globalmodifier_catalog"),
         required: false,
     },
-    // ...existing code...
     TokenDef {
         key: "DATATABLE",
         grammar: TokenGrammar::Text,
