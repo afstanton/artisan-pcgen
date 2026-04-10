@@ -311,9 +311,13 @@ fn unparse_emits_structured_entity_gap_tokens() {
     let parsed = parse_file(&file).expect("parse entity gap fixture");
     let generated = unparse_catalog_to_text(&parsed);
 
-    assert!(generated.contains("HASSUBCLASS:YES"));
-    assert!(generated.contains("COSTPRE:9000"));
-    assert!(generated.contains("BASEAGEADD:3"));
+    assert!(generated.contains("HASSUBCLASS:YES"), "HASSUBCLASS should be emitted: {generated}");
+    assert!(generated.contains("COSTPRE:9000"), "COSTPRE should be emitted: {generated}");
+    assert!(generated.contains("BASEAGEADD:3"), "BASEAGEADD should be emitted: {generated}");
+    assert!(generated.contains("PROHIBITED:Necromancy|Enchantment"), "PROHIBITED should be emitted: {generated}");
+    assert!(generated.contains("FORTIFICATION:25"), "FORTIFICATION should be emitted: {generated}");
+    assert!(generated.contains("HEALING:5"), "HEALING should be emitted: {generated}");
+    assert!(generated.contains("ISMATURE:NO"), "ISMATURE should be emitted: {generated}");
 }
 
 #[test]

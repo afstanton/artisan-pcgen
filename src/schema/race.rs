@@ -124,6 +124,8 @@ static RACE_TOKENS: &[TokenDef] = &[
     },
     TokenDef::pipe_list_repeatable("CCSKILL", "pcgen_ccskill"),
     TokenDef::pipe_list_repeatable("UNENCUMBEREDMOVE", "pcgen_unencumberedmove"),
+    // Adult-content flag. YES marks a race as mature content.
+    TokenDef::yesno("ISMATURE", "pcgen_ismature"),
 ];
 
 static RACE_GLOBALS: &[GlobalGroup] = &[

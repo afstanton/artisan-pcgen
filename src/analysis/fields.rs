@@ -224,6 +224,7 @@ pub(crate) fn project_clause_attributes(
                     Value::String(value.clone()),
                 );
             }
+            "PROHIBITED" => append_string_attr(attributes, "pcgen_prohibited", value),
             "ADDDOMAINS" => append_string_attr(attributes, "pcgen_adddomains", value),
             "DOMAIN" => {
                 attributes.insert("pcgen_domains".to_string(), Value::String(value.clone()));
@@ -859,6 +860,9 @@ pub(crate) fn project_clause_attributes(
             "UNENCUMBEREDMOVE" => {
                 append_value_attr(attributes, "pcgen_unencumberedmove", parse_pipe_series(value));
             }
+            "ISMATURE" => {
+                attributes.insert("pcgen_ismature".to_string(), parse_yes_no_or_string(value));
+            }
             "CONTAINS" => {
                 attributes.insert("pcgen_contains".to_string(), Value::String(value.clone()));
             }
@@ -882,6 +886,12 @@ pub(crate) fn project_clause_attributes(
             "QUALITY" => append_string_attr(attributes, "pcgen_qualities", value),
             "SPROP" => sprop_values.push(Value::String(value.clone())),
             "PAGEUSAGE" => page_usage_values.push(Value::String(value.clone())),
+            "FORTIFICATION" => {
+                attributes.insert("pcgen_fortification".to_string(), Value::String(value.clone()));
+            }
+            "HEALING" => {
+                attributes.insert("pcgen_healing".to_string(), Value::String(value.clone()));
+            }
             "CHARGES" => append_string_attr(attributes, "pcgen_charges", value),
             "FACT" => facts.push(parse_fact(value)),
             "FACTSET" => factsets.push(parse_fact(value)),

@@ -93,6 +93,12 @@ static EQUIPMENT_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Attribute("pcgen_sprop"),
         required: false,
     },
+    // Magic item properties found in some third-party equipmod datasets.
+    // FORTIFICATION provides a percentage chance to negate crits/sneak attacks.
+    // HEALING triggers a healing spell effect when the property activates.
+    // Both appear as `TOKEN:value` clauses in equipmod entity definitions.
+    TokenDef::text("FORTIFICATION", "pcgen_fortification"),
+    TokenDef::text("HEALING", "pcgen_healing"),
 ];
 
 static EQUIPMENT_GLOBALS: &[GlobalGroup] = &[

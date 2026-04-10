@@ -43,6 +43,38 @@ pub(crate) fn classify_token_key(input: &str, is_bare: bool) -> ClauseSupportLev
         return ClauseSupportLevel::Artifact;
     }
 
+    // Output-sheet layout tokens — appear in .htm.ftl template files, not in
+    // game data files. They are not PCGen entity tokens.
+    if matches!(
+        token.as_str(),
+        "LEFTMARGIN" | "RIGHTMARGIN" | "TOPMARGIN" | "BOTTOMMARGIN"
+    ) {
+        return ClauseSupportLevel::Artifact;
+    }
+
+    // Dice notation fragments (e.g. D0, D1, D1.5) parsed as token heads when
+    // dice expressions appear at the start of a clause value.
+    if matches!(token.as_str(), "D0" | "D1" | "D1.5") {
+        return ClauseSupportLevel::Artifact;
+    }
+
+    // Parser noise: single/two-letter fragments, typos, proper names, and
+    // abbreviations that appear as token keys due to prose formatting or
+    // malformed corpus entries.
+    if matches!(
+        token.as_str(),
+        // Single/two-letter noise
+        "R" | "F" | "IE"
+        // Typos and misspellings
+        | "VIIBLE" | "SERVAAS" | "SERVEAS"
+        // Prerequisite expression fragment split by the parser
+        | "IV.PRECLASS"
+        // Proper names and abbreviations found in body text or deity names
+        | "SELUNE" | "WWII" | "STR"
+    ) {
+        return ClauseSupportLevel::Artifact;
+    }
+
     // Selector-style token used in variable-path contexts; keep distinct from PART
     // while treating it as intentionally supported syntax.
     if token == "EQUIPMENT.PART" {
@@ -237,5 +269,35 @@ mod tests {
             classify_token_key("IV", false),
             ClauseSupportLevel::Artifact
         ));
+    }
+
+    #[test]
+    fn classify_token_key_rejects_output_sheet_layout_tokens() {
+        for token in &["LEFTMARGIN", "RIGHTMARGIN", "TOPMARGIN", "BOTTOMMARGIN"] {
+            assert!(
+                matches!(classify_token_key(token, false), ClauseSupportLevel::Artifact),
+                "{token} should be Artifact"
+            );
+        }
+    }
+
+    #[test]
+    fn classify_token_key_rejects_dice_notation_fragments() {
+        for token in &["D0", "D1", "D1.5"] {
+            assert!(
+                matches!(classify_token_key(token, false), ClauseSupportLevel::Artifact),
+                "{token} should be Artifact"
+            );
+        }
+    }
+
+    #[test]
+    fn classify_token_key_rejects_known_parser_noise() {
+        for token in &["R", "F", "IE", "VIIBLE", "SERVAAS", "SERVEAS", "IV.PRECLASS", "SELUNE", "WWII", "STR"] {
+            assert!(
+                matches!(classify_token_key(token, false), ClauseSupportLevel::Artifact),
+                "{token} should be Artifact"
+            );
+        }
     }
 }

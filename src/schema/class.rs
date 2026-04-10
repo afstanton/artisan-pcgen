@@ -70,6 +70,15 @@ static CLASS_TOKENS: &[TokenDef] = &[
         required: false,
     },
     TokenDef::text("KNOWNSPELLSFROMSPECIALTY", "pcgen_knownspellsfromspecialty"),
+    // Prohibited spell schools (specialist wizards). Repeatable; each occurrence
+    // is one school name. Also appears as a sub-token in .pcg CLASS lines.
+    TokenDef {
+        key: "PROHIBITED",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_prohibited"),
+        required: false,
+    },
     // Domain
     TokenDef {
         key: "ADDDOMAINS",
