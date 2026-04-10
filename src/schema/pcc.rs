@@ -79,6 +79,13 @@ static PCC_TOKENS: &[TokenDef] = &[
         required: false,
     },
     TokenDef {
+        key: "DYNAMIC",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_dynamic_catalog"),
+        required: false,
+    },
+    TokenDef {
         key: "DATATABLE",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
@@ -321,6 +328,19 @@ static DATACONTROL_INCLUDE_TOKENS: &[TokenDef] = &[
     TokenDef::text_required("DATACONTROL", "pcgen_datacontrol_catalog"),
     PRECAMPAIGN_TOKEN,
 ];
+
+static DYNAMIC_INCLUDE_TOKENS: &[TokenDef] = &[
+    TokenDef::text_required("DYNAMIC", "pcgen_dynamic_catalog"),
+    PRECAMPAIGN_TOKEN,
+];
+
+pub static DYNAMIC_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:entity:pcc-dynamic-include",
+    head_token: Some("DYNAMIC"),
+    head_format: HeadFormat::NameOnly,
+    tokens: DYNAMIC_INCLUDE_TOKENS,
+    globals: &[],
+};
 static DATATABLE_INCLUDE_TOKENS: &[TokenDef] = &[
     TokenDef::text_required("DATATABLE", "pcgen_datatable_catalog"),
     PRECAMPAIGN_TOKEN,
