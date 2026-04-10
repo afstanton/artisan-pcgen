@@ -86,6 +86,14 @@ static PCC_TOKENS: &[TokenDef] = &[
         required: false,
     },
     TokenDef {
+        key: "GLOBALMODIFIER",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_globalmodifier_catalog"),
+        required: false,
+    },
+    // ...existing code...
+    TokenDef {
         key: "DATATABLE",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
@@ -235,6 +243,19 @@ static PCC_TOKENS: &[TokenDef] = &[
     },
     TokenDef::text("OPTION", "pcgen_option"),
 ];
+
+static GLOBALMODIFIER_INCLUDE_TOKENS: &[TokenDef] = &[
+    TokenDef::text_required("GLOBALMODIFIER", "pcgen_globalmodifier_catalog"),
+    PRECAMPAIGN_TOKEN,
+];
+
+pub static GLOBALMODIFIER_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:entity:pcc-globalmodifier-include",
+    head_token: Some("GLOBALMODIFIER"),
+    head_format: HeadFormat::NameOnly,
+    tokens: GLOBALMODIFIER_INCLUDE_TOKENS,
+    globals: &[],
+};
 
 static PCC_GLOBALS: &[GlobalGroup] = &[GlobalGroup::SourceMeta];
 

@@ -10,3 +10,4 @@ FORWARDREF:RACE|Orc
 HIDETYPE:FEAT|AttackOption|ModifyAC
 URL:WEBSITE|http://example.com/|Example
 DYNAMIC:backlog_dynamics.lst
+GLOBALMODIFIER:backlog_globalmods.lst

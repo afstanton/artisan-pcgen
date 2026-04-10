@@ -45,8 +45,8 @@ These show up in `*_datacontrols.lst` and similar files and look like real schem
 - [x] `FUNCTION`
 - [x] `DYNAMICSCOPE`
 - [ ] Review `DYNAMIC`
-- [ ] Review `GLOBALMODIFIER`
-- [ ] Review `VALUE` in datacontrol contexts
+- [x] Review `GLOBALMODIFIER`
+- [x] Review `VALUE` in datacontrol contexts
 
 Likely homes:
 
