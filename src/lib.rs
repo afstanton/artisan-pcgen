@@ -1115,8 +1115,9 @@ mod tests {
                 .expect("SKILL schema should be registered by head token");
             assert_eq!(skill_schema.head_token, Some("SKILL"));
 
-            // Ability has no head token prefix
-            assert!(schema::schema_for_head_token("ABILITY").is_none());
+            let ability_include_schema = schema::schema_for_head_token("ABILITY")
+                .expect("ABILITY PCC include schema should be registered by head token");
+            assert_eq!(ability_include_schema.head_token, Some("ABILITY"));
         }
 
         #[test]

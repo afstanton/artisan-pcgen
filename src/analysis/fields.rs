@@ -116,6 +116,9 @@ pub(crate) fn project_clause_attributes(
             "MAXAGE" => {
                 attributes.insert("pcgen_maxage".to_string(), Value::String(value.clone()));
             }
+            "BASEAGEADD" => {
+                attributes.insert("pcgen_baseageadd".to_string(), Value::String(value.clone()));
+            }
             "AGEDIEROLL" => {
                 attributes.insert("pcgen_agedieroll".to_string(), Value::String(value.clone()));
             }
@@ -258,6 +261,9 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_removable".to_string(), Value::String(value.clone()));
             }
             "PROHIBITCOST" => set_i64_or_string(attributes, "pcgen_prohibitcost", value),
+            "HASSUBCLASS" => {
+                attributes.insert("pcgen_hassubclass".to_string(), parse_yes_no_or_string(value));
+            }
             "SUBCLASSLEVEL" => {
                 attributes.insert("pcgen_subclasslevel".to_string(), Value::String(value.clone()));
             }
@@ -306,6 +312,9 @@ pub(crate) fn project_clause_attributes(
             }
             "COST" => {
                 attributes.insert("pcgen_cost".to_string(), Value::String(value.clone()));
+            }
+            "COSTPRE" => {
+                attributes.insert("pcgen_costpre".to_string(), Value::String(value.clone()));
             }
             "BASEITEM" => {
                 attributes.insert("pcgen_baseitem".to_string(), Value::String(value.clone()));
@@ -380,6 +389,15 @@ pub(crate) fn project_clause_attributes(
             "GEAR" => append_string_attr(attributes, "pcgen_gear", value),
             "KIT" => append_string_attr(attributes, "pcgen_kits", value),
             "ABILITY" => append_string_attr(attributes, "pcgen_abilities", value),
+            "ABILITYCATEGORY" => append_string_attr(attributes, "pcgen_abilitycategories", value),
+            "FEAT" => append_string_attr(attributes, "pcgen_feats", value),
+            "EQUIPMENT" => append_string_attr(attributes, "pcgen_equipment", value),
+            "SPELL" => append_string_attr(attributes, "pcgen_spells", value),
+            "LICENSE" => append_string_attr(attributes, "pcgen_license", value),
+            "INFOTEXT" => append_string_attr(attributes, "pcgen_infotext", value),
+            "FORWARDREF" => append_string_attr(attributes, "pcgen_forwardref", value),
+            "HIDETYPE" => append_string_attr(attributes, "pcgen_hidetype", value),
+            "URL" => append_string_attr(attributes, "pcgen_url", value),
             "OPTION" => {
                 attributes.insert("pcgen_option".to_string(), Value::String(value.clone()));
             }
@@ -402,6 +420,9 @@ pub(crate) fn project_clause_attributes(
             }
             "FACTDEF" => {
                 attributes.insert("pcgen_factdef".to_string(), Value::String(value.clone()));
+            }
+            "VALUE" => {
+                attributes.insert("pcgen_value".to_string(), Value::String(value.clone()));
             }
             "DATAFORMAT" => {
                 attributes.insert("pcgen_dataformat".to_string(), Value::String(value.clone()));
@@ -516,6 +537,24 @@ pub(crate) fn project_clause_attributes(
             "MAXNONEPICLEVEL" => set_i64_or_string(attributes, "pcgen_maxnonepiclevel", value),
             "SKILLCOST_CROSSCLASS" => {
                 set_i64_or_string(attributes, "pcgen_skillcost_crossclass", value)
+            }
+            "SKILLCOST_CLASS" => {
+                set_i64_or_string(attributes, "pcgen_skillcost_class", value)
+            }
+            "SKILLCOST_EXCLUSIVE" => {
+                set_i64_or_string(attributes, "pcgen_skillcost_exclusive", value)
+            }
+            "SPELLBASECONCENTRATION" => {
+                attributes.insert(
+                    "pcgen_spellbaseconcentration".to_string(),
+                    Value::String(value.clone()),
+                );
+            }
+            "XPAWARD" => {
+                attributes.insert("pcgen_xpaward".to_string(), Value::String(value.clone()));
+            }
+            "STATINPUT" => {
+                attributes.insert("pcgen_statinput".to_string(), Value::String(value.clone()));
             }
             "PLUSCOST" => {
                 attributes.insert("pcgen_pluscost".to_string(), parse_pipe_series(value));
@@ -908,6 +947,16 @@ pub(crate) fn project_decl_token_value(
     attributes: &mut IndexMap<String, Value>,
 ) {
     match decl_token.to_ascii_uppercase().as_str() {
+        "ABILITY" => append_string_attr(attributes, "pcgen_abilities", decl_value),
+        "ABILITYCATEGORY" => append_string_attr(attributes, "pcgen_abilitycategories", decl_value),
+        "FEAT" => append_string_attr(attributes, "pcgen_feats", decl_value),
+        "EQUIPMENT" => append_string_attr(attributes, "pcgen_equipment", decl_value),
+        "SPELL" => append_string_attr(attributes, "pcgen_spells", decl_value),
+        "LICENSE" => append_string_attr(attributes, "pcgen_license", decl_value),
+        "INFOTEXT" => append_string_attr(attributes, "pcgen_infotext", decl_value),
+        "FORWARDREF" => append_string_attr(attributes, "pcgen_forwardref", decl_value),
+        "HIDETYPE" => append_string_attr(attributes, "pcgen_hidetype", decl_value),
+        "URL" => append_string_attr(attributes, "pcgen_url", decl_value),
         "LOCAL" => {
             attributes.insert("pcgen_local".to_string(), parse_local_definition(decl_value));
         }
@@ -920,11 +969,26 @@ pub(crate) fn project_decl_token_value(
                 parse_factsetdef_definition(decl_value),
             );
         }
+        "FUNCTION" => {
+            attributes.insert(
+                "pcgen_function".to_string(),
+                Value::String(decl_value.to_string()),
+            );
+        }
+        "DYNAMICSCOPE" => {
+            attributes.insert(
+                "pcgen_dynamicscope".to_string(),
+                Value::String(decl_value.to_string()),
+            );
+        }
         "SPELLRANGE" => {
             attributes.insert(
                 "pcgen_spellrange".to_string(),
                 parse_spellrange_definition(decl_value),
             );
+        }
+        "BASEAGEADD" => {
+            attributes.insert("pcgen_baseageadd".to_string(), Value::String(decl_value.to_string()));
         }
         "OUTPUTSHEET" => {
             attributes.insert(
@@ -1069,6 +1133,24 @@ pub(crate) fn project_decl_token_value(
         }
         "SKILLCOST_CROSSCLASS" => {
             set_i64_or_string(attributes, "pcgen_skillcost_crossclass", decl_value)
+        }
+        "SKILLCOST_CLASS" => {
+            set_i64_or_string(attributes, "pcgen_skillcost_class", decl_value)
+        }
+        "SKILLCOST_EXCLUSIVE" => {
+            set_i64_or_string(attributes, "pcgen_skillcost_exclusive", decl_value)
+        }
+        "SPELLBASECONCENTRATION" => {
+            attributes.insert(
+                "pcgen_spellbaseconcentration".to_string(),
+                Value::String(decl_value.to_string()),
+            );
+        }
+        "XPAWARD" => {
+            attributes.insert("pcgen_xpaward".to_string(), Value::String(decl_value.to_string()));
+        }
+        "STATINPUT" => {
+            attributes.insert("pcgen_statinput".to_string(), Value::String(decl_value.to_string()));
         }
         "MAXNONEPICLEVEL" => {
             set_i64_or_string(attributes, "pcgen_maxnonepiclevel", decl_value)

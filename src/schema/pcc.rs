@@ -40,21 +40,21 @@ static PCC_TOKENS: &[TokenDef] = &[
         key: "ABILITY",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::None,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_abilities"),
         required: false,
     },
     TokenDef {
         key: "ABILITYCATEGORY",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::None,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_abilitycategories"),
         required: false,
     },
     TokenDef {
         key: "FEAT",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::None,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_feats"),
         required: false,
     },
     TokenDef {
@@ -68,7 +68,7 @@ static PCC_TOKENS: &[TokenDef] = &[
         key: "EQUIPMENT",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::None,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_equipment"),
         required: false,
     },
     TokenDef {
@@ -124,7 +124,7 @@ static PCC_TOKENS: &[TokenDef] = &[
         key: "SPELL",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::None,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_spells"),
         required: false,
     },
     TokenDef {
@@ -154,7 +154,7 @@ static PCC_TOKENS: &[TokenDef] = &[
         key: "LICENSE",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::None,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_license"),
         required: false,
     },
     TokenDef::text("STATUS", "pcgen_status"),
@@ -164,7 +164,7 @@ static PCC_TOKENS: &[TokenDef] = &[
         key: "INFOTEXT",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::None,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_infotext"),
         required: false,
     },
     TokenDef::text("RANK", "pcgen_rank"),
@@ -195,14 +195,14 @@ static PCC_TOKENS: &[TokenDef] = &[
         key: "FORWARDREF",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::None,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_forwardref"),
         required: false,
     },
     TokenDef {
         key: "HIDETYPE",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::None,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_hidetype"),
         required: false,
     },
     TokenDef {
@@ -223,7 +223,7 @@ static PCC_TOKENS: &[TokenDef] = &[
         key: "URL",
         grammar: TokenGrammar::PipePositional(&["text", "url", "label"]),
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::None,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_url"),
         required: false,
     },
     TokenDef::text("OPTION", "pcgen_option"),
@@ -241,6 +241,64 @@ pub static PCC_SCHEMA: EntitySchema = EntitySchema {
 
 static LANGUAGE_INCLUDE_TOKENS: &[TokenDef] = &[
     TokenDef::text_required("LANGUAGE", "pcgen_language_catalog"),
+    PRECAMPAIGN_TOKEN,
+];
+static ABILITY_INCLUDE_TOKENS: &[TokenDef] = &[
+    TokenDef::text_required("ABILITY", "pcgen_abilities"),
+    PRECAMPAIGN_TOKEN,
+];
+static ABILITYCATEGORY_INCLUDE_TOKENS: &[TokenDef] = &[
+    TokenDef::text_required("ABILITYCATEGORY", "pcgen_abilitycategories"),
+    PRECAMPAIGN_TOKEN,
+];
+static FEAT_INCLUDE_TOKENS: &[TokenDef] = &[
+    TokenDef::text_required("FEAT", "pcgen_feats"),
+    PRECAMPAIGN_TOKEN,
+];
+static EQUIPMENT_INCLUDE_TOKENS: &[TokenDef] = &[
+    TokenDef::text_required("EQUIPMENT", "pcgen_equipment"),
+    PRECAMPAIGN_TOKEN,
+];
+static SPELL_INCLUDE_TOKENS: &[TokenDef] = &[
+    TokenDef::text_required("SPELL", "pcgen_spells"),
+    PRECAMPAIGN_TOKEN,
+];
+static LICENSE_INCLUDE_TOKENS: &[TokenDef] = &[
+    TokenDef::text_required("LICENSE", "pcgen_license"),
+    PRECAMPAIGN_TOKEN,
+];
+static INFOTEXT_INCLUDE_TOKENS: &[TokenDef] = &[
+    TokenDef::text_required("INFOTEXT", "pcgen_infotext"),
+    PRECAMPAIGN_TOKEN,
+];
+static FORWARDREF_INCLUDE_TOKENS: &[TokenDef] = &[
+    TokenDef {
+        key: "FORWARDREF",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_forwardref"),
+        required: true,
+    },
+    PRECAMPAIGN_TOKEN,
+];
+static HIDETYPE_INCLUDE_TOKENS: &[TokenDef] = &[
+    TokenDef {
+        key: "HIDETYPE",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_hidetype"),
+        required: true,
+    },
+    PRECAMPAIGN_TOKEN,
+];
+static URL_INCLUDE_TOKENS: &[TokenDef] = &[
+    TokenDef {
+        key: "URL",
+        grammar: TokenGrammar::PipePositional(&["text", "url", "label"]),
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_url"),
+        required: true,
+    },
     PRECAMPAIGN_TOKEN,
 ];
 static ALIGNMENT_INCLUDE_TOKENS: &[TokenDef] = &[
@@ -306,6 +364,86 @@ pub static LANGUAGE_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
     head_token: Some("LANGUAGE"),
     head_format: HeadFormat::TokenPrefixed,
     tokens: LANGUAGE_INCLUDE_TOKENS,
+    globals: PCC_GLOBALS,
+};
+
+pub static ABILITY_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:entity:pcc-ability-include",
+    head_token: Some("ABILITY"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: ABILITY_INCLUDE_TOKENS,
+    globals: PCC_GLOBALS,
+};
+
+pub static ABILITYCATEGORY_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:entity:pcc-abilitycategory-include",
+    head_token: Some("ABILITYCATEGORY"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: ABILITYCATEGORY_INCLUDE_TOKENS,
+    globals: PCC_GLOBALS,
+};
+
+pub static FEAT_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:entity:pcc-feat-include",
+    head_token: Some("FEAT"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: FEAT_INCLUDE_TOKENS,
+    globals: PCC_GLOBALS,
+};
+
+pub static EQUIPMENT_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:entity:pcc-equipment-include",
+    head_token: Some("EQUIPMENT"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: EQUIPMENT_INCLUDE_TOKENS,
+    globals: PCC_GLOBALS,
+};
+
+pub static SPELL_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:entity:pcc-spell-include",
+    head_token: Some("SPELL"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: SPELL_INCLUDE_TOKENS,
+    globals: PCC_GLOBALS,
+};
+
+pub static LICENSE_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:entity:pcc-license-include",
+    head_token: Some("LICENSE"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: LICENSE_INCLUDE_TOKENS,
+    globals: PCC_GLOBALS,
+};
+
+pub static INFOTEXT_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:entity:pcc-infotext-include",
+    head_token: Some("INFOTEXT"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: INFOTEXT_INCLUDE_TOKENS,
+    globals: PCC_GLOBALS,
+};
+
+pub static FORWARDREF_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:entity:pcc-forwardref-include",
+    head_token: Some("FORWARDREF"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: FORWARDREF_INCLUDE_TOKENS,
+    globals: PCC_GLOBALS,
+};
+
+pub static HIDETYPE_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:entity:pcc-hidetype-include",
+    head_token: Some("HIDETYPE"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: HIDETYPE_INCLUDE_TOKENS,
+    globals: PCC_GLOBALS,
+};
+
+pub static URL_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:entity:pcc-url-include",
+    head_token: Some("URL"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: URL_INCLUDE_TOKENS,
     globals: PCC_GLOBALS,
 };
 

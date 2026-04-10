@@ -8,6 +8,7 @@ use crate::schema::{ArtisanMapping, Cardinality, EntitySchema, HeadFormat, Token
 
 static BIOSETTINGS_TOKENS: &[TokenDef] = &[
     TokenDef::text("BASEAGE", "pcgen_baseage"),
+    TokenDef::text("BASEAGEADD", "pcgen_baseageadd"),
     TokenDef::text("MAXAGE", "pcgen_maxage"),
     TokenDef::text("AGEDIEROLL", "pcgen_agedieroll"),
     TokenDef {

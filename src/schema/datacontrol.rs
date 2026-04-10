@@ -23,3 +23,24 @@ pub static FACTSETDEF_SCHEMA: EntitySchema = EntitySchema {
     tokens: FACTSETDEF_TOKENS,
     globals: &[],
 };
+
+static FUNCTION_TOKENS: &[TokenDef] = &[
+    TokenDef::text_required("VALUE", "pcgen_value"),
+    TokenDef::text("EXPLANATION", "pcgen_explanation"),
+];
+
+pub static FUNCTION_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:entity:datacontrol-function",
+    head_token: Some("FUNCTION"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: FUNCTION_TOKENS,
+    globals: &[],
+};
+
+pub static DYNAMICSCOPE_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:entity:datacontrol-dynamicscope",
+    head_token: Some("DYNAMICSCOPE"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[],
+    globals: &[],
+};

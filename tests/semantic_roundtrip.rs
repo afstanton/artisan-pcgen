@@ -262,6 +262,61 @@ fn unparse_emits_pcgen_metadata_lines_for_pcc() {
 }
 
 #[test]
+fn unparse_emits_structured_pcc_backlog_tokens() {
+    let file = fixture_root().join("roundtrip_pcc_backlog_tokens.pcc");
+    let parsed = parse_file(&file).expect("parse pcc backlog fixture");
+    let generated = unparse_catalog_to_text(&parsed);
+
+    assert!(generated.contains("ABILITY:backlog_abilities.lst"));
+    assert!(generated.contains("ABILITYCATEGORY:backlog_abilitycategories.lst"));
+    assert!(generated.contains("FEAT:backlog_feats.lst"));
+    assert!(generated.contains("EQUIPMENT:backlog_equipment.lst"));
+    assert!(generated.contains("SPELL:backlog_spells.lst"));
+    assert!(generated.contains("LICENSE:Community Use"));
+    assert!(generated.contains("INFOTEXT:Supports 6.10.0"));
+    assert!(generated.contains("FORWARDREF:RACE|Orc"));
+    assert!(generated.contains("HIDETYPE:FEAT|AttackOption|ModifyAC"));
+    assert!(generated.contains("URL:WEBSITE|http://example.com/|Example"));
+}
+
+#[test]
+fn unparse_emits_structured_system_misc_tokens() {
+    let file = fixture_root().join("roundtrip_system_misc_tokens.lst");
+    let parsed = parse_file(&file).expect("parse system misc fixture");
+    let generated = unparse_catalog_to_text(&parsed);
+
+    assert!(generated.contains("SKILLCOST_CLASS:1"));
+    assert!(generated.contains("SKILLCOST_EXCLUSIVE:4"));
+    assert!(generated.contains("SPELLBASECONCENTRATION:CASTERLEVEL+BASESPELLSTAT"));
+    assert!(generated.contains("XPAWARD:1/8=50|1/6=65|1=400"));
+    assert!(generated.contains("STATINPUT:STATSCORE"));
+}
+
+#[test]
+fn unparse_emits_structured_datacontrol_tokens() {
+    let file = fixture_root().join("roundtrip_datacontrol_tokens.lst");
+    let parsed = parse_file(&file).expect("parse datacontrol fixture");
+    let generated = unparse_catalog_to_text(&parsed);
+
+    assert!(generated.contains("FUNCTION:d20Mod"));
+    assert!(generated.contains("VALUE:floor((arg(0)-10)/2)"));
+    assert!(generated.contains("EXPLANATION:For Ability Score Calculation of Bonus"));
+    assert!(generated.contains("DYNAMICSCOPE:MOVEMENT"));
+    assert!(generated.contains("DYNAMICSCOPE:VISION"));
+}
+
+#[test]
+fn unparse_emits_structured_entity_gap_tokens() {
+    let file = fixture_root().join("roundtrip_entity_gap_tokens.lst");
+    let parsed = parse_file(&file).expect("parse entity gap fixture");
+    let generated = unparse_catalog_to_text(&parsed);
+
+    assert!(generated.contains("HASSUBCLASS:YES"));
+    assert!(generated.contains("COSTPRE:9000"));
+    assert!(generated.contains("BASEAGEADD:3"));
+}
+
+#[test]
 fn roundtrip_fixtures_use_zero_raw_clause_fallback_for_schema_entities() {
     let root = fixture_root();
     let files = collect_all_fixture_files(&root).expect("collect fixtures");

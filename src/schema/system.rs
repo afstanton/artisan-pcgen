@@ -324,6 +324,52 @@ pub static SKILLCOST_CROSSCLASS_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
+pub static SKILLCOST_CLASS_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:skillcost_class",
+    head_token: Some("SKILLCOST_CLASS"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::integer("SKILLCOST_CLASS", "pcgen_skillcost_class")],
+    globals: &[],
+};
+
+pub static SKILLCOST_EXCLUSIVE_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:skillcost_exclusive",
+    head_token: Some("SKILLCOST_EXCLUSIVE"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::integer(
+        "SKILLCOST_EXCLUSIVE",
+        "pcgen_skillcost_exclusive",
+    )],
+    globals: &[],
+};
+
+pub static SPELLBASECONCENTRATION_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:spellbaseconcentration",
+    head_token: Some("SPELLBASECONCENTRATION"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::text_required(
+        "SPELLBASECONCENTRATION",
+        "pcgen_spellbaseconcentration",
+    )],
+    globals: &[],
+};
+
+pub static XPAWARD_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:xpaward",
+    head_token: Some("XPAWARD"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::text_required("XPAWARD", "pcgen_xpaward")],
+    globals: &[],
+};
+
+pub static STATINPUT_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:statinput",
+    head_token: Some("STATINPUT"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::text_required("STATINPUT", "pcgen_statinput")],
+    globals: &[],
+};
+
 pub static MAXNONEPICLEVEL_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
     entity_type_key: "pcgen:system:maxnonepiclevel",
     head_token: Some("MAXNONEPICLEVEL"),

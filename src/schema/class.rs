@@ -116,6 +116,7 @@ static CLASS_TOKENS: &[TokenDef] = &[
     TokenDef::integer("UMULT", "pcgen_umult"),
     // Sub-class / substitution
     TokenDef::integer("PROHIBITCOST", "pcgen_prohibitcost"),
+    TokenDef::yesno("HASSUBCLASS", "pcgen_hassubclass"),
     TokenDef::text("SUBCLASSLEVEL", "pcgen_subclasslevel"),
     TokenDef::text("SUBCLASS", "pcgen_subclass"),
     TokenDef::text("SUBSTITUTIONCLASS", "pcgen_substitutionclass"),
