@@ -143,6 +143,24 @@ static CLASS_TOKENS: &[TokenDef] = &[
     TokenDef::pipe_list_repeatable("CCSKILL", "pcgen_ccskill"),
     TokenDef::pipe_list_repeatable("UNENCUMBEREDMOVE", "pcgen_unencumberedmove"),
     TokenDef::text("ROLE", "pcgen_role"),
+    // SKILLLIST:count|ClassName — assigns skill list from another class (3e Scarred Lands)
+    TokenDef {
+        key: "SKILLLIST",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_skilllist"),
+        required: false,
+    },
+    // .pcg character-file sub-tokens (appear in CLASS lines inside .pcg files)
+    TokenDef::integer("SKILLPOOL", "pcgen_class_skillpool"),
+    TokenDef::text("SPELLBASE", "pcgen_class_spellbase"),
+    TokenDef {
+        key: "CANCASTPERDAY",
+        grammar: TokenGrammar::CommaList,
+        cardinality: Cardinality::Once,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_class_cancastperday"),
+        required: false,
+    },
 ];
 
 static CLASS_GLOBALS: &[GlobalGroup] = &[

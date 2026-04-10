@@ -49,6 +49,8 @@ static FEAT_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Attribute("pcgen_moveclone"),
         required: false,
     },
+    // .pcg sub-token: the choice(s) this feat/ability was applied to
+    TokenDef::text("APPLIEDTO", "pcgen_appliedto"),
 ];
 
 static FEAT_GLOBALS: &[GlobalGroup] = &[

@@ -48,6 +48,7 @@ static EQUIPMENT_TOKENS: &[TokenDef] = &[
     TokenDef::text("REACHMULT", "pcgen_reachmult"),
     TokenDef::text("ALTCRITMULT", "pcgen_altcritmult"),
     TokenDef::text("ALTCRITRANGE", "pcgen_altcritrange"),
+    TokenDef::text("ALTCRITICAL", "pcgen_altcritical"),
     TokenDef::text("ALTEQMOD", "pcgen_alteqmod"),
     TokenDef::integer("PLUS", "pcgen_plus"),
     TokenDef {

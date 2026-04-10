@@ -65,6 +65,8 @@ static TEMPLATE_TOKENS: &[TokenDef] = &[
     },
     TokenDef::text("GENDERLOCK", "pcgen_genderlock"),
     TokenDef::integer("BONUSSKILLPOINTS", "pcgen_bonusskillpoints"),
+    // Non-party points cost: how many party-tracking points this template does NOT consume
+    TokenDef::integer("NONPP", "pcgen_nonpp"),
     TokenDef {
         key: "TEMPVALUE",
         grammar: TokenGrammar::Text,

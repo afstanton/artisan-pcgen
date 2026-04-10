@@ -242,6 +242,8 @@ static PCC_TOKENS: &[TokenDef] = &[
         required: false,
     },
     TokenDef::text("OPTION", "pcgen_option"),
+    // Path to a help HTML file bundled with the campaign (e.g. HELP:./help_spycraft.html)
+    TokenDef::text("HELP", "pcgen_help"),
 ];
 
 static GLOBALMODIFIER_INCLUDE_TOKENS: &[TokenDef] = &[

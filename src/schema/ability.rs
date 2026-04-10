@@ -96,6 +96,8 @@ static ABILITY_TOKENS: &[TokenDef] = &[
     TokenDef::pipe_list_repeatable("CCSKILL", "pcgen_ccskill"),
     TokenDef::pipe_list_repeatable("UNENCUMBEREDMOVE", "pcgen_unencumberedmove"),
     TokenDef::pipe_positional_repeatable("FOLLOWERS", &["type", "limit"], "pcgen_followers"),
+    // .pcg sub-token: the choice(s) this feat/ability was applied to
+    TokenDef::text("APPLIEDTO", "pcgen_appliedto"),
 ];
 
 static ABILITY_GLOBALS: &[GlobalGroup] = &[

@@ -51,11 +51,14 @@ pub(crate) fn classify_token_key(input: &str, is_bare: bool) -> ClauseSupportLev
         return ClauseSupportLevel::Artifact;
     }
 
-    // Output-sheet layout tokens — appear in .htm.ftl template files, not in
-    // game data files. They are not PCGen entity tokens.
+    // Paper layout tokens — appear in paperInfo.lst files, not game-data files.
+    // WIDTH and HEIGHT are paper dimensions; LEFTMARGIN etc. are margins.
+    // (Note: HEIGHT is also a valid .pcg bio token — but paperInfo HEIGHT is
+    // harmlessly classified as SemanticallyInterpreted via the pcg HEIGHT schema,
+    // so only WIDTH needs explicit Artifact treatment here.)
     if matches!(
         token.as_str(),
-        "LEFTMARGIN" | "RIGHTMARGIN" | "TOPMARGIN" | "BOTTOMMARGIN"
+        "LEFTMARGIN" | "RIGHTMARGIN" | "TOPMARGIN" | "BOTTOMMARGIN" | "WIDTH"
     ) {
         return ClauseSupportLevel::Artifact;
     }
@@ -79,8 +82,34 @@ pub(crate) fn classify_token_key(input: &str, is_bare: bool) -> ClauseSupportLev
         | "IV.PRECLASS"
         // Proper names and abbreviations found in body text or deity names
         | "SELUNE" | "WWII" | "STR"
+        // Equipment slot names that appear as token keys in free text
+        | "ARMS" | "RINGS" | "VEHICLE" | "SPECIAL"
+        // Currency abbreviations appearing in prose or SPROP text
+        | "CP" | "PP"
+        // "HP" appears in SPROP free text (e.g. "TEMP HP: 1") split at the colon
+        | "HP"
+        // DIVINITY appears when ability names like "CHANNEL DIVINITY: ..." are split at the colon
+        | "DIVINITY"
+        // Prose/format markers that appear as token keys in body text
+        | "FOLIO"
+        // Comment line fragment (#COMMENT or similar) parsed as a token
+        | "COMMENT"
+        // Placeholder text appearing as token key in restriction clauses
+        | "RESTRICTION"
+        // Commented-out line artifact in companion/race data
+        | "CREATUREHANDS"
+        // Old-style product-identity flag (one occurrence in 3.5e dataset);
+        // modern corpus uses NAMEISPI / DESCISPI instead
+        | "ISPI"
     ) {
         return ClauseSupportLevel::Artifact;
+    }
+
+    // TOKEN.CLEAR is a standard PCGen modifier that removes accumulated values
+    // for repeatable tokens (e.g. DESC.CLEAR, TYPE.CLEAR). Treat any *.CLEAR
+    // suffix as policy-supported.
+    if token.ends_with(".CLEAR") {
+        return ClauseSupportLevel::PolicySupported;
     }
 
     // Selector-style token used in variable-path contexts; keep distinct from PART

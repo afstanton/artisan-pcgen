@@ -553,12 +553,66 @@ pub static WEAPONCATEGORY_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
+static ROLLMETHOD_SYSTEM_TOKENS: &[TokenDef] = &[
+    TokenDef::text("METHOD", "pcgen_method"),
+    // EXPRESSION is a sub-token in roll formulas: ROLLMETHOD:1|EXPRESSION:10
+    TokenDef::integer("EXPRESSION", "pcgen_rollmethod_expression"),
+];
+
 pub static ROLLMETHOD_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
     entity_type_key: "pcgen:system:rollmethod",
     head_token: Some("ROLLMETHOD"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text("METHOD", "pcgen_method")],
+    tokens: ROLLMETHOD_SYSTEM_TOKENS,
     globals: &[GlobalGroup::SortKey],
+};
+
+// codeControl.lst: maps save-bonus variable name, e.g. STATMODSAVE:Save_StatBonus
+pub static STATMODSAVE_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:statmodsave",
+    head_token: Some("STATMODSAVE"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::text_required("STATMODSAVE", "pcgen_statmodsave")],
+    globals: &[],
+};
+
+// codeControl.lst: maps alternate HP variable, e.g. ALTHP:HP_Vitality
+pub static ALTHP_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:althp",
+    head_token: Some("ALTHP"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef::text_required("ALTHP", "pcgen_althp")],
+    globals: &[],
+};
+
+// miscinfo.lst: pipe-separated list of equipment types hidden from UI
+pub static HIDDENEQUIPTYPES_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:hiddenequiptypes",
+    head_token: Some("HIDDENEQUIPTYPES"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef {
+        key: "HIDDENEQUIPTYPES",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Once,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_hiddenequiptypes"),
+        required: true,
+    }],
+    globals: &[],
+};
+
+// miscinfo.lst: pipe-separated list of feat types hidden from UI
+pub static HIDDENFEATTYPES_SYSTEM_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:system:hiddenfeattypes",
+    head_token: Some("HIDDENFEATTYPES"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: &[TokenDef {
+        key: "HIDDENFEATTYPES",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Once,
+        artisan_mapping: ArtisanMapping::Attribute("pcgen_hiddenfeattypes"),
+        required: true,
+    }],
+    globals: &[],
 };
 
 static CLASSTYPE_SYSTEM_TOKENS: &[TokenDef] = &[
