@@ -1119,6 +1119,7 @@ pub(crate) fn project_decl_token_value(
         "FEAT" => append_string_attr(attributes, "pcgen_feats", decl_value),
         "EQUIPMENT" => append_string_attr(attributes, "pcgen_equipment", decl_value),
         "SPELL" => append_string_attr(attributes, "pcgen_spells", decl_value),
+        "VARIABLE" => append_string_attr(attributes, "pcgen_variable_catalog", decl_value),
         "LICENSE" => append_string_attr(attributes, "pcgen_license", decl_value),
         "INFOTEXT" => append_string_attr(attributes, "pcgen_infotext", decl_value),
         "FORWARDREF" => append_string_attr(attributes, "pcgen_forwardref", decl_value),

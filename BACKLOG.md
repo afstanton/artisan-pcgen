@@ -3,12 +3,12 @@
 This backlog is derived from `TOKEN_INVENTORY.txt`, the current schema/projection/emission
 code, and spot checks against the PCGen and BahamutDragon external corpora.
 
-Current inventory status after the latest `.pcg` standalone-token pass:
+Current inventory status after the latest migration and `.pcg` standalone-token passes:
 
-- `540` semantically interpreted token keys
-- `539` fully structured canonical token keys
-- `1` semantically interpreted but not fully structured token key (`NEWCATEGORY`)
-- `66` unhandled token keys
+- `541` semantically interpreted token keys
+- `541` fully structured canonical token keys
+- `0` semantically interpreted but not fully structured token keys
+- `65` unhandled token keys
 - `0` fallback-needed token keys
 
 The immediate goal is narrow and concrete:
@@ -84,29 +84,28 @@ corpus inspection.
 
 ### 3c. PCC / inventory follow-up
 
-- [ ] `ISMATURE` — schema support exists for PCC include lines, but inventory
-      still reports it as semantically interpreted rather than fully structured.
-      Investigate the remaining classification/emission mismatch.
+- [x] `ISMATURE` — schema support exists for PCC include lines and now counts as
+      fully structured in inventory.
 
-### 3d. NEWCATEGORY — semantically interpreted but not fully-structured
+### 3d. NEWCATEGORY / migration records
 
-`NEWCATEGORY` (320 corpus hits) already has a `TokenDef` and explicit projection
-arm, but inventory still reports it as semantically interpreted rather than fully
-structured. The likely remaining issue is schema selection for migration-style
-`ABILITY:... NEWCATEGORY:...` lines.
+Migration-style `ABILITY:` rename records now use a dedicated schema, so
+`NEWCATEGORY` is fully structured across the corpus and no longer appears in the
+semi-structured bucket.
 
-- [ ] Fix schema selection so migration-style `ABILITY:` records use the ability
-      entity schema rather than the PCC include schema when appropriate.
+- [x] Fix schema selection so migration-style `ABILITY:` records use a dedicated
+      migration schema rather than the PCC include schema.
 
 ### 3e. Next highest-impact residual tokens
 
 These are the largest remaining unhandled buckets after the latest inventory run.
 
+- [ ] `HP` — mainly equipmod/property contexts plus some `.pcg` tracking fields
 - [ ] `NOTE` — mainly `.pcg` equipment-set / equipment-record notes
-- [ ] `HP` — `.pcg` / equipmod residuals; likely needs separate handling from `HITPOINTS`
-- [ ] `VARIABLE` — appears both in `.pcc` include lines and `.pcg` pool usage
 - [ ] `WIDTH` — mostly paper/output/profile-style standalone records
 - [ ] `CHANNEL` — low-count but real token family in spell/ability contexts
+- [ ] `VARIABLE` — `.pcc` include support is implemented; the remaining work is
+      `.pcg` pool-usage style handling if needed.
 
 ---
 

@@ -271,6 +271,10 @@ static LANGUAGE_INCLUDE_TOKENS: &[TokenDef] = &[
     TokenDef::text_required("LANGUAGE", "pcgen_language_catalog"),
     PRECAMPAIGN_TOKEN,
 ];
+static VARIABLE_INCLUDE_TOKENS: &[TokenDef] = &[
+    TokenDef::text_required("VARIABLE", "pcgen_variable_catalog"),
+    PRECAMPAIGN_TOKEN,
+];
 static ISMATURE_INCLUDE_TOKENS: &[TokenDef] = &[
     TokenDef::yesno("ISMATURE", "pcgen_ismature"),
     PRECAMPAIGN_TOKEN,
@@ -406,6 +410,14 @@ pub static LANGUAGE_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
     head_token: Some("LANGUAGE"),
     head_format: HeadFormat::TokenPrefixed,
     tokens: LANGUAGE_INCLUDE_TOKENS,
+    globals: PCC_GLOBALS,
+};
+
+pub static VARIABLE_INCLUDE_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:entity:pcc-variable-include",
+    head_token: Some("VARIABLE"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: VARIABLE_INCLUDE_TOKENS,
     globals: PCC_GLOBALS,
 };
 

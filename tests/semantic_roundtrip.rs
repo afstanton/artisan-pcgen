@@ -292,6 +292,7 @@ fn unparse_emits_structured_pcc_backlog_tokens() {
     assert!(generated.contains("HIDETYPE:FEAT|AttackOption|ModifyAC"));
     assert!(generated.contains("URL:WEBSITE|http://example.com/|Example"));
     assert!(generated.contains("ISMATURE:NO"));
+    assert!(generated.contains("VARIABLE:backlog_variables.lst"));
 }
 
 #[test]
@@ -381,6 +382,18 @@ fn unparse_emits_structured_pcg_standalone_tokens() {
     assert!(generated.contains("HANDED:Right"));
     assert!(generated.contains("STAT:STR"));
     assert!(generated.contains("SCORE:18"));
+}
+
+#[test]
+fn unparse_emits_structured_ability_migration_tokens() {
+    let file = fixture_root().join("roundtrip_ability_migration.lst");
+    let parsed = parse_file(&file).expect("parse ability migration fixture");
+    let generated = unparse_catalog_to_text(&parsed);
+
+    assert!(generated.contains("ABILITY:FEAT|Mythic Feat ~ Drink Is Life"));
+    assert!(generated.contains("MAXVER:6.07.05"));
+    assert!(generated.contains("NEWKEY:Drink Is Life"));
+    assert!(generated.contains("NEWCATEGORY:Mythic Feat"));
 }
 
 #[test]

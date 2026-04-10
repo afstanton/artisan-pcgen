@@ -44,10 +44,16 @@ pub(crate) fn project_semantics(
 }
 
 pub(crate) fn infer_entity_type_key(head: &str, clauses: &[ParsedClause]) -> String {
-    if let Some((head_key, _)) = parse_head_key_value(head)
-        && let Some(schema) = crate::schema::schema_for_head_token(&head_key)
-    {
-        return schema.entity_type_key.to_string();
+    if let Some((head_key, head_value)) = parse_head_key_value(head) {
+        if head_key.eq_ignore_ascii_case("ABILITY")
+            && looks_like_ability_migration(&head_value, clauses)
+        {
+            return "pcgen:entity:ability-migration".to_string();
+        }
+
+        if let Some(schema) = crate::schema::schema_for_head_token(&head_key) {
+            return schema.entity_type_key.to_string();
+        }
     }
 
     if head
@@ -183,6 +189,7 @@ fn looks_like_pcc(head: &str, clauses: &[ParsedClause]) -> bool {
         "COVER",
         "LOGO",
         "COPYRIGHT",
+        "VARIABLE",
         "LICENSE",
         "PCC",
         "MAXDEVVER",
@@ -219,6 +226,14 @@ fn looks_like_pcc(head: &str, clauses: &[ParsedClause]) -> bool {
         || has_token(clauses, "FORWARDREF")
         || has_token(clauses, "PCC")
         || has_token(clauses, "COPYRIGHT")
+}
+
+fn looks_like_ability_migration(head_value: &str, clauses: &[ParsedClause]) -> bool {
+    head_value.contains('|')
+        && (has_token(clauses, "MAXVER")
+            || has_token(clauses, "MAXDEVVER")
+            || has_token(clauses, "NEWKEY")
+            || has_token(clauses, "NEWCATEGORY"))
 }
 
 fn looks_like_class(clauses: &[ParsedClause]) -> bool {
