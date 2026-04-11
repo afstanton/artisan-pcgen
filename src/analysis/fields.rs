@@ -339,6 +339,9 @@ pub(crate) fn project_clause_attributes(
                     .entry("description".to_string())
                     .or_insert_with(|| Value::String(value.clone()));
             }
+            "DESC.CLEAR" => {
+                attributes.insert("pcgen_desc_clear".to_string(), Value::Bool(true));
+            }
             "KEY" => {
                 attributes.insert("pcgen_key".to_string(), Value::String(value.clone()));
             }

@@ -422,6 +422,14 @@ fn collect_emittable_global_keys(group: GlobalGroup, entity: &Entity, keys: &mut
             }
             if entity
                 .attributes
+                .get("pcgen_desc_clear")
+                .and_then(Value::as_bool)
+                .unwrap_or(false)
+            {
+                keys.insert("DESC.CLEAR".to_string());
+            }
+            if entity
+                .attributes
                 .get("pcgen_tempdesc")
                 .and_then(Value::as_str)
                 .is_some()
@@ -695,6 +703,14 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
                 .or_else(|| entity.attributes.get("description").and_then(Value::as_str));
             if let Some(desc) = desc {
                 parts.push(format!("DESC:{desc}"));
+            }
+            if entity
+                .attributes
+                .get("pcgen_desc_clear")
+                .and_then(Value::as_bool)
+                .unwrap_or(false)
+            {
+                parts.push("DESC.CLEAR:".to_string());
             }
             if let Some(tempdesc) = entity
                 .attributes

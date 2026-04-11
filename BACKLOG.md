@@ -5,15 +5,56 @@ code, and spot checks against the PCGen and BahamutDragon external corpora.
 
 Current inventory status (regenerate with `bash inv.sh`):
 
-- `612` semantically interpreted token keys
-- `612` fully structured canonical token keys (**all interpreted tokens are fully-structured**)
+- `613` semantically interpreted token keys
+- `613` fully structured canonical token keys (**all interpreted tokens are fully-structured**)
 - `0` semantically interpreted but not fully structured
 - `0` unhandled token keys
 - `0` fallback-needed token keys
-- `2` policy-supported-only (EQUIPMENT.PART, DESC.CLEAR — correct by design)
-- `617` fixture tokens ≥ `614` observed tokens (fixture set is a superset of corpus)
+- `1` policy-supported-only target remains in the intended end-state backlog:
+  `EQUIPMENT.PART`
+- `614` fixture tokens = `614` observed tokens
 
 The corpus is now scanned from three subdirectory types: `data`, `system`, and `characters`.
+
+---
+
+## End-State Gap: Policy-Supported Tokens
+
+These are intentionally recognized as valid PCGen syntax today, but they are
+not the intended end state for `artisan-pcgen`. The long-term goal is that
+legal PCGen files should parse into structured state and emit back into valid
+PCGen syntax without relying on token-policy exceptions.
+
+### `DESC.CLEAR`
+
+Current state:
+- Documented in PCGen docs as valid `DESC:.CLEAR` / regex-clear syntax.
+- Structured through `GlobalGroup::Desc`, projection, and emission.
+- No longer intended to remain policy-only once inventory is regenerated with
+  schema-aware classification precedence.
+
+Target state:
+- [x] Promote `DESC.CLEAR` to structured support in the `GlobalGroup::Desc`
+      path.
+- [x] Project clear-state into a dedicated attribute (or generic clear-token
+      structure) in `fields.rs`.
+- [x] Emit `DESC.CLEAR:` from structured state in `emit.rs`.
+- [x] Add strict round-trip fixture coverage and remove it from policy-only
+      inventory-only treatment.
+
+### `EQUIPMENT.PART`
+
+Current state:
+- Accepted by `token_policy.rs` as valid selector/path syntax.
+- Counted as supported in inventory.
+- Not modeled as a first-class schema-backed selector/scope structure.
+
+Target state:
+- [ ] Design a structured selector/scope representation suitable for
+      `EQUIPMENT.PART` and related path-style PCGen constructs.
+- [ ] Thread that representation through parse, projection, and emission.
+- [ ] Add fixture coverage from BahamutDragon parser-replacement examples.
+- [ ] Remove the policy-only special case once selector support is real.
 
 ---
 

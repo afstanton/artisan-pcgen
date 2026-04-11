@@ -353,7 +353,7 @@ impl GlobalGroup {
         match self {
             GlobalGroup::Type => &["TYPE"],
             GlobalGroup::Key => &["KEY"],
-            GlobalGroup::Desc => &["DESC", "TEMPDESC", "DESCISPI"],
+            GlobalGroup::Desc => &["DESC", "DESC.CLEAR", "TEMPDESC", "DESCISPI"],
             GlobalGroup::Fact => &["FACT", "FACTSET"],
             GlobalGroup::Bonus => &["BONUS", "TEMPBONUS"],
             GlobalGroup::Add => &["ADD"],
@@ -412,6 +412,11 @@ impl GlobalGroup {
             GlobalGroup::SourceLink => upper_key == "SOURCELINK",
             // SourceMeta: exact match against any of the known keys
             GlobalGroup::SourceMeta => self.token_key_prefixes().contains(&upper_key),
+            // DESC supports the standard PCGen clear modifier for repeatable
+            // description text.
+            GlobalGroup::Desc => {
+                matches!(upper_key, "DESC" | "DESC.CLEAR" | "TEMPDESC" | "DESCISPI")
+            }
             // All others: exact match
             _ => self.token_key_prefixes().iter().any(|p| *p == upper_key),
         }

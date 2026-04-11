@@ -105,13 +105,6 @@ pub(crate) fn classify_token_key(input: &str, is_bare: bool) -> ClauseSupportLev
         return ClauseSupportLevel::Artifact;
     }
 
-    // TOKEN.CLEAR is a standard PCGen modifier that removes accumulated values
-    // for repeatable tokens (e.g. DESC.CLEAR, TYPE.CLEAR). Treat any *.CLEAR
-    // suffix as policy-supported.
-    if token.ends_with(".CLEAR") {
-        return ClauseSupportLevel::PolicySupported;
-    }
-
     // Selector-style token used in variable-path contexts; keep distinct from PART
     // while treating it as intentionally supported syntax.
     if token == "EQUIPMENT.PART" {
@@ -122,6 +115,14 @@ pub(crate) fn classify_token_key(input: &str, is_bare: bool) -> ClauseSupportLev
     // classifies it as semantically interpreted.
     if crate::schema::any_schema_knows_token(&token) {
         return ClauseSupportLevel::SemanticallyInterpreted;
+    }
+
+    // TOKEN.CLEAR is a standard PCGen modifier that removes accumulated values
+    // for repeatable tokens (e.g. DESC.CLEAR, TYPE.CLEAR). If a specific clear
+    // token is not schema-backed yet, keep treating it as intentionally
+    // supported syntax instead of unhandled.
+    if token.ends_with(".CLEAR") {
+        return ClauseSupportLevel::PolicySupported;
     }
 
     // Bare PRE* tokens not caught by the schema (edge-case aliases)
