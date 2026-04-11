@@ -471,7 +471,7 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
 
 pub fn unparse_catalog_to_text(catalog: &ParsedCatalog) -> String {
     let mut lines = Vec::new();
-    for entity in &catalog.entities {
+    for entity in ordered_entities_for_unparse(catalog) {
         // Prefer schema-driven emission; fall back to raw clause reconstruction.
         if let Some(line) = emit_entity_auto(entity) {
             lines.push(line);
@@ -559,6 +559,61 @@ fn infer_record_family(ext: &str, parsed_line: &ParsedLine, inferred_type_key: &
                 "lst:name-entry"
             }
         }
+    }
+}
+
+fn ordered_entities_for_unparse(catalog: &ParsedCatalog) -> Vec<&Entity> {
+    let mut indexed: Vec<(usize, &Entity)> = catalog.entities.iter().enumerate().collect();
+    indexed.sort_by(|(left_idx, left), (right_idx, right)| {
+        compare_entities_for_unparse(left, right).then_with(|| left_idx.cmp(right_idx))
+    });
+    indexed.into_iter().map(|(_, entity)| entity).collect()
+}
+
+fn compare_entities_for_unparse(left: &Entity, right: &Entity) -> std::cmp::Ordering {
+    let left_format = entity_attr_str(left, "source_format");
+    let right_format = entity_attr_str(right, "source_format");
+
+    left_format
+        .cmp(&right_format)
+        .then_with(|| match (entity_line_number(left), entity_line_number(right)) {
+            (Some(a), Some(b)) => a.cmp(&b),
+            _ => std::cmp::Ordering::Equal,
+        })
+        .then_with(|| {
+            record_family_priority(left_format, entity_attr_str(left, "pcgen_record_family")).cmp(
+                &record_family_priority(right_format, entity_attr_str(right, "pcgen_record_family")),
+            )
+        })
+        .then_with(|| entity_attr_str(left, "pcgen_decl_token").cmp(&entity_attr_str(right, "pcgen_decl_token")))
+        .then_with(|| left.name.cmp(&right.name))
+}
+
+fn entity_line_number(entity: &Entity) -> Option<u64> {
+    entity
+        .attributes
+        .get("pcgen_line_number")
+        .and_then(Value::as_u64)
+        .or_else(|| entity.attributes.get("line_number").and_then(Value::as_u64))
+}
+
+fn entity_attr_str<'a>(entity: &'a Entity, key: &str) -> &'a str {
+    entity
+        .attributes
+        .get(key)
+        .and_then(Value::as_str)
+        .unwrap_or("")
+}
+
+fn record_family_priority(source_format: &str, family: &str) -> u8 {
+    match (source_format, family) {
+        ("pcc", "pcc:directive") => 0,
+        ("pcc", "pcc:include") => 1,
+        ("pcg", "pcg:token-record") => 0,
+        ("pcg", "pcg:name-record") => 1,
+        ("lst", "lst:name-entry") => 0,
+        ("lst", "lst:token-entry") => 1,
+        _ => 9,
     }
 }
 
@@ -833,6 +888,27 @@ mod tests {
                 .and_then(Value::as_str),
             Some("pcc:directive")
         );
+    }
+
+    #[test]
+    fn unparse_orders_entities_by_family_when_line_numbers_are_missing() {
+        let mut catalog = parse_text_to_catalog(
+            "VARIABLE:vars.lst\nCAMPAIGN:Test Campaign",
+            "sample.pcc",
+            "pcc",
+        );
+
+        catalog.entities.reverse();
+        for entity in &mut catalog.entities {
+            entity.attributes.swap_remove("line_number");
+            entity.attributes.swap_remove("pcgen_line_number");
+        }
+
+        let text = unparse_catalog_to_text(&catalog);
+        let lines: Vec<_> = text.lines().collect();
+
+        assert_eq!(lines[0], "CAMPAIGN:Test Campaign");
+        assert_eq!(lines[1], "VARIABLE:vars.lst");
     }
 
     #[test]
