@@ -37,8 +37,9 @@ static SKILL_TOKENS: &[TokenDef] = &[
     TokenDef::text("ACHECK", "pcgen_accheck"),
     TokenDef::text("VISIBLE", "pcgen_visible"),
     // PCG character file: CLASSBOUGHT bracket group [CLASS:Wizard|RANKS:3.0|COST:1|CLASSSKILL:Y]
-    // Sub-keys RANKS and CLASSSKILL live inside the bracket group; no separate token defs needed.
-    TokenDef::bracket_group("CLASSBOUGHT", "pcgen_classbought"),
+    // A skill may have multiple CLASSBOUGHT entries (one per class), written as adjacent groups
+    // with no pipe separator: CLASSBOUGHT:[...]CLASSBOUGHT:[...]
+    TokenDef::bracket_group_repeatable("CLASSBOUGHT", "pcgen_classbought"),
 ];
 
 static SKILL_GLOBALS: &[GlobalGroup] = &[

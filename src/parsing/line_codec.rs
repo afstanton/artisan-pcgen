@@ -98,8 +98,16 @@ pub(crate) fn clauses_from_json(value: &Value) -> Option<Vec<ParsedClause>> {
 
 fn parse_segments_with_generated_parser(line: &str) -> Vec<String> {
     if line.contains('[') || line.contains(']') {
-        let custom = split_on_top_level_pipes(line);
-        return normalize_non_empty_segments(custom);
+        let pipe_segments = split_on_top_level_pipes(line);
+        // Post-process: a single pipe-segment may contain adjacent bracket groups
+        // with no separator between them, e.g.:
+        //   CLASSBOUGHT:[CLASS:Bard|RANKS:5.0]CLASSBOUGHT:[CLASS:Wizard|RANKS:3.0]
+        // Split each segment at `]TOKEN:` boundaries to yield individual clauses.
+        let expanded: Vec<String> = pipe_segments
+            .into_iter()
+            .flat_map(|seg| split_adjacent_bracket_groups(seg))
+            .collect();
+        return normalize_non_empty_segments(expanded);
     }
 
     let parser = super::line_grammar::SegmentsParser::new();
@@ -218,6 +226,72 @@ fn push_trimmed_if_non_empty(out: &mut Vec<String>, input: &str) {
     let trimmed = input.trim();
     if !trimmed.is_empty() {
         out.push(trimmed.to_string());
+    }
+}
+
+/// Splits a segment at `]TOKEN:` boundaries.
+///
+/// In PCGen `.pcg` files a single tab-delimited column may contain multiple
+/// adjacent bracket groups with *no* pipe or whitespace separator between them:
+///
+/// ```text
+/// CLASSBOUGHT:[CLASS:Bard|RANKS:5.0|COST:1|CLASSSKILL:Y]CLASSBOUGHT:[CLASS:Wizard|RANKS:3.0|COST:1|CLASSSKILL:Y]
+/// ```
+///
+/// `split_on_top_level_pipes` treats this as a single segment because the inner
+/// pipes are shielded by the bracket group and the two groups have no top-level
+/// pipe between them. This function detects the `]` + immediate token-key-start
+/// pattern and splits there, returning each bracket group as its own segment.
+///
+/// If the input contains no such boundary the original string is returned as a
+/// single-element vec (no allocation unless a split is needed).
+fn split_adjacent_bracket_groups(segment: String) -> Vec<String> {
+    // Quick check: if there's no `]` followed by an uppercase ASCII letter,
+    // there's nothing to split.
+    if !segment.contains(']') {
+        return vec![segment];
+    }
+
+    let mut result: Vec<String> = Vec::new();
+    let mut start = 0usize;
+    let mut bracket_depth = 0usize;
+    let mut i = 0usize;
+
+    while i < segment.len() {
+        // SAFETY: we always advance by char boundary.
+        let ch = segment[i..].chars().next().expect("valid UTF-8");
+        match ch {
+            '[' => bracket_depth += 1,
+            ']' => {
+                bracket_depth = bracket_depth.saturating_sub(1);
+                if bracket_depth == 0 {
+                    // Position just after the `]`
+                    let after_bracket = i + 1;
+                    if looks_like_token_start(&segment, after_bracket) {
+                        // Push everything up to and including the `]`
+                        let part = segment[start..after_bracket].trim();
+                        if !part.is_empty() {
+                            result.push(part.to_string());
+                        }
+                        start = after_bracket;
+                    }
+                }
+            }
+            _ => {}
+        }
+        i += ch.len_utf8();
+    }
+
+    // Push the final remainder.
+    let remainder = segment[start..].trim();
+    if !remainder.is_empty() {
+        result.push(remainder.to_string());
+    }
+
+    if result.is_empty() {
+        vec![segment]
+    } else {
+        result
     }
 }
 

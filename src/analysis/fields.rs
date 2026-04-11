@@ -42,6 +42,27 @@ pub(crate) fn parse_bracket_group(value: &str) -> Value {
     Value::Array(items)
 }
 
+/// Append `value` onto an array attribute, creating the array if needed.
+///
+/// Used for tokens that can appear multiple times on a line (e.g. repeated
+/// `CLASSBOUGHT` bracket groups). Each occurrence is stored as a separate
+/// element so the full list is always `[occurrence1, occurrence2, ...]`.
+fn append_attribute(attributes: &mut IndexMap<String, Value>, key: &str, value: Value) {
+    match attributes.get_mut(key) {
+        Some(Value::Array(arr)) => {
+            arr.push(value);
+        }
+        Some(existing) => {
+            // Promote scalar to array then append.
+            let prev = std::mem::replace(existing, Value::Null);
+            *existing = Value::Array(vec![prev, value]);
+        }
+        None => {
+            attributes.insert(key.to_string(), Value::Array(vec![value]));
+        }
+    }
+}
+
 pub(crate) fn project_clause_attributes(
     head_name: &str,
     clauses: &[ParsedClause],
@@ -448,8 +469,10 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_class".to_string(), Value::String(value.clone()));
             }
             // CLASSBOUGHT is a bracket group: [CLASS:Wizard|RANKS:3.0|COST:1|CLASSSKILL:Y]
+            // Multiple CLASSBOUGHT groups on a single line are accumulated as an array of arrays —
+            // each group is an element: [[{key:CLASS,value:Bard},...], [{key:CLASS,value:Aristocrat},...]]
             "CLASSBOUGHT" => {
-                attributes.insert("pcgen_classbought".to_string(), parse_bracket_group(value));
+                append_attribute(attributes, "pcgen_classbought", parse_bracket_group(value));
             }
             // RANKS / CLASSSKILL historically appeared as split-out bracket sub-items;
             // kept for safety in case any corpus variant writes them standalone.

@@ -88,7 +88,8 @@ fn assert_semantic_roundtrip_file(path: &Path) -> io::Result<()> {
 /// not stored as raw opaque strings.
 #[test]
 fn bracket_group_values_are_structured() {
-    // CLASSBOUGHT
+    // CLASSBOUGHT — single group → array containing one bracket-group array
+    // pcgen_classbought is always [[{key,value},...]] so each group is an element.
     let cat = parse_text_to_catalog(
         "SKILL:Spellcraft|CLASSBOUGHT:[CLASS:Wizard|RANKS:3.0|COST:1|CLASSSKILL:Y]",
         "test.pcg",
@@ -99,8 +100,10 @@ fn bracket_group_values_are_structured() {
         .attributes
         .get("pcgen_classbought")
         .expect("pcgen_classbought should be set");
-    let arr = classbought.as_array().expect("pcgen_classbought should be an array");
-    assert_eq!(arr.len(), 4, "CLASSBOUGHT should have 4 sub-entries");
+    let groups = classbought.as_array().expect("pcgen_classbought should be an array");
+    assert_eq!(groups.len(), 1, "single CLASSBOUGHT group should produce a 1-element outer array");
+    let arr = groups[0].as_array().expect("each CLASSBOUGHT group should be an inner array");
+    assert_eq!(arr.len(), 4, "CLASSBOUGHT group should have 4 sub-entries");
     assert_eq!(arr[0]["key"], "CLASS");
     assert_eq!(arr[0]["value"], "Wizard");
     assert_eq!(arr[1]["key"], "RANKS");
@@ -159,17 +162,19 @@ SPELLNAME:Fireball|TIMES:2|CLASS:Wizard|BOOK:Combat Book|SPELLLEVEL:3|FEATLIST:[
     let emitted = unparse_catalog_to_text(&first);
     let second = parse_text_to_catalog(&emitted, "test.pcg", "pcg");
 
-    // CLASSBOUGHT round-trip
+    // CLASSBOUGHT round-trip — single group wraps as [[{sub-entries}]]
     let skill_after = second
         .entities
         .iter()
         .find(|e| e.name == "Spellcraft")
         .expect("Spellcraft entity should survive round-trip");
-    let cb = skill_after
+    let cb_groups = skill_after
         .attributes
         .get("pcgen_classbought")
         .and_then(|v| v.as_array())
         .expect("pcgen_classbought should be an array after round-trip");
+    assert_eq!(cb_groups.len(), 1);
+    let cb = cb_groups[0].as_array().expect("inner group should be an array");
     assert_eq!(cb.len(), 4);
     assert_eq!(cb[0]["key"], "CLASS");
     assert_eq!(cb[0]["value"], "Wizard");
@@ -650,4 +655,76 @@ fn roundtrip_fixtures_use_zero_raw_clause_fallback_for_schema_entities() {
         checked > 0,
         "expected at least one schema-bound roundtrip fixture entity"
     );
+}
+
+/// Verify that adjacent bracket groups on a single line — `][` with no pipe between them —
+/// are split into separate CLASSBOUGHT clauses, each parsed as a structured array.
+///
+/// Real corpus example from `Everything.pcg`:
+/// ```text
+/// SKILL:Perform|OUTPUTORDER:22|CLASSBOUGHT:[CLASS:Bard|RANKS:5.0|COST:1|CLASSSKILL:Y]CLASSBOUGHT:[CLASS:Aristocrat|RANKS:1.0|COST:1|CLASSSKILL:Y]
+/// ```
+#[test]
+fn adjacent_bracket_groups_are_split_into_separate_clauses() {
+    // Two CLASSBOUGHT entries with no pipe or whitespace between the closing `]`
+    // and the opening `CLASSBOUGHT:[` of the next entry.
+    let line = "SKILL:Perform|OUTPUTORDER:22|CLASSBOUGHT:[CLASS:Bard|RANKS:5.0|COST:1|CLASSSKILL:Y]CLASSBOUGHT:[CLASS:Aristocrat|RANKS:1.0|COST:1|CLASSSKILL:Y]";
+    let cat = parse_text_to_catalog(line, "test.pcg", "pcg");
+    let entity = cat
+        .entities
+        .iter()
+        .find(|e| e.name == "Perform")
+        .expect("Perform skill should be parsed");
+
+    // pcgen_classbought should be an array because the token is Repeatable.
+    let cb = entity
+        .attributes
+        .get("pcgen_classbought")
+        .expect("pcgen_classbought should be set");
+    let arr = cb.as_array().expect("pcgen_classbought should be an array");
+
+    // Two separate bracket groups → two array elements (each itself an array of sub-entries).
+    assert_eq!(arr.len(), 2, "should have one entry per CLASSBOUGHT group; got {arr:?}");
+
+    // First group: Bard at rank 5.0
+    let first = arr[0].as_array().expect("first CLASSBOUGHT should be an array");
+    assert_eq!(first[0]["key"], "CLASS");
+    assert_eq!(first[0]["value"], "Bard");
+    assert_eq!(first[1]["key"], "RANKS");
+    assert_eq!(first[1]["value"], "5.0");
+
+    // Second group: Aristocrat at rank 1.0
+    let second = arr[1].as_array().expect("second CLASSBOUGHT should be an array");
+    assert_eq!(second[0]["key"], "CLASS");
+    assert_eq!(second[0]["value"], "Aristocrat");
+    assert_eq!(second[1]["key"], "RANKS");
+    assert_eq!(second[1]["value"], "1.0");
+}
+
+/// Adjacent bracket groups survive a full parse → emit → reparse cycle with all sub-entries.
+#[test]
+fn adjacent_bracket_groups_round_trip() {
+    let line = "SKILL:Perform|OUTPUTORDER:22|CLASSBOUGHT:[CLASS:Bard|RANKS:5.0|COST:1|CLASSSKILL:Y]CLASSBOUGHT:[CLASS:Aristocrat|RANKS:1.0|COST:1|CLASSSKILL:Y]";
+
+    let first = parse_text_to_catalog(line, "test.pcg", "pcg");
+    let emitted = unparse_catalog_to_text(&first);
+    let second = parse_text_to_catalog(&emitted, "test.pcg", "pcg");
+
+    let skill = second
+        .entities
+        .iter()
+        .find(|e| e.name == "Perform")
+        .expect("Perform should survive round-trip");
+
+    let arr = skill
+        .attributes
+        .get("pcgen_classbought")
+        .and_then(|v| v.as_array())
+        .expect("pcgen_classbought should be an array after round-trip");
+
+    assert_eq!(arr.len(), 2, "both CLASSBOUGHT groups should survive round-trip");
+    let first_groups = arr[0].as_array().expect("first group should be array");
+    assert_eq!(first_groups[0]["value"], "Bard");
+    let second_groups = arr[1].as_array().expect("second group should be array");
+    assert_eq!(second_groups[0]["value"], "Aristocrat");
 }

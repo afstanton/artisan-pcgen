@@ -461,7 +461,8 @@ pub static PCG_CLASS_SCHEMA: LineGrammar = LineGrammar {
 static PCG_SKILL_TOKENS: &[TokenDef] = &[
     TokenDef::integer("OUTPUTORDER", "pcgen_outputorder"),
     // CLASSBOUGHT is a bracket group: [CLASS:Wizard|RANKS:3.0|COST:1|CLASSSKILL:Y]
-    TokenDef::bracket_group("CLASSBOUGHT", "pcgen_classbought"),
+    // Repeatable: a single SKILL line may have multiple adjacent groups (no pipe between them).
+    TokenDef::bracket_group_repeatable("CLASSBOUGHT", "pcgen_classbought"),
 ];
 
 pub static PCG_SKILL_SCHEMA: LineGrammar = LineGrammar {

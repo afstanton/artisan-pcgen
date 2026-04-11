@@ -250,6 +250,21 @@ impl TokenDef {
         }
     }
 
+    /// Repeatable bracket-group token.
+    ///
+    /// Like [`bracket_group`](Self::bracket_group) but allows the token to appear multiple times
+    /// on the same line (e.g. `CLASSBOUGHT:[...]CLASSBOUGHT:[...]` in PCG skill records).
+    /// Each occurrence is stored as a separate element in the attribute's JSON array.
+    pub const fn bracket_group_repeatable(key: &'static str, field: &'static str) -> Self {
+        Self {
+            key,
+            grammar: TokenGrammar::BracketGroup,
+            cardinality: Cardinality::Repeatable,
+            artisan_mapping: ArtisanMapping::Field(field),
+            required: false,
+        }
+    }
+
     /// Single-occurrence YES/NO token mapping to a logical field.
     pub const fn yesno(key: &'static str, field: &'static str) -> Self {
         Self {
