@@ -13,3 +13,4 @@ ISMATURE:NO
 VARIABLE:backlog_variables.lst
 DYNAMIC:backlog_dynamics.lst
 GLOBALMODIFIER:backlog_globalmods.lst
+HELP:./help_campaign.html

@@ -36,6 +36,10 @@ static SKILL_TOKENS: &[TokenDef] = &[
     TokenDef::text("KEYSTAT", "pcgen_keystat"),
     TokenDef::text("ACHECK", "pcgen_accheck"),
     TokenDef::text("VISIBLE", "pcgen_visible"),
+    // PCG character file sub-tokens for skill rank tracking
+    TokenDef::text("CLASSBOUGHT", "pcgen_classbought"),
+    TokenDef::text("RANKS", "pcgen_ranks"),
+    TokenDef::yesno("CLASSSKILL", "pcgen_classskill"),
 ];
 
 static SKILL_GLOBALS: &[GlobalGroup] = &[

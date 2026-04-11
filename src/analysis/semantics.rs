@@ -52,7 +52,14 @@ pub(crate) fn infer_entity_type_key(head: &str, clauses: &[ParsedClause]) -> Str
         }
 
         if let Some(schema) = crate::schema::schema_for_head_token(&head_key) {
-            return schema.entity_type_key.to_string();
+            // Skip the migration schema here: migration entities have already
+            // been detected above via `looks_like_ability_migration`. If we
+            // reach this point the line is NOT a migration record, so don't
+            // misclassify it as one just because the migration schema happens
+            // to register the "ABILITY" head token.
+            if schema.entity_type_key != "pcgen:entity:ability-migration" {
+                return schema.entity_type_key.to_string();
+            }
         }
     }
 
@@ -193,6 +200,7 @@ fn looks_like_pcc(head: &str, clauses: &[ParsedClause]) -> bool {
         "LICENSE",
         "PCC",
         "MAXDEVVER",
+        "HELP",
     ];
 
     if let Some(key) = head_key(head)
@@ -363,6 +371,7 @@ fn looks_like_template(clauses: &[ParsedClause]) -> bool {
         || has_token(clauses, "!PREVISION")
         || has_token(clauses, "PRESRLT")
         || has_token(clauses, "!PREKIT")
+        || has_token(clauses, "NONPP")
 }
 
 fn looks_like_race(clauses: &[ParsedClause]) -> bool {

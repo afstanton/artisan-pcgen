@@ -33,7 +33,7 @@ fn main() -> io::Result<()> {
         let root = Path::new(root_arg);
 
         // Scan data and system directories
-        for subdir in &["data", "system"] {
+        for subdir in &["data", "system", "characters"] {
             let path = root.join(subdir);
             if path.exists() && path.is_dir() {
                 eprintln!("token_inventory: scanning {}", path.display());

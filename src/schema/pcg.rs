@@ -463,6 +463,8 @@ static EQUIPSET_TOKENS: &[TokenDef] = &[
     TokenDef::text("QUANTITY", "pcgen_quantity"),
     // pcgen_equipset_usetempmods: distinct from standalone pcgen_usetempmods
     TokenDef::yesno("USETEMPMODS", "pcgen_equipset_usetempmods"),
+    // Optional free-text annotation on an equipment set entry
+    TokenDef::text("NOTE", "pcgen_note"),
 ];
 
 pub static EQUIPSET_SCHEMA: EntitySchema = EntitySchema {
@@ -485,6 +487,8 @@ static EQUIPNAME_TOKENS: &[TokenDef] = &[
     TokenDef::text("QUANTITY", "pcgen_quantity"),
     TokenDef::text("CUSTOMIZATION", "pcgen_customization"),
     TokenDef::text("NOTE", "pcgen_note"),
+    // DATA appears as a separate clause when bracket content in CUSTOMIZATION is pipe-split
+    TokenDef::text("DATA", "pcgen_data"),
 ];
 
 pub static EQUIPNAME_SCHEMA: EntitySchema = EntitySchema {
@@ -503,6 +507,8 @@ static CLASSABILITIESLEVEL_TOKENS: &[TokenDef] = &[
     TokenDef::integer("HITPOINTS", "pcgen_cal_hitpoints"),
     TokenDef::integer("SKILLSGAINED", "pcgen_cal_skillsgained"),
     TokenDef::integer("SKILLSREMAINING", "pcgen_cal_skillsremaining"),
+    // SPECIALTIES records chosen specialist school etc. for class levels
+    TokenDef::text("SPECIALTIES", "pcgen_specialties"),
 ];
 
 pub static CLASSABILITIESLEVEL_SCHEMA: EntitySchema = EntitySchema {
@@ -514,4 +520,86 @@ pub static CLASSABILITIESLEVEL_SCHEMA: EntitySchema = EntitySchema {
         // PRESTAT appears as a sub-token in some CLASSABILITIESLEVEL lines
         crate::schema::GlobalGroup::Prerequisites,
     ],
+};
+
+// ---------------------------------------------------------------------------
+// Standalone character note (NOTE:text|ID:n|PARENTID:n|VALUE:v)
+// ---------------------------------------------------------------------------
+
+static NOTE_TOKENS: &[TokenDef] = &[
+    TokenDef::text_required("NOTE", "pcgen_note"),
+    // ID and PARENTID reuse the equipset id field (same projector slot)
+    TokenDef::text("ID", "pcgen_equipset_id"),
+    TokenDef::text("PARENTID", "pcgen_note_parentid"),
+    TokenDef::text("VALUE", "pcgen_value"),
+];
+
+pub static NOTE_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:pcg:note",
+    head_token: Some("NOTE"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: NOTE_TOKENS,
+    globals: &[],
+};
+
+// ---------------------------------------------------------------------------
+// Character spell record (SPELLNAME:name|TIMES:n|CLASS:c|BOOK:b|SPELLLEVEL:n)
+// ---------------------------------------------------------------------------
+
+static SPELLNAME_TOKENS: &[TokenDef] = &[
+    TokenDef::text_required("SPELLNAME", "pcgen_spellname"),
+    TokenDef::integer("TIMES", "pcgen_times"),
+    TokenDef::text("BOOK", "pcgen_book"),
+    TokenDef::text("SPELLLEVEL", "pcgen_spelllevel"),
+    TokenDef::text("CLASS", "pcgen_class"),
+    TokenDef::text("SOURCE", "pcgen_source"),
+    TokenDef::text("FEATLIST", "pcgen_featlist"),
+];
+
+pub static SPELLNAME_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:pcg:spellname",
+    head_token: Some("SPELLNAME"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: SPELLNAME_TOKENS,
+    globals: &[],
+};
+
+// ---------------------------------------------------------------------------
+// Character deity record (DEITY:name|DEITYDOMAINS:[…]|ALIGNALLOW:|…)
+// ---------------------------------------------------------------------------
+
+static PCG_DEITY_TOKENS: &[TokenDef] = &[
+    TokenDef::text_required("DEITY", "pcgen_deity_name"),
+    TokenDef::text("DEITYDOMAINS", "pcgen_deitydomains"),
+    TokenDef::text("ALIGNALLOW", "pcgen_alignallow"),
+    TokenDef::text("HOLYITEM", "pcgen_holyitem"),
+    TokenDef::text("DEITYFAVWEAP", "pcgen_deityfavweap"),
+    TokenDef::text("DEITYALIGN", "pcgen_deityalign"),
+    TokenDef::text("DOMAINGRANTS", "pcgen_domaingrants"),
+];
+
+pub static PCG_DEITY_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:pcg:deity",
+    head_token: Some("DEITY"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: PCG_DEITY_TOKENS,
+    globals: &[crate::schema::GlobalGroup::Desc],
+};
+
+// ---------------------------------------------------------------------------
+// Character domain record (DOMAIN:name|DOMAINGRANTS:text|SOURCE:[…])
+// ---------------------------------------------------------------------------
+
+static PCG_DOMAIN_TOKENS: &[TokenDef] = &[
+    TokenDef::text_required("DOMAIN", "pcgen_domain_name"),
+    TokenDef::text("DOMAINGRANTS", "pcgen_domaingrants"),
+    TokenDef::text("SOURCE", "pcgen_source"),
+];
+
+pub static PCG_DOMAIN_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:pcg:domain",
+    head_token: Some("DOMAIN"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: PCG_DOMAIN_TOKENS,
+    globals: &[],
 };

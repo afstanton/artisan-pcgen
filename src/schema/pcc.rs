@@ -382,6 +382,9 @@ static COMPANIONMOD_INCLUDE_TOKENS: &[TokenDef] = &[
 ];
 static WEAPONPROF_INCLUDE_TOKENS: &[TokenDef] = &[
     TokenDef::text_required("WEAPONPROF", "pcgen_weaponprof_catalog"),
+    // PCG character files bracket inner weapon items: WEAPONPROF:[WEAPON:name|WEAPON:name|...]
+    // The pipe-based parser splits these into individual WEAPON clauses.
+    TokenDef::text("WEAPON", "pcgen_weapon_ref"),
     PRECAMPAIGN_TOKEN,
 ];
 static ARMORPROF_INCLUDE_TOKENS: &[TokenDef] = &[

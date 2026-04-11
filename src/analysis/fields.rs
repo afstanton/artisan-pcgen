@@ -387,6 +387,64 @@ pub(crate) fn project_clause_attributes(
                     Value::String(value.clone()),
                 );
             }
+            // DATA appears as a separate clause when CUSTOMIZATION bracket content is pipe-split
+            "DATA" => {
+                attributes.insert("pcgen_data".to_string(), Value::String(value.clone()));
+            }
+            // SPECIALTIES sub-token of CLASSABILITIESLEVEL bracket notation
+            "SPECIALTIES" => {
+                attributes.insert("pcgen_specialties".to_string(), Value::String(value.clone()));
+            }
+            // CLASS as a clause key: appears in PCG SPELLNAME, CLASSBOUGHT, etc.
+            "CLASS" => {
+                attributes.insert("pcgen_class".to_string(), Value::String(value.clone()));
+            }
+            // CLASSBOUGHT / RANKS / CLASSSKILL: PCG skill rank-purchase records
+            "CLASSBOUGHT" => {
+                attributes.insert("pcgen_classbought".to_string(), Value::String(value.clone()));
+            }
+            "RANKS" => {
+                attributes.insert("pcgen_ranks".to_string(), Value::String(value.clone()));
+            }
+            "CLASSSKILL" => {
+                attributes.insert(
+                    "pcgen_classskill".to_string(),
+                    parse_yes_no_or_string(value),
+                );
+            }
+            // WEAPON: inner bracket item split from WEAPONPROF:[WEAPON:name|…] lines
+            "WEAPON" => {
+                attributes.insert("pcgen_weapon_ref".to_string(), Value::String(value.clone()));
+            }
+            // PCG deity record sub-tokens
+            "DEITYDOMAINS" => {
+                attributes.insert("pcgen_deitydomains".to_string(), Value::String(value.clone()));
+            }
+            "ALIGNALLOW" => {
+                attributes.insert("pcgen_alignallow".to_string(), Value::String(value.clone()));
+            }
+            "HOLYITEM" => {
+                attributes.insert("pcgen_holyitem".to_string(), Value::String(value.clone()));
+            }
+            "DEITYFAVWEAP" => {
+                attributes.insert("pcgen_deityfavweap".to_string(), Value::String(value.clone()));
+            }
+            "DEITYALIGN" => {
+                attributes.insert("pcgen_deityalign".to_string(), Value::String(value.clone()));
+            }
+            "DOMAINGRANTS" => {
+                attributes.insert("pcgen_domaingrants".to_string(), Value::String(value.clone()));
+            }
+            // PCG spell record sub-tokens
+            "TIMES" => {
+                set_i64_or_string(attributes, "pcgen_times", value);
+            }
+            "BOOK" => {
+                attributes.insert("pcgen_book".to_string(), Value::String(value.clone()));
+            }
+            "FEATLIST" => {
+                attributes.insert("pcgen_featlist".to_string(), Value::String(value.clone()));
+            }
             // .pcg sub-tokens for EQUIPSET records
             "ID" => {
                 attributes.insert("pcgen_equipset_id".to_string(), Value::String(value.clone()));
@@ -429,6 +487,13 @@ pub(crate) fn project_clause_attributes(
             }
             "SKILLSREMAINING" => {
                 set_i64_or_string(attributes, "pcgen_cal_skillsremaining", value);
+            }
+            // .pcg sub-token for standalone NOTE records: hierarchy parent
+            "PARENTID" => {
+                attributes.insert(
+                    "pcgen_note_parentid".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             // .pcg sub-token for FEAT / ABILITY records: what choice was applied
             "APPLIEDTO" => {
@@ -1695,6 +1760,22 @@ pub(crate) fn project_decl_token_value(
         }
         "HIDDENFEATTYPES" => {
             attributes.insert("pcgen_hiddenfeattypes".to_string(), Value::String(decl_value.to_string()));
+        }
+        // PCG standalone note — head value is the note text
+        "NOTE" => {
+            attributes.insert("pcgen_note".to_string(), Value::String(decl_value.to_string()));
+        }
+        // PCG spell record — head value is the spell name
+        "SPELLNAME" => {
+            attributes.insert("pcgen_spellname".to_string(), Value::String(decl_value.to_string()));
+        }
+        // PCG deity record — head value is the deity name
+        "DEITY" => {
+            attributes.insert("pcgen_deity_name".to_string(), Value::String(decl_value.to_string()));
+        }
+        // PCG domain record — head value is the domain name
+        "DOMAIN" => {
+            attributes.insert("pcgen_domain_name".to_string(), Value::String(decl_value.to_string()));
         }
         _ => {}
     }

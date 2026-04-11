@@ -4,7 +4,7 @@
 //! - `docs/listfilepages/lstfileclass/lfc_lesson_variables.txt`
 //! - corpus `*_variables.lst` files
 
-use crate::schema::{ArtisanMapping, Cardinality, EntitySchema, HeadFormat, TokenDef, TokenGrammar};
+use crate::schema::{EntitySchema, HeadFormat, TokenDef};
 
 static LOCAL_VARIABLE_TOKENS: &[TokenDef] = &[
     TokenDef::text_required("LOCAL", "pcgen_local"),

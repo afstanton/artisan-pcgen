@@ -20,3 +20,31 @@ WEIGHT:180
 AGE:35
 HANDED:Right
 STAT:STR|SCORE:18
+VERSION:1.0.0
+TABNAME:My Hero
+SKINCOLOR:Tanned
+EYECOLOR:Brown
+HAIRCOLOR:Black
+HAIRSTYLE:Short
+CITY:Waterdeep
+BIRTHDAY:15 Kythorn
+BIRTHPLACE:Baldur's Gate
+PERSONALITYTRAIT1:Curious and adventurous
+PERSONALITYTRAIT2:Loyal to a fault
+SPEECHPATTERN:Speaks in riddles
+PHOBIAS:Spiders
+INTERESTS:Alchemy and history
+CATCHPHRASE:Fortune favors the bold.
+PORTRAIT:portraits/myhero.png
+EXPERIENCE:3000
+EXPERIENCETABLE:Medium
+MONEY:150.0
+CHARACTERBIO:Born in a small village on the edge of the Sword Coast.
+CHARACTERDESC:Tall with sharp eyes and a weathered face.
+CHARACTERCOMP:Companion of the Order of the Gauntlet.
+CHARACTERASSET:A ring given by a dying paladin.
+CHARACTERMAGIC:Has studied minor arcane theory.
+CHARACTERDMNOTES:Player prefers roleplay over combat.
+FEATPOOL:2.0
+CALCEQUIPSET:0
+SUPPRESSBIOFIELDS:
