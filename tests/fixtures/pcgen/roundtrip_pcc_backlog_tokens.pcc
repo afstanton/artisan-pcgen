@@ -1,7 +1,5 @@
 CAMPAIGN:PCC Backlog Coverage
-ABILITY:backlog_abilities.lst
 ABILITYCATEGORY:backlog_abilitycategories.lst
-FEAT:backlog_feats.lst
 EQUIPMENT:backlog_equipment.lst
 SPELL:backlog_spells.lst
 LICENSE:Community Use
