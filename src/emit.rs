@@ -1,7 +1,7 @@
 //! Schema-driven PCGen entity emitter.
 //!
 //! Produces valid PCGen line-oriented text (`.lst`, `.pcc`, `.pcg`) from artisan `Entity` values using the
-//! registered `EntitySchema` for each entity type. The schema defines which
+//! registered `LineGrammar` for each entity type. The schema defines which
 //! tokens to emit, in what order, and how to serialize each artisan field.
 //!
 //! # Output format
@@ -14,7 +14,7 @@ use serde_json::Value;
 use crate::{
     ParsedClause, ParsedLine,
     schema::{
-        self, ArtisanMapping, Cardinality, EntitySchema, GlobalGroup, HeadFormat, TokenDef,
+        self, ArtisanMapping, Cardinality, LineGrammar, GlobalGroup, HeadFormat, TokenDef,
         TokenGrammar,
     },
 };
@@ -23,7 +23,7 @@ use std::collections::{BTreeSet, HashSet};
 /// Emit a PCGen line for `entity` using the provided `schema`.
 ///
 /// Returns the full line text with tab-separated top-level tokens.
-pub fn emit_entity(entity: &Entity, schema: &EntitySchema) -> String {
+pub fn emit_entity(entity: &Entity, schema: &LineGrammar) -> String {
     let mut parts: Vec<String> = Vec::new();
     let mut emitted_attribute_fields: HashSet<&'static str> = HashSet::new();
 
@@ -89,7 +89,7 @@ pub fn emit_entity_auto(entity: &Entity) -> Option<String> {
 /// entity and schema.
 ///
 /// This is a migration aid for eliminating fallback entirely.
-pub fn fallback_keys_for_entity(entity: &Entity, schema: &EntitySchema) -> Vec<String> {
+pub fn fallback_keys_for_entity(entity: &Entity, schema: &LineGrammar) -> Vec<String> {
     let mut keys = BTreeSet::new();
 
     for token_def in schema.tokens {
@@ -115,7 +115,7 @@ pub fn fallback_keys_for_entity(entity: &Entity, schema: &EntitySchema) -> Vec<S
 
 /// Returns the list of token keys that this entity would actually emit with the
 /// current schema-driven emitter.
-pub fn emittable_keys_for_entity(entity: &Entity, schema: &EntitySchema) -> Vec<String> {
+pub fn emittable_keys_for_entity(entity: &Entity, schema: &LineGrammar) -> Vec<String> {
     let mut keys = BTreeSet::new();
 
     if let Some(head_key) = emitted_head_key(entity, schema) {
@@ -127,7 +127,7 @@ pub fn emittable_keys_for_entity(entity: &Entity, schema: &EntitySchema) -> Vec<
             continue;
         }
         match token_def.artisan_mapping {
-            ArtisanMapping::Attribute(field) => {
+            ArtisanMapping::Field(field) => {
                 if let Some(value) = entity.attributes.get(field)
                     && !serialize_value(value, token_def.grammar, token_def.cardinality).is_empty()
                 {
@@ -157,7 +157,7 @@ pub fn emittable_keys_for_entity(entity: &Entity, schema: &EntitySchema) -> Vec<
 /// Convert an artisan entity + schema into a `ParsedLine` (structured form).
 ///
 /// Useful when you need the intermediate representation rather than raw text.
-pub fn entity_to_parsed_line(entity: &Entity, schema: &EntitySchema) -> ParsedLine {
+pub fn entity_to_parsed_line(entity: &Entity, schema: &LineGrammar) -> ParsedLine {
     let line_text = emit_entity(entity, schema);
     crate::parse_line(&line_text)
 }
@@ -173,7 +173,7 @@ fn emit_token_def(
     emitted_attribute_fields: &mut HashSet<&'static str>,
 ) {
     match token_def.artisan_mapping {
-        ArtisanMapping::Attribute(field) => {
+        ArtisanMapping::Field(field) => {
             if emitted_attribute_fields.contains(field) {
                 return;
             }
@@ -199,7 +199,7 @@ fn emit_token_def(
 
 fn uses_fallback_for_token(entity: &Entity, token_def: &TokenDef) -> bool {
     match token_def.artisan_mapping {
-        ArtisanMapping::Attribute(field) => {
+        ArtisanMapping::Field(field) => {
             entity.attributes.get(field).is_none()
                 && !raw_clause_values_for_key(entity, token_def.key).is_empty()
         }
@@ -207,7 +207,7 @@ fn uses_fallback_for_token(entity: &Entity, token_def: &TokenDef) -> bool {
     }
 }
 
-fn emitted_head_key(entity: &Entity, schema: &EntitySchema) -> Option<String> {
+fn emitted_head_key(entity: &Entity, schema: &LineGrammar) -> Option<String> {
     match schema.head_format {
         HeadFormat::TokenPrefixed => schema.head_token.map(str::to_string),
         HeadFormat::NameOnly => {
@@ -243,7 +243,7 @@ fn emitted_head_key(entity: &Entity, schema: &EntitySchema) -> Option<String> {
 
 fn should_skip_duplicate_head_token(
     entity: &Entity,
-    schema: &EntitySchema,
+    schema: &LineGrammar,
     token_def: &TokenDef,
 ) -> bool {
     if !matches!(schema.head_format, HeadFormat::TokenPrefixed) {
@@ -257,7 +257,7 @@ fn should_skip_duplicate_head_token(
         return false;
     }
 
-    let ArtisanMapping::Attribute(field) = token_def.artisan_mapping else {
+    let ArtisanMapping::Field(field) = token_def.artisan_mapping else {
         return false;
     };
 
@@ -285,7 +285,7 @@ fn head_name_for_entity(entity: &Entity) -> &str {
         .unwrap_or(entity.name.as_str())
 }
 
-fn top_level_separator(entity: &Entity, schema: &EntitySchema) -> &'static str {
+fn top_level_separator(entity: &Entity, schema: &LineGrammar) -> &'static str {
     if let Some(style) = entity
         .attributes
         .get("pcgen_record_style")
@@ -305,7 +305,7 @@ fn top_level_separator(entity: &Entity, schema: &EntitySchema) -> &'static str {
     }
 }
 
-fn emits_pcg_style(entity: &Entity, schema: &EntitySchema) -> bool {
+fn emits_pcg_style(entity: &Entity, schema: &LineGrammar) -> bool {
     if entity
         .attributes
         .get("source_format")
@@ -318,14 +318,14 @@ fn emits_pcg_style(entity: &Entity, schema: &EntitySchema) -> bool {
     schema.entity_type_key.starts_with("pcgen:pcg:")
 }
 
-fn token_prefixed_head_value(entity: &Entity, schema: &EntitySchema) -> Option<String> {
+fn token_prefixed_head_value(entity: &Entity, schema: &LineGrammar) -> Option<String> {
     if !emits_pcg_style(entity, schema) {
         return Some(head_name_for_entity(entity).to_string());
     }
 
     let head_token = schema.head_token?;
     let token_def = schema.token_def(head_token)?;
-    let ArtisanMapping::Attribute(field) = token_def.artisan_mapping else {
+    let ArtisanMapping::Field(field) = token_def.artisan_mapping else {
         return Some(head_name_for_entity(entity).to_string());
     };
     let value = entity.attributes.get(field)?;
@@ -1024,6 +1024,12 @@ fn serialize_array(arr: &[Value], grammar: TokenGrammar, cardinality: Cardinalit
             })
             .collect(),
 
+        // BracketGroup: reconstruct [KEY:val|KEY:val|...] from array of {key, value} objects
+        (TokenGrammar::BracketGroup, _) => {
+            let s = serialize_bracket_group(arr);
+            if s.is_empty() { vec![] } else { vec![s] }
+        }
+
         // Fallback: join with "|"
         _ => {
             let joined = arr
@@ -1034,6 +1040,34 @@ fn serialize_array(arr: &[Value], grammar: TokenGrammar, cardinality: Cardinalit
             vec![joined]
         }
     }
+}
+
+/// Serialize a bracket group array into `[KEY:val|KEY:val|...]` notation.
+///
+/// Each item in `arr` should be an object with `"key"` and `"value"` fields.
+/// Items that lack a key are emitted as bare values. An empty array produces an
+/// empty string (caller should suppress the token entirely).
+fn serialize_bracket_group(arr: &[Value]) -> String {
+    if arr.is_empty() {
+        return String::new();
+    }
+    let parts: Vec<String> = arr
+        .iter()
+        .filter_map(|item| {
+            let val = item.get("value").and_then(Value::as_str).unwrap_or("");
+            if let Some(k) = item.get("key").and_then(Value::as_str) {
+                Some(format!("{k}:{val}"))
+            } else if !val.is_empty() {
+                Some(val.to_string())
+            } else {
+                None
+            }
+        })
+        .collect();
+    if parts.is_empty() {
+        return String::new();
+    }
+    format!("[{}]", parts.join("|"))
 }
 
 fn raw_clause_values_for_key(entity: &Entity, key: &str) -> Vec<String> {
@@ -1073,7 +1107,7 @@ fn bool_like_attribute(entity: &Entity, key: &str) -> Option<bool> {
 /// Reconstruct the `ParsedClause` list that `emit_entity` would produce.
 ///
 /// The head token is excluded — only the clause tokens are returned.
-pub fn entity_to_clauses(entity: &Entity, schema: &EntitySchema) -> Vec<ParsedClause> {
+pub fn entity_to_clauses(entity: &Entity, schema: &LineGrammar) -> Vec<ParsedClause> {
     let line_text = emit_entity(entity, schema);
     let parsed = crate::parse_line(&line_text);
     parsed.clauses

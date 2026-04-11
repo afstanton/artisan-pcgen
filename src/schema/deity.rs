@@ -6,7 +6,7 @@
 //! name with no token prefix.
 
 use crate::schema::{
-    ArtisanMapping, Cardinality, EntitySchema, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
+    ArtisanMapping, Cardinality, LineGrammar, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
 };
 
 static DEITY_TOKENS: &[TokenDef] = &[
@@ -16,21 +16,21 @@ static DEITY_TOKENS: &[TokenDef] = &[
         key: "DOMAINS",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Once,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_domains"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_domains"),
         required: false,
     },
     TokenDef {
         key: "DEITYWEAP",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Once,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_deityweap"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_deityweap"),
         required: false,
     },
     TokenDef {
         key: "GROUP",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_group"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_group"),
         required: false,
     },
     TokenDef::text("SYMBOL", "pcgen_symbol"),
@@ -55,7 +55,7 @@ static DEITY_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::SourceMeta,
 ];
 
-pub static DEITY_SCHEMA: EntitySchema = EntitySchema {
+pub static DEITY_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:entity:deity",
     head_token: None,
     head_format: HeadFormat::NameOnly,

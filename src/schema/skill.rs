@@ -5,7 +5,7 @@
 //! Skill files define individual skills. The head is token-prefixed: `SKILL:name`.
 
 use crate::schema::{
-    ArtisanMapping, Cardinality, EntitySchema, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
+    ArtisanMapping, Cardinality, LineGrammar, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
 };
 
 static SITUATION_SLOTS: &[&str] = &["name", "modifier"];
@@ -16,7 +16,7 @@ static SKILL_TOKENS: &[TokenDef] = &[
         key: "CLASSES",
         grammar: TokenGrammar::PipeGroups,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_classes"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_classes"),
         required: false,
     },
     // SITUATION adds a conditional modifier to the skill
@@ -28,7 +28,7 @@ static SKILL_TOKENS: &[TokenDef] = &[
         key: "SELECTION",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_selection"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_selection"),
         required: false,
     },
     TokenDef::yesno("USEUNTRAINED", "pcgen_useuntrained"),
@@ -36,10 +36,9 @@ static SKILL_TOKENS: &[TokenDef] = &[
     TokenDef::text("KEYSTAT", "pcgen_keystat"),
     TokenDef::text("ACHECK", "pcgen_accheck"),
     TokenDef::text("VISIBLE", "pcgen_visible"),
-    // PCG character file sub-tokens for skill rank tracking
-    TokenDef::text("CLASSBOUGHT", "pcgen_classbought"),
-    TokenDef::text("RANKS", "pcgen_ranks"),
-    TokenDef::yesno("CLASSSKILL", "pcgen_classskill"),
+    // PCG character file: CLASSBOUGHT bracket group [CLASS:Wizard|RANKS:3.0|COST:1|CLASSSKILL:Y]
+    // Sub-keys RANKS and CLASSSKILL live inside the bracket group; no separate token defs needed.
+    TokenDef::bracket_group("CLASSBOUGHT", "pcgen_classbought"),
 ];
 
 static SKILL_GLOBALS: &[GlobalGroup] = &[
@@ -60,7 +59,7 @@ static SKILL_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::SourceMeta,
 ];
 
-pub static SKILL_SCHEMA: EntitySchema = EntitySchema {
+pub static SKILL_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:entity:skill",
     head_token: Some("SKILL"),
     head_format: HeadFormat::TokenPrefixed,

@@ -7,7 +7,7 @@
 //! where Operation is ADD, SET, or SOLVE
 
 use crate::schema::{
-    ArtisanMapping, Cardinality, EntitySchema, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
+    ArtisanMapping, Cardinality, LineGrammar, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
 };
 
 static MODIFY_TOKENS: &[TokenDef] = &[
@@ -17,7 +17,7 @@ static MODIFY_TOKENS: &[TokenDef] = &[
 
 static MODIFY_GLOBALS: &[GlobalGroup] = &[GlobalGroup::SourceMeta];
 
-pub static MODIFY_SCHEMA: EntitySchema = EntitySchema {
+pub static MODIFY_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:entity:modify",
     head_token: Some("MODIFY"),
     head_format: HeadFormat::TokenPrefixed,

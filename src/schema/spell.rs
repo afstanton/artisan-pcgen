@@ -6,7 +6,7 @@
 //! (no token prefix). Spells have a rich set of descriptor tokens.
 
 use crate::schema::{
-    ArtisanMapping, Cardinality, EntitySchema, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
+    ArtisanMapping, Cardinality, LineGrammar, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
 };
 
 static SKILL_GLOBALS: &[GlobalGroup] = &[
@@ -36,7 +36,7 @@ static SPELL_TOKENS: &[TokenDef] = &[
         key: "DESCRIPTOR",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_descriptors"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_descriptors"),
         required: false,
     },
     // Class/domain spell levels
@@ -44,14 +44,14 @@ static SPELL_TOKENS: &[TokenDef] = &[
         key: "CLASSES",
         grammar: TokenGrammar::PipeGroups,
         cardinality: Cardinality::Once,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_classes"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_classes"),
         required: false,
     },
     TokenDef {
         key: "DOMAINS",
         grammar: TokenGrammar::PipeGroups,
         cardinality: Cardinality::Once,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_domains"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_domains"),
         required: false,
     },
     // Casting parameters
@@ -67,7 +67,7 @@ static SPELL_TOKENS: &[TokenDef] = &[
         key: "TEMPVALUE",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_tempvalue"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_tempvalue"),
         required: false,
     },
     // Cost and variants
@@ -78,26 +78,26 @@ static SPELL_TOKENS: &[TokenDef] = &[
         key: "SPELLPOINTCOST",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Once,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_spellpointcost"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_spellpointcost"),
         required: false,
     },
     TokenDef {
         key: "ITEM",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_items"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_items"),
         required: false,
     },
     TokenDef {
         key: "VARIANTS",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_variants"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_variants"),
         required: false,
     },
 ];
 
-pub static SPELL_SCHEMA: EntitySchema = EntitySchema {
+pub static SPELL_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:entity:spell",
     head_token: None,
     head_format: HeadFormat::NameOnly,

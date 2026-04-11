@@ -208,6 +208,8 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
         key: type_key,
         name: format!("PCGen {}", ext.to_ascii_uppercase()),
         parent: None,
+        fields: Vec::new(),
+        relationships: Vec::new(),
         descriptive_fields: IndexMap::new(),
         mechanical_fields: IndexMap::new(),
         external_ids: vec![ExternalId {

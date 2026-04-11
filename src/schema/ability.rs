@@ -6,7 +6,7 @@
 //! character. The first field is the Ability Name (no token prefix).
 
 use crate::schema::{
-    ArtisanMapping, Cardinality, EntitySchema, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
+    ArtisanMapping, Cardinality, LineGrammar, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
 };
 
 static ASPECT_SLOTS: &[&str] = &["name", "value", "formula"];
@@ -28,7 +28,7 @@ static ABILITY_TOKENS: &[TokenDef] = &[
         key: "TEMPVALUE",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_tempvalue"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_tempvalue"),
         required: false,
     },
     TokenDef {
@@ -44,42 +44,42 @@ static ABILITY_TOKENS: &[TokenDef] = &[
         key: "SPELLS",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_spells"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_spells"),
         required: false,
     },
     TokenDef {
         key: "SPELLKNOWN",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_spellknown"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_spellknown"),
         required: false,
     },
     TokenDef {
         key: "MOVE",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_move"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_move"),
         required: false,
     },
     TokenDef {
         key: "MOVECLONE",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_moveclone"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_moveclone"),
         required: false,
     },
     TokenDef {
         key: "NATURALATTACKS",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_naturalattacks"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_naturalattacks"),
         required: false,
     },
     TokenDef {
         key: "VISION",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_vision"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_vision"),
         required: false,
     },
     TokenDef::text("DR", "pcgen_dr"),
@@ -89,7 +89,7 @@ static ABILITY_TOKENS: &[TokenDef] = &[
         key: "EQMOD",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_eqmods"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_eqmods"),
         required: false,
     },
     TokenDef::pipe_list_repeatable("COMPANIONLIST", "pcgen_companionlist"),
@@ -123,7 +123,7 @@ static ABILITY_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::SourceMeta,
 ];
 
-pub static ABILITY_SCHEMA: EntitySchema = EntitySchema {
+pub static ABILITY_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:entity:ability",
     head_token: None,
     head_format: HeadFormat::NameOnly,

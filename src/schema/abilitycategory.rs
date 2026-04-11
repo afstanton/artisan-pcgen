@@ -5,7 +5,7 @@
 //! Ability category records are represented by head token `ABILITYCATEGORY:<name>`.
 
 use crate::schema::{
-    ArtisanMapping, Cardinality, EntitySchema, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
+    ArtisanMapping, Cardinality, LineGrammar, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
 };
 
 static ABILITYCATEGORY_TOKENS: &[TokenDef] = &[
@@ -13,7 +13,7 @@ static ABILITYCATEGORY_TOKENS: &[TokenDef] = &[
         key: "ABILITYLIST",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_abilitylist"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_abilitylist"),
         required: false,
     },
     TokenDef::text("DISPLAYLOCATION", "pcgen_displaylocation"),
@@ -43,7 +43,7 @@ static ABILITYCATEGORY_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::SourceMeta,
 ];
 
-pub static ABILITYCATEGORY_SCHEMA: EntitySchema = EntitySchema {
+pub static ABILITYCATEGORY_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:entity:abilitycategory",
     head_token: Some("ABILITYCATEGORY"),
     head_format: HeadFormat::TokenPrefixed,

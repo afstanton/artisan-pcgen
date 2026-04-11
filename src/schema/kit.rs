@@ -3,7 +3,7 @@
 //! KIT lines use `KIT:name` heads and can reference nested kits and gear.
 
 use crate::schema::{
-    ArtisanMapping, Cardinality, EntitySchema, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
+    ArtisanMapping, Cardinality, LineGrammar, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
 };
 
 static KIT_TOKENS: &[TokenDef] = &[
@@ -11,21 +11,21 @@ static KIT_TOKENS: &[TokenDef] = &[
         key: "KIT",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_kits"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_kits"),
         required: false,
     },
     TokenDef {
         key: "GEAR",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_gear"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_gear"),
         required: false,
     },
     TokenDef {
         key: "ABILITY",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_abilities"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_abilities"),
         required: false,
     },
     TokenDef::text("OPTION", "pcgen_option"),
@@ -33,7 +33,7 @@ static KIT_TOKENS: &[TokenDef] = &[
         key: "EQUIPBUY",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_equipbuy"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_equipbuy"),
         required: false,
     },
     TokenDef::text("LOCATION", "pcgen_location"),
@@ -44,7 +44,7 @@ static KIT_TOKENS: &[TokenDef] = &[
         key: "SELECTION",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_selection"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_selection"),
         required: false,
     },
     TokenDef::text("SIZE", "pcgen_size"),
@@ -52,12 +52,12 @@ static KIT_TOKENS: &[TokenDef] = &[
         key: "EQMOD",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_eqmods"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_eqmods"),
         required: false,
     },
 ];
 
-pub static KIT_SCHEMA: EntitySchema = EntitySchema {
+pub static KIT_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:entity:kit",
     head_token: Some("KIT"),
     head_format: HeadFormat::TokenPrefixed,

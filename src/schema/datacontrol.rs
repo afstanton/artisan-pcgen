@@ -4,7 +4,7 @@
 //! - corpus `*_datacontrols.lst` files
 //! - PCC `DATACONTROL:` include docs in `datafilespcc.html`
 
-use crate::schema::{EntitySchema, HeadFormat, TokenDef};
+use crate::schema::{LineGrammar, HeadFormat, TokenDef};
 
 static FACTSETDEF_TOKENS: &[TokenDef] = &[
     TokenDef::text_required("FACTSETDEF", "pcgen_factsetdef"),
@@ -16,7 +16,7 @@ static FACTSETDEF_TOKENS: &[TokenDef] = &[
     TokenDef::text("EXPLANATION", "pcgen_explanation"),
 ];
 
-pub static FACTSETDEF_SCHEMA: EntitySchema = EntitySchema {
+pub static FACTSETDEF_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:entity:datacontrol-factsetdef",
     head_token: Some("FACTSETDEF"),
     head_format: HeadFormat::TokenPrefixed,
@@ -29,7 +29,7 @@ static FUNCTION_TOKENS: &[TokenDef] = &[
     TokenDef::text("EXPLANATION", "pcgen_explanation"),
 ];
 
-pub static FUNCTION_SCHEMA: EntitySchema = EntitySchema {
+pub static FUNCTION_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:entity:datacontrol-function",
     head_token: Some("FUNCTION"),
     head_format: HeadFormat::TokenPrefixed,
@@ -37,7 +37,7 @@ pub static FUNCTION_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static DYNAMICSCOPE_SCHEMA: EntitySchema = EntitySchema {
+pub static DYNAMICSCOPE_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:entity:datacontrol-dynamicscope",
     head_token: Some("DYNAMICSCOPE"),
     head_format: HeadFormat::TokenPrefixed,

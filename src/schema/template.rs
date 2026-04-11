@@ -6,7 +6,7 @@
 //! The head is the template name (no token prefix).
 
 use crate::schema::{
-    ArtisanMapping, Cardinality, EntitySchema, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
+    ArtisanMapping, Cardinality, LineGrammar, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
 };
 
 static ADDLEVEL_SLOTS: &[&str] = &["class", "count"];
@@ -19,7 +19,7 @@ static TEMPLATE_TOKENS: &[TokenDef] = &[
         key: "RACESUBTYPE",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_racesubtype"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_racesubtype"),
         required: false,
     },
     TokenDef::text("SUBRACE", "pcgen_subrace"),
@@ -29,7 +29,7 @@ static TEMPLATE_TOKENS: &[TokenDef] = &[
         key: "VISION",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_vision"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_vision"),
         required: false,
     },
     TokenDef::text("LEGS", "pcgen_legs"),
@@ -46,21 +46,21 @@ static TEMPLATE_TOKENS: &[TokenDef] = &[
         key: "MOVE",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_move"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_move"),
         required: false,
     },
     TokenDef {
         key: "MOVECLONE",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_moveclone"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_moveclone"),
         required: false,
     },
     TokenDef {
         key: "NATURALATTACKS",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_naturalattacks"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_naturalattacks"),
         required: false,
     },
     TokenDef::text("GENDERLOCK", "pcgen_genderlock"),
@@ -71,7 +71,7 @@ static TEMPLATE_TOKENS: &[TokenDef] = &[
         key: "TEMPVALUE",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_tempvalue"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_tempvalue"),
         required: false,
     },
     // Level-based
@@ -80,7 +80,7 @@ static TEMPLATE_TOKENS: &[TokenDef] = &[
         key: "REPEATLEVEL",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_repeatlevel"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_repeatlevel"),
         required: false,
     },
     // Favored class
@@ -88,7 +88,7 @@ static TEMPLATE_TOKENS: &[TokenDef] = &[
         key: "FAVOREDCLASS",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Once,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_favoredclass"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_favoredclass"),
         required: false,
     },
     // Feats and weapons
@@ -96,14 +96,14 @@ static TEMPLATE_TOKENS: &[TokenDef] = &[
         key: "FEAT",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_feats"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_feats"),
         required: false,
     },
     TokenDef {
         key: "WEAPONBONUS",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_weaponbonus"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_weaponbonus"),
         required: false,
     },
     TokenDef::pipe_list_repeatable("COMPANIONLIST", "pcgen_companionlist"),
@@ -137,7 +137,7 @@ static TEMPLATE_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::SourceMeta,
 ];
 
-pub static TEMPLATE_SCHEMA: EntitySchema = EntitySchema {
+pub static TEMPLATE_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:entity:template",
     head_token: None,
     head_format: HeadFormat::NameOnly,

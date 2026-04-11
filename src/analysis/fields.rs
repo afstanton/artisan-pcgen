@@ -4,6 +4,44 @@ use serde_json::{Map, Value, json};
 use crate::ParsedClause;
 use crate::parsing::parse_modify;
 
+// ---------------------------------------------------------------------------
+// Bracket-group parsing
+// ---------------------------------------------------------------------------
+
+/// Parse a `[KEY:val|KEY:val|...]` bracket-group string into a JSON array of
+/// `{"key": "K", "value": "V"}` objects.
+///
+/// The brackets are stripped before parsing. Inner pipes that separate entries
+/// are split naively (no nested-bracket support needed for current PCGen usage).
+/// If the value is not bracket-delimited it is returned as a plain string.
+pub(crate) fn parse_bracket_group(value: &str) -> Value {
+    let inner = value.trim();
+    let inner = if inner.starts_with('[') && inner.ends_with(']') {
+        &inner[1..inner.len() - 1]
+    } else {
+        return Value::String(value.to_string());
+    };
+
+    let items: Vec<Value> = inner
+        .split('|')
+        .filter_map(|part| {
+            let part = part.trim();
+            if part.is_empty() {
+                return None;
+            }
+            if let Some(colon) = part.find(':') {
+                let key = part[..colon].trim();
+                let val = &part[colon + 1..];
+                if !key.is_empty() {
+                    return Some(json!({"key": key, "value": val}));
+                }
+            }
+            Some(json!({"value": part}))
+        })
+        .collect();
+    Value::Array(items)
+}
+
 pub(crate) fn project_clause_attributes(
     head_name: &str,
     clauses: &[ParsedClause],
@@ -27,7 +65,9 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_type".to_string(), Value::String(value.clone()));
             }
             "SOURCE" => {
-                attributes.insert("pcgen_source".to_string(), Value::String(value.clone()));
+                // PCG files use SOURCE:[TYPE:CLASS|NAME:Wizard] bracket groups;
+                // LST/PCC files use SOURCE:plain text. Store structured when bracketed.
+                attributes.insert("pcgen_source".to_string(), parse_bracket_group(value));
             }
             "SOURCELONG" => {
                 attributes.insert(
@@ -388,27 +428,31 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_note".to_string(), Value::String(value.clone()));
             }
             "CUSTOMIZATION" => {
+                // EQUIPNAME CUSTOMIZATION value is a bracket group: [BASEITEM:x|DATA:y|...]
                 attributes.insert(
                     "pcgen_customization".to_string(),
-                    Value::String(value.clone()),
+                    parse_bracket_group(value),
                 );
             }
-            // DATA appears as a separate clause when CUSTOMIZATION bracket content is pipe-split
+            // DATA was historically a separate clause when bracket content was pipe-split.
+            // With bracket-aware parsing it no longer appears standalone; arm kept for safety.
             "DATA" => {
                 attributes.insert("pcgen_data".to_string(), Value::String(value.clone()));
             }
-            // SPECIALTIES sub-token of CLASSABILITIESLEVEL bracket notation
+            // SPECIALTIES bracket group: [SPECIALTY:Evocation|...]
             "SPECIALTIES" => {
-                attributes.insert("pcgen_specialties".to_string(), Value::String(value.clone()));
+                attributes.insert("pcgen_specialties".to_string(), parse_bracket_group(value));
             }
             // CLASS as a clause key: appears in PCG SPELLNAME, CLASSBOUGHT, etc.
             "CLASS" => {
                 attributes.insert("pcgen_class".to_string(), Value::String(value.clone()));
             }
-            // CLASSBOUGHT / RANKS / CLASSSKILL: PCG skill rank-purchase records
+            // CLASSBOUGHT is a bracket group: [CLASS:Wizard|RANKS:3.0|COST:1|CLASSSKILL:Y]
             "CLASSBOUGHT" => {
-                attributes.insert("pcgen_classbought".to_string(), Value::String(value.clone()));
+                attributes.insert("pcgen_classbought".to_string(), parse_bracket_group(value));
             }
+            // RANKS / CLASSSKILL historically appeared as split-out bracket sub-items;
+            // kept for safety in case any corpus variant writes them standalone.
             "RANKS" => {
                 attributes.insert("pcgen_ranks".to_string(), Value::String(value.clone()));
             }
@@ -418,13 +462,14 @@ pub(crate) fn project_clause_attributes(
                     parse_yes_no_or_string(value),
                 );
             }
-            // WEAPON: inner bracket item split from WEAPONPROF:[WEAPON:name|…] lines
+            // WEAPON historically appeared as a split-out bracket sub-item of WEAPONPROF;
+            // kept for safety but no longer triggered by bracket-aware parsing.
             "WEAPON" => {
                 attributes.insert("pcgen_weapon_ref".to_string(), Value::String(value.clone()));
             }
-            // PCG deity record sub-tokens
+            // DEITYDOMAINS bracket group: [DOMAIN:Good|DOMAIN:Sun]
             "DEITYDOMAINS" => {
-                attributes.insert("pcgen_deitydomains".to_string(), Value::String(value.clone()));
+                attributes.insert("pcgen_deitydomains".to_string(), parse_bracket_group(value));
             }
             "ALIGNALLOW" => {
                 attributes.insert("pcgen_alignallow".to_string(), Value::String(value.clone()));
@@ -432,8 +477,9 @@ pub(crate) fn project_clause_attributes(
             "HOLYITEM" => {
                 attributes.insert("pcgen_holyitem".to_string(), Value::String(value.clone()));
             }
+            // DEITYFAVWEAP bracket group: [WEAPON:Morningstar]
             "DEITYFAVWEAP" => {
-                attributes.insert("pcgen_deityfavweap".to_string(), Value::String(value.clone()));
+                attributes.insert("pcgen_deityfavweap".to_string(), parse_bracket_group(value));
             }
             "DEITYALIGN" => {
                 attributes.insert("pcgen_deityalign".to_string(), Value::String(value.clone()));
@@ -448,8 +494,9 @@ pub(crate) fn project_clause_attributes(
             "BOOK" => {
                 attributes.insert("pcgen_book".to_string(), Value::String(value.clone()));
             }
+            // FEATLIST bracket group: [FEAT:Empower Spell|FEAT:Quicken Spell]
             "FEATLIST" => {
-                attributes.insert("pcgen_featlist".to_string(), Value::String(value.clone()));
+                attributes.insert("pcgen_featlist".to_string(), parse_bracket_group(value));
             }
             // .pcg sub-tokens for EQUIPSET records
             "ID" => {
@@ -1772,6 +1819,14 @@ pub(crate) fn project_decl_token_value(
         }
         "HIDDENFEATTYPES" => {
             attributes.insert("pcgen_hiddenfeattypes".to_string(), Value::String(decl_value.to_string()));
+        }
+        // WEAPONPROF head value: catalog path in PCC ("file.lst") or bracket group in PCG
+        // ("[WEAPON:Longsword|WEAPON:Dagger|...]"). Store structured when bracket-delimited.
+        "WEAPONPROF" => {
+            attributes.insert(
+                "pcgen_weaponprof_catalog".to_string(),
+                parse_bracket_group(decl_value),
+            );
         }
         // PCG standalone note — head value is the note text
         "NOTE" => {

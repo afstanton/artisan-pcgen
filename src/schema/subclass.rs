@@ -3,7 +3,7 @@
 //! SUBCLASS lines define class specialization options. The head is
 //! token-prefixed: `SUBCLASS:name`.
 
-use crate::schema::{EntitySchema, GlobalGroup, HeadFormat, TokenDef};
+use crate::schema::{LineGrammar, GlobalGroup, HeadFormat, TokenDef};
 
 static SUBCLASS_TOKENS: &[TokenDef] = &[
     TokenDef::text("COST", "pcgen_cost"),
@@ -40,7 +40,7 @@ static SUBCLASS_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::SourceMeta,
 ];
 
-pub static SUBCLASS_SCHEMA: EntitySchema = EntitySchema {
+pub static SUBCLASS_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:entity:subclass",
     head_token: Some("SUBCLASS"),
     head_format: HeadFormat::TokenPrefixed,

@@ -6,7 +6,7 @@
 //! The first field is the Feat Name (no token prefix).
 
 use crate::schema::{
-    ArtisanMapping, Cardinality, EntitySchema, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
+    ArtisanMapping, Cardinality, LineGrammar, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
 };
 
 static ASPECT_SLOTS: &[&str] = &["name", "value", "formula"];
@@ -18,7 +18,7 @@ static FEAT_TOKENS: &[TokenDef] = &[
         key: "MODIFYFEATCHOICE",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_modifyfeatchoice"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_modifyfeatchoice"),
         required: false,
     },
     TokenDef::text("MULT", "pcgen_mult"),
@@ -27,7 +27,7 @@ static FEAT_TOKENS: &[TokenDef] = &[
         key: "TEMPVALUE",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_tempvalue"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_tempvalue"),
         required: false,
     },
     TokenDef {
@@ -46,7 +46,7 @@ static FEAT_TOKENS: &[TokenDef] = &[
         key: "MOVECLONE",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_moveclone"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_moveclone"),
         required: false,
     },
     // .pcg sub-token: the choice(s) this feat/ability was applied to
@@ -76,7 +76,7 @@ static FEAT_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::SourceMeta,
 ];
 
-pub static FEAT_SCHEMA: EntitySchema = EntitySchema {
+pub static FEAT_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:entity:feat",
     head_token: None,
     head_format: HeadFormat::NameOnly,

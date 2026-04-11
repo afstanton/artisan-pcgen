@@ -5,7 +5,7 @@
 //! Class files define character classes. The head is token-prefixed: `CLASS:name`.
 
 use crate::schema::{
-    ArtisanMapping, Cardinality, EntitySchema, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
+    ArtisanMapping, Cardinality, LineGrammar, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
 };
 
 static SPELLLIST_SLOTS: &[&str] = &["count", "type", "class"];
@@ -23,7 +23,7 @@ static CLASS_TOKENS: &[TokenDef] = &[
         key: "LANGAUTO",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_langauto"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_langauto"),
         required: false,
     },
     // Spell-related
@@ -37,28 +37,28 @@ static CLASS_TOKENS: &[TokenDef] = &[
         key: "CAST",
         grammar: TokenGrammar::CommaList,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_cast"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_cast"),
         required: false,
     },
     TokenDef {
         key: "KNOWN",
         grammar: TokenGrammar::CommaList,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_known"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_known"),
         required: false,
     },
     TokenDef {
         key: "KNOWNSPELLS",
         grammar: TokenGrammar::PipeGroups,
         cardinality: Cardinality::Once,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_knownspells"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_knownspells"),
         required: false,
     },
     TokenDef {
         key: "SPECIALTYKNOWN",
         grammar: TokenGrammar::CommaList,
         cardinality: Cardinality::Once,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_specialtyknown"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_specialtyknown"),
         required: false,
     },
     TokenDef::pipe_positional("SPELLLIST", SPELLLIST_SLOTS, "pcgen_spelllist"),
@@ -66,7 +66,7 @@ static CLASS_TOKENS: &[TokenDef] = &[
         key: "PROHIBITSPELL",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_prohibitspell"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_prohibitspell"),
         required: false,
     },
     TokenDef::text("KNOWNSPELLSFROMSPECIALTY", "pcgen_knownspellsfromspecialty"),
@@ -76,7 +76,7 @@ static CLASS_TOKENS: &[TokenDef] = &[
         key: "PROHIBITED",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_prohibited"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_prohibited"),
         required: false,
     },
     // Domain
@@ -84,14 +84,14 @@ static CLASS_TOKENS: &[TokenDef] = &[
         key: "ADDDOMAINS",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_adddomains"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_adddomains"),
         required: false,
     },
     TokenDef {
         key: "DOMAIN",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Once,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_domains"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_domains"),
         required: false,
     },
     // Class mechanics
@@ -104,7 +104,7 @@ static CLASS_TOKENS: &[TokenDef] = &[
         key: "WEAPONBONUS",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_weaponbonus"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_weaponbonus"),
         required: false,
     },
     TokenDef::text("VISIBLE", "pcgen_visible"),
@@ -113,7 +113,7 @@ static CLASS_TOKENS: &[TokenDef] = &[
         key: "DEITY",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Once,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_deity"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_deity"),
         required: false,
     },
     TokenDef::pipe_positional_repeatable("FOLLOWERS", &["type", "limit"], "pcgen_followers"),
@@ -130,14 +130,14 @@ static CLASS_TOKENS: &[TokenDef] = &[
         key: "EXCLASS",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_exclass"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_exclass"),
         required: false,
     },
     TokenDef {
         key: "EXCHANGELEVEL",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_exchangelevel"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_exchangelevel"),
         required: false,
     },
     TokenDef::pipe_list_repeatable("CCSKILL", "pcgen_ccskill"),
@@ -148,7 +148,7 @@ static CLASS_TOKENS: &[TokenDef] = &[
         key: "SKILLLIST",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_skilllist"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_skilllist"),
         required: false,
     },
     // .pcg character-file sub-tokens (appear in CLASS lines inside .pcg files)
@@ -158,7 +158,7 @@ static CLASS_TOKENS: &[TokenDef] = &[
         key: "CANCASTPERDAY",
         grammar: TokenGrammar::CommaList,
         cardinality: Cardinality::Once,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_class_cancastperday"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_class_cancastperday"),
         required: false,
     },
 ];
@@ -188,7 +188,7 @@ static CLASS_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::SourceMeta,
 ];
 
-pub static CLASS_SCHEMA: EntitySchema = EntitySchema {
+pub static CLASS_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:entity:class",
     head_token: Some("CLASS"),
     head_format: HeadFormat::TokenPrefixed,

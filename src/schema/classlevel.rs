@@ -5,7 +5,7 @@
 //! Class level lines use the level number as the head with no token prefix.
 
 use crate::schema::{
-    ArtisanMapping, Cardinality, EntitySchema, HeadFormat, TokenDef, TokenGrammar,
+    ArtisanMapping, Cardinality, LineGrammar, HeadFormat, TokenDef, TokenGrammar,
 };
 
 static CLASSLEVEL_TOKENS: &[TokenDef] = &[
@@ -13,14 +13,14 @@ static CLASSLEVEL_TOKENS: &[TokenDef] = &[
         key: "DONOTADD",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_donotadd"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_donotadd"),
         required: false,
     },
     TokenDef::text("UDAM", "pcgen_udam"),
     TokenDef::integer("UMULT", "pcgen_umult"),
 ];
 
-pub static CLASSLEVEL_SCHEMA: EntitySchema = EntitySchema {
+pub static CLASSLEVEL_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:entity:classlevel",
     head_token: None,
     head_format: HeadFormat::NameOnly,

@@ -3,9 +3,9 @@
 //! These heads appear as top-level session/profile lines in character files,
 //! e.g. `PCGVERSION:2.0` or `HEIGHT:51`.
 
-use crate::schema::{EntitySchema, HeadFormat, TokenDef};
+use crate::schema::{LineGrammar, HeadFormat, TokenDef};
 
-pub static PCGVERSION_SCHEMA: EntitySchema = EntitySchema {
+pub static PCGVERSION_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:pcgversion",
     head_token: Some("PCGVERSION"),
     head_format: HeadFormat::TokenPrefixed,
@@ -13,7 +13,7 @@ pub static PCGVERSION_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static PURCHASEPOINTS_SCHEMA: EntitySchema = EntitySchema {
+pub static PURCHASEPOINTS_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:purchasepoints",
     head_token: Some("PURCHASEPOINTS"),
     head_format: HeadFormat::TokenPrefixed,
@@ -24,7 +24,7 @@ pub static PURCHASEPOINTS_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static POOLPOINTS_SCHEMA: EntitySchema = EntitySchema {
+pub static POOLPOINTS_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:poolpoints",
     head_token: Some("POOLPOINTS"),
     head_format: HeadFormat::TokenPrefixed,
@@ -32,7 +32,7 @@ pub static POOLPOINTS_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static POOLPOINTSAVAIL_SCHEMA: EntitySchema = EntitySchema {
+pub static POOLPOINTSAVAIL_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:poolpointsavail",
     head_token: Some("POOLPOINTSAVAIL"),
     head_format: HeadFormat::TokenPrefixed,
@@ -43,7 +43,7 @@ pub static POOLPOINTSAVAIL_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static TABLABEL_SCHEMA: EntitySchema = EntitySchema {
+pub static TABLABEL_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:tablabel",
     head_token: Some("TABLABEL"),
     head_format: HeadFormat::TokenPrefixed,
@@ -51,7 +51,7 @@ pub static TABLABEL_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static AUTOSPELLS_SCHEMA: EntitySchema = EntitySchema {
+pub static AUTOSPELLS_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:autospells",
     head_token: Some("AUTOSPELLS"),
     head_format: HeadFormat::TokenPrefixed,
@@ -59,7 +59,7 @@ pub static AUTOSPELLS_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static USEHIGHERKNOWN_SCHEMA: EntitySchema = EntitySchema {
+pub static USEHIGHERKNOWN_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:usehigherknown",
     head_token: Some("USEHIGHERKNOWN"),
     head_format: HeadFormat::TokenPrefixed,
@@ -67,7 +67,7 @@ pub static USEHIGHERKNOWN_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static USEHIGHERPREPPED_SCHEMA: EntitySchema = EntitySchema {
+pub static USEHIGHERPREPPED_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:usehigherprepped",
     head_token: Some("USEHIGHERPREPPED"),
     head_format: HeadFormat::TokenPrefixed,
@@ -78,7 +78,7 @@ pub static USEHIGHERPREPPED_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static LOADCOMPANIONS_SCHEMA: EntitySchema = EntitySchema {
+pub static LOADCOMPANIONS_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:loadcompanions",
     head_token: Some("LOADCOMPANIONS"),
     head_format: HeadFormat::TokenPrefixed,
@@ -86,7 +86,7 @@ pub static LOADCOMPANIONS_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static USETEMPMODS_SCHEMA: EntitySchema = EntitySchema {
+pub static USETEMPMODS_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:usetempmods",
     head_token: Some("USETEMPMODS"),
     head_format: HeadFormat::TokenPrefixed,
@@ -94,7 +94,7 @@ pub static USETEMPMODS_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static SKILLSOUTPUTORDER_SCHEMA: EntitySchema = EntitySchema {
+pub static SKILLSOUTPUTORDER_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:skillsoutputorder",
     head_token: Some("SKILLSOUTPUTORDER"),
     head_format: HeadFormat::TokenPrefixed,
@@ -105,7 +105,7 @@ pub static SKILLSOUTPUTORDER_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static SKILLFILTER_SCHEMA: EntitySchema = EntitySchema {
+pub static SKILLFILTER_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:skillfilter",
     head_token: Some("SKILLFILTER"),
     head_format: HeadFormat::TokenPrefixed,
@@ -113,7 +113,7 @@ pub static SKILLFILTER_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static IGNORECOST_SCHEMA: EntitySchema = EntitySchema {
+pub static IGNORECOST_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:ignorecost",
     head_token: Some("IGNORECOST"),
     head_format: HeadFormat::TokenPrefixed,
@@ -121,7 +121,7 @@ pub static IGNORECOST_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static ALLOWDEBT_SCHEMA: EntitySchema = EntitySchema {
+pub static ALLOWDEBT_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:allowdebt",
     head_token: Some("ALLOWDEBT"),
     head_format: HeadFormat::TokenPrefixed,
@@ -129,7 +129,7 @@ pub static ALLOWDEBT_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static AUTORESIZEGEAR_SCHEMA: EntitySchema = EntitySchema {
+pub static AUTORESIZEGEAR_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:autoresizegear",
     head_token: Some("AUTORESIZEGEAR"),
     head_format: HeadFormat::TokenPrefixed,
@@ -137,7 +137,7 @@ pub static AUTORESIZEGEAR_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static CHARACTERNAME_SCHEMA: EntitySchema = EntitySchema {
+pub static CHARACTERNAME_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:charactername",
     head_token: Some("CHARACTERNAME"),
     head_format: HeadFormat::TokenPrefixed,
@@ -148,7 +148,7 @@ pub static CHARACTERNAME_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static PLAYERNAME_SCHEMA: EntitySchema = EntitySchema {
+pub static PLAYERNAME_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:playername",
     head_token: Some("PLAYERNAME"),
     head_format: HeadFormat::TokenPrefixed,
@@ -156,7 +156,7 @@ pub static PLAYERNAME_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static HEIGHT_SCHEMA: EntitySchema = EntitySchema {
+pub static HEIGHT_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:height",
     head_token: Some("HEIGHT"),
     head_format: HeadFormat::TokenPrefixed,
@@ -164,7 +164,7 @@ pub static HEIGHT_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static WEIGHT_SCHEMA: EntitySchema = EntitySchema {
+pub static WEIGHT_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:weight",
     head_token: Some("WEIGHT"),
     head_format: HeadFormat::TokenPrefixed,
@@ -172,7 +172,7 @@ pub static WEIGHT_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static AGE_SCHEMA: EntitySchema = EntitySchema {
+pub static AGE_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:age",
     head_token: Some("AGE"),
     head_format: HeadFormat::TokenPrefixed,
@@ -180,7 +180,7 @@ pub static AGE_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static HANDED_SCHEMA: EntitySchema = EntitySchema {
+pub static HANDED_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:handed",
     head_token: Some("HANDED"),
     head_format: HeadFormat::TokenPrefixed,
@@ -192,7 +192,7 @@ pub static HANDED_SCHEMA: EntitySchema = EntitySchema {
 // Character bio tokens (standalone)
 // ---------------------------------------------------------------------------
 
-pub static TABNAME_SCHEMA: EntitySchema = EntitySchema {
+pub static TABNAME_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:tabname",
     head_token: Some("TABNAME"),
     head_format: HeadFormat::TokenPrefixed,
@@ -200,7 +200,7 @@ pub static TABNAME_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static SKINCOLOR_SCHEMA: EntitySchema = EntitySchema {
+pub static SKINCOLOR_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:skincolor",
     head_token: Some("SKINCOLOR"),
     head_format: HeadFormat::TokenPrefixed,
@@ -208,7 +208,7 @@ pub static SKINCOLOR_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static EYECOLOR_SCHEMA: EntitySchema = EntitySchema {
+pub static EYECOLOR_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:eyecolor",
     head_token: Some("EYECOLOR"),
     head_format: HeadFormat::TokenPrefixed,
@@ -216,7 +216,7 @@ pub static EYECOLOR_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static HAIRCOLOR_SCHEMA: EntitySchema = EntitySchema {
+pub static HAIRCOLOR_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:haircolor",
     head_token: Some("HAIRCOLOR"),
     head_format: HeadFormat::TokenPrefixed,
@@ -224,7 +224,7 @@ pub static HAIRCOLOR_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static HAIRSTYLE_SCHEMA: EntitySchema = EntitySchema {
+pub static HAIRSTYLE_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:hairstyle",
     head_token: Some("HAIRSTYLE"),
     head_format: HeadFormat::TokenPrefixed,
@@ -232,7 +232,7 @@ pub static HAIRSTYLE_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static CITY_SCHEMA: EntitySchema = EntitySchema {
+pub static CITY_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:city",
     head_token: Some("CITY"),
     head_format: HeadFormat::TokenPrefixed,
@@ -240,7 +240,7 @@ pub static CITY_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static BIRTHDAY_SCHEMA: EntitySchema = EntitySchema {
+pub static BIRTHDAY_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:birthday",
     head_token: Some("BIRTHDAY"),
     head_format: HeadFormat::TokenPrefixed,
@@ -248,7 +248,7 @@ pub static BIRTHDAY_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static BIRTHPLACE_SCHEMA: EntitySchema = EntitySchema {
+pub static BIRTHPLACE_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:birthplace",
     head_token: Some("BIRTHPLACE"),
     head_format: HeadFormat::TokenPrefixed,
@@ -256,7 +256,7 @@ pub static BIRTHPLACE_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static PERSONALITYTRAIT1_SCHEMA: EntitySchema = EntitySchema {
+pub static PERSONALITYTRAIT1_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:personalitytrait1",
     head_token: Some("PERSONALITYTRAIT1"),
     head_format: HeadFormat::TokenPrefixed,
@@ -264,7 +264,7 @@ pub static PERSONALITYTRAIT1_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static PERSONALITYTRAIT2_SCHEMA: EntitySchema = EntitySchema {
+pub static PERSONALITYTRAIT2_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:personalitytrait2",
     head_token: Some("PERSONALITYTRAIT2"),
     head_format: HeadFormat::TokenPrefixed,
@@ -272,7 +272,7 @@ pub static PERSONALITYTRAIT2_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static SPEECHPATTERN_SCHEMA: EntitySchema = EntitySchema {
+pub static SPEECHPATTERN_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:speechpattern",
     head_token: Some("SPEECHPATTERN"),
     head_format: HeadFormat::TokenPrefixed,
@@ -280,7 +280,7 @@ pub static SPEECHPATTERN_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static PHOBIAS_SCHEMA: EntitySchema = EntitySchema {
+pub static PHOBIAS_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:phobias",
     head_token: Some("PHOBIAS"),
     head_format: HeadFormat::TokenPrefixed,
@@ -288,7 +288,7 @@ pub static PHOBIAS_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static INTERESTS_SCHEMA: EntitySchema = EntitySchema {
+pub static INTERESTS_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:interests",
     head_token: Some("INTERESTS"),
     head_format: HeadFormat::TokenPrefixed,
@@ -296,7 +296,7 @@ pub static INTERESTS_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static CATCHPHRASE_SCHEMA: EntitySchema = EntitySchema {
+pub static CATCHPHRASE_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:catchphrase",
     head_token: Some("CATCHPHRASE"),
     head_format: HeadFormat::TokenPrefixed,
@@ -304,7 +304,7 @@ pub static CATCHPHRASE_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static PORTRAIT_SCHEMA: EntitySchema = EntitySchema {
+pub static PORTRAIT_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:portrait",
     head_token: Some("PORTRAIT"),
     head_format: HeadFormat::TokenPrefixed,
@@ -316,7 +316,7 @@ pub static PORTRAIT_SCHEMA: EntitySchema = EntitySchema {
 // Character progression tokens (standalone)
 // ---------------------------------------------------------------------------
 
-pub static EXPERIENCE_SCHEMA: EntitySchema = EntitySchema {
+pub static EXPERIENCE_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:experience",
     head_token: Some("EXPERIENCE"),
     head_format: HeadFormat::TokenPrefixed,
@@ -324,7 +324,7 @@ pub static EXPERIENCE_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static EXPERIENCETABLE_SCHEMA: EntitySchema = EntitySchema {
+pub static EXPERIENCETABLE_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:experiencetable",
     head_token: Some("EXPERIENCETABLE"),
     head_format: HeadFormat::TokenPrefixed,
@@ -333,7 +333,7 @@ pub static EXPERIENCETABLE_SCHEMA: EntitySchema = EntitySchema {
 };
 
 /// Currency total in base units. Stored as text to accommodate decimal values.
-pub static MONEY_SCHEMA: EntitySchema = EntitySchema {
+pub static MONEY_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:money",
     head_token: Some("MONEY"),
     head_format: HeadFormat::TokenPrefixed,
@@ -345,7 +345,7 @@ pub static MONEY_SCHEMA: EntitySchema = EntitySchema {
 // Character description blocks (standalone)
 // ---------------------------------------------------------------------------
 
-pub static CHARACTERBIO_SCHEMA: EntitySchema = EntitySchema {
+pub static CHARACTERBIO_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:characterbio",
     head_token: Some("CHARACTERBIO"),
     head_format: HeadFormat::TokenPrefixed,
@@ -353,7 +353,7 @@ pub static CHARACTERBIO_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static CHARACTERDESC_SCHEMA: EntitySchema = EntitySchema {
+pub static CHARACTERDESC_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:characterdesc",
     head_token: Some("CHARACTERDESC"),
     head_format: HeadFormat::TokenPrefixed,
@@ -361,7 +361,7 @@ pub static CHARACTERDESC_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static CHARACTERCOMP_SCHEMA: EntitySchema = EntitySchema {
+pub static CHARACTERCOMP_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:charactercomp",
     head_token: Some("CHARACTERCOMP"),
     head_format: HeadFormat::TokenPrefixed,
@@ -369,7 +369,7 @@ pub static CHARACTERCOMP_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static CHARACTERASSET_SCHEMA: EntitySchema = EntitySchema {
+pub static CHARACTERASSET_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:characterasset",
     head_token: Some("CHARACTERASSET"),
     head_format: HeadFormat::TokenPrefixed,
@@ -377,7 +377,7 @@ pub static CHARACTERASSET_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static CHARACTERMAGIC_SCHEMA: EntitySchema = EntitySchema {
+pub static CHARACTERMAGIC_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:charactermagic",
     head_token: Some("CHARACTERMAGIC"),
     head_format: HeadFormat::TokenPrefixed,
@@ -385,7 +385,7 @@ pub static CHARACTERMAGIC_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static CHARACTERDMNOTES_SCHEMA: EntitySchema = EntitySchema {
+pub static CHARACTERDMNOTES_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:characterdmnotes",
     head_token: Some("CHARACTERDMNOTES"),
     head_format: HeadFormat::TokenPrefixed,
@@ -398,7 +398,7 @@ pub static CHARACTERDMNOTES_SCHEMA: EntitySchema = EntitySchema {
 // ---------------------------------------------------------------------------
 
 /// PCGen application version used to save the character file.
-pub static VERSION_SCHEMA: EntitySchema = EntitySchema {
+pub static VERSION_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:version",
     head_token: Some("VERSION"),
     head_format: HeadFormat::TokenPrefixed,
@@ -407,7 +407,7 @@ pub static VERSION_SCHEMA: EntitySchema = EntitySchema {
 };
 
 /// Ability pool point total for the character. Stored as text (may be decimal).
-pub static FEATPOOL_SCHEMA: EntitySchema = EntitySchema {
+pub static FEATPOOL_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:featpool",
     head_token: Some("FEATPOOL"),
     head_format: HeadFormat::TokenPrefixed,
@@ -416,7 +416,7 @@ pub static FEATPOOL_SCHEMA: EntitySchema = EntitySchema {
 };
 
 /// ID of the active equipment set.
-pub static CALCEQUIPSET_SCHEMA: EntitySchema = EntitySchema {
+pub static CALCEQUIPSET_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:calcequipset",
     head_token: Some("CALCEQUIPSET"),
     head_format: HeadFormat::TokenPrefixed,
@@ -425,7 +425,7 @@ pub static CALCEQUIPSET_SCHEMA: EntitySchema = EntitySchema {
 };
 
 /// Comma-delimited list of suppressed biography field names.
-pub static SUPPRESSBIOFIELDS_SCHEMA: EntitySchema = EntitySchema {
+pub static SUPPRESSBIOFIELDS_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:suppressbiofields",
     head_token: Some("SUPPRESSBIOFIELDS"),
     head_format: HeadFormat::TokenPrefixed,
@@ -446,7 +446,7 @@ static PCG_CLASS_TOKENS: &[TokenDef] = &[
     TokenDef::pipe_list_repeatable("PROHIBITED", "pcgen_prohibited"),
 ];
 
-pub static PCG_CLASS_SCHEMA: EntitySchema = EntitySchema {
+pub static PCG_CLASS_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:class",
     head_token: Some("CLASS"),
     head_format: HeadFormat::TokenPrefixed,
@@ -460,12 +460,11 @@ pub static PCG_CLASS_SCHEMA: EntitySchema = EntitySchema {
 
 static PCG_SKILL_TOKENS: &[TokenDef] = &[
     TokenDef::integer("OUTPUTORDER", "pcgen_outputorder"),
-    TokenDef::text("CLASSBOUGHT", "pcgen_classbought"),
-    TokenDef::text("RANKS", "pcgen_ranks"),
-    TokenDef::yesno("CLASSSKILL", "pcgen_classskill"),
+    // CLASSBOUGHT is a bracket group: [CLASS:Wizard|RANKS:3.0|COST:1|CLASSSKILL:Y]
+    TokenDef::bracket_group("CLASSBOUGHT", "pcgen_classbought"),
 ];
 
-pub static PCG_SKILL_SCHEMA: EntitySchema = EntitySchema {
+pub static PCG_SKILL_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:skill",
     head_token: Some("SKILL"),
     head_format: HeadFormat::TokenPrefixed,
@@ -483,7 +482,7 @@ static USERPOOL_TOKENS: &[TokenDef] = &[
     TokenDef::text("POOLPOINTS", "pcgen_userpool_poolpoints"),
 ];
 
-pub static USERPOOL_SCHEMA: EntitySchema = EntitySchema {
+pub static USERPOOL_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:userpool",
     head_token: Some("USERPOOL"),
     head_format: HeadFormat::TokenPrefixed,
@@ -507,7 +506,7 @@ static EQUIPSET_TOKENS: &[TokenDef] = &[
     TokenDef::text("NOTE", "pcgen_note"),
 ];
 
-pub static EQUIPSET_SCHEMA: EntitySchema = EntitySchema {
+pub static EQUIPSET_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:equipset",
     head_token: Some("EQUIPSET"),
     head_format: HeadFormat::TokenPrefixed,
@@ -525,13 +524,13 @@ static EQUIPNAME_TOKENS: &[TokenDef] = &[
     TokenDef::text("COST", "pcgen_cost"),
     TokenDef::text("WT", "pcgen_weight"),
     TokenDef::text("QUANTITY", "pcgen_quantity"),
-    TokenDef::text("CUSTOMIZATION", "pcgen_customization"),
+    // CUSTOMIZATION bracket group: [BASEITEM:Longsword|DATA:EQMOD=STEEL|...]
+    // DATA sub-items live inside this bracket group; no separate DATA token needed.
+    TokenDef::bracket_group("CUSTOMIZATION", "pcgen_customization"),
     TokenDef::text("NOTE", "pcgen_note"),
-    // DATA appears as a separate clause when bracket content in CUSTOMIZATION is pipe-split
-    TokenDef::text("DATA", "pcgen_data"),
 ];
 
-pub static EQUIPNAME_SCHEMA: EntitySchema = EntitySchema {
+pub static EQUIPNAME_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:equipname",
     head_token: Some("EQUIPNAME"),
     head_format: HeadFormat::TokenPrefixed,
@@ -547,11 +546,11 @@ static CLASSABILITIESLEVEL_TOKENS: &[TokenDef] = &[
     TokenDef::integer("HITPOINTS", "pcgen_cal_hitpoints"),
     TokenDef::integer("SKILLSGAINED", "pcgen_cal_skillsgained"),
     TokenDef::integer("SKILLSREMAINING", "pcgen_cal_skillsremaining"),
-    // SPECIALTIES records chosen specialist school etc. for class levels
-    TokenDef::text("SPECIALTIES", "pcgen_specialties"),
+    // SPECIALTIES bracket group: [SPECIALTY:Evocation|SPECIALTY:...]
+    TokenDef::bracket_group("SPECIALTIES", "pcgen_specialties"),
 ];
 
-pub static CLASSABILITIESLEVEL_SCHEMA: EntitySchema = EntitySchema {
+pub static CLASSABILITIESLEVEL_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:classabilitieslevel",
     head_token: Some("CLASSABILITIESLEVEL"),
     head_format: HeadFormat::TokenPrefixed,
@@ -574,7 +573,7 @@ static NOTE_TOKENS: &[TokenDef] = &[
     TokenDef::text("VALUE", "pcgen_value"),
 ];
 
-pub static NOTE_SCHEMA: EntitySchema = EntitySchema {
+pub static NOTE_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:note",
     head_token: Some("NOTE"),
     head_format: HeadFormat::TokenPrefixed,
@@ -592,11 +591,13 @@ static SPELLNAME_TOKENS: &[TokenDef] = &[
     TokenDef::text("BOOK", "pcgen_book"),
     TokenDef::text("SPELLLEVEL", "pcgen_spelllevel"),
     TokenDef::text("CLASS", "pcgen_class"),
-    TokenDef::text("SOURCE", "pcgen_source"),
-    TokenDef::text("FEATLIST", "pcgen_featlist"),
+    // SOURCE in PCG context is a bracket group: [TYPE:CLASS|NAME:Wizard]
+    TokenDef::bracket_group("SOURCE", "pcgen_source"),
+    // FEATLIST bracket group: [FEAT:Empower Spell|FEAT:...]
+    TokenDef::bracket_group("FEATLIST", "pcgen_featlist"),
 ];
 
-pub static SPELLNAME_SCHEMA: EntitySchema = EntitySchema {
+pub static SPELLNAME_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:spellname",
     head_token: Some("SPELLNAME"),
     head_format: HeadFormat::TokenPrefixed,
@@ -610,15 +611,17 @@ pub static SPELLNAME_SCHEMA: EntitySchema = EntitySchema {
 
 static PCG_DEITY_TOKENS: &[TokenDef] = &[
     TokenDef::text_required("DEITY", "pcgen_deity_name"),
-    TokenDef::text("DEITYDOMAINS", "pcgen_deitydomains"),
+    // DEITYDOMAINS bracket group: [DOMAIN:Good|DOMAIN:Sun|...]
+    TokenDef::bracket_group("DEITYDOMAINS", "pcgen_deitydomains"),
     TokenDef::text("ALIGNALLOW", "pcgen_alignallow"),
     TokenDef::text("HOLYITEM", "pcgen_holyitem"),
-    TokenDef::text("DEITYFAVWEAP", "pcgen_deityfavweap"),
+    // DEITYFAVWEAP bracket group: [WEAPON:Morningstar|...]
+    TokenDef::bracket_group("DEITYFAVWEAP", "pcgen_deityfavweap"),
     TokenDef::text("DEITYALIGN", "pcgen_deityalign"),
     TokenDef::text("DOMAINGRANTS", "pcgen_domaingrants"),
 ];
 
-pub static PCG_DEITY_SCHEMA: EntitySchema = EntitySchema {
+pub static PCG_DEITY_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:deity",
     head_token: Some("DEITY"),
     head_format: HeadFormat::TokenPrefixed,
@@ -633,10 +636,11 @@ pub static PCG_DEITY_SCHEMA: EntitySchema = EntitySchema {
 static PCG_DOMAIN_TOKENS: &[TokenDef] = &[
     TokenDef::text_required("DOMAIN", "pcgen_domain_name"),
     TokenDef::text("DOMAINGRANTS", "pcgen_domaingrants"),
-    TokenDef::text("SOURCE", "pcgen_source"),
+    // SOURCE in PCG context is a bracket group: [TYPE:DEITY|NAME:Pelor]
+    TokenDef::bracket_group("SOURCE", "pcgen_source"),
 ];
 
-pub static PCG_DOMAIN_SCHEMA: EntitySchema = EntitySchema {
+pub static PCG_DOMAIN_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:domain",
     head_token: Some("DOMAIN"),
     head_format: HeadFormat::TokenPrefixed,

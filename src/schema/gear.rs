@@ -3,7 +3,7 @@
 //! GEAR lines use `GEAR:name` heads and optional placement/modifier clauses.
 
 use crate::schema::{
-    ArtisanMapping, Cardinality, EntitySchema, HeadFormat, TokenDef, TokenGrammar,
+    ArtisanMapping, Cardinality, LineGrammar, HeadFormat, TokenDef, TokenGrammar,
 };
 
 static GEAR_TOKENS: &[TokenDef] = &[
@@ -17,12 +17,12 @@ static GEAR_TOKENS: &[TokenDef] = &[
         key: "EQMOD",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_eqmods"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_eqmods"),
         required: false,
     },
 ];
 
-pub static GEAR_SCHEMA: EntitySchema = EntitySchema {
+pub static GEAR_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:entity:gear",
     head_token: Some("GEAR"),
     head_format: HeadFormat::TokenPrefixed,

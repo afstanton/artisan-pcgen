@@ -6,7 +6,7 @@
 //! `FOLLOWER:x=y` and `MASTERBONUSRACE:x`.
 
 use crate::schema::{
-    ArtisanMapping, Cardinality, EntitySchema, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
+    ArtisanMapping, Cardinality, LineGrammar, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
 };
 
 static FOLLOWER_TOKENS: &[TokenDef] = &[
@@ -20,7 +20,7 @@ static FOLLOWER_TOKENS: &[TokenDef] = &[
         key: "ABILITY",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_abilities"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_abilities"),
         required: false,
     },
     TokenDef::pipe_positional_repeatable("KIT", &["count", "kit"], "pcgen_kits"),
@@ -30,11 +30,11 @@ static MASTERBONUSRACE_TOKENS: &[TokenDef] = &[TokenDef {
     key: "ABILITY",
     grammar: TokenGrammar::PipeList,
     cardinality: Cardinality::Repeatable,
-    artisan_mapping: ArtisanMapping::Attribute("pcgen_abilities"),
+    artisan_mapping: ArtisanMapping::Field("pcgen_abilities"),
     required: false,
 }];
 
-pub static FOLLOWER_COMPANIONMOD_SCHEMA: EntitySchema = EntitySchema {
+pub static FOLLOWER_COMPANIONMOD_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:entity:companionmod-follower",
     head_token: Some("FOLLOWER"),
     head_format: HeadFormat::TokenPrefixed,
@@ -57,7 +57,7 @@ pub static FOLLOWER_COMPANIONMOD_SCHEMA: EntitySchema = EntitySchema {
     ],
 };
 
-pub static MASTERBONUSRACE_COMPANIONMOD_SCHEMA: EntitySchema = EntitySchema {
+pub static MASTERBONUSRACE_COMPANIONMOD_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:entity:companionmod-masterbonusrace",
     head_token: Some("MASTERBONUSRACE"),
     head_format: HeadFormat::TokenPrefixed,

@@ -5,7 +5,7 @@
 //! Equipment files define items. The head is the item name (no token prefix).
 
 use crate::schema::{
-    ArtisanMapping, Cardinality, EntitySchema, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
+    ArtisanMapping, Cardinality, LineGrammar, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
 };
 
 static QUALITY_SLOTS: &[&str] = &["name", "value"];
@@ -35,7 +35,7 @@ static EQUIPMENT_TOKENS: &[TokenDef] = &[
         key: "PART",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_part"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_part"),
         required: false,
     },
     TokenDef::text("ALTDAMAGE", "pcgen_altdamage"),
@@ -55,7 +55,7 @@ static EQUIPMENT_TOKENS: &[TokenDef] = &[
         key: "ITYPE",
         grammar: TokenGrammar::DotList,
         cardinality: Cardinality::Once,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_itype"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_itype"),
         required: false,
     },
     TokenDef::text("NAMEOPT", "pcgen_nameopt"),
@@ -67,7 +67,7 @@ static EQUIPMENT_TOKENS: &[TokenDef] = &[
         key: "REPLACES",
         grammar: TokenGrammar::CommaList,
         cardinality: Cardinality::Once,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_replaces"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_replaces"),
         required: false,
     },
     // Container
@@ -81,7 +81,7 @@ static EQUIPMENT_TOKENS: &[TokenDef] = &[
         key: "PAGEUSAGE",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_pageusage"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_pageusage"),
         required: false,
     },
     // Quality annotation (repeatable name|value pairs)
@@ -91,7 +91,7 @@ static EQUIPMENT_TOKENS: &[TokenDef] = &[
         key: "SPROP",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Attribute("pcgen_sprop"),
+        artisan_mapping: ArtisanMapping::Field("pcgen_sprop"),
         required: false,
     },
     // Magic item properties found in some third-party equipmod datasets.
@@ -120,7 +120,7 @@ static EQUIPMENT_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::SourceMeta,
 ];
 
-pub static EQUIPMENT_SCHEMA: EntitySchema = EntitySchema {
+pub static EQUIPMENT_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:entity:equipment",
     head_token: None,
     head_format: HeadFormat::NameOnly,

@@ -84,6 +84,148 @@ fn assert_semantic_roundtrip_file(path: &Path) -> io::Result<()> {
     Ok(())
 }
 
+/// Verify that bracket-group token values are parsed into structured JSON arrays,
+/// not stored as raw opaque strings.
+#[test]
+fn bracket_group_values_are_structured() {
+    // CLASSBOUGHT
+    let cat = parse_text_to_catalog(
+        "SKILL:Spellcraft|CLASSBOUGHT:[CLASS:Wizard|RANKS:3.0|COST:1|CLASSSKILL:Y]",
+        "test.pcg",
+        "pcg",
+    );
+    let entity = &cat.entities[0];
+    let classbought = entity
+        .attributes
+        .get("pcgen_classbought")
+        .expect("pcgen_classbought should be set");
+    let arr = classbought.as_array().expect("pcgen_classbought should be an array");
+    assert_eq!(arr.len(), 4, "CLASSBOUGHT should have 4 sub-entries");
+    assert_eq!(arr[0]["key"], "CLASS");
+    assert_eq!(arr[0]["value"], "Wizard");
+    assert_eq!(arr[1]["key"], "RANKS");
+    assert_eq!(arr[1]["value"], "3.0");
+    assert_eq!(arr[2]["key"], "COST");
+    assert_eq!(arr[3]["key"], "CLASSSKILL");
+    assert_eq!(arr[3]["value"], "Y");
+
+    // DEITYDOMAINS — multiple same-key entries
+    let cat2 = parse_text_to_catalog(
+        "DEITY:Pelor|DEITYDOMAINS:[DOMAIN:Good|DOMAIN:Sun]|DEITYALIGN:NG",
+        "test.pcg",
+        "pcg",
+    );
+    let e2 = &cat2.entities[0];
+    let domains = e2
+        .attributes
+        .get("pcgen_deitydomains")
+        .and_then(|v| v.as_array())
+        .expect("pcgen_deitydomains should be an array");
+    assert_eq!(domains.len(), 2);
+    assert_eq!(domains[0]["key"], "DOMAIN");
+    assert_eq!(domains[0]["value"], "Good");
+    assert_eq!(domains[1]["key"], "DOMAIN");
+    assert_eq!(domains[1]["value"], "Sun");
+
+    // WEAPONPROF head value — stored as bracket group on the entity
+    let cat3 = parse_text_to_catalog(
+        "WEAPONPROF:[WEAPON:Longsword|WEAPON:Dagger|WEAPON:Quarterstaff]",
+        "test.pcg",
+        "pcg",
+    );
+    let e3 = &cat3.entities[0];
+    let weapons = e3
+        .attributes
+        .get("pcgen_weaponprof_catalog")
+        .and_then(|v| v.as_array())
+        .expect("pcgen_weaponprof_catalog should be an array for PCG bracket form");
+    assert_eq!(weapons.len(), 3);
+    assert_eq!(weapons[0]["key"], "WEAPON");
+    assert_eq!(weapons[0]["value"], "Longsword");
+    assert_eq!(weapons[2]["value"], "Quarterstaff");
+}
+
+/// Verify that bracket-group structured values survive a full parse → emit → reparse cycle
+/// with all sub-entries intact and no data loss.
+#[test]
+fn bracket_group_round_trips_preserve_sub_entries() {
+    let lines = "\
+SKILL:Spellcraft|CLASSBOUGHT:[CLASS:Wizard|RANKS:3.0|COST:1|CLASSSKILL:Y]\n\
+DEITY:Pelor|DEITYDOMAINS:[DOMAIN:Good|DOMAIN:Sun]|DEITYFAVWEAP:[WEAPON:Morningstar]|DEITYALIGN:NG\n\
+WEAPONPROF:[WEAPON:Longsword|WEAPON:Dagger|WEAPON:Quarterstaff]\n\
+SPELLNAME:Fireball|TIMES:2|CLASS:Wizard|BOOK:Combat Book|SPELLLEVEL:3|FEATLIST:[FEAT:Heighten Spell|FEAT:Empower Spell]";
+
+    let first = parse_text_to_catalog(lines, "test.pcg", "pcg");
+    let emitted = unparse_catalog_to_text(&first);
+    let second = parse_text_to_catalog(&emitted, "test.pcg", "pcg");
+
+    // CLASSBOUGHT round-trip
+    let skill_after = second
+        .entities
+        .iter()
+        .find(|e| e.name == "Spellcraft")
+        .expect("Spellcraft entity should survive round-trip");
+    let cb = skill_after
+        .attributes
+        .get("pcgen_classbought")
+        .and_then(|v| v.as_array())
+        .expect("pcgen_classbought should be an array after round-trip");
+    assert_eq!(cb.len(), 4);
+    assert_eq!(cb[0]["key"], "CLASS");
+    assert_eq!(cb[0]["value"], "Wizard");
+
+    // DEITYFAVWEAP round-trip
+    let deity_after = second
+        .entities
+        .iter()
+        .find(|e| e.name == "Pelor")
+        .expect("Pelor entity should survive round-trip");
+    let favweap = deity_after
+        .attributes
+        .get("pcgen_deityfavweap")
+        .and_then(|v| v.as_array())
+        .expect("pcgen_deityfavweap should be an array after round-trip");
+    assert_eq!(favweap.len(), 1);
+    assert_eq!(favweap[0]["key"], "WEAPON");
+    assert_eq!(favweap[0]["value"], "Morningstar");
+
+    // WEAPONPROF round-trip — all three weapons present
+    let weaponprof_after = second
+        .entities
+        .iter()
+        .find(|e| {
+            e.attributes
+                .get("pcgen_entity_type_key")
+                .and_then(|v| v.as_str())
+                .is_some_and(|k| k.contains("weaponprof"))
+        })
+        .expect("WEAPONPROF entity should survive round-trip");
+    let wps = weaponprof_after
+        .attributes
+        .get("pcgen_weaponprof_catalog")
+        .and_then(|v| v.as_array())
+        .expect("pcgen_weaponprof_catalog should be an array after round-trip");
+    assert_eq!(wps.len(), 3);
+    assert!(wps.iter().any(|w| w["value"] == "Longsword"));
+    assert!(wps.iter().any(|w| w["value"] == "Dagger"));
+    assert!(wps.iter().any(|w| w["value"] == "Quarterstaff"));
+
+    // FEATLIST round-trip — two feats present
+    let spell_after = second
+        .entities
+        .iter()
+        .find(|e| e.name == "Fireball")
+        .expect("Fireball entity should survive round-trip");
+    let feats = spell_after
+        .attributes
+        .get("pcgen_featlist")
+        .and_then(|v| v.as_array())
+        .expect("pcgen_featlist should be an array after round-trip");
+    assert_eq!(feats.len(), 2);
+    assert!(feats.iter().any(|f| f["value"] == "Heighten Spell"));
+    assert!(feats.iter().any(|f| f["value"] == "Empower Spell"));
+}
+
 fn assert_semantic_roundtrip_for_all_fixtures(root: &Path) -> io::Result<usize> {
     let files = collect_all_fixture_files(root)?;
     let mut exercised = 0usize;

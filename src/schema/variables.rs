@@ -4,7 +4,7 @@
 //! - `docs/listfilepages/lstfileclass/lfc_lesson_variables.txt`
 //! - corpus `*_variables.lst` files
 
-use crate::schema::{EntitySchema, HeadFormat, TokenDef};
+use crate::schema::{LineGrammar, HeadFormat, TokenDef};
 
 static LOCAL_VARIABLE_TOKENS: &[TokenDef] = &[
     TokenDef::text_required("LOCAL", "pcgen_local"),
@@ -16,7 +16,7 @@ static GLOBAL_VARIABLE_TOKENS: &[TokenDef] = &[
     TokenDef::text("EXPLANATION", "pcgen_explanation"),
 ];
 
-pub static LOCAL_VARIABLE_SCHEMA: EntitySchema = EntitySchema {
+pub static LOCAL_VARIABLE_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:entity:variable-local",
     head_token: Some("LOCAL"),
     head_format: HeadFormat::TokenPrefixed,
@@ -24,7 +24,7 @@ pub static LOCAL_VARIABLE_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static GLOBAL_VARIABLE_SCHEMA: EntitySchema = EntitySchema {
+pub static GLOBAL_VARIABLE_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:entity:variable-global",
     head_token: Some("GLOBAL"),
     head_format: HeadFormat::TokenPrefixed,
@@ -42,7 +42,7 @@ static CHANNEL_VARIABLE_TOKENS: &[TokenDef] = &[
 static EQUIPMENT_PART_VARIABLE_TOKENS: &[TokenDef] =
     &[TokenDef::text("EXPLANATION", "pcgen_explanation")];
 
-pub static CHANNEL_VARIABLE_SCHEMA: EntitySchema = EntitySchema {
+pub static CHANNEL_VARIABLE_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:entity:variable-channel",
     head_token: Some("CHANNEL"),
     head_format: HeadFormat::TokenPrefixed,
@@ -50,7 +50,7 @@ pub static CHANNEL_VARIABLE_SCHEMA: EntitySchema = EntitySchema {
     globals: &[],
 };
 
-pub static EQUIPMENT_PART_VARIABLE_SCHEMA: EntitySchema = EntitySchema {
+pub static EQUIPMENT_PART_VARIABLE_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:entity:variable-equipment-part",
     head_token: Some("EQUIPMENT.PART"),
     head_format: HeadFormat::TokenPrefixed,

@@ -149,6 +149,12 @@ pub enum TokenGrammar {
     PipeGroups,
     /// Formula / expression value (stored verbatim): `DEFINE:myVar|0`
     Formula,
+    /// Bracket-enclosed pipe-separated key:value sub-records: `TOKEN:[KEY:val|KEY:val|...]`
+    ///
+    /// Stored as a JSON array of `{"key": "K", "value": "V"}` objects. The outer `[` `]`
+    /// and inner `|` separators are part of the serialized form, not the stored value.
+    /// Also handles the case where the value is a plain string (no brackets) — emitted verbatim.
+    BracketGroup,
 }
 
 /// How many times a token may appear per entity line.
@@ -163,8 +169,14 @@ pub enum Cardinality {
 /// How a token's parsed value maps into the artisan `Entity` data model.
 #[derive(Debug, Clone, Copy)]
 pub enum ArtisanMapping {
-    /// Maps to `entity.attributes[field_key]`.
-    Attribute(&'static str),
+    /// Maps to the entity field identified by `field_key`.
+    ///
+    /// `field_key` is the canonical key of a `FieldDef` on the corresponding
+    /// `artisan_core::EntityType`. It is also used as the key in
+    /// `entity.attributes` for storage. In artisan-pcgen these keys currently
+    /// carry a `pcgen_` prefix (e.g. `"pcgen_hitdie"`); future clean-up will
+    /// align them with bare logical field names (e.g. `"hit_die"`).
+    Field(&'static str),
     /// Contributes to `entity.effects` (kind = token key, target = value).
     Effect,
     /// Contributes to `entity.prerequisites`.
@@ -191,62 +203,76 @@ pub struct TokenDef {
 }
 
 impl TokenDef {
-    /// Single-occurrence text token mapping to an attribute.
+    /// Single-occurrence text token mapping to a logical field.
     pub const fn text(key: &'static str, field: &'static str) -> Self {
         Self {
             key,
             grammar: TokenGrammar::Text,
             cardinality: Cardinality::Once,
-            artisan_mapping: ArtisanMapping::Attribute(field),
+            artisan_mapping: ArtisanMapping::Field(field),
             required: false,
         }
     }
 
-    /// Required single-occurrence text token mapping to an attribute.
+    /// Required single-occurrence text token mapping to a logical field.
     pub const fn text_required(key: &'static str, field: &'static str) -> Self {
         Self {
             key,
             grammar: TokenGrammar::Text,
             cardinality: Cardinality::Once,
-            artisan_mapping: ArtisanMapping::Attribute(field),
+            artisan_mapping: ArtisanMapping::Field(field),
             required: true,
         }
     }
 
-    /// Single-occurrence integer token mapping to an attribute.
+    /// Single-occurrence integer token mapping to a logical field.
     pub const fn integer(key: &'static str, field: &'static str) -> Self {
         Self {
             key,
             grammar: TokenGrammar::Integer,
             cardinality: Cardinality::Once,
-            artisan_mapping: ArtisanMapping::Attribute(field),
+            artisan_mapping: ArtisanMapping::Field(field),
             required: false,
         }
     }
 
-    /// Single-occurrence YES/NO token mapping to an attribute.
+    /// Single-occurrence bracket-group token mapping to a logical field.
+    ///
+    /// Parses `[KEY:val|KEY:val|...]` into a JSON array of `{"key","value"}` objects.
+    /// Emits the same bracket syntax. Falls back to verbatim string for non-bracket values.
+    pub const fn bracket_group(key: &'static str, field: &'static str) -> Self {
+        Self {
+            key,
+            grammar: TokenGrammar::BracketGroup,
+            cardinality: Cardinality::Once,
+            artisan_mapping: ArtisanMapping::Field(field),
+            required: false,
+        }
+    }
+
+    /// Single-occurrence YES/NO token mapping to a logical field.
     pub const fn yesno(key: &'static str, field: &'static str) -> Self {
         Self {
             key,
             grammar: TokenGrammar::YesNo,
             cardinality: Cardinality::Once,
-            artisan_mapping: ArtisanMapping::Attribute(field),
+            artisan_mapping: ArtisanMapping::Field(field),
             required: false,
         }
     }
 
-    /// Repeatable pipe-list token mapping to an attribute.
+    /// Repeatable pipe-list token mapping to a logical field.
     pub const fn pipe_list_repeatable(key: &'static str, field: &'static str) -> Self {
         Self {
             key,
             grammar: TokenGrammar::PipeList,
             cardinality: Cardinality::Repeatable,
-            artisan_mapping: ArtisanMapping::Attribute(field),
+            artisan_mapping: ArtisanMapping::Field(field),
             required: false,
         }
     }
 
-    /// Single-occurrence pipe-positional token mapping to an attribute.
+    /// Single-occurrence pipe-positional token mapping to a logical field.
     pub const fn pipe_positional(
         key: &'static str,
         slots: &'static [&'static str],
@@ -256,12 +282,12 @@ impl TokenDef {
             key,
             grammar: TokenGrammar::PipePositional(slots),
             cardinality: Cardinality::Once,
-            artisan_mapping: ArtisanMapping::Attribute(field),
+            artisan_mapping: ArtisanMapping::Field(field),
             required: false,
         }
     }
 
-    /// Repeatable pipe-positional token mapping to an attribute.
+    /// Repeatable pipe-positional token mapping to a logical field.
     pub const fn pipe_positional_repeatable(
         key: &'static str,
         slots: &'static [&'static str],
@@ -271,7 +297,7 @@ impl TokenDef {
             key,
             grammar: TokenGrammar::PipePositional(slots),
             cardinality: Cardinality::Repeatable,
-            artisan_mapping: ArtisanMapping::Attribute(field),
+            artisan_mapping: ArtisanMapping::Field(field),
             required: false,
         }
     }
@@ -428,11 +454,11 @@ impl GlobalGroup {
 }
 
 // ---------------------------------------------------------------------------
-// EntitySchema
+// LineGrammar
 // ---------------------------------------------------------------------------
 
 /// Complete token grammar for one PCGen entity type.
-pub struct EntitySchema {
+pub struct LineGrammar {
     /// Artisan entity type key, e.g. `"pcgen:entity:ability"`.
     pub entity_type_key: &'static str,
     /// PCGen head token for token-prefixed entities, e.g. `"CLASS"`, `"SKILL"`.
@@ -446,7 +472,7 @@ pub struct EntitySchema {
     pub globals: &'static [GlobalGroup],
 }
 
-impl EntitySchema {
+impl LineGrammar {
     /// Returns true if this schema recognizes `key` as a known token
     /// (either entity-specific or via a global group).
     pub fn knows_token_key(&self, key: &str) -> bool {
@@ -476,7 +502,7 @@ impl EntitySchema {
 // Registry
 // ---------------------------------------------------------------------------
 
-static ALL_SCHEMAS: &[&EntitySchema] = &[
+static ALL_SCHEMAS: &[&LineGrammar] = &[
     &ability::ABILITY_SCHEMA,
     &abilitycategory::ABILITYCATEGORY_SCHEMA,
     &classlevel::CLASSLEVEL_SCHEMA,
@@ -686,7 +712,7 @@ static ALL_SCHEMAS: &[&EntitySchema] = &[
 ];
 
 /// Look up a schema by artisan entity type key.
-pub fn schema_for_entity_type_key(key: &str) -> Option<&'static EntitySchema> {
+pub fn schema_for_entity_type_key(key: &str) -> Option<&'static LineGrammar> {
     ALL_SCHEMAS
         .iter()
         .copied()
@@ -696,7 +722,7 @@ pub fn schema_for_entity_type_key(key: &str) -> Option<&'static EntitySchema> {
 /// Look up a schema by PCGen head token (e.g. `"CLASS"`, `"SKILL"`).
 ///
 /// Returns `None` for entity types with name-only heads.
-pub fn schema_for_head_token(token: &str) -> Option<&'static EntitySchema> {
+pub fn schema_for_head_token(token: &str) -> Option<&'static LineGrammar> {
     ALL_SCHEMAS.iter().copied().find(|s| {
         s.head_token
             .map_or(false, |ht| ht.eq_ignore_ascii_case(token))
