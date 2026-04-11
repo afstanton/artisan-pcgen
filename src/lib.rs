@@ -224,6 +224,10 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
     let mut entities = Vec::new();
     let mut citations = Vec::new();
     let mut skipped_unknown_clause_counts: BTreeMap<String, usize> = BTreeMap::new();
+    // LST multi-line entity index: (decl_token_upper, decl_value) → index into `entities`.
+    // When a second `CLASS:Faceman` line appears we merge into the first rather than creating
+    // a duplicate. Only applies to `lst` format token-entry records.
+    let mut lst_entity_index: BTreeMap<(String, String), usize> = BTreeMap::new();
     for (line_number, raw_line) in text.lines().enumerate() {
         let trimmed = raw_line.trim();
         if trimmed.is_empty() || trimmed.starts_with('#') {
@@ -343,6 +347,63 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
         let mut prerequisites = Vec::new();
         semantics::project_semantics(&supported_clauses, &mut effects, &mut prerequisites);
 
+        // For LST token-entry records, check if an entity with the same
+        // (decl_token, decl_value) already exists on a prior line.  In PCGen
+        // LST files a single logical entity (e.g. CLASS:Faceman) is often
+        // split across two or more lines to stay within line-length limits.
+        // We merge subsequent lines into the first rather than producing
+        // duplicate entities.
+        //
+        // Only applies to entity types that PCGen documents as supporting
+        // multi-line continuation.  Some LST files (e.g. biosettings) use
+        // repeated heads for genuinely distinct records (different age
+        // maturity brackets), so we must not merge those.
+        let merge_key: Option<(String, String)> =
+            if ext.eq_ignore_ascii_case("lst")
+                && is_multiline_lst_entity_type(&inferred_type_key)
+            {
+                if let (Some(Value::String(tok)), Some(Value::String(val))) = (
+                    attributes.get("pcgen_decl_token"),
+                    attributes.get("pcgen_decl_value"),
+                ) {
+                    Some((tok.clone(), val.clone()))
+                } else {
+                    None
+                }
+            } else {
+                None
+            };
+
+        if let Some(ref key) = merge_key {
+            if let Some(&existing_idx) = lst_entity_index.get(key) {
+                // Merge: fold the new line's projected attributes into the
+                // existing entity, skipping identity/structural fields that
+                // belong to the first line only.
+                let existing: &mut Entity = &mut entities[existing_idx];
+                for (attr_key, attr_val) in attributes {
+                    match attr_key.as_str() {
+                        // Keep the first line's identity fields unchanged.
+                        "head" | "clauses" | "line_number" | "pcgen_line_number"
+                        | "pcgen_record_family" | "pcgen_record_style"
+                        | "pcgen_entity_type_key" | "source_format" => {}
+                        // Merge: don't overwrite a value that was already set
+                        // by the first line, unless the key is absent.
+                        _ => {
+                            existing.attributes.entry(attr_key).or_insert(attr_val);
+                        }
+                    }
+                }
+                // Carry forward effects, prerequisites, and citation ids.
+                existing.effects.extend(effects);
+                existing.prerequisites.extend(prerequisites);
+                // entity_citations contains CanonicalIds of CitationRecords that were
+                // already pushed to the top-level `citations` vec above.
+                existing.citations.extend(entity_citations);
+                continue;
+            }
+        }
+
+        let new_idx = entities.len();
         entities.push(Entity {
             id: entity_id,
             entity_type: entity_type_id,
@@ -356,6 +417,9 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
             completeness: CompletenessState::Descriptive,
             provenance: None,
         });
+        if let Some(key) = merge_key {
+            lst_entity_index.insert(key, new_idx);
+        }
     }
 
     if !skipped_unknown_clause_counts.is_empty() {
@@ -562,6 +626,35 @@ fn infer_record_family(ext: &str, parsed_line: &ParsedLine, inferred_type_key: &
             }
         }
     }
+}
+
+/// Returns `true` if entities of the given type key support multi-line
+/// continuation in PCGen LST files (i.e. two lines with the same head token
+/// and name should be merged into one logical entity).
+///
+/// PCGen's documentation explicitly describes multi-line continuation for
+/// game-rule entity types like CLASS, RACE, FEAT, ABILITY, SPELL, EQUIPMENT,
+/// SKILL, DEITY, and TEMPLATE.  System-configuration LST types (biosettings,
+/// sizeatttributes, etc.) use repeated heads for *distinct* records (e.g.
+/// different age maturity brackets) and must NOT be merged.
+fn is_multiline_lst_entity_type(type_key: &str) -> bool {
+    matches!(
+        type_key,
+        "pcgen:entity:class"
+            | "pcgen:entity:subclass"
+            | "pcgen:entity:race"
+            | "pcgen:entity:feat"
+            | "pcgen:entity:ability"
+            | "pcgen:entity:spell"
+            | "pcgen:entity:equipment"
+            | "pcgen:entity:equipmod"
+            | "pcgen:entity:skill"
+            | "pcgen:entity:deity"
+            | "pcgen:entity:template"
+            | "pcgen:entity:language"
+            | "pcgen:entity:companionmod"
+            | "pcgen:entity:kit"
+    )
 }
 
 fn ordered_entities_for_unparse(catalog: &ParsedCatalog) -> Vec<&Entity> {

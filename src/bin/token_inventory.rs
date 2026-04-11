@@ -268,6 +268,7 @@ fn scan_directory(
                     continue;
                 }
             }
+            let files_before = *file_count;
             let (_, f) = scan_directory(
                 &path,
                 semantic_counts,
@@ -279,6 +280,14 @@ fn scan_directory(
                 total_lines,
             )?;
             fix_count += f;
+            let new_files = *file_count - files_before;
+            if new_files > 0 {
+                eprintln!(
+                    "token_inventory:   {} ({} files)",
+                    path.display(),
+                    new_files
+                );
+            }
         } else if let Some(ext) = path.extension() {
             let ext_str = ext.to_string_lossy();
             if ext_str == "lst" || ext_str == "pcc" || ext_str == "pcg" {
@@ -373,6 +382,12 @@ fn process_file(
     }
 
     *file_count += 1;
+    if *file_count % 500 == 0 {
+        eprintln!(
+            "token_inventory: {} files processed ({} lines)...",
+            file_count, total_lines
+        );
+    }
 
     for (line_idx, line) in content.lines().enumerate() {
         let line_number = line_idx + 1;

@@ -1824,7 +1824,29 @@ pub(crate) fn project_decl_token_value(
             attributes.insert("pcgen_equipname_item".to_string(), Value::String(decl_value.to_string()));
         }
         "CLASSABILITIESLEVEL" => {
+            // Store the raw "ClassName=Level" value for full round-trip fidelity.
             attributes.insert("pcgen_cal_classname_level".to_string(), Value::String(decl_value.to_string()));
+            // Also extract the class name and level as separate relationship/field attributes.
+            // Format: CLASSABILITIESLEVEL:ClassName=LevelNumber
+            // `pcgen_for_class` is the relationship back to the parent CLASS record.
+            if let Some(eq_pos) = decl_value.find('=') {
+                let class_name = decl_value[..eq_pos].trim();
+                let level_str  = decl_value[eq_pos + 1..].trim();
+                if !class_name.is_empty() {
+                    attributes.insert(
+                        "pcgen_for_class".to_string(),
+                        Value::String(class_name.to_string()),
+                    );
+                }
+                if let Ok(level) = level_str.parse::<i64>() {
+                    attributes.insert("pcgen_class_level".to_string(), json!(level));
+                } else if !level_str.is_empty() {
+                    attributes.insert(
+                        "pcgen_class_level".to_string(),
+                        Value::String(level_str.to_string()),
+                    );
+                }
+            }
         }
         // Variable schemas — head token stores the variable path
         "CHANNEL" => {

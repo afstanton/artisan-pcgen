@@ -1,0 +1,13 @@
+# Multi-line class LST fixture.
+# In real PCGen data files a single CLASS entity is commonly split across two or
+# more lines when the line would otherwise exceed the column limit.  All lines
+# sharing the same CLASS:Name head are logically one entity.
+#
+# Pattern from spycraft_classes.lst (Spycraft 2.0 OGL, Patrick Kapera et al.):
+#   CLASS:Faceman	HD:10	TYPE:Base.PC	MAXLEVEL:20	...
+#   CLASS:Faceman	STARTSKILLPTS:6	CSKILL:Bluff|...
+#
+# We use synthetic data that exercises the same grammar without reproducing
+# proprietary stat values.
+CLASS:Faceman	HITDIE:10	TYPE:Base.PC	MAXLEVEL:20	ABB:Fcm	SOURCEPAGE:42
+CLASS:Faceman	STARTSKILLPTS:6	CSKILL:Bluff|Diplomacy|Disguise
