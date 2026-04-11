@@ -39,10 +39,21 @@ static CHANNEL_VARIABLE_TOKENS: &[TokenDef] = &[
     TokenDef::text("EXPLANATION", "pcgen_explanation"),
 ];
 
+static EQUIPMENT_PART_VARIABLE_TOKENS: &[TokenDef] =
+    &[TokenDef::text("EXPLANATION", "pcgen_explanation")];
+
 pub static CHANNEL_VARIABLE_SCHEMA: EntitySchema = EntitySchema {
     entity_type_key: "pcgen:entity:variable-channel",
     head_token: Some("CHANNEL"),
     head_format: HeadFormat::TokenPrefixed,
     tokens: CHANNEL_VARIABLE_TOKENS,
+    globals: &[],
+};
+
+pub static EQUIPMENT_PART_VARIABLE_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:entity:variable-equipment-part",
+    head_token: Some("EQUIPMENT.PART"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: EQUIPMENT_PART_VARIABLE_TOKENS,
     globals: &[],
 };

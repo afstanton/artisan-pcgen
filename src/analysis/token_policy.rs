@@ -105,16 +105,17 @@ pub(crate) fn classify_token_key(input: &str, is_bare: bool) -> ClauseSupportLev
         return ClauseSupportLevel::Artifact;
     }
 
-    // Selector-style token used in variable-path contexts; keep distinct from PART
-    // while treating it as intentionally supported syntax.
-    if token == "EQUIPMENT.PART" {
-        return ClauseSupportLevel::PolicySupported;
-    }
-
     // Schema-driven lookup: any registered schema that knows this token
     // classifies it as semantically interpreted.
     if crate::schema::any_schema_knows_token(&token) {
         return ClauseSupportLevel::SemanticallyInterpreted;
+    }
+
+    // Selector-style token used in variable-path contexts; if it is not
+    // schema-backed in the current context, keep treating it as intentionally
+    // supported syntax rather than unhandled noise.
+    if token == "EQUIPMENT.PART" {
+        return ClauseSupportLevel::PolicySupported;
     }
 
     // TOKEN.CLEAR is a standard PCGen modifier that removes accumulated values
@@ -266,10 +267,10 @@ mod tests {
     }
 
     #[test]
-    fn classify_token_key_treats_equipment_part_as_policy_supported() {
+    fn classify_token_key_treats_equipment_part_as_semantically_interpreted() {
         assert!(matches!(
             classify_token_key("EQUIPMENT.PART", false),
-            ClauseSupportLevel::PolicySupported
+            ClauseSupportLevel::SemanticallyInterpreted
         ));
     }
 
@@ -281,7 +282,7 @@ mod tests {
         ));
         assert!(matches!(
             classify_token_key("EQUIPMENT.PART", false),
-            ClauseSupportLevel::PolicySupported
+            ClauseSupportLevel::SemanticallyInterpreted
         ));
     }
 

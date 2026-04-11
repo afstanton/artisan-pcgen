@@ -434,6 +434,46 @@ pub static SUPPRESSBIOFIELDS_SCHEMA: EntitySchema = EntitySchema {
 };
 
 // ---------------------------------------------------------------------------
+// Character class record (CLASS:name|LEVEL:n|SKILLPOOL:n|...)
+// ---------------------------------------------------------------------------
+
+static PCG_CLASS_TOKENS: &[TokenDef] = &[
+    TokenDef::integer("LEVEL", "pcgen_level"),
+    TokenDef::integer("SKILLPOOL", "pcgen_class_skillpool"),
+    TokenDef::text("SPELLBASE", "pcgen_class_spellbase"),
+    TokenDef::text("CANCASTPERDAY", "pcgen_class_cancastperday"),
+    TokenDef::text("SUBCLASS", "pcgen_subclass"),
+    TokenDef::pipe_list_repeatable("PROHIBITED", "pcgen_prohibited"),
+];
+
+pub static PCG_CLASS_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:pcg:class",
+    head_token: Some("CLASS"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: PCG_CLASS_TOKENS,
+    globals: &[],
+};
+
+// ---------------------------------------------------------------------------
+// Character skill record (SKILL:name|OUTPUTORDER:n|CLASSBOUGHT:[...])
+// ---------------------------------------------------------------------------
+
+static PCG_SKILL_TOKENS: &[TokenDef] = &[
+    TokenDef::integer("OUTPUTORDER", "pcgen_outputorder"),
+    TokenDef::text("CLASSBOUGHT", "pcgen_classbought"),
+    TokenDef::text("RANKS", "pcgen_ranks"),
+    TokenDef::yesno("CLASSSKILL", "pcgen_classskill"),
+];
+
+pub static PCG_SKILL_SCHEMA: EntitySchema = EntitySchema {
+    entity_type_key: "pcgen:pcg:skill",
+    head_token: Some("SKILL"),
+    head_format: HeadFormat::TokenPrefixed,
+    tokens: PCG_SKILL_TOKENS,
+    globals: &[],
+};
+
+// ---------------------------------------------------------------------------
 // Ability pool usage (USERPOOL:name|POOLPOINTS:n)
 // ---------------------------------------------------------------------------
 

@@ -19,7 +19,7 @@ fn fixture_root() -> PathBuf {
 fn should_roundtrip_fixture(path: &Path) -> bool {
     !matches!(
         path.file_name().and_then(|f| f.to_str()),
-        Some("roundtrip_policy_tokens.lst") | Some("inventory_only_pcg_tokens.pcg")
+        Some("roundtrip_policy_tokens.lst")
     )
 }
 
@@ -275,6 +275,7 @@ fn unparse_emits_pcgen_metadata_lines_for_pcc() {
     assert!(generated.contains("PUBNAMELONG:Wizards of the Coast"));
     assert!(generated.contains("SOURCELONG:Star Wars Saga Edition Core Rulebook"));
     assert!(generated.contains("SOURCESHORT:SWSECR"));
+    assert!(generated.contains("GAMEMODE:Starwars_SE SETTING:Space Opera BOOKTYPE:Core Rulebook"));
     assert!(generated.contains("GAMEMODE:Starwars_SE"));
     assert!(generated.contains("OPTION:pcgen.options.optionSourcesAllowMultiLine=true"));
     assert!(generated.contains("MAXVER:6.10.0"));
@@ -394,6 +395,38 @@ fn unparse_emits_structured_pcg_standalone_tokens() {
 }
 
 #[test]
+fn unparse_preserves_bracketed_pcg_record_shapes() {
+    let file = fixture_root().join("inventory_only_pcg_tokens.pcg");
+    let parsed = parse_file(&file).expect("parse bracketed pcg fixture");
+    let generated = unparse_catalog_to_text(&parsed);
+
+    assert!(generated.contains(
+        "SPELLNAME:Magic Missile|TIMES:1|BOOK:Known Spells|SPELLLEVEL:1|CLASS:Wizard|FEATLIST:[FEAT:Empower Spell]"
+    ));
+    assert!(generated.contains(
+        "DEITY:Pelor|DEITYDOMAINS:[DOMAIN:Good|DOMAIN:Sun]|ALIGNALLOW:LG|HOLYITEM:Sun Disk|DEITYFAVWEAP:[WEAPON:Morningstar]|DEITYALIGN:NG"
+    ));
+    assert!(generated.contains("DOMAIN:Sun|DOMAINGRANTS:Turn undead as a cleric of higher level."));
+    assert!(generated.contains(
+        "WEAPONPROF:[WEAPON:Longsword|WEAPON:Dagger|WEAPON:Quarterstaff]"
+    ));
+}
+
+#[test]
+fn unparse_preserves_nested_pcg_progression_records() {
+    let file = fixture_root().join("roundtrip_character_progression.pcg");
+    let parsed = parse_file(&file).expect("parse character progression fixture");
+    let generated = unparse_catalog_to_text(&parsed);
+
+    assert!(generated.contains(
+        "EQUIPNAME:Longsword|OUTPUTORDER:1|COST:15 gp|WT:4 lb.|QUANTITY:1|CUSTOMIZATION:[BASEITEM:Longsword|DATA:EQMOD=STEEL]|NOTE:A trusty blade"
+    ));
+    assert!(generated.contains(
+        "SKILL:Spellcraft|CLASSBOUGHT:[CLASS:Wizard|RANKS:3.0|CLASSSKILL:Y]"
+    ));
+}
+
+#[test]
 fn unparse_emits_structured_ability_migration_tokens() {
     let file = fixture_root().join("roundtrip_ability_migration.lst");
     let parsed = parse_file(&file).expect("parse ability migration fixture");
@@ -403,6 +436,27 @@ fn unparse_emits_structured_ability_migration_tokens() {
     assert!(generated.contains("MAXVER:6.07.05"));
     assert!(generated.contains("NEWKEY:Drink Is Life"));
     assert!(generated.contains("NEWCATEGORY:Mythic Feat"));
+}
+
+#[test]
+fn unparse_emits_lower_frequency_structured_tokens() {
+    let class_file = fixture_root().join("roundtrip_class.lst");
+    let class_generated = unparse_catalog_to_text(&parse_file(&class_file).expect("parse class fixture"));
+    assert!(class_generated.contains("SKILLLIST:1|Druid"));
+
+    let equipment_file = fixture_root().join("roundtrip_equipment.lst");
+    let equipment_generated =
+        unparse_catalog_to_text(&parse_file(&equipment_file).expect("parse equipment fixture"));
+    assert!(equipment_generated.contains("ALTCRITICAL:x3"));
+
+    let template_file = fixture_root().join("roundtrip_template.lst");
+    let template_generated =
+        unparse_catalog_to_text(&parse_file(&template_file).expect("parse template fixture"));
+    assert!(template_generated.contains("NONPP:-4"));
+
+    let pcc_file = fixture_root().join("roundtrip_pcc_backlog_tokens.pcc");
+    let pcc_generated = unparse_catalog_to_text(&parse_file(&pcc_file).expect("parse pcc fixture"));
+    assert!(pcc_generated.contains("HELP:./help_campaign.html"));
 }
 
 #[test]

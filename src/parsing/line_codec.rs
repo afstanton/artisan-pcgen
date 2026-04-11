@@ -14,6 +14,14 @@ pub(crate) fn parse_line_internal(line: &str) -> ParsedLine {
 }
 
 pub(crate) fn unparse_line_internal(head: &str, clauses: &[ParsedClause]) -> String {
+    unparse_line_internal_with_separator(head, clauses, "|")
+}
+
+pub(crate) fn unparse_line_internal_with_separator(
+    head: &str,
+    clauses: &[ParsedClause],
+    separator: &str,
+) -> String {
     let mut parts = vec![escape_head_segment(head)];
     for clause in clauses {
         match clause {
@@ -23,7 +31,7 @@ pub(crate) fn unparse_line_internal(head: &str, clauses: &[ParsedClause]) -> Str
             }
         }
     }
-    parts.join("|")
+    parts.join(separator)
 }
 
 pub(crate) fn split_first_key_value(parsed: &ParsedLine) -> Option<(String, String)> {
@@ -89,6 +97,11 @@ pub(crate) fn clauses_from_json(value: &Value) -> Option<Vec<ParsedClause>> {
 }
 
 fn parse_segments_with_generated_parser(line: &str) -> Vec<String> {
+    if line.contains('[') || line.contains(']') {
+        let custom = split_on_top_level_pipes(line);
+        return normalize_non_empty_segments(custom);
+    }
+
     let parser = super::line_grammar::SegmentsParser::new();
     let parse_result: Result<
         Vec<String>,
@@ -206,6 +219,43 @@ fn push_trimmed_if_non_empty(out: &mut Vec<String>, input: &str) {
     if !trimmed.is_empty() {
         out.push(trimmed.to_string());
     }
+}
+
+fn split_on_top_level_pipes(input: &str) -> Vec<String> {
+    let mut segments = Vec::new();
+    let mut current = String::new();
+    let mut escaped = false;
+    let mut bracket_depth = 0usize;
+
+    for ch in input.chars() {
+        if escaped {
+            current.push(ch);
+            escaped = false;
+            continue;
+        }
+
+        match ch {
+            '\\' => {
+                current.push(ch);
+                escaped = true;
+            }
+            '[' => {
+                bracket_depth += 1;
+                current.push(ch);
+            }
+            ']' => {
+                bracket_depth = bracket_depth.saturating_sub(1);
+                current.push(ch);
+            }
+            '|' if bracket_depth == 0 => {
+                segments.push(std::mem::take(&mut current));
+            }
+            _ => current.push(ch),
+        }
+    }
+
+    segments.push(current);
+    segments
 }
 
 fn looks_like_token_start(input: &str, start: usize) -> bool {

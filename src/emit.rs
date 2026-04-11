@@ -69,7 +69,7 @@ pub fn emit_entity(entity: &Entity, schema: &EntitySchema) -> String {
         emit_global_group(*group, entity, &mut parts);
     }
 
-    parts.join("\t")
+    parts.join(top_level_separator(entity, schema))
 }
 
 /// Attempt to emit `entity` by looking up its schema from
@@ -285,8 +285,41 @@ fn head_name_for_entity(entity: &Entity) -> &str {
         .unwrap_or(entity.name.as_str())
 }
 
+fn top_level_separator(entity: &Entity, schema: &EntitySchema) -> &'static str {
+    if let Some(style) = entity
+        .attributes
+        .get("pcgen_record_style")
+        .and_then(Value::as_str)
+    {
+        return match style {
+            "pipe" => "|",
+            "space" => " ",
+            _ => "\t",
+        };
+    }
+
+    if emits_pcg_style(entity, schema) {
+        "|"
+    } else {
+        "\t"
+    }
+}
+
+fn emits_pcg_style(entity: &Entity, schema: &EntitySchema) -> bool {
+    if entity
+        .attributes
+        .get("source_format")
+        .and_then(Value::as_str)
+        .is_some_and(|format| format.eq_ignore_ascii_case("pcg"))
+    {
+        return matches!(schema.head_format, HeadFormat::TokenPrefixed);
+    }
+
+    schema.entity_type_key.starts_with("pcgen:pcg:")
+}
+
 fn token_prefixed_head_value(entity: &Entity, schema: &EntitySchema) -> Option<String> {
-    if !schema.entity_type_key.starts_with("pcgen:pcg:") {
+    if !emits_pcg_style(entity, schema) {
         return Some(head_name_for_entity(entity).to_string());
     }
 

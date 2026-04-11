@@ -308,7 +308,17 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
         }
 
         let inferred_type_key =
-            semantics::infer_entity_type_key(&parsed_line.head, &supported_clauses);
+            semantics::infer_entity_type_key_for_format(&parsed_line.head, &supported_clauses, ext);
+        attributes.insert(
+            "pcgen_record_family".to_string(),
+            Value::String(infer_record_family(ext, &parsed_line, &inferred_type_key).to_string()),
+        );
+        attributes.insert(
+            "pcgen_record_style".to_string(),
+            Value::String(
+                infer_record_style(trimmed, ext, &parsed_line, &inferred_type_key).to_string(),
+            ),
+        );
         attributes.insert(
             "pcgen_entity_type_key".to_string(),
             Value::String(inferred_type_key.clone()),
@@ -477,7 +487,17 @@ pub fn unparse_catalog_to_text(catalog: &ParsedCatalog) -> String {
                 .get("clauses")
                 .and_then(line_codec::clauses_from_json)
                 .unwrap_or_default();
-            lines.push(unparse_line(&head, &clauses));
+            let separator = match entity
+                .attributes
+                .get("pcgen_record_style")
+                .and_then(Value::as_str)
+            {
+                Some("pipe") => "|",
+                _ => "\t",
+            };
+            lines.push(line_codec::unparse_line_internal_with_separator(
+                &head, &clauses, separator,
+            ));
         }
     }
     lines.join("\n")
@@ -489,6 +509,57 @@ pub fn parse_line(line: &str) -> ParsedLine {
 
 pub fn unparse_line(head: &str, clauses: &[ParsedClause]) -> String {
     line_codec::unparse_line_internal(head, clauses)
+}
+
+fn infer_record_style<'a>(
+    raw_line: &'a str,
+    ext: &str,
+    parsed_line: &ParsedLine,
+    inferred_type_key: &str,
+) -> &'a str {
+    if raw_line.contains('\t') {
+        return "tab";
+    }
+
+    if ext.eq_ignore_ascii_case("pcg") && line_codec::parse_head_key_value(&parsed_line.head).is_some() {
+        return "pipe";
+    }
+
+    if ext.eq_ignore_ascii_case("pcc")
+        && inferred_type_key == "pcgen:entity:pcc"
+        && line_codec::parse_head_key_value(&parsed_line.head).is_some()
+        && !parsed_line.clauses.is_empty()
+    {
+        return "space";
+    }
+
+    "tab"
+}
+
+fn infer_record_family(ext: &str, parsed_line: &ParsedLine, inferred_type_key: &str) -> &'static str {
+    match ext.to_ascii_lowercase().as_str() {
+        "pcg" => {
+            if line_codec::parse_head_key_value(&parsed_line.head).is_some() {
+                "pcg:token-record"
+            } else {
+                "pcg:name-record"
+            }
+        }
+        "pcc" => {
+            if inferred_type_key == "pcgen:entity:pcc" {
+                "pcc:directive"
+            } else {
+                "pcc:include"
+            }
+        }
+        _ => {
+            if line_codec::parse_head_key_value(&parsed_line.head).is_some() {
+                "lst:token-entry"
+            } else {
+                "lst:name-entry"
+            }
+        }
+    }
 }
 
 fn deterministic_id(namespace: Uuid, key: &str) -> CanonicalId {
@@ -565,6 +636,35 @@ mod tests {
     }
 
     #[test]
+    fn parse_line_keeps_bracketed_pipe_groups_together() {
+        let parsed =
+            parse_line("WEAPONPROF:[WEAPON:Longsword|WEAPON:Dagger|WEAPON:Quarterstaff]");
+        assert_eq!(
+            parsed.head,
+            "WEAPONPROF:[WEAPON:Longsword|WEAPON:Dagger|WEAPON:Quarterstaff]"
+        );
+        assert!(parsed.clauses.is_empty());
+
+        let deity = parse_line(
+            "DEITY:Pelor|DEITYDOMAINS:[DOMAIN:Good|DOMAIN:Sun]|DEITYFAVWEAP:[WEAPON:Morningstar]",
+        );
+        assert_eq!(deity.head, "DEITY:Pelor");
+        assert_eq!(
+            deity.clauses,
+            vec![
+                ParsedClause::KeyValue {
+                    key: "DEITYDOMAINS".to_string(),
+                    value: "[DOMAIN:Good|DOMAIN:Sun]".to_string(),
+                },
+                ParsedClause::KeyValue {
+                    key: "DEITYFAVWEAP".to_string(),
+                    value: "[WEAPON:Morningstar]".to_string(),
+                },
+            ]
+        );
+    }
+
+    #[test]
     fn parse_text_projects_pre_and_effect_semantics() {
         let catalog = parse_text_to_catalog(
             "Power Attack|PREVARGTEQ:STR,13|BONUS:COMBAT|TOHIT|-1",
@@ -631,6 +731,107 @@ mod tests {
                 .get("pcgen_entity_type_key")
                 .and_then(Value::as_str),
             Some("pcgen:entity:class")
+        );
+    }
+
+    #[test]
+    fn parse_text_infers_pcg_specific_class_and_skill_record_types() {
+        let catalog = parse_text_to_catalog(
+            "CLASS:Wizard|SUBCLASS:Evoker|LEVEL:8|SKILLPOOL:23|PROHIBITED:Conjuration\nSKILL:Spellcraft|OUTPUTORDER:24|CLASSBOUGHT:[CLASS:Wizard|RANKS:11.0|COST:1|CLASSSKILL:Y]",
+            "sample.pcg",
+            "pcg",
+        );
+
+        assert_eq!(
+            catalog.entities[0]
+                .attributes
+                .get("pcgen_entity_type_key")
+                .and_then(Value::as_str),
+            Some("pcgen:pcg:class")
+        );
+        assert_eq!(
+            catalog.entities[0]
+                .attributes
+                .get("pcgen_level")
+                .and_then(Value::as_i64),
+            Some(8)
+        );
+
+        assert_eq!(
+            catalog.entities[1]
+                .attributes
+                .get("pcgen_entity_type_key")
+                .and_then(Value::as_str),
+            Some("pcgen:pcg:skill")
+        );
+        assert_eq!(
+            catalog.entities[1]
+                .attributes
+                .get("pcgen_outputorder")
+                .and_then(Value::as_i64),
+            Some(24)
+        );
+        assert_eq!(
+            catalog.entities[0]
+                .attributes
+                .get("pcgen_record_style")
+                .and_then(Value::as_str),
+            Some("pipe")
+        );
+        assert_eq!(
+            catalog.entities[1]
+                .attributes
+                .get("pcgen_record_style")
+                .and_then(Value::as_str),
+            Some("pipe")
+        );
+    }
+
+    #[test]
+    fn parse_text_tracks_tab_style_for_name_only_pcg_lines() {
+        let catalog = parse_text_to_catalog(
+            "Feral Hound\tSTARTFEATS:1\tSIZE:M\tTYPE:Animal",
+            "sample.pcg",
+            "pcg",
+        );
+
+        assert_eq!(
+            catalog.entities[0]
+                .attributes
+                .get("pcgen_record_style")
+                .and_then(Value::as_str),
+            Some("tab")
+        );
+        assert_eq!(
+            catalog.entities[0]
+                .attributes
+                .get("pcgen_record_family")
+                .and_then(Value::as_str),
+            Some("pcg:name-record")
+        );
+    }
+
+    #[test]
+    fn parse_text_tracks_pcc_directive_family_and_space_style() {
+        let catalog = parse_text_to_catalog(
+            "GAMEMODE:Starwars_SE BOOKTYPE:Core Rulebook SETTING:Space Opera",
+            "sample.pcc",
+            "pcc",
+        );
+
+        assert_eq!(
+            catalog.entities[0]
+                .attributes
+                .get("pcgen_record_style")
+                .and_then(Value::as_str),
+            Some("space")
+        );
+        assert_eq!(
+            catalog.entities[0]
+                .attributes
+                .get("pcgen_record_family")
+                .and_then(Value::as_str),
+            Some("pcc:directive")
         );
     }
 

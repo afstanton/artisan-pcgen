@@ -378,6 +378,9 @@ pub(crate) fn project_clause_attributes(
             "OUTPUTORDER" => {
                 set_i64_or_string(attributes, "pcgen_outputorder", value);
             }
+            "LEVEL" => {
+                set_i64_or_string(attributes, "pcgen_level", value);
+            }
             "QUANTITY" => {
                 attributes.insert("pcgen_quantity".to_string(), Value::String(value.clone()));
             }
@@ -1328,6 +1331,12 @@ pub(crate) fn project_decl_token_value(
         "DYNAMICSCOPE" => {
             attributes.insert(
                 "pcgen_dynamicscope".to_string(),
+                Value::String(decl_value.to_string()),
+            );
+        }
+        "EQUIPMENT.PART" => {
+            attributes.insert(
+                "pcgen_equipment_part".to_string(),
                 Value::String(decl_value.to_string()),
             );
         }

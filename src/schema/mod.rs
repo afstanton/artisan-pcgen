@@ -68,7 +68,8 @@ pub use pcg::{
     IGNORECOST_SCHEMA, INTERESTS_SCHEMA, LOADCOMPANIONS_SCHEMA, MONEY_SCHEMA,
     PCGVERSION_SCHEMA, PERSONALITYTRAIT1_SCHEMA, PERSONALITYTRAIT2_SCHEMA,
     PHOBIAS_SCHEMA, PLAYERNAME_SCHEMA, POOLPOINTS_SCHEMA, POOLPOINTSAVAIL_SCHEMA,
-    PORTRAIT_SCHEMA, PURCHASEPOINTS_SCHEMA, SKILLFILTER_SCHEMA, SKILLSOUTPUTORDER_SCHEMA,
+    PORTRAIT_SCHEMA, PURCHASEPOINTS_SCHEMA, PCG_CLASS_SCHEMA, PCG_SKILL_SCHEMA,
+    SKILLFILTER_SCHEMA, SKILLSOUTPUTORDER_SCHEMA,
     SKINCOLOR_SCHEMA, SPEECHPATTERN_SCHEMA, SUPPRESSBIOFIELDS_SCHEMA, TABLABEL_SCHEMA,
     TABNAME_SCHEMA, USEHIGHERKNOWN_SCHEMA, USEHIGHERPREPPED_SCHEMA, USERPOOL_SCHEMA,
     USETEMPMODS_SCHEMA, VERSION_SCHEMA, WEIGHT_SCHEMA, NOTE_SCHEMA,
@@ -113,7 +114,10 @@ pub use system::{
 };
 pub use template::TEMPLATE_SCHEMA;
 pub use token_aliases::{AliasScope, AliasStatus, TokenAlias, all_token_aliases};
-pub use variables::{CHANNEL_VARIABLE_SCHEMA, GLOBAL_VARIABLE_SCHEMA, LOCAL_VARIABLE_SCHEMA};
+pub use variables::{
+    CHANNEL_VARIABLE_SCHEMA, EQUIPMENT_PART_VARIABLE_SCHEMA, GLOBAL_VARIABLE_SCHEMA,
+    LOCAL_VARIABLE_SCHEMA,
+};
 
 // ---------------------------------------------------------------------------
 // Core grammar types
@@ -465,6 +469,7 @@ impl EntitySchema {
     pub fn token_def(&self, key: &str) -> Option<&TokenDef> {
         self.tokens.iter().find(|t| t.key.eq_ignore_ascii_case(key))
     }
+
 }
 
 // ---------------------------------------------------------------------------
@@ -632,6 +637,8 @@ static ALL_SCHEMAS: &[&EntitySchema] = &[
     &pcg::CALCEQUIPSET_SCHEMA,
     &pcg::SUPPRESSBIOFIELDS_SCHEMA,
     // Complex pcg records
+    &pcg::PCG_CLASS_SCHEMA,
+    &pcg::PCG_SKILL_SCHEMA,
     &pcg::USERPOOL_SCHEMA,
     &pcg::EQUIPSET_SCHEMA,
     &pcg::EQUIPNAME_SCHEMA,
@@ -675,6 +682,7 @@ static ALL_SCHEMAS: &[&EntitySchema] = &[
     &variables::LOCAL_VARIABLE_SCHEMA,
     &variables::GLOBAL_VARIABLE_SCHEMA,
     &variables::CHANNEL_VARIABLE_SCHEMA,
+    &variables::EQUIPMENT_PART_VARIABLE_SCHEMA,
 ];
 
 /// Look up a schema by artisan entity type key.

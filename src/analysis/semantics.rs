@@ -44,6 +44,10 @@ pub(crate) fn project_semantics(
 }
 
 pub(crate) fn infer_entity_type_key(head: &str, clauses: &[ParsedClause]) -> String {
+    infer_entity_type_key_for_format(head, clauses, "lst")
+}
+
+fn infer_entity_type_key_without_format(head: &str, clauses: &[ParsedClause]) -> String {
     if let Some((head_key, head_value)) = parse_head_key_value(head) {
         if head_key.eq_ignore_ascii_case("ABILITY")
             && looks_like_ability_migration(&head_value, clauses)
@@ -140,6 +144,32 @@ pub(crate) fn infer_entity_type_key(head: &str, clauses: &[ParsedClause]) -> Str
         }
     }
     "pcgen:type:unresolved".to_string()
+}
+
+pub(crate) fn infer_entity_type_key_for_format(
+    head: &str,
+    clauses: &[ParsedClause],
+    source_format: &str,
+) -> String {
+    if let Some((head_key, _)) = parse_head_key_value(head) {
+        let head_key_upper = head_key.to_ascii_uppercase();
+
+        if source_format.eq_ignore_ascii_case("pcg") {
+            match head_key_upper.as_str() {
+                "CLASS" if looks_like_pcg_class(clauses) => return "pcgen:pcg:class".to_string(),
+                "SKILL" if looks_like_pcg_skill(clauses) => return "pcgen:pcg:skill".to_string(),
+                _ => {}
+            }
+        } else {
+            match head_key_upper.as_str() {
+                "CLASS" => return "pcgen:entity:class".to_string(),
+                "SKILL" => return "pcgen:entity:skill".to_string(),
+                _ => {}
+            }
+        }
+    }
+
+    infer_entity_type_key_without_format(head, clauses)
 }
 
 fn has_token(clauses: &[ParsedClause], key: &str) -> bool {
@@ -289,6 +319,20 @@ fn looks_like_skill(clauses: &[ParsedClause]) -> bool {
     has_token(clauses, "USEUNTRAINED")
         || has_token(clauses, "SITUATION")
         || has_token(clauses, "EXCLUSIVE")
+}
+
+fn looks_like_pcg_class(clauses: &[ParsedClause]) -> bool {
+    has_token(clauses, "LEVEL")
+        || has_token(clauses, "SKILLPOOL")
+        || has_token(clauses, "SPELLBASE")
+        || has_token(clauses, "CANCASTPERDAY")
+}
+
+fn looks_like_pcg_skill(clauses: &[ParsedClause]) -> bool {
+    has_token(clauses, "OUTPUTORDER")
+        || has_token(clauses, "CLASSBOUGHT")
+        || has_token(clauses, "RANKS")
+        || has_token(clauses, "CLASSSKILL")
 }
 
 fn looks_like_spell(clauses: &[ParsedClause]) -> bool {
