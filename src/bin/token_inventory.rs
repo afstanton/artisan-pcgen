@@ -53,6 +53,10 @@ fn main() -> io::Result<()> {
     }
 
     let mut report = String::new();
+    let corpus_token_counts =
+        combined_token_counts(&semantic_counts, &policy_supported_counts, &unhandled_counts);
+    let fixture_token_set: HashSet<String> = fixture_token_counts.keys().cloned().collect();
+    let corpus_token_set: HashSet<String> = corpus_token_counts.keys().cloned().collect();
 
     writeln!(report, "\n=== Token Inventory Summary ===").unwrap();
     writeln!(report, "Files scanned: {}", file_count).unwrap();
@@ -123,6 +127,32 @@ fn main() -> io::Result<()> {
 
     writeln!(report, "=== Fixture Tokens by Frequency ===").unwrap();
     for (token, count) in fixture_tokens {
+        writeln!(report, "{:6} | {}", count, token).unwrap();
+    }
+
+    writeln!(report).unwrap();
+
+    let mut corpus_not_fixtures: Vec<_> = corpus_token_counts
+        .iter()
+        .filter(|(token, _)| !fixture_token_set.contains(*token))
+        .collect();
+    corpus_not_fixtures.sort_by(|a, b| b.1.cmp(a.1).then_with(|| a.0.cmp(b.0)));
+
+    writeln!(report, "=== Tokens Found In The Corpus But Not The Fixtures ===").unwrap();
+    for (token, count) in corpus_not_fixtures {
+        writeln!(report, "{:6} | {}", count, token).unwrap();
+    }
+
+    writeln!(report).unwrap();
+
+    let mut fixtures_not_corpus: Vec<_> = fixture_token_counts
+        .iter()
+        .filter(|(token, _)| !corpus_token_set.contains(*token))
+        .collect();
+    fixtures_not_corpus.sort_by(|a, b| b.1.cmp(a.1).then_with(|| a.0.cmp(b.0)));
+
+    writeln!(report, "=== Tokens Found In The Fixtures But Not The Corpus ===").unwrap();
+    for (token, count) in fixtures_not_corpus {
         writeln!(report, "{:6} | {}", count, token).unwrap();
     }
 
@@ -489,6 +519,22 @@ fn collect_fixture_tokens_from_file(
     Ok(())
 }
 
+fn combined_token_counts(
+    semantic_counts: &HashMap<String, usize>,
+    policy_supported_counts: &HashMap<String, usize>,
+    unhandled_counts: &HashMap<String, usize>,
+) -> HashMap<String, usize> {
+    let mut combined = HashMap::new();
+
+    for counts in [semantic_counts, policy_supported_counts, unhandled_counts] {
+        for (token, count) in counts {
+            *combined.entry(token.clone()).or_insert(0) += count;
+        }
+    }
+
+    combined
+}
+
 fn extract_head_key(head: &str) -> Option<String> {
     let token = head.split('\t').next().unwrap_or(head).trim();
     let colon_idx = token.find(':')?;
@@ -592,7 +638,9 @@ fn is_standalone_roman_numeral(token: &str) -> bool {
 
 #[cfg(test)]
 mod tests {
-    use super::{normalize_bare_directive, normalize_key};
+    use std::collections::HashMap;
+
+    use super::{combined_token_counts, normalize_bare_directive, normalize_key};
 
     #[test]
     fn normalize_key_rejects_mixed_case_prose_keys() {
@@ -616,5 +664,25 @@ mod tests {
     #[test]
     fn normalize_bare_directive_still_ignores_bare_feat() {
         assert_eq!(normalize_bare_directive("FEAT"), None);
+    }
+
+    #[test]
+    fn combined_token_counts_merges_source_maps() {
+        let semantic = HashMap::from([
+            ("FEAT".to_string(), 2usize),
+            ("CLASS".to_string(), 1usize),
+        ]);
+        let policy = HashMap::from([("EQUIPMENT.PART".to_string(), 3usize)]);
+        let unhandled = HashMap::from([
+            ("NOTE".to_string(), 4usize),
+            ("FEAT".to_string(), 1usize),
+        ]);
+
+        let combined = combined_token_counts(&semantic, &policy, &unhandled);
+
+        assert_eq!(combined.get("FEAT"), Some(&3usize));
+        assert_eq!(combined.get("CLASS"), Some(&1usize));
+        assert_eq!(combined.get("EQUIPMENT.PART"), Some(&3usize));
+        assert_eq!(combined.get("NOTE"), Some(&4usize));
     }
 }
