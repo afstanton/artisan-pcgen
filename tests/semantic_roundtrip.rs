@@ -649,8 +649,13 @@ fn should_canonical_roundtrip_fixture(path: &Path) -> bool {
 ///
 /// Provides a readable map of what the canonical model currently captures vs. what
 /// remains only in `pcgen_*` projected attributes.  Run with `--nocapture` to see output.
+/// Also prints a frequency table of `pcgen_*` attributes found on sparse entities
+/// (those with neither effects nor prerequisites), showing which tokens are the
+/// best candidates for lifting into the canonical model next.
 #[test]
 fn canonical_coverage_report() {
+    use std::collections::HashMap;
+
     let root = fixture_root();
     let files = collect_all_fixture_files(&root).expect("collect fixture files");
 
@@ -660,13 +665,23 @@ fn canonical_coverage_report() {
     let mut entities_with_both = 0usize;
     let mut entities_with_neither = 0usize;
 
+    // For sparse entities: count how many times each pcgen_* attribute key appears,
+    // broken down by entity type.  Provenance attrs are excluded — only semantic content.
+    let mut sparse_attr_counts: HashMap<String, usize> = HashMap::new();
+    // Also track: for ALL entities, what effects/prereq kinds exist?
+    let mut effect_kind_counts: HashMap<String, usize> = HashMap::new();
+    let mut prereq_kind_counts: HashMap<String, usize> = HashMap::new();
+
     for file in &files {
         if !should_canonical_roundtrip_fixture(file) {
             continue;
         }
         let source_name = file.file_name().and_then(|f| f.to_str()).unwrap_or("?");
-        let ext = file.extension().and_then(|e| e.to_str())
-            .map(|e| e.to_ascii_lowercase()).unwrap_or_default();
+        let ext = file
+            .extension()
+            .and_then(|e| e.to_str())
+            .map(|e| e.to_ascii_lowercase())
+            .unwrap_or_default();
         let text = fs::read_to_string(file).expect("read");
         let cat = parse_text_to_catalog(&text, source_name, &ext);
 
@@ -675,10 +690,25 @@ fn canonical_coverage_report() {
             let has_effects = !entity.effects.is_empty();
             let has_prereqs = !entity.prerequisites.is_empty();
             match (has_effects, has_prereqs) {
-                (true, true)   => entities_with_both += 1,
-                (true, false)  => entities_with_effects += 1,
-                (false, true)  => entities_with_prereqs += 1,
-                (false, false) => entities_with_neither += 1,
+                (true, true) => entities_with_both += 1,
+                (true, false) => entities_with_effects += 1,
+                (false, true) => entities_with_prereqs += 1,
+                (false, false) => {
+                    entities_with_neither += 1;
+                    // Tally which semantic pcgen_* attributes this sparse entity has.
+                    for key in entity.attributes.keys() {
+                        if PROVENANCE_ATTRS.contains(&key.as_str()) {
+                            continue;
+                        }
+                        *sparse_attr_counts.entry(key.clone()).or_insert(0) += 1;
+                    }
+                }
+            }
+            for e in &entity.effects {
+                *effect_kind_counts.entry(e.kind.clone()).or_insert(0) += 1;
+            }
+            for p in &entity.prerequisites {
+                *prereq_kind_counts.entry(p.kind.clone()).or_insert(0) += 1;
             }
         }
     }
@@ -691,12 +721,40 @@ fn canonical_coverage_report() {
     println!("  with neither (sparse):   {entities_with_neither}");
     let pct = if total_entities > 0 {
         100 * (total_entities - entities_with_neither) / total_entities
-    } else { 0 };
+    } else {
+        0
+    };
     println!("  canonical coverage:      {pct}% have ≥1 canonical field");
+
+    // Effect kinds in use
+    let mut effect_kinds: Vec<_> = effect_kind_counts.iter().collect();
+    effect_kinds.sort_by(|a, b| b.1.cmp(a.1));
+    println!("\n--- Effect kinds (BONUS/ADD/etc.) across all entities ---");
+    for (kind, count) in &effect_kinds {
+        println!("  {:6} {kind}", count);
+    }
+
+    // Prerequisite kinds in use (top 20)
+    let mut prereq_kinds: Vec<_> = prereq_kind_counts.iter().collect();
+    prereq_kinds.sort_by(|a, b| b.1.cmp(a.1));
+    println!("\n--- Prerequisite kinds (PRE*/!PRE*) across all entities (top 20) ---");
+    for (kind, count) in prereq_kinds.iter().take(20) {
+        println!("  {:6} {kind}", count);
+    }
+
+    // Sparse entity attribute frequency (top 30) — these are the candidates for lifting
+    let mut sparse_attrs: Vec<_> = sparse_attr_counts.iter().collect();
+    sparse_attrs.sort_by(|a, b| b.1.cmp(a.1).then_with(|| a.0.cmp(b.0)));
+    println!("\n--- pcgen_* attributes on SPARSE entities (top 30) ---");
+    println!("  (These tokens are present but NOT yet in the canonical model)");
+    for (attr, count) in sparse_attrs.iter().take(30) {
+        // Strip the pcgen_ prefix for readability
+        let display = attr.strip_prefix("pcgen_").unwrap_or(attr);
+        println!("  {:6} {display}", count);
+    }
     println!(
-        "\nNote: 'sparse' entities have game content only in pcgen_* attributes."
+        "\nNote: 'sparse' entities have game content only in pcgen_* attributes.\n"
     );
-    println!("These represent the remaining work to deepen the canonical model.\n");
 }
 
 /// Canonical artisan-core roundtrip: parse → emit → re-parse, then compare ONLY the
@@ -1312,6 +1370,87 @@ fn classabilitieslevel_annotates_for_class_and_level() {
         Some("Wizard=5"),
         "raw classname_level should be stored for round-trip fidelity"
     );
+}
+
+// ---------------------------------------------------------------------------
+// MODIFY canonical effect projection
+// ---------------------------------------------------------------------------
+
+/// MODIFY clauses are game-mechanical variable modifications.  They should be
+/// projected into the canonical `effects` field (just like BONUS/DEFINE/ADD),
+/// with the full `VarName|OP|value` string stored as the effect `target`.
+///
+/// This test verifies that all three MODIFY operation variants (ADD, SET, SOLVE)
+/// produce effects and that the effects survive a parse → emit → reparse cycle.
+#[test]
+fn modify_clause_projects_to_effects() {
+    let lines = "\
+CoverageAbility_MODIFY_ADD\tCATEGORY:Internal\tMODIFY:TestVar|ADD|1\n\
+CoverageAbility_MODIFY_SET\tCATEGORY:Internal\tMODIFY:Damage|SET|10d6\n\
+CoverageAbility_MODIFY_SOLVE\tCATEGORY:Internal\tMODIFY:Score|SOLVE|10\n";
+
+    let cat = parse_text_to_catalog(lines, "test.lst", "lst");
+
+    let find = |name: &str| {
+        cat.entities.iter().find(|e| e.name == name)
+            .unwrap_or_else(|| panic!("entity {name} not found"))
+    };
+
+    // ADD variant
+    let add_entity = find("CoverageAbility_MODIFY_ADD");
+    assert_eq!(add_entity.effects.len(), 1, "ADD entity should have 1 effect");
+    assert_eq!(add_entity.effects[0].kind, "MODIFY");
+    assert_eq!(add_entity.effects[0].target, "TestVar|ADD|1");
+    assert!(add_entity.effects[0].value.is_none());
+
+    // SET variant
+    let set_entity = find("CoverageAbility_MODIFY_SET");
+    assert_eq!(set_entity.effects.len(), 1, "SET entity should have 1 effect");
+    assert_eq!(set_entity.effects[0].kind, "MODIFY");
+    assert_eq!(set_entity.effects[0].target, "Damage|SET|10d6");
+
+    // SOLVE variant
+    let solve_entity = find("CoverageAbility_MODIFY_SOLVE");
+    assert_eq!(solve_entity.effects.len(), 1, "SOLVE entity should have 1 effect");
+    assert_eq!(solve_entity.effects[0].kind, "MODIFY");
+    assert_eq!(solve_entity.effects[0].target, "Score|SOLVE|10");
+
+    // The pcgen_modify_* structured attributes should ALSO still be present,
+    // since they are set independently by fields.rs.
+    assert!(add_entity.attributes.contains_key("pcgen_modify_variable"),
+        "pcgen_modify_variable should be set alongside the effect");
+}
+
+/// MODIFY effects survive the full parse → emit → reparse canonical roundtrip.
+/// After the roundtrip, the canonical `effects` list should be unchanged.
+#[test]
+fn modify_effects_survive_canonical_roundtrip() {
+    let lines = "\
+CoverageAbility_MODIFY_ADD\tCATEGORY:Internal\tMODIFY:TestVar|ADD|1\n\
+CoverageAbility_MODIFY_SET\tCATEGORY:Internal\tMODIFY:Damage|SET|10d6\n";
+
+    let first = parse_text_to_catalog(lines, "test.lst", "lst");
+    let emitted = unparse_catalog_to_text(&first);
+    let second = parse_text_to_catalog(&emitted, "test.lst", "lst");
+
+    let before = core_snapshot(&first);
+    let after = core_snapshot(&second);
+    assert_eq!(
+        before, after,
+        "MODIFY effects should survive canonical roundtrip:\n{}",
+        diff_core_snapshots(&before, &after)
+    );
+
+    // Both first and second parse should have exactly one MODIFY effect per entity.
+    for cat in [&first, &second] {
+        for entity in &cat.entities {
+            let modify_effects: Vec<_> = entity.effects.iter()
+                .filter(|e| e.kind == "MODIFY").collect();
+            assert_eq!(modify_effects.len(), 1,
+                "entity {} should have exactly 1 MODIFY effect after roundtrip; got: {:?}",
+                entity.name, modify_effects);
+        }
+    }
 }
 
 /// The character progression fixture contains a `CLASSABILITIESLEVEL:Wizard=5`

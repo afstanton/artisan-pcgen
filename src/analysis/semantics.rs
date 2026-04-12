@@ -32,6 +32,7 @@ pub(crate) fn project_semantics(
                 || key == "DEFINESTAT"
                 || key == "CHOOSE"
                 || key == "SELECT"
+                || key == "MODIFY"
             {
                 effects.push(Effect {
                     kind: key.clone(),
