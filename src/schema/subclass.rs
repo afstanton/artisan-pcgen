@@ -6,7 +6,7 @@
 use crate::schema::{LineGrammar, GlobalGroup, HeadFormat, TokenDef};
 
 static SUBCLASS_TOKENS: &[TokenDef] = &[
-    TokenDef::text("COST", "pcgen_cost"),
+    TokenDef::text("COST", "cost"),
     TokenDef::pipe_list_repeatable("CHOICE", "pcgen_choice"),
     TokenDef::pipe_list_repeatable("CCSKILL", "pcgen_ccskill"),
     TokenDef::pipe_list_repeatable("UNENCUMBEREDMOVE", "pcgen_unencumberedmove"),

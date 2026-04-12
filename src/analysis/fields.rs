@@ -83,7 +83,7 @@ pub(crate) fn project_clause_attributes(
 
         match key.to_ascii_uppercase().as_str() {
             "TYPE" => {
-                attributes.insert("pcgen_type".to_string(), Value::String(value.clone()));
+                attributes.insert("type".to_string(), Value::String(value.clone()));
             }
             "SOURCE" => {
                 // PCG files use SOURCE:[TYPE:CLASS|NAME:Wizard] bracket groups;
@@ -168,10 +168,10 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_stack".to_string(), Value::String(value.clone()));
             }
             "BENEFIT" => {
-                attributes.insert("pcgen_benefit".to_string(), Value::String(value.clone()));
+                attributes.insert("benefit".to_string(), Value::String(value.clone()));
             }
             "TEMPDESC" => {
-                attributes.insert("pcgen_tempdesc".to_string(), Value::String(value.clone()));
+                attributes.insert("tempdesc".to_string(), Value::String(value.clone()));
             }
             "DESCISPI" => {
                 attributes.insert("pcgen_descispi".to_string(), parse_yes_no_or_string(value));
@@ -256,14 +256,14 @@ pub(crate) fn project_clause_attributes(
             }
             "REPEATLEVEL" => append_string_attr(attributes, "pcgen_repeatlevel", value),
             "MOVECLONE" => append_string_attr(attributes, "pcgen_moveclone", value),
-            "HD" => set_i64_or_string(attributes, "pcgen_hitdie", value),
-            "HITDIE" => set_i64_or_string(attributes, "pcgen_hitdie", value),
+            "HD" => set_i64_or_string(attributes, "hitdie", value),
+            "HITDIE" => set_i64_or_string(attributes, "hitdie", value),
             "MAXLEVEL" => {
-                attributes.insert("pcgen_maxlevel".to_string(), Value::String(value.clone()));
+                attributes.insert("maxlevel".to_string(), Value::String(value.clone()));
             }
             "ABB" => {
                 attributes.insert(
-                    "pcgen_abbreviation".to_string(),
+                    "abbreviation".to_string(),
                     Value::String(value.clone()),
                 );
             }
@@ -279,7 +279,7 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_spelltype".to_string(), Value::String(value.clone()));
             }
             "SPELLSTAT" => {
-                attributes.insert("pcgen_spellstat".to_string(), Value::String(value.clone()));
+                attributes.insert("spellstat".to_string(), Value::String(value.clone()));
             }
             "ITEMCREATE" => {
                 attributes.insert("pcgen_itemcreate".to_string(), Value::String(value.clone()));
@@ -327,7 +327,7 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_domains".to_string(), Value::String(value.clone()));
             }
             "ALIGN" => {
-                attributes.insert("pcgen_align".to_string(), Value::String(value.clone()));
+                attributes.insert("alignment".to_string(), Value::String(value.clone()));
             }
             "DEITYWEAP" => {
                 attributes.insert("pcgen_deityweap".to_string(), Value::String(value.clone()));
@@ -395,36 +395,38 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_category".to_string(), Value::String(value.clone()));
             }
             "DESC" => {
-                attributes.insert("pcgen_desc".to_string(), Value::String(value.clone()));
+                // Store under the canonical "description" key. The legacy pcgen_desc key
+                // is retained as an alias for emit paths that read it by name.
+                attributes.insert("description".to_string(), Value::String(value.clone()));
                 attributes
-                    .entry("description".to_string())
+                    .entry("pcgen_desc".to_string())
                     .or_insert_with(|| Value::String(value.clone()));
             }
             "DESC.CLEAR" => {
                 attributes.insert("pcgen_desc_clear".to_string(), Value::Bool(true));
             }
             "KEY" => {
-                attributes.insert("pcgen_key".to_string(), Value::String(value.clone()));
+                attributes.insert("key".to_string(), Value::String(value.clone()));
             }
             "LANGBONUS" => append_string_attr(attributes, "pcgen_langbonus", value),
-            "CSKILL" => append_string_attr(attributes, "pcgen_cskill", value),
-            "SAB" => append_string_attr(attributes, "pcgen_sab", value),
+            "CSKILL" => append_string_attr(attributes, "cskill", value),
+            "SAB" => append_string_attr(attributes, "sab", value),
             "CHANGEPROF" => append_string_attr(attributes, "pcgen_changeprof", value),
             "SERVESAS" => append_string_attr(attributes, "pcgen_servesas", value),
             "QUALIFY" => append_string_attr(attributes, "pcgen_qualify", value),
             "TEMPLATE" => append_string_attr(attributes, "pcgen_template", value),
             "OUTPUTNAME" => {
-                attributes.insert("pcgen_outputname".to_string(), Value::String(value.clone()));
+                attributes.insert("outputname".to_string(), Value::String(value.clone()));
             }
             "RANK" => {
                 if let Ok(rank) = value.trim().parse::<i64>() {
-                    attributes.insert("pcgen_rank".to_string(), json!(rank));
+                    attributes.insert("rank".to_string(), json!(rank));
                 } else {
-                    attributes.insert("pcgen_rank".to_string(), Value::String(value.clone()));
+                    attributes.insert("rank".to_string(), Value::String(value.clone()));
                 }
             }
             "COST" => {
-                attributes.insert("pcgen_cost".to_string(), Value::String(value.clone()));
+                attributes.insert("cost".to_string(), Value::String(value.clone()));
             }
             "COSTPRE" => {
                 attributes.insert("pcgen_costpre".to_string(), Value::String(value.clone()));
@@ -433,7 +435,7 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_baseitem".to_string(), Value::String(value.clone()));
             }
             "WT" => {
-                attributes.insert("pcgen_weight".to_string(), Value::String(value.clone()));
+                attributes.insert("weight".to_string(), Value::String(value.clone()));
             }
             // .pcg sub-tokens for EQUIPNAME records
             "OUTPUTORDER" => {
@@ -446,7 +448,7 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_quantity".to_string(), Value::String(value.clone()));
             }
             "NOTE" => {
-                attributes.insert("pcgen_note".to_string(), Value::String(value.clone()));
+                attributes.insert("note".to_string(), Value::String(value.clone()));
             }
             "CUSTOMIZATION" => {
                 // EQUIPNAME CUSTOMIZATION value is a bracket group: [BASEITEM:x|DATA:y|...]
@@ -597,7 +599,7 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_casttime".to_string(), Value::String(value.clone()));
             }
             "SORTKEY" => {
-                attributes.insert("pcgen_sortkey".to_string(), Value::String(value.clone()));
+                attributes.insert("sortkey".to_string(), Value::String(value.clone()));
             }
             "VALIDFORDEITY" => {
                 attributes.insert(
@@ -706,7 +708,7 @@ pub(crate) fn project_clause_attributes(
             }
             "EXPLANATION" => {
                 attributes.insert(
-                    "pcgen_explanation".to_string(),
+                    "explanation".to_string(),
                     Value::String(value.clone()),
                 );
             }
@@ -772,7 +774,7 @@ pub(crate) fn project_clause_attributes(
             "LOCATION" => {
                 attributes.insert("pcgen_location".to_string(), Value::String(value.clone()));
             }
-            "QTY" => set_i64_or_string(attributes, "pcgen_qty", value),
+            "QTY" => set_i64_or_string(attributes, "qty", value),
             "COUNT" => set_i64_or_string(attributes, "pcgen_count", value),
             "COPYMASTERBAB" => {
                 attributes.insert(
@@ -1875,7 +1877,7 @@ pub(crate) fn project_decl_token_value(
         }
         // PCG standalone note — head value is the note text
         "NOTE" => {
-            attributes.insert("pcgen_note".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert("note".to_string(), Value::String(decl_value.to_string()));
         }
         // PCG spell record — head value is the spell name
         "SPELLNAME" => {
@@ -1919,7 +1921,7 @@ fn project_dual_name_fields(head_name: &str, attributes: &mut IndexMap<String, V
 }
 
 fn open_name_candidate(attributes: &IndexMap<String, Value>, head_name: &str) -> Option<String> {
-    ["pcgen_outputname", "pcgen_key"]
+    ["outputname", "key"]
         .iter()
         .filter_map(|key| attributes.get(*key).and_then(Value::as_str))
         .map(str::trim)

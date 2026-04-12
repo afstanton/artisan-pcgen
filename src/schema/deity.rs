@@ -11,7 +11,7 @@ use crate::schema::{
 
 static DEITY_TOKENS: &[TokenDef] = &[
     TokenDef::text("NAMEISPI", "pcgen_nameispi"),
-    TokenDef::text("ALIGN", "pcgen_align"),
+    TokenDef::text("ALIGN", "alignment"),
     TokenDef {
         key: "DOMAINS",
         grammar: TokenGrammar::PipeList,

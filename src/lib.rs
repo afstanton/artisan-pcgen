@@ -290,6 +290,31 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
                 Value::String(source_page.clone()),
             );
 
+            // Build all available locators from SOURCEPAGE + optional SOURCELONG/SOURCELINK
+            let mut locators = vec![CitationLocator {
+                kind: "page".to_string(),
+                value: source_page.clone(),
+                canonical: true,
+            }];
+            if let Some(source_long) =
+                line_codec::find_key_value(&supported_clauses, "SOURCELONG")
+            {
+                locators.push(CitationLocator {
+                    kind: "long".to_string(),
+                    value: source_long,
+                    canonical: false,
+                });
+            }
+            if let Some(source_link) =
+                line_codec::find_key_value(&supported_clauses, "SOURCELINK")
+            {
+                locators.push(CitationLocator {
+                    kind: "link".to_string(),
+                    value: source_link,
+                    canonical: false,
+                });
+            }
+
             let citation_id = deterministic_id(
                 CITATION_NAMESPACE,
                 &format!("{source_name}:{ext}:{}:{source_page}", line_number + 1),
@@ -298,11 +323,7 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
                 id: citation_id,
                 subject: SubjectRef::Entity(entity_id),
                 source: CanonicalId(Uuid::nil()),
-                locators: vec![CitationLocator {
-                    kind: "page".to_string(),
-                    value: source_page,
-                    canonical: true,
-                }],
+                locators,
                 verification: VerificationState::Unverified,
                 external_ids: vec![ExternalId {
                     format: FormatId::Pcgen,
@@ -1016,7 +1037,7 @@ mod tests {
 
         let entity = &catalog.entities[0];
         assert_eq!(
-            entity.attributes.get("pcgen_key").and_then(Value::as_str),
+            entity.attributes.get("key").and_then(Value::as_str),
             Some("Nightblade ~ Spells")
         );
         assert_eq!(
@@ -1031,11 +1052,11 @@ mod tests {
             Some("Spellcasting text")
         );
         assert_eq!(
-            entity.attributes.get("pcgen_cost").and_then(Value::as_str),
+            entity.attributes.get("cost").and_then(Value::as_str),
             Some("22000")
         );
         assert_eq!(
-            entity.attributes.get("pcgen_rank").and_then(Value::as_i64),
+            entity.attributes.get("rank").and_then(Value::as_i64),
             Some(4)
         );
 
@@ -1169,12 +1190,12 @@ mod tests {
         assert_eq!(
             entity
                 .attributes
-                .get("pcgen_weight")
+                .get("weight")
                 .and_then(Value::as_str),
             Some("4")
         );
         assert_eq!(
-            entity.attributes.get("pcgen_type").and_then(Value::as_str),
+            entity.attributes.get("type").and_then(Value::as_str),
             Some("Spell.Arcane")
         );
         assert_eq!(

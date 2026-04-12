@@ -15,8 +15,8 @@ static ARMORTYPE_SLOTS: &[&str] = &["from", "to"];
 
 static EQUIPMENT_TOKENS: &[TokenDef] = &[
     // Weight and cost
-    TokenDef::text("WT", "pcgen_weight"),
-    TokenDef::text("COST", "pcgen_cost"),
+    TokenDef::text("WT", "weight"),
+    TokenDef::text("COST", "cost"),
     TokenDef::text("COSTPRE", "pcgen_costpre"),
     TokenDef::text("BASEITEM", "pcgen_baseitem"),
     TokenDef::pipe_positional("CHARGES", CHARGES_SLOTS, "pcgen_charges"),

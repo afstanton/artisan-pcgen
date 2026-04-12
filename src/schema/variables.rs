@@ -8,12 +8,12 @@ use crate::schema::{LineGrammar, HeadFormat, TokenDef};
 
 static LOCAL_VARIABLE_TOKENS: &[TokenDef] = &[
     TokenDef::text_required("LOCAL", "pcgen_local"),
-    TokenDef::text("EXPLANATION", "pcgen_explanation"),
+    TokenDef::text("EXPLANATION", "explanation"),
 ];
 
 static GLOBAL_VARIABLE_TOKENS: &[TokenDef] = &[
     TokenDef::text_required("GLOBAL", "pcgen_global"),
-    TokenDef::text("EXPLANATION", "pcgen_explanation"),
+    TokenDef::text("EXPLANATION", "explanation"),
 ];
 
 pub static LOCAL_VARIABLE_SCHEMA: LineGrammar = LineGrammar {
@@ -36,11 +36,11 @@ pub static GLOBAL_VARIABLE_SCHEMA: LineGrammar = LineGrammar {
 static CHANNEL_VARIABLE_TOKENS: &[TokenDef] = &[
     TokenDef::text_required("CHANNEL", "pcgen_channel"),
     TokenDef::text("NUMBER", "pcgen_number"),
-    TokenDef::text("EXPLANATION", "pcgen_explanation"),
+    TokenDef::text("EXPLANATION", "explanation"),
 ];
 
 static EQUIPMENT_PART_VARIABLE_TOKENS: &[TokenDef] =
-    &[TokenDef::text("EXPLANATION", "pcgen_explanation")];
+    &[TokenDef::text("EXPLANATION", "explanation")];
 
 pub static CHANNEL_VARIABLE_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:entity:variable-channel",

@@ -13,7 +13,7 @@ static FACTSETDEF_TOKENS: &[TokenDef] = &[
     TokenDef::text("SELECTABLE", "pcgen_selectable"),
     TokenDef::text("REQUIRED", "pcgen_required"),
     TokenDef::text("DISPLAYNAME", "pcgen_displayname"),
-    TokenDef::text("EXPLANATION", "pcgen_explanation"),
+    TokenDef::text("EXPLANATION", "explanation"),
 ];
 
 pub static FACTSETDEF_SCHEMA: LineGrammar = LineGrammar {
@@ -26,7 +26,7 @@ pub static FACTSETDEF_SCHEMA: LineGrammar = LineGrammar {
 
 static FUNCTION_TOKENS: &[TokenDef] = &[
     TokenDef::text_required("VALUE", "pcgen_value"),
-    TokenDef::text("EXPLANATION", "pcgen_explanation"),
+    TokenDef::text("EXPLANATION", "explanation"),
 ];
 
 pub static FUNCTION_SCHEMA: LineGrammar = LineGrammar {

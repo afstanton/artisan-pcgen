@@ -24,7 +24,7 @@ static STARTPACK_TOKENS: &[TokenDef] = &[
 
 static FUNDS_TOKENS: &[TokenDef] = &[
     TokenDef::text_required("FUNDS", "pcgen_funds"),
-    TokenDef::text("QTY", "pcgen_qty"),
+    TokenDef::text("QTY", "qty"),
 ];
 
 static GENDER_TOKENS: &[TokenDef] = &[TokenDef::text_required("GENDER", "pcgen_gender")];

@@ -12,10 +12,10 @@ static SPELLLIST_SLOTS: &[&str] = &["count", "type", "class"];
 
 static CLASS_TOKENS: &[TokenDef] = &[
     // Core class statistics
-    TokenDef::integer("HITDIE", "pcgen_hitdie"),
-    TokenDef::integer("HD", "pcgen_hitdie"),
-    TokenDef::text("MAXLEVEL", "pcgen_maxlevel"),
-    TokenDef::text("ABB", "pcgen_abbreviation"),
+    TokenDef::integer("HITDIE", "hitdie"),
+    TokenDef::integer("HD", "hitdie"),
+    TokenDef::text("MAXLEVEL", "maxlevel"),
+    TokenDef::text("ABB", "abbreviation"),
     TokenDef::integer("STARTSKILLPTS", "pcgen_startskillpts"),
     TokenDef::integer("LEVELSPERFEAT", "pcgen_levelsperfeat"),
     TokenDef::text("ATTACKCYCLE", "pcgen_attackcycle"),
@@ -28,7 +28,7 @@ static CLASS_TOKENS: &[TokenDef] = &[
     },
     // Spell-related
     TokenDef::text("SPELLTYPE", "pcgen_spelltype"),
-    TokenDef::text("SPELLSTAT", "pcgen_spellstat"),
+    TokenDef::text("SPELLSTAT", "spellstat"),
     TokenDef::text("BONUSSPELLSTAT", "pcgen_bonusspellstat"),
     TokenDef::text("ITEMCREATE", "pcgen_itemcreate"),
     TokenDef::yesno("SPELLBOOK", "pcgen_spellbook"),
@@ -96,7 +96,7 @@ static CLASS_TOKENS: &[TokenDef] = &[
     },
     // Class mechanics
     TokenDef::yesno("ALLOWBASECLASS", "pcgen_allowbaseclass"),
-    TokenDef::text("COST", "pcgen_cost"),
+    TokenDef::text("COST", "cost"),
     TokenDef::yesno("MODTOSKILLS", "pcgen_modtoskills"),
     TokenDef::integer("MONSKILL", "pcgen_monskill"),
     TokenDef::integer("MONNONSKILLHD", "pcgen_monnonskillhd"),
@@ -177,7 +177,7 @@ static CLASS_TOKENS: &[TokenDef] = &[
         key: "EXPLANATION",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Field("pcgen_explanation"),
+        artisan_mapping: ArtisanMapping::Field("explanation"),
         required: false,
     },
     TokenDef {

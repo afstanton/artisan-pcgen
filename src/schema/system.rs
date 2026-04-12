@@ -732,7 +732,7 @@ pub static ALIGN_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     head_token: Some("ALIGN"),
     head_format: HeadFormat::NameOnly,
     tokens: &[
-        TokenDef::text("ABB", "pcgen_abbreviation"),
+        TokenDef::text("ABB", "abbreviation"),
         TokenDef::text("VALIDFORDEITY", "pcgen_validfordeity"),
         TokenDef::text("VALIDFORFOLLOWER", "pcgen_validforfollower"),
     ],
@@ -745,7 +745,7 @@ pub static STAT_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     head_format: HeadFormat::NameOnly,
     tokens: &[
         TokenDef::integer("SCORE", "pcgen_score"),
-        TokenDef::text("ABB", "pcgen_abbreviation"),
+        TokenDef::text("ABB", "abbreviation"),
         TokenDef::text("STATMOD", "pcgen_statmod"),
     ],
     globals: &[GlobalGroup::Key, GlobalGroup::SortKey],

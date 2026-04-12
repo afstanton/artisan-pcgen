@@ -102,7 +102,7 @@ pub fn fallback_keys_for_entity(entity: &Entity, schema: &LineGrammar) -> Vec<St
     if schema.globals.contains(&GlobalGroup::Type)
         && entity
             .attributes
-            .get("pcgen_type")
+            .get("type")
             .and_then(Value::as_str)
             .is_none()
         && !raw_clause_values_for_key(entity, "TYPE").is_empty()
@@ -228,7 +228,7 @@ fn emitted_head_key(entity: &Entity, schema: &LineGrammar) -> Option<String> {
             if schema.head_token.is_none() {
                 let name = entity
                     .attributes
-                    .get("pcgen_key")
+                    .get("key")
                     .and_then(Value::as_str)
                     .unwrap_or(entity.name.as_str());
                 return name
@@ -422,7 +422,7 @@ fn collect_emittable_global_keys(group: GlobalGroup, entity: &Entity, keys: &mut
         GlobalGroup::Type => {
             if entity
                 .attributes
-                .get("pcgen_type")
+                .get("type")
                 .and_then(Value::as_str)
                 .is_some()
             {
@@ -432,7 +432,7 @@ fn collect_emittable_global_keys(group: GlobalGroup, entity: &Entity, keys: &mut
         GlobalGroup::Key => {
             if entity
                 .attributes
-                .get("pcgen_key")
+                .get("key")
                 .and_then(Value::as_str)
                 .is_some()
             {
@@ -442,12 +442,12 @@ fn collect_emittable_global_keys(group: GlobalGroup, entity: &Entity, keys: &mut
         GlobalGroup::Desc => {
             if entity
                 .attributes
-                .get("pcgen_desc")
+                .get("description")
                 .and_then(Value::as_str)
                 .is_some()
                 || entity
                     .attributes
-                    .get("description")
+                    .get("pcgen_desc")
                     .and_then(Value::as_str)
                     .is_some()
             {
@@ -463,7 +463,7 @@ fn collect_emittable_global_keys(group: GlobalGroup, entity: &Entity, keys: &mut
             }
             if entity
                 .attributes
-                .get("pcgen_tempdesc")
+                .get("tempdesc")
                 .and_then(Value::as_str)
                 .is_some()
             {
@@ -514,7 +514,7 @@ fn collect_emittable_global_keys(group: GlobalGroup, entity: &Entity, keys: &mut
         GlobalGroup::OutputName => {
             if entity
                 .attributes
-                .get("pcgen_outputname")
+                .get("outputname")
                 .and_then(Value::as_str)
                 .is_some()
             {
@@ -524,7 +524,7 @@ fn collect_emittable_global_keys(group: GlobalGroup, entity: &Entity, keys: &mut
         GlobalGroup::SortKey => {
             if entity
                 .attributes
-                .get("pcgen_sortkey")
+                .get("sortkey")
                 .and_then(Value::as_str)
                 .is_some()
             {
@@ -544,7 +544,7 @@ fn collect_emittable_global_keys(group: GlobalGroup, entity: &Entity, keys: &mut
         GlobalGroup::CSkill => {
             if entity
                 .attributes
-                .get("pcgen_cskill")
+                .get("cskill")
                 .and_then(Value::as_array)
                 .is_some_and(|values| !values.is_empty())
             {
@@ -554,7 +554,7 @@ fn collect_emittable_global_keys(group: GlobalGroup, entity: &Entity, keys: &mut
         GlobalGroup::Sab => {
             if entity
                 .attributes
-                .get("pcgen_sab")
+                .get("sab")
                 .and_then(Value::as_array)
                 .is_some_and(|values| !values.is_empty())
             {
@@ -734,22 +734,22 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
             }
         }
         GlobalGroup::Type => {
-            if let Some(type_val) = entity.attributes.get("pcgen_type").and_then(Value::as_str) {
+            if let Some(type_val) = entity.attributes.get("type").and_then(Value::as_str) {
                 parts.push(format!("TYPE:{type_val}"));
             }
         }
         GlobalGroup::Key => {
-            if let Some(key_val) = entity.attributes.get("pcgen_key").and_then(Value::as_str) {
+            if let Some(key_val) = entity.attributes.get("key").and_then(Value::as_str) {
                 parts.push(format!("KEY:{key_val}"));
             }
         }
         GlobalGroup::Desc => {
-            // Prefer the parsed PCGen desc; fall back to the canonical description
+            // Prefer the canonical description; pcgen_desc kept as alias for legacy data
             let desc = entity
                 .attributes
-                .get("pcgen_desc")
+                .get("description")
                 .and_then(Value::as_str)
-                .or_else(|| entity.attributes.get("description").and_then(Value::as_str));
+                .or_else(|| entity.attributes.get("pcgen_desc").and_then(Value::as_str));
             if let Some(desc) = desc {
                 parts.push(format!("DESC:{desc}"));
             }
@@ -763,7 +763,7 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
             }
             if let Some(tempdesc) = entity
                 .attributes
-                .get("pcgen_tempdesc")
+                .get("tempdesc")
                 .and_then(Value::as_str)
             {
                 parts.push(format!("TEMPDESC:{tempdesc}"));
@@ -826,7 +826,7 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
         GlobalGroup::OutputName => {
             if let Some(on) = entity
                 .attributes
-                .get("pcgen_outputname")
+                .get("outputname")
                 .and_then(Value::as_str)
             {
                 parts.push(format!("OUTPUTNAME:{on}"));
@@ -835,7 +835,7 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
         GlobalGroup::SortKey => {
             if let Some(sk) = entity
                 .attributes
-                .get("pcgen_sortkey")
+                .get("sortkey")
                 .and_then(Value::as_str)
             {
                 parts.push(format!("SORTKEY:{sk}"));
@@ -855,7 +855,7 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
         GlobalGroup::CSkill => {
             if let Some(values) = entity
                 .attributes
-                .get("pcgen_cskill")
+                .get("cskill")
                 .and_then(Value::as_array)
             {
                 for value in values.iter().filter_map(Value::as_str) {
@@ -864,7 +864,7 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
             }
         }
         GlobalGroup::Sab => {
-            if let Some(values) = entity.attributes.get("pcgen_sab").and_then(Value::as_array) {
+            if let Some(values) = entity.attributes.get("sab").and_then(Value::as_array) {
                 for value in values.iter().filter_map(Value::as_str) {
                     parts.push(format!("SAB:{value}"));
                 }

@@ -71,7 +71,7 @@ static SPELL_TOKENS: &[TokenDef] = &[
         required: false,
     },
     // Cost and variants
-    TokenDef::text("COST", "pcgen_cost"),
+    TokenDef::text("COST", "cost"),
     TokenDef::text("XPCOST", "pcgen_xpcost"),
     TokenDef::integer("PPCOST", "pcgen_ppcost"),
     TokenDef {

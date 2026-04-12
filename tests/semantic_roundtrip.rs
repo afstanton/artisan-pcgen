@@ -687,16 +687,31 @@ fn canonical_coverage_report() {
     let root = fixture_root();
     let files = collect_all_fixture_files(&root).expect("collect fixture files");
 
-    let mut total_entities = 0usize;
-    let mut entities_with_effects = 0usize;
-    let mut entities_with_prereqs = 0usize;
-    let mut entities_with_both = 0usize;
-    let mut entities_with_neither = 0usize;
+    // Infrastructure-only attribute keys that don't count as canonical content.
+    // These are parser bookkeeping and provenance, not game data.
+    const INFRASTRUCTURE_ATTRS: &[&str] = &[
+        "pcgen_decl_token",
+        "pcgen_decl_value",
+        "pcgen_mechanical_signals",
+        "pcgen_entity_type_key",
+        "decl_token",
+        "decl_value",
+        "mechanical_signals",
+        "entity_type_key",
+    ];
 
-    // For sparse entities: count how many times each pcgen_* attribute key appears,
-    // broken down by entity type.  Provenance attrs are excluded — only semantic content.
-    let mut sparse_attr_counts: HashMap<String, usize> = HashMap::new();
-    // Also track: for ALL entities, what effects/prereq kinds exist?
+    let mut total_entities = 0usize;
+    let mut covered_effects_only = 0usize;
+    let mut covered_prereqs_only = 0usize;
+    let mut covered_both = 0usize;
+    let mut covered_canonical_attr_only = 0usize; // has clean attr or citation but no effects/prereqs
+    let mut truly_sparse = 0usize;
+
+    // For sparse entities: tally pcgen_* keys still remaining (Phase N work)
+    let mut sparse_pcgen_attr_counts: HashMap<String, usize> = HashMap::new();
+    // For covered entities with clean canonical attrs: tally those keys
+    let mut canonical_attr_counts: HashMap<String, usize> = HashMap::new();
+    // For ALL entities: effect and prereq kinds
     let mut effect_kind_counts: HashMap<String, usize> = HashMap::new();
     let mut prereq_kind_counts: HashMap<String, usize> = HashMap::new();
 
@@ -717,21 +732,47 @@ fn canonical_coverage_report() {
             total_entities += 1;
             let has_effects = !entity.effects.is_empty();
             let has_prereqs = !entity.prerequisites.is_empty();
+            // An entity has canonical attributes if any attribute key is neither a
+            // pcgen_* key nor an infrastructure-only key.
+            let has_canonical_attrs = entity.attributes.keys().any(|k| {
+                !k.starts_with("pcgen_")
+                    && !PROVENANCE_ATTRS.contains(&k.as_str())
+                    && !INFRASTRUCTURE_ATTRS.contains(&k.as_str())
+            });
+            let has_citations = !entity.citations.is_empty();
+            let is_covered = has_effects || has_prereqs || has_canonical_attrs || has_citations;
+
             match (has_effects, has_prereqs) {
-                (true, true) => entities_with_both += 1,
-                (true, false) => entities_with_effects += 1,
-                (false, true) => entities_with_prereqs += 1,
-                (false, false) => {
-                    entities_with_neither += 1;
-                    // Tally which semantic pcgen_* attributes this sparse entity has.
+                (true, true) => covered_both += 1,
+                (true, false) => covered_effects_only += 1,
+                (false, true) => covered_prereqs_only += 1,
+                (false, false) if is_covered => covered_canonical_attr_only += 1,
+                _ => {
+                    truly_sparse += 1;
+                    // Tally pcgen_* keys still on sparse entities (Phase N candidates)
                     for key in entity.attributes.keys() {
-                        if PROVENANCE_ATTRS.contains(&key.as_str()) {
-                            continue;
+                        if key.starts_with("pcgen_")
+                            && !PROVENANCE_ATTRS.contains(&key.as_str())
+                            && !INFRASTRUCTURE_ATTRS.contains(&key.as_str())
+                        {
+                            *sparse_pcgen_attr_counts.entry(key.clone()).or_insert(0) += 1;
                         }
-                        *sparse_attr_counts.entry(key.clone()).or_insert(0) += 1;
                     }
                 }
             }
+
+            // Tally clean canonical attribute keys across ALL covered entities
+            if is_covered {
+                for key in entity.attributes.keys() {
+                    if !key.starts_with("pcgen_")
+                        && !PROVENANCE_ATTRS.contains(&key.as_str())
+                        && !INFRASTRUCTURE_ATTRS.contains(&key.as_str())
+                    {
+                        *canonical_attr_counts.entry(key.clone()).or_insert(0) += 1;
+                    }
+                }
+            }
+
             for e in &entity.effects {
                 *effect_kind_counts.entry(e.kind.clone()).or_insert(0) += 1;
             }
@@ -741,18 +782,17 @@ fn canonical_coverage_report() {
         }
     }
 
+    let covered = total_entities - truly_sparse;
+    let pct = if total_entities > 0 { 100 * covered / total_entities } else { 0 };
+
     println!("\n=== Canonical Model Coverage Report ===");
-    println!("Total entities:            {total_entities}");
-    println!("  with effects only:       {entities_with_effects}");
-    println!("  with prerequisites only: {entities_with_prereqs}");
-    println!("  with both:               {entities_with_both}");
-    println!("  with neither (sparse):   {entities_with_neither}");
-    let pct = if total_entities > 0 {
-        100 * (total_entities - entities_with_neither) / total_entities
-    } else {
-        0
-    };
-    println!("  canonical coverage:      {pct}% have ≥1 canonical field");
+    println!("Total entities:                    {total_entities}");
+    println!("  effects + prerequisites:         {covered_both}");
+    println!("  effects only:                    {covered_effects_only}");
+    println!("  prerequisites only:              {covered_prereqs_only}");
+    println!("  canonical attrs / citations:     {covered_canonical_attr_only}");
+    println!("  truly sparse (pcgen_* only):     {truly_sparse}");
+    println!("  canonical coverage:              {pct}% have ≥1 canonical field");
 
     // Effect kinds in use
     let mut effect_kinds: Vec<_> = effect_kind_counts.iter().collect();
@@ -770,18 +810,25 @@ fn canonical_coverage_report() {
         println!("  {:6} {kind}", count);
     }
 
-    // Sparse entity attribute frequency (top 30) — these are the candidates for lifting
-    let mut sparse_attrs: Vec<_> = sparse_attr_counts.iter().collect();
+    // Canonical attribute keys on covered entities
+    let mut canonical_attrs: Vec<_> = canonical_attr_counts.iter().collect();
+    canonical_attrs.sort_by(|a, b| b.1.cmp(a.1).then_with(|| a.0.cmp(b.0)));
+    println!("\n--- Canonical attribute keys on covered entities (top 20) ---");
+    for (attr, count) in canonical_attrs.iter().take(20) {
+        println!("  {:6} {attr}", count);
+    }
+
+    // Remaining pcgen_* attributes on truly sparse entities — Phase N candidates
+    let mut sparse_attrs: Vec<_> = sparse_pcgen_attr_counts.iter().collect();
     sparse_attrs.sort_by(|a, b| b.1.cmp(a.1).then_with(|| a.0.cmp(b.0)));
-    println!("\n--- pcgen_* attributes on SPARSE entities (top 30) ---");
-    println!("  (These tokens are present but NOT yet in the canonical model)");
+    println!("\n--- pcgen_* attributes on truly sparse entities (top 30) ---");
+    println!("  (These tokens still need canonical mapping)");
     for (attr, count) in sparse_attrs.iter().take(30) {
-        // Strip the pcgen_ prefix for readability
         let display = attr.strip_prefix("pcgen_").unwrap_or(attr);
         println!("  {:6} {display}", count);
     }
     println!(
-        "\nNote: 'sparse' entities have game content only in pcgen_* attributes.\n"
+        "\nNote: 'truly sparse' entities have only pcgen_* attributes (no canonical fields).\n"
     );
 }
 
@@ -1297,12 +1344,12 @@ CLASS:Faceman\tSTARTSKILLPTS:6\tCSKILL:Bluff|Diplomacy|Disguise";
 
     // Attributes from the first line should be present.
     assert_eq!(
-        e.attributes.get("pcgen_hitdie").and_then(|v| v.as_i64()),
+        e.attributes.get("hitdie").and_then(|v| v.as_i64()),
         Some(10),
         "HITDIE from line 1 should be on merged entity"
     );
     assert_eq!(
-        e.attributes.get("pcgen_abbreviation").and_then(|v| v.as_str()),
+        e.attributes.get("abbreviation").and_then(|v| v.as_str()),
         Some("Fcm"),
         "ABB from line 1 should be on merged entity"
     );
@@ -1358,7 +1405,7 @@ fn multiline_lst_fixture_produces_single_faceman_entity() {
         "fixture should produce exactly one Faceman entity"
     );
     // Both lines contributed attributes.
-    assert!(faceman[0].attributes.contains_key("pcgen_hitdie"), "line 1 HITDIE should be present");
+    assert!(faceman[0].attributes.contains_key("hitdie"), "line 1 HITDIE should be present");
     assert!(faceman[0].attributes.contains_key("pcgen_startskillpts"), "line 2 STARTSKILLPTS should be present");
 }
 

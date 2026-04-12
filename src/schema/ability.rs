@@ -17,8 +17,8 @@ static ABILITY_TOKENS: &[TokenDef] = &[
     // Optional entity-specific tokens (doc order)
     TokenDef::integer("ADDSPELLLEVEL", "pcgen_addspelllevel"),
     TokenDef::pipe_positional_repeatable("ASPECT", ASPECT_SLOTS, "pcgen_aspects"),
-    TokenDef::text("BENEFIT", "pcgen_benefit"),
-    TokenDef::text("COST", "pcgen_cost"),
+    TokenDef::text("BENEFIT", "benefit"),
+    TokenDef::text("COST", "cost"),
     TokenDef::text("SPELLLEVEL", "pcgen_spelllevel"),
     TokenDef::text("NEWCATEGORY", "pcgen_newcategory"),
     TokenDef::text("INFO", "pcgen_info"),

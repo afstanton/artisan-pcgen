@@ -53,7 +53,7 @@ static RACE_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Field("pcgen_skillmult"),
         required: false,
     },
-    TokenDef::text("HITDIE", "pcgen_hitdie"),
+    TokenDef::text("HITDIE", "hitdie"),
     TokenDef::text("HITDICEADVANCEMENT", "pcgen_hitdiceadvancement"),
     TokenDef {
         key: "MOVE",

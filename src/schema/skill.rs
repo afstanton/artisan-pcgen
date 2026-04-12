@@ -21,7 +21,7 @@ static SKILL_TOKENS: &[TokenDef] = &[
     },
     // SITUATION adds a conditional modifier to the skill
     TokenDef::pipe_positional_repeatable("SITUATION", SITUATION_SLOTS, "pcgen_situations"),
-    TokenDef::text("RANK", "pcgen_rank"),
+    TokenDef::text("RANK", "rank"),
     TokenDef::integer("COUNT", "pcgen_count"),
     TokenDef::yesno("FREE", "pcgen_free"),
     TokenDef {

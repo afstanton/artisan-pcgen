@@ -504,7 +504,7 @@ static EQUIPSET_TOKENS: &[TokenDef] = &[
     // pcgen_equipset_usetempmods: distinct from standalone pcgen_usetempmods
     TokenDef::yesno("USETEMPMODS", "pcgen_equipset_usetempmods"),
     // Optional free-text annotation on an equipment set entry
-    TokenDef::text("NOTE", "pcgen_note"),
+    TokenDef::text("NOTE", "note"),
 ];
 
 pub static EQUIPSET_SCHEMA: LineGrammar = LineGrammar {
@@ -522,13 +522,13 @@ pub static EQUIPSET_SCHEMA: LineGrammar = LineGrammar {
 static EQUIPNAME_TOKENS: &[TokenDef] = &[
     // Reuse canonical attribute names that the projector already maps these to
     TokenDef::integer("OUTPUTORDER", "pcgen_outputorder"),
-    TokenDef::text("COST", "pcgen_cost"),
-    TokenDef::text("WT", "pcgen_weight"),
+    TokenDef::text("COST", "cost"),
+    TokenDef::text("WT", "weight"),
     TokenDef::text("QUANTITY", "pcgen_quantity"),
     // CUSTOMIZATION bracket group: [BASEITEM:Longsword|DATA:EQMOD=STEEL|...]
     // DATA sub-items live inside this bracket group; no separate DATA token needed.
     TokenDef::bracket_group("CUSTOMIZATION", "pcgen_customization"),
-    TokenDef::text("NOTE", "pcgen_note"),
+    TokenDef::text("NOTE", "note"),
 ];
 
 pub static EQUIPNAME_SCHEMA: LineGrammar = LineGrammar {
@@ -567,7 +567,7 @@ pub static CLASSABILITIESLEVEL_SCHEMA: LineGrammar = LineGrammar {
 // ---------------------------------------------------------------------------
 
 static NOTE_TOKENS: &[TokenDef] = &[
-    TokenDef::text_required("NOTE", "pcgen_note"),
+    TokenDef::text_required("NOTE", "note"),
     // ID and PARENTID reuse the equipset id field (same projector slot)
     TokenDef::text("ID", "pcgen_equipset_id"),
     TokenDef::text("PARENTID", "pcgen_note_parentid"),
