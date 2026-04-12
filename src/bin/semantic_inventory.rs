@@ -61,19 +61,23 @@ struct Progress {
 fn main() -> io::Result<()> {
     let args: Vec<String> = std::env::args().collect();
     let mut per_file = false;
+    let mut failed_files = false;
     let mut roots = Vec::new();
 
     for arg in args.iter().skip(1) {
         match arg.as_str() {
             "--per-file" => per_file = true,
+            "--failed-files" => failed_files = true,
             _ => roots.push(arg.clone()),
         }
     }
 
     if roots.is_empty() {
-        eprintln!("Usage: semantic_inventory [--per-file] <pcgen_root1> [pcgen_root2] ...");
         eprintln!(
-            "Example: semantic_inventory --per-file /path/to/PCGen/pcgen /path/to/BahamutDragon/pcgen"
+            "Usage: semantic_inventory [--per-file] [--failed-files] <pcgen_root1> [pcgen_root2] ..."
+        );
+        eprintln!(
+            "Example: semantic_inventory --failed-files /path/to/PCGen/pcgen /path/to/BahamutDragon/pcgen"
         );
         std::process::exit(1);
     }
@@ -237,6 +241,40 @@ fn main() -> io::Result<()> {
             if let Some(diff) = &file.canonical_diff {
                 writeln!(report, "  canonical diff: {}", diff).unwrap();
             }
+        }
+    } else if failed_files {
+        writeln!(report, "=== Failed Files ===").unwrap();
+        let mut any_failed = false;
+        for file in &files {
+            if file.semantic_ok && file.canonical_ok {
+                continue;
+            }
+            any_failed = true;
+            writeln!(
+                report,
+                "[{}|{}] {}",
+                if file.semantic_ok {
+                    "semantic:ok"
+                } else {
+                    "semantic:fail"
+                },
+                if file.canonical_ok {
+                    "canonical:ok"
+                } else {
+                    "canonical:fail"
+                },
+                file.path.display(),
+            )
+            .unwrap();
+            if let Some(diff) = &file.semantic_diff {
+                writeln!(report, "  semantic diff: {}", diff).unwrap();
+            }
+            if let Some(diff) = &file.canonical_diff {
+                writeln!(report, "  canonical diff: {}", diff).unwrap();
+            }
+        }
+        if !any_failed {
+            writeln!(report, "none").unwrap();
         }
     }
 
