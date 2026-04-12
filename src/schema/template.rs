@@ -13,8 +13,8 @@ static ADDLEVEL_SLOTS: &[&str] = &["class", "count"];
 
 static TEMPLATE_TOKENS: &[TokenDef] = &[
     // Core template properties
-    TokenDef::integer("LEVELADJUSTMENT", "pcgen_leveladjustment"),
-    TokenDef::text("RACETYPE", "pcgen_racetype"),
+    TokenDef::integer("LEVELADJUSTMENT", "level_adjustment"),
+    TokenDef::text("RACETYPE", "racetype"),
     TokenDef {
         key: "RACESUBTYPE",
         grammar: TokenGrammar::PipeList,
@@ -36,7 +36,7 @@ static TEMPLATE_TOKENS: &[TokenDef] = &[
     TokenDef::text("HANDS", "pcgen_hands"),
     TokenDef::text("DR", "pcgen_dr"),
     TokenDef::text("SR", "pcgen_sr"),
-    TokenDef::text("CR", "pcgen_cr"),
+    TokenDef::text("CR", "cr"),
     TokenDef::text("REGION", "pcgen_region"),
     TokenDef::text("SUBREGION", "pcgen_subregion"),
     TokenDef::text("VISIBLE", "pcgen_visible"),

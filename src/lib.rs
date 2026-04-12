@@ -1043,7 +1043,7 @@ mod tests {
         assert_eq!(
             entity
                 .attributes
-                .get("pcgen_category")
+                .get("category")
                 .and_then(Value::as_str),
             Some("Special Ability")
         );

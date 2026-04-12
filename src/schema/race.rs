@@ -43,7 +43,7 @@ static RACE_TOKENS: &[TokenDef] = &[
     TokenDef::text("CR", "cr"),
     TokenDef::pipe_positional_repeatable("CRMOD", &["class_types", "modifier"], "pcgen_crmod"),
     TokenDef::text("REACH", "pcgen_reach"),
-    TokenDef::integer("LEVELADJUSTMENT", "pcgen_leveladjustment"),
+    TokenDef::integer("LEVELADJUSTMENT", "level_adjustment"),
     TokenDef::integer("STARTFEATS", "pcgen_startfeats"),
     TokenDef::integer("XTRASKILLPTSPERLVL", "pcgen_xtraskillptsperlvl"),
     TokenDef {
@@ -85,7 +85,7 @@ static RACE_TOKENS: &[TokenDef] = &[
         required: false,
     },
     // Monster-specific
-    TokenDef::text("MONSTERCLASS", "pcgen_monsterclass"),
+    TokenDef::text("MONSTERCLASS", "monsterclass"),
     TokenDef {
         key: "MONCSKILL",
         grammar: TokenGrammar::PipeList,

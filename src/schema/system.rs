@@ -618,9 +618,9 @@ pub static HIDDENFEATTYPES_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
 static CLASSTYPE_SYSTEM_TOKENS: &[TokenDef] = &[
     TokenDef::text("CRMOD", "pcgen_crmod"),
     TokenDef::integer("CRMODPRIORITY", "pcgen_crmodpriority"),
-    TokenDef::text("CRFORMULA", "pcgen_crformula"),
-    TokenDef::yesno("ISMONSTER", "pcgen_ismonster"),
-    TokenDef::yesno("XPPENALTY", "pcgen_xppenalty"),
+    TokenDef::text("CRFORMULA", "cr_formula"),
+    TokenDef::yesno("ISMONSTER", "is_monster"),
+    TokenDef::yesno("XPPENALTY", "xp_penalty"),
 ];
 
 pub static CLASSTYPE_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
