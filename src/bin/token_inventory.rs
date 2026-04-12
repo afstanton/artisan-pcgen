@@ -337,18 +337,18 @@ fn process_file(
         .unwrap_or_else(|| "lst".to_string());
 
     let parsed_catalog = parse_text_to_catalog(&content, source_name, &ext);
+
+    // Key: (UPPERCASE_DECL_TOKEN, decl_value) e.g. ("CLASS", "Aberration").
+    // Using entity identity rather than line number so that multiline LST entities
+    // (where continuation lines carry different line numbers than the first line but
+    // share the same CLASS:Name head) are correctly matched during the raw-line scan.
+    let mut emittable_by_entity: HashMap<(String, String), HashSet<String>> = HashMap::new();
+    let mut fallback_by_entity: HashMap<(String, String), HashSet<String>> = HashMap::new();
+    // Fallback for name-only (non-token-prefixed) entities: keyed by line number.
     let mut emittable_by_line: HashMap<usize, HashSet<String>> = HashMap::new();
     let mut fallback_by_line: HashMap<usize, HashSet<String>> = HashMap::new();
-    for entity in &parsed_catalog.entities {
-        let Some(line_number) = entity
-            .attributes
-            .get("pcgen_line_number")
-            .and_then(|v| v.as_u64())
-            .map(|n| n as usize)
-        else {
-            continue;
-        };
 
+    for entity in &parsed_catalog.entities {
         let Some(type_key) = entity
             .attributes
             .get("pcgen_entity_type_key")
@@ -365,20 +365,48 @@ fn process_file(
             .into_iter()
             .map(|k| k.to_ascii_uppercase())
             .collect();
-        emittable_by_line
-            .entry(line_number)
-            .or_default()
-            .extend(emittable);
-
         let fallback: HashSet<String> = fallback_keys_for_entity(entity, schema)
             .into_iter()
             .map(|k| k.to_ascii_uppercase())
             .collect();
 
-        fallback_by_line
-            .entry(line_number)
-            .or_default()
-            .extend(fallback);
+        // Try to get decl_token + decl_value for entity-key lookup.
+        let decl_token = entity
+            .attributes
+            .get("pcgen_decl_token")
+            .and_then(|v| v.as_str())
+            .map(|s| s.to_ascii_uppercase());
+        let decl_value = entity
+            .attributes
+            .get("pcgen_decl_value")
+            .and_then(|v| v.as_str())
+            .map(|s| s.to_string());
+
+        if let (Some(tok), Some(val)) = (decl_token, decl_value) {
+            emittable_by_entity
+                .entry((tok.clone(), val.clone()))
+                .or_default()
+                .extend(emittable);
+            fallback_by_entity
+                .entry((tok, val))
+                .or_default()
+                .extend(fallback);
+        } else if let Some(line_number) = entity
+            .attributes
+            .get("pcgen_line_number")
+            .and_then(|v| v.as_u64())
+            .map(|n| n as usize)
+        {
+            // Name-only entities have no decl_token; fall back to line number.
+            emittable_by_line
+                .entry(line_number)
+                .or_default()
+                .extend(emittable);
+            fallback_by_line
+                .entry(line_number)
+                .or_default()
+                .extend(fallback);
+        }
     }
 
     *file_count += 1;
@@ -401,19 +429,38 @@ fn process_file(
 
         let parsed = parse_line(trimmed);
 
+        // Resolve the entity key for this line: (UPPERCASE_DECL_TOKEN, decl_value).
+        // This handles multiline LST entities whose continuation lines have a different
+        // line number than the merged entity's pcgen_line_number.
+        let entity_key: Option<(String, String)> = parsed.head.find(':').map(|colon| {
+            let tok = parsed.head[..colon].trim().to_ascii_uppercase();
+            let val = parsed.head[colon + 1..].trim().to_string();
+            (tok, val)
+        });
+
+        // Helper closures: look up emittable/fallback by entity key first, then line number.
+        let in_emittable = |token: &str| -> bool {
+            entity_key
+                .as_ref()
+                .and_then(|k| emittable_by_entity.get(k))
+                .or_else(|| emittable_by_line.get(&line_number))
+                .is_some_and(|set| set.contains(token))
+        };
+        let in_fallback = |token: &str| -> bool {
+            entity_key
+                .as_ref()
+                .and_then(|k| fallback_by_entity.get(k))
+                .or_else(|| fallback_by_line.get(&line_number))
+                .is_some_and(|set| set.contains(token))
+        };
+
         if let Some(head_key) = extract_head_key(&parsed.head) {
             match classify_token_key_support(&head_key, false) {
                 TokenSupportLevel::SemanticallyInterpreted => {
                     *semantic_counts.entry(head_key.clone()).or_insert(0) += 1;
-                    if emittable_by_line
-                        .get(&line_number)
-                        .is_some_and(|set| set.contains(&head_key))
-                    {
+                    if in_emittable(&head_key) {
                         *fully_structured_counts.entry(head_key).or_insert(0) += 1;
-                    } else if fallback_by_line
-                        .get(&line_number)
-                        .is_some_and(|set| set.contains(&head_key))
-                    {
+                    } else if in_fallback(&head_key) {
                         *fallback_needed_counts.entry(head_key).or_insert(0) += 1;
                     }
                 }
@@ -432,15 +479,9 @@ fn process_file(
                 TokenSupportLevel::SemanticallyInterpreted => {
                     if let Some(token_key) = extract_token_key(clause, clause_index) {
                         *semantic_counts.entry(token_key.clone()).or_insert(0) += 1;
-                        if emittable_by_line
-                            .get(&line_number)
-                            .is_some_and(|set| set.contains(&token_key))
-                        {
+                        if in_emittable(&token_key) {
                             *fully_structured_counts.entry(token_key).or_insert(0) += 1;
-                        } else if fallback_by_line
-                            .get(&line_number)
-                            .is_some_and(|set| set.contains(&token_key))
-                        {
+                        } else if in_fallback(&token_key) {
                             *fallback_needed_counts.entry(token_key).or_insert(0) += 1;
                         }
                     }

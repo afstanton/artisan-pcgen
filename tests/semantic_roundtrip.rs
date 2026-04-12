@@ -594,6 +594,50 @@ fn normalise_token_order(line: String) -> String {
     line
 }
 
+/// Verify that multiline LST entities (CLASS:Name spanning 3 lines) have their
+/// continuation-line tokens (MODTOSKILLS, MONSKILL, MONNONSKILLHD) correctly
+/// reported as fully-structured, using entity-key lookup rather than line number.
+#[test]
+fn multiline_entity_continuation_tokens_count_as_fully_structured() {
+    // Three-line CLASS:Aberration as it appears in srd_classes_creature_types.lst.
+    // Line 1: core stats.  Line 2: race prerequisite.  Line 3: skill config.
+    let content = "\
+CLASS:Aberration\tHD:8\tTYPE:Monster\tMAXLEVEL:NOLIMIT\n\
+CLASS:Aberration\tPRERAGETYPE:Aberration\n\
+CLASS:Aberration\tSTARTSKILLPTS:2\tMODTOSKILLS:NO\tMONSKILL:2*INTSCORE\tMONNONSKILLHD:1\n";
+
+    // Should parse as a single merged entity
+    let cat = parse_text_to_catalog(content, "test.lst", "lst");
+    assert_eq!(cat.entities.len(), 1, "multiline CLASS should merge to one entity");
+
+    let entity = &cat.entities[0];
+    let type_key = entity.attributes.get("pcgen_entity_type_key")
+        .and_then(|v| v.as_str()).unwrap_or("MISSING");
+    let line_num = entity.attributes.get("pcgen_line_number")
+        .and_then(|v| v.as_u64()).unwrap_or(0);
+    // Merged entity lives at line 1 (the first CLASS:Aberration line)
+    assert_eq!(line_num, 1, "merged entity should have first-line number");
+
+    let schema = artisan_pcgen::schema::schema_for_entity_type_key(type_key).unwrap();
+    let emittable: std::collections::HashSet<String> =
+        artisan_pcgen::emittable_keys_for_entity(entity, schema)
+            .into_iter()
+            .collect();
+
+    // All three tokens from line 3 must be emittable (proving the schema handles them)
+    assert!(emittable.contains("MODTOSKILLS"), "MODTOSKILLS not emittable: {emittable:?}");
+    assert!(emittable.contains("MONSKILL"),    "MONSKILL not emittable: {emittable:?}");
+    assert!(emittable.contains("MONNONSKILLHD"), "MONNONSKILLHD not emittable: {emittable:?}");
+
+    // Verify the entity's decl_token/decl_value are set (needed for entity-key lookup)
+    let decl_token = entity.attributes.get("pcgen_decl_token")
+        .and_then(|v| v.as_str()).unwrap_or("MISSING");
+    let decl_value = entity.attributes.get("pcgen_decl_value")
+        .and_then(|v| v.as_str()).unwrap_or("MISSING");
+    assert_eq!(decl_token, "CLASS", "decl_token should be CLASS");
+    assert_eq!(decl_value, "Aberration", "decl_value should be Aberration");
+}
+
 #[test]
 fn unparse_emits_pcgen_metadata_lines_for_pcc() {
     let file = fixture_root().join("metadata_whitespace.pcc");
