@@ -14,7 +14,7 @@ pub static ABILITY_MIGRATION_SCHEMA: LineGrammar = LineGrammar {
         TokenDef::text("MAXVER", "pcgen_maxver"),
         TokenDef::text("MAXDEVVER", "pcgen_maxdevver"),
         TokenDef::text("NEWKEY", "pcgen_newkey"),
-        TokenDef::text("NEWCATEGORY", "pcgen_newcategory"),
+        TokenDef::text("NEWCATEGORY", "newcategory"),
     ],
     globals: &[],
 };

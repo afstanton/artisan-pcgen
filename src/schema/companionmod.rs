@@ -11,7 +11,7 @@ use crate::schema::{
 
 static FOLLOWER_TOKENS: &[TokenDef] = &[
     TokenDef::text("HD", "hitdie"),
-    TokenDef::text("RACETYPE", "pcgen_racetype"),
+    TokenDef::text("RACETYPE", "racetype"),
     TokenDef::text("COPYMASTERBAB", "pcgen_copymasterbab"),
     TokenDef::text("COPYMASTERCHECK", "pcgen_copymastercheck"),
     TokenDef::text("COPYMASTERHP", "pcgen_copymasterhp"),

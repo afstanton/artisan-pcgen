@@ -9,15 +9,15 @@ use crate::schema::{
 };
 
 static BIOSETTINGS_TOKENS: &[TokenDef] = &[
-    TokenDef::text("BASEAGE", "pcgen_baseage"),
-    TokenDef::text("BASEAGEADD", "pcgen_baseageadd"),
-    TokenDef::text("MAXAGE", "pcgen_maxage"),
-    TokenDef::text("AGEDIEROLL", "pcgen_agedieroll"),
+    TokenDef::text("BASEAGE", "base_age"),
+    TokenDef::text("BASEAGEADD", "base_age_add"),
+    TokenDef::text("MAXAGE", "max_age"),
+    TokenDef::text("AGEDIEROLL", "age_die_roll"),
     TokenDef {
         key: "SEX",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Field("pcgen_sex"),
+        artisan_mapping: ArtisanMapping::Field("sex"),
         required: false,
     },
     TokenDef {

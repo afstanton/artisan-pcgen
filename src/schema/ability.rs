@@ -13,14 +13,14 @@ static ASPECT_SLOTS: &[&str] = &["name", "value", "formula"];
 
 static ABILITY_TOKENS: &[TokenDef] = &[
     // Required: every ability must belong to a category
-    TokenDef::text_required("CATEGORY", "pcgen_category"),
+    TokenDef::text_required("CATEGORY", "category"),
     // Optional entity-specific tokens (doc order)
     TokenDef::integer("ADDSPELLLEVEL", "pcgen_addspelllevel"),
     TokenDef::pipe_positional_repeatable("ASPECT", ASPECT_SLOTS, "pcgen_aspects"),
     TokenDef::text("BENEFIT", "benefit"),
     TokenDef::text("COST", "cost"),
     TokenDef::text("SPELLLEVEL", "pcgen_spelllevel"),
-    TokenDef::text("NEWCATEGORY", "pcgen_newcategory"),
+    TokenDef::text("NEWCATEGORY", "newcategory"),
     TokenDef::text("INFO", "pcgen_info"),
     TokenDef::text("MULT", "pcgen_mult"),
     TokenDef::text("STACK", "pcgen_stack"),

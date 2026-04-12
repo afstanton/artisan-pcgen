@@ -143,7 +143,7 @@ pub static CHARACTERNAME_SCHEMA: LineGrammar = LineGrammar {
     head_format: HeadFormat::TokenPrefixed,
     tokens: &[TokenDef::text_required(
         "CHARACTERNAME",
-        "pcgen_charactername",
+        "character_name",
     )],
     globals: &[],
 };

@@ -227,7 +227,7 @@ static CLASS_TOKENS: &[TokenDef] = &[
         key: "BASEAGEADD",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Field("pcgen_baseageadd"),
+        artisan_mapping: ArtisanMapping::Field("base_age_add"),
         required: false,
     },
     TokenDef {

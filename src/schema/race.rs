@@ -11,7 +11,7 @@ use crate::schema::{
 
 static RACE_TOKENS: &[TokenDef] = &[
     // Core racial properties
-    TokenDef::text("RACETYPE", "pcgen_racetype"),
+    TokenDef::text("RACETYPE", "racetype"),
     TokenDef {
         key: "RACESUBTYPE",
         grammar: TokenGrammar::PipeList,
@@ -40,7 +40,7 @@ static RACE_TOKENS: &[TokenDef] = &[
     TokenDef::text("HANDS", "pcgen_hands"),
     TokenDef::text("DR", "pcgen_dr"),
     TokenDef::text("SR", "pcgen_sr"),
-    TokenDef::text("CR", "pcgen_cr"),
+    TokenDef::text("CR", "cr"),
     TokenDef::pipe_positional_repeatable("CRMOD", &["class_types", "modifier"], "pcgen_crmod"),
     TokenDef::text("REACH", "pcgen_reach"),
     TokenDef::integer("LEVELADJUSTMENT", "pcgen_leveladjustment"),

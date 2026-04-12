@@ -68,7 +68,7 @@ static PCC_TOKENS: &[TokenDef] = &[
         key: "EQUIPMENT",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Field("pcgen_equipment"),
+        artisan_mapping: ArtisanMapping::Field("equipment"),
         required: false,
     },
     TokenDef {
@@ -168,7 +168,7 @@ static PCC_TOKENS: &[TokenDef] = &[
         key: "LICENSE",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Field("pcgen_license"),
+        artisan_mapping: ArtisanMapping::Field("license"),
         required: false,
     },
     TokenDef::text("STATUS", "pcgen_status"),
@@ -178,7 +178,7 @@ static PCC_TOKENS: &[TokenDef] = &[
         key: "INFOTEXT",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Field("pcgen_infotext"),
+        artisan_mapping: ArtisanMapping::Field("infotext"),
         required: false,
     },
     TokenDef::text("RANK", "rank"),
@@ -238,7 +238,7 @@ static PCC_TOKENS: &[TokenDef] = &[
         key: "URL",
         grammar: TokenGrammar::PipePositional(&["text", "url", "label"]),
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Field("pcgen_url"),
+        artisan_mapping: ArtisanMapping::Field("url"),
         required: false,
     },
     TokenDef::text("OPTION", "pcgen_option"),
@@ -294,7 +294,7 @@ static FEAT_INCLUDE_TOKENS: &[TokenDef] = &[
     PRECAMPAIGN_TOKEN,
 ];
 static EQUIPMENT_INCLUDE_TOKENS: &[TokenDef] = &[
-    TokenDef::text_required("EQUIPMENT", "pcgen_equipment"),
+    TokenDef::text_required("EQUIPMENT", "equipment"),
     PRECAMPAIGN_TOKEN,
 ];
 static SPELL_INCLUDE_TOKENS: &[TokenDef] = &[
@@ -302,11 +302,11 @@ static SPELL_INCLUDE_TOKENS: &[TokenDef] = &[
     PRECAMPAIGN_TOKEN,
 ];
 static LICENSE_INCLUDE_TOKENS: &[TokenDef] = &[
-    TokenDef::text_required("LICENSE", "pcgen_license"),
+    TokenDef::text_required("LICENSE", "license"),
     PRECAMPAIGN_TOKEN,
 ];
 static INFOTEXT_INCLUDE_TOKENS: &[TokenDef] = &[
-    TokenDef::text_required("INFOTEXT", "pcgen_infotext"),
+    TokenDef::text_required("INFOTEXT", "infotext"),
     PRECAMPAIGN_TOKEN,
 ];
 static FORWARDREF_INCLUDE_TOKENS: &[TokenDef] = &[
@@ -334,7 +334,7 @@ static URL_INCLUDE_TOKENS: &[TokenDef] = &[
         key: "URL",
         grammar: TokenGrammar::PipePositional(&["text", "url", "label"]),
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Field("pcgen_url"),
+        artisan_mapping: ArtisanMapping::Field("url"),
         required: true,
     },
     PRECAMPAIGN_TOKEN,
