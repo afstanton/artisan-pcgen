@@ -22,6 +22,7 @@ pub mod schema;
 use analysis::{fields, metadata, semantics, signals};
 pub use emit::fallback_keys_for_entity;
 pub use emit::{emit_entity, emit_entity_auto, emittable_keys_for_entity};
+pub use artisan_core::ParsedCatalog;
 use parsing::line_codec;
 
 const ENTITY_TYPE_NAMESPACE: Uuid = Uuid::from_u128(0x6c8fdbf43f4f4a4ba4d846e2bf8b9c10);
@@ -29,15 +30,6 @@ const ENTITY_NAMESPACE: Uuid = Uuid::from_u128(0x5ea8a1062b0842beaf2fcb5966e30f3
 const PUBLISHER_NAMESPACE: Uuid = Uuid::from_u128(0x4a3decc22d7745618872f8361653dc61);
 const SOURCE_NAMESPACE: Uuid = Uuid::from_u128(0x17a9126be16f4ddcbfce46c80dd60f2f);
 const CITATION_NAMESPACE: Uuid = Uuid::from_u128(0x0ab04cb4229a4ba39f5947655e0f4d28);
-
-#[derive(Debug, Clone)]
-pub struct ParsedCatalog {
-    pub publishers: Vec<PublisherRecord>,
-    pub sources: Vec<SourceRecord>,
-    pub citations: Vec<CitationRecord>,
-    pub entity_types: Vec<EntityType>,
-    pub entities: Vec<Entity>,
-}
 
 #[derive(Debug, Clone)]
 pub struct ParsedEntityCandidate {
@@ -555,6 +547,7 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
         citations,
         entity_types: vec![entity_type],
         entities,
+        ..ParsedCatalog::default()
     }
 }
 
