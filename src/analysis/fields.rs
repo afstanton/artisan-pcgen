@@ -221,16 +221,10 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("favored_class".to_string(), Value::String(value.clone()));
             }
             "FAVOREDCLASS" => {
-                attributes.insert(
-                    "favored_class".to_string(),
-                    Value::String(value.clone()),
-                );
+                attributes.insert("favored_class".to_string(), Value::String(value.clone()));
             }
             "MONSTERCLASS" => {
-                attributes.insert(
-                    "monsterclass".to_string(),
-                    Value::String(value.clone()),
-                );
+                attributes.insert("monsterclass".to_string(), Value::String(value.clone()));
             }
             "MONCSKILL" => append_string_attr(attributes, "pcgen_moncskill", value),
             "CCSKILL" => append_string_attr(attributes, "pcgen_ccskill", value),
@@ -262,10 +256,7 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("maxlevel".to_string(), Value::String(value.clone()));
             }
             "ABB" => {
-                attributes.insert(
-                    "abbreviation".to_string(),
-                    Value::String(value.clone()),
-                );
+                attributes.insert("abbreviation".to_string(), Value::String(value.clone()));
             }
             "STARTSKILLPTS" => set_i64_or_string(attributes, "pcgen_startskillpts", value),
             "LEVELSPERFEAT" => set_i64_or_string(attributes, "pcgen_levelsperfeat", value),
@@ -510,7 +501,10 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_deityalign".to_string(), Value::String(value.clone()));
             }
             "DOMAINGRANTS" => {
-                attributes.insert("pcgen_domaingrants".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_domaingrants".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             // PCG spell record sub-tokens
             "TIMES" => {
@@ -525,7 +519,10 @@ pub(crate) fn project_clause_attributes(
             }
             // .pcg sub-tokens for EQUIPSET records
             "ID" => {
-                attributes.insert("pcgen_equipset_id".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_equipset_id".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "USETEMPMODS" => {
                 attributes.insert(
@@ -575,10 +572,7 @@ pub(crate) fn project_clause_attributes(
             }
             // .pcg sub-token for FEAT / ABILITY records: what choice was applied
             "APPLIEDTO" => {
-                attributes.insert(
-                    "pcgen_appliedto".to_string(),
-                    Value::String(value.clone()),
-                );
+                attributes.insert("pcgen_appliedto".to_string(), Value::String(value.clone()));
             }
             "RANGE" => {
                 attributes.insert("pcgen_range".to_string(), Value::String(value.clone()));
@@ -675,10 +669,7 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_newkey".to_string(), Value::String(value.clone()));
             }
             "NEWCATEGORY" => {
-                attributes.insert(
-                    "newcategory".to_string(),
-                    Value::String(value.clone()),
-                );
+                attributes.insert("newcategory".to_string(), Value::String(value.clone()));
             }
             "VALUES" => append_string_attr(attributes, "pcgen_values", value),
             "COPYRIGHT" => append_string_attr(attributes, "copyright", value),
@@ -707,10 +698,7 @@ pub(crate) fn project_clause_attributes(
                 );
             }
             "EXPLANATION" => {
-                attributes.insert(
-                    "explanation".to_string(),
-                    Value::String(value.clone()),
-                );
+                attributes.insert("explanation".to_string(), Value::String(value.clone()));
             }
             "REQUIRED" => {
                 attributes.insert("pcgen_required".to_string(), Value::String(value.clone()));
@@ -1283,7 +1271,10 @@ pub(crate) fn project_clause_attributes(
             "MODIFYOTHER" => append_string_attr(attributes, "pcgen_modifyother", value),
             // system.rs — codeControl.lst tokens
             "STATMODSAVE" => {
-                attributes.insert("pcgen_statmodsave".to_string(), Value::String(value.clone()));
+                attributes.insert(
+                    "pcgen_statmodsave".to_string(),
+                    Value::String(value.clone()),
+                );
             }
             "ALTHP" => {
                 attributes.insert("pcgen_althp".to_string(), Value::String(value.clone()));
@@ -1731,109 +1722,196 @@ pub(crate) fn project_decl_token_value(
         }
         // PCG character bio tokens
         "TABNAME" => {
-            attributes.insert("pcgen_tabname".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "pcgen_tabname".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         "SKINCOLOR" => {
-            attributes.insert("skin_color".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "skin_color".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         "EYECOLOR" => {
-            attributes.insert("eye_color".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "eye_color".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         "HAIRCOLOR" => {
-            attributes.insert("hair_color".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "hair_color".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         "HAIRSTYLE" => {
-            attributes.insert("pcgen_hairstyle".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "pcgen_hairstyle".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         "CITY" => {
             attributes.insert("city".to_string(), Value::String(decl_value.to_string()));
         }
         "BIRTHDAY" => {
-            attributes.insert("birthday".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "birthday".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         "BIRTHPLACE" => {
-            attributes.insert("birthplace".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "birthplace".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         "PERSONALITYTRAIT1" => {
-            attributes.insert("personality_trait_1".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "personality_trait_1".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         "PERSONALITYTRAIT2" => {
-            attributes.insert("personality_trait_2".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "personality_trait_2".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         "SPEECHPATTERN" => {
-            attributes.insert("speech_pattern".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "speech_pattern".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         "PHOBIAS" => {
             attributes.insert("phobias".to_string(), Value::String(decl_value.to_string()));
         }
         "INTERESTS" => {
-            attributes.insert("interests".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "interests".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         "CATCHPHRASE" => {
-            attributes.insert("catchphrase".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "catchphrase".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         "PORTRAIT" => {
-            attributes.insert("portrait".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "portrait".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         // PCG character progression tokens
         "EXPERIENCE" => set_i64_or_string(attributes, "pcgen_experience", decl_value),
         "EXPERIENCETABLE" => {
-            attributes.insert("pcgen_experiencetable".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "pcgen_experiencetable".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         "MONEY" => {
-            attributes.insert("pcgen_money".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "pcgen_money".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         // PCG character description blocks
         "CHARACTERBIO" => {
-            attributes.insert("character_bio".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "character_bio".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         "CHARACTERDESC" => {
-            attributes.insert("character_desc".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "character_desc".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         "CHARACTERCOMP" => {
-            attributes.insert("character_comp".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "character_comp".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         "CHARACTERASSET" => {
-            attributes.insert("character_asset".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "character_asset".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         "CHARACTERMAGIC" => {
-            attributes.insert("character_magic".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "character_magic".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         "CHARACTERDMNOTES" => {
-            attributes.insert("character_dm_notes".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "character_dm_notes".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         // PCG misc standalone tokens
         "VERSION" => {
-            attributes.insert("pcgen_version".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "pcgen_version".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         "FEATPOOL" => {
-            attributes.insert("pcgen_featpool".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "pcgen_featpool".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         "CALCEQUIPSET" => {
-            attributes.insert("pcgen_calcequipset".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "pcgen_calcequipset".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         "SUPPRESSBIOFIELDS" => {
-            attributes.insert("pcgen_suppressbiofields".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "pcgen_suppressbiofields".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         // PCG complex records: store the head (name) value
         "USERPOOL" => {
-            attributes.insert("pcgen_userpool_name".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "pcgen_userpool_name".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         "EQUIPSET" => {
-            attributes.insert("pcgen_equipset_name".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "pcgen_equipset_name".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         "EQUIPNAME" => {
-            attributes.insert("pcgen_equipname_item".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "pcgen_equipname_item".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         "CLASSABILITIESLEVEL" => {
             // Store the raw "ClassName=Level" value for full round-trip fidelity.
-            attributes.insert("pcgen_cal_classname_level".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "pcgen_cal_classname_level".to_string(),
+                Value::String(decl_value.to_string()),
+            );
             // Also extract the class name and level as separate relationship/field attributes.
             // Format: CLASSABILITIESLEVEL:ClassName=LevelNumber
             // `pcgen_for_class` is the relationship back to the parent CLASS record.
             if let Some(eq_pos) = decl_value.find('=') {
                 let class_name = decl_value[..eq_pos].trim();
-                let level_str  = decl_value[eq_pos + 1..].trim();
+                let level_str = decl_value[eq_pos + 1..].trim();
                 if !class_name.is_empty() {
                     attributes.insert(
                         "pcgen_for_class".to_string(),
@@ -1852,20 +1930,35 @@ pub(crate) fn project_decl_token_value(
         }
         // Variable schemas — head token stores the variable path
         "CHANNEL" => {
-            attributes.insert("pcgen_channel".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "pcgen_channel".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         // System schemas — head token is the config value
         "STATMODSAVE" => {
-            attributes.insert("pcgen_statmodsave".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "pcgen_statmodsave".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         "ALTHP" => {
-            attributes.insert("pcgen_althp".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "pcgen_althp".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         "HIDDENEQUIPTYPES" => {
-            attributes.insert("pcgen_hiddenequiptypes".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "pcgen_hiddenequiptypes".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         "HIDDENFEATTYPES" => {
-            attributes.insert("pcgen_hiddenfeattypes".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "pcgen_hiddenfeattypes".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         // WEAPONPROF head value: catalog path in PCC ("file.lst") or bracket group in PCG
         // ("[WEAPON:Longsword|WEAPON:Dagger|...]"). Store structured when bracket-delimited.
@@ -1881,15 +1974,24 @@ pub(crate) fn project_decl_token_value(
         }
         // PCG spell record — head value is the spell name
         "SPELLNAME" => {
-            attributes.insert("pcgen_spellname".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "pcgen_spellname".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         // PCG deity record — head value is the deity name
         "DEITY" => {
-            attributes.insert("deity_name".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "deity_name".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         // PCG domain record — head value is the domain name
         "DOMAIN" => {
-            attributes.insert("pcgen_domain_name".to_string(), Value::String(decl_value.to_string()));
+            attributes.insert(
+                "pcgen_domain_name".to_string(),
+                Value::String(decl_value.to_string()),
+            );
         }
         _ => {}
     }

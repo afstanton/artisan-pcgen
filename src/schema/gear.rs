@@ -2,9 +2,7 @@
 //!
 //! GEAR lines use `GEAR:name` heads and optional placement/modifier clauses.
 
-use crate::schema::{
-    ArtisanMapping, Cardinality, LineGrammar, HeadFormat, TokenDef, TokenGrammar,
-};
+use crate::schema::{ArtisanMapping, Cardinality, HeadFormat, LineGrammar, TokenDef, TokenGrammar};
 
 static GEAR_TOKENS: &[TokenDef] = &[
     TokenDef::text("LOCATION", "pcgen_location"),

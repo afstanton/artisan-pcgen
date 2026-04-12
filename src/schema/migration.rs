@@ -4,7 +4,7 @@
 //! heads such as `ABILITY:FEAT|Old Name` with metadata tokens like `MAXVER`,
 //! `NEWKEY`, and sometimes `NEWCATEGORY`.
 
-use crate::schema::{LineGrammar, HeadFormat, TokenDef};
+use crate::schema::{HeadFormat, LineGrammar, TokenDef};
 
 pub static ABILITY_MIGRATION_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:entity:ability-migration",

@@ -53,8 +53,11 @@ fn main() -> io::Result<()> {
     }
 
     let mut report = String::new();
-    let corpus_token_counts =
-        combined_token_counts(&semantic_counts, &policy_supported_counts, &unhandled_counts);
+    let corpus_token_counts = combined_token_counts(
+        &semantic_counts,
+        &policy_supported_counts,
+        &unhandled_counts,
+    );
     let fixture_token_set: HashSet<String> = fixture_token_counts.keys().cloned().collect();
     let corpus_token_set: HashSet<String> = corpus_token_counts.keys().cloned().collect();
 
@@ -138,7 +141,11 @@ fn main() -> io::Result<()> {
         .collect();
     corpus_not_fixtures.sort_by(|a, b| b.1.cmp(a.1).then_with(|| a.0.cmp(b.0)));
 
-    writeln!(report, "=== Tokens Found In The Corpus But Not The Fixtures ===").unwrap();
+    writeln!(
+        report,
+        "=== Tokens Found In The Corpus But Not The Fixtures ==="
+    )
+    .unwrap();
     for (token, count) in corpus_not_fixtures {
         writeln!(report, "{:6} | {}", count, token).unwrap();
     }
@@ -151,7 +158,11 @@ fn main() -> io::Result<()> {
         .collect();
     fixtures_not_corpus.sort_by(|a, b| b.1.cmp(a.1).then_with(|| a.0.cmp(b.0)));
 
-    writeln!(report, "=== Tokens Found In The Fixtures But Not The Corpus ===").unwrap();
+    writeln!(
+        report,
+        "=== Tokens Found In The Fixtures But Not The Corpus ==="
+    )
+    .unwrap();
     for (token, count) in fixtures_not_corpus {
         writeln!(report, "{:6} | {}", count, token).unwrap();
     }
@@ -724,15 +735,9 @@ mod tests {
 
     #[test]
     fn combined_token_counts_merges_source_maps() {
-        let semantic = HashMap::from([
-            ("FEAT".to_string(), 2usize),
-            ("CLASS".to_string(), 1usize),
-        ]);
+        let semantic = HashMap::from([("FEAT".to_string(), 2usize), ("CLASS".to_string(), 1usize)]);
         let policy = HashMap::from([("EQUIPMENT.PART".to_string(), 3usize)]);
-        let unhandled = HashMap::from([
-            ("NOTE".to_string(), 4usize),
-            ("FEAT".to_string(), 1usize),
-        ]);
+        let unhandled = HashMap::from([("NOTE".to_string(), 4usize), ("FEAT".to_string(), 1usize)]);
 
         let combined = combined_token_counts(&semantic, &policy, &unhandled);
 

@@ -4,7 +4,7 @@
 //! - corpus `*_datacontrols.lst` files
 //! - PCC `DATACONTROL:` include docs in `datafilespcc.html`
 
-use crate::schema::{LineGrammar, HeadFormat, TokenDef};
+use crate::schema::{HeadFormat, LineGrammar, TokenDef};
 
 static FACTSETDEF_TOKENS: &[TokenDef] = &[
     TokenDef::text_required("FACTSETDEF", "pcgen_factsetdef"),

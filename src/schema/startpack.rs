@@ -6,7 +6,7 @@
 //! effect and prerequisite tags.
 
 use crate::schema::{
-    ArtisanMapping, Cardinality, LineGrammar, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
+    ArtisanMapping, Cardinality, GlobalGroup, HeadFormat, LineGrammar, TokenDef, TokenGrammar,
 };
 
 static STARTPACK_TOKENS: &[TokenDef] = &[

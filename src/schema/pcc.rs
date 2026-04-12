@@ -8,7 +8,7 @@
 //! the global token policy.
 
 use crate::schema::{
-    ArtisanMapping, Cardinality, LineGrammar, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
+    ArtisanMapping, Cardinality, GlobalGroup, HeadFormat, LineGrammar, TokenDef, TokenGrammar,
 };
 
 static PRECAMPAIGN_TOKEN: TokenDef = TokenDef {

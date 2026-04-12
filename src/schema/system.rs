@@ -6,7 +6,7 @@
 //! - `docs/listfilepages/systemfilestagpages/equipiconslst.html`
 
 use crate::schema::{
-    ArtisanMapping, Cardinality, LineGrammar, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
+    ArtisanMapping, Cardinality, GlobalGroup, HeadFormat, LineGrammar, TokenDef, TokenGrammar,
 };
 
 static BONUSSPELLLEVEL_TOKENS: &[TokenDef] = &[

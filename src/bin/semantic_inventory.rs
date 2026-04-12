@@ -125,7 +125,9 @@ fn main() -> io::Result<()> {
     .unwrap();
     writeln!(report).unwrap();
 
-    let covered = coverage.total_entities.saturating_sub(coverage.truly_sparse);
+    let covered = coverage
+        .total_entities
+        .saturating_sub(coverage.truly_sparse);
     let pct = if coverage.total_entities > 0 {
         100 * covered / coverage.total_entities
     } else {
@@ -133,7 +135,12 @@ fn main() -> io::Result<()> {
     };
 
     writeln!(report, "=== Canonical Model Coverage Report ===").unwrap();
-    writeln!(report, "Total entities:                    {}", coverage.total_entities).unwrap();
+    writeln!(
+        report,
+        "Total entities:                    {}",
+        coverage.total_entities
+    )
+    .unwrap();
     writeln!(
         report,
         "  effects + prerequisites:         {}",
@@ -207,8 +214,16 @@ fn main() -> io::Result<()> {
             writeln!(
                 report,
                 "[{}|{}] {} (lines={}, entities {} -> {})",
-                if file.semantic_ok { "semantic:ok" } else { "semantic:fail" },
-                if file.canonical_ok { "canonical:ok" } else { "canonical:fail" },
+                if file.semantic_ok {
+                    "semantic:ok"
+                } else {
+                    "semantic:fail"
+                },
+                if file.canonical_ok {
+                    "canonical:ok"
+                } else {
+                    "canonical:fail"
+                },
                 file.path.display(),
                 file.lines,
                 file.entities_before,
@@ -222,32 +237,6 @@ fn main() -> io::Result<()> {
             if let Some(diff) = &file.canonical_diff {
                 writeln!(report, "  canonical diff: {}", diff).unwrap();
             }
-        }
-    } else {
-        writeln!(report, "=== Failed Files ===").unwrap();
-        let mut any_failed = false;
-        for file in &files {
-            if file.semantic_ok && file.canonical_ok {
-                continue;
-            }
-            any_failed = true;
-            writeln!(
-                report,
-                "[{}|{}] {}",
-                if file.semantic_ok { "semantic:ok" } else { "semantic:fail" },
-                if file.canonical_ok { "canonical:ok" } else { "canonical:fail" },
-                file.path.display(),
-            )
-            .unwrap();
-            if let Some(diff) = &file.semantic_diff {
-                writeln!(report, "  semantic diff: {}", diff).unwrap();
-            }
-            if let Some(diff) = &file.canonical_diff {
-                writeln!(report, "  canonical diff: {}", diff).unwrap();
-            }
-        }
-        if !any_failed {
-            writeln!(report, "none").unwrap();
         }
     }
 
@@ -304,7 +293,10 @@ fn scan_directory(
             );
         }
 
-        let source_name = child.file_name().and_then(|f| f.to_str()).unwrap_or("fixture");
+        let source_name = child
+            .file_name()
+            .and_then(|f| f.to_str())
+            .unwrap_or("fixture");
         let first = parse_text_to_catalog(&text, source_name, &ext);
         tally_coverage(&first, coverage);
 
@@ -481,8 +473,12 @@ fn semantic_snapshot(catalog: &ParsedCatalog) -> Value {
             .then_with(|| a["source"].as_str().cmp(&b["source"].as_str()))
     });
     entities.sort_by(|a, b| {
-        let a_type = a["attributes"]["pcgen_entity_type_key"].as_str().unwrap_or("");
-        let b_type = b["attributes"]["pcgen_entity_type_key"].as_str().unwrap_or("");
+        let a_type = a["attributes"]["pcgen_entity_type_key"]
+            .as_str()
+            .unwrap_or("");
+        let b_type = b["attributes"]["pcgen_entity_type_key"]
+            .as_str()
+            .unwrap_or("");
         a_type
             .cmp(b_type)
             .then_with(|| a["name"].as_str().cmp(&b["name"].as_str()))
@@ -599,7 +595,10 @@ fn diff_value_summary(before: &Value, after: &Value) -> String {
     let before_entities = before["entities"].as_array().map(Vec::len).unwrap_or(0);
     let after_entities = after["entities"].as_array().map(Vec::len).unwrap_or(0);
     if before_entities != after_entities {
-        return format!("semantic entity count changed: {} -> {}", before_entities, after_entities);
+        return format!(
+            "semantic entity count changed: {} -> {}",
+            before_entities, after_entities
+        );
     }
     "semantic snapshot differs".to_string()
 }
@@ -629,7 +628,10 @@ fn tally_coverage(catalog: &ParsedCatalog, coverage: &mut CoverageTally) {
                         && !PROVENANCE_ATTRS.contains(&key.as_str())
                         && !INFRASTRUCTURE_ATTRS.contains(&key.as_str())
                     {
-                        *coverage.sparse_pcgen_attr_counts.entry(key.clone()).or_insert(0) += 1;
+                        *coverage
+                            .sparse_pcgen_attr_counts
+                            .entry(key.clone())
+                            .or_insert(0) += 1;
                     }
                 }
             }
@@ -641,16 +643,25 @@ fn tally_coverage(catalog: &ParsedCatalog, coverage: &mut CoverageTally) {
                     && !PROVENANCE_ATTRS.contains(&key.as_str())
                     && !INFRASTRUCTURE_ATTRS.contains(&key.as_str())
                 {
-                    *coverage.canonical_attr_counts.entry(key.clone()).or_insert(0) += 1;
+                    *coverage
+                        .canonical_attr_counts
+                        .entry(key.clone())
+                        .or_insert(0) += 1;
                 }
             }
         }
 
         for e in &entity.effects {
-            *coverage.effect_kind_counts.entry(e.kind.clone()).or_insert(0) += 1;
+            *coverage
+                .effect_kind_counts
+                .entry(e.kind.clone())
+                .or_insert(0) += 1;
         }
         for p in &entity.prerequisites {
-            *coverage.prereq_kind_counts.entry(p.kind.clone()).or_insert(0) += 1;
+            *coverage
+                .prereq_kind_counts
+                .entry(p.kind.clone())
+                .or_insert(0) += 1;
         }
     }
 }

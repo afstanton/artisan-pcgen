@@ -6,7 +6,7 @@
 //! `FOLLOWER:x=y` and `MASTERBONUSRACE:x`.
 
 use crate::schema::{
-    ArtisanMapping, Cardinality, LineGrammar, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
+    ArtisanMapping, Cardinality, GlobalGroup, HeadFormat, LineGrammar, TokenDef, TokenGrammar,
 };
 
 static FOLLOWER_TOKENS: &[TokenDef] = &[

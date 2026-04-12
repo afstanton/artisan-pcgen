@@ -14,7 +14,7 @@ use serde_json::Value;
 use crate::{
     ParsedClause, ParsedLine,
     schema::{
-        self, ArtisanMapping, Cardinality, LineGrammar, GlobalGroup, HeadFormat, TokenDef,
+        self, ArtisanMapping, Cardinality, GlobalGroup, HeadFormat, LineGrammar, TokenDef,
         TokenGrammar,
     },
 };
@@ -761,11 +761,7 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
             {
                 parts.push("DESC.CLEAR:".to_string());
             }
-            if let Some(tempdesc) = entity
-                .attributes
-                .get("tempdesc")
-                .and_then(Value::as_str)
-            {
+            if let Some(tempdesc) = entity.attributes.get("tempdesc").and_then(Value::as_str) {
                 parts.push(format!("TEMPDESC:{tempdesc}"));
             }
             if let Some(desc_is_pi) = bool_like_attribute(entity, "pcgen_descispi") {
@@ -824,20 +820,12 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
             }
         }
         GlobalGroup::OutputName => {
-            if let Some(on) = entity
-                .attributes
-                .get("outputname")
-                .and_then(Value::as_str)
-            {
+            if let Some(on) = entity.attributes.get("outputname").and_then(Value::as_str) {
                 parts.push(format!("OUTPUTNAME:{on}"));
             }
         }
         GlobalGroup::SortKey => {
-            if let Some(sk) = entity
-                .attributes
-                .get("sortkey")
-                .and_then(Value::as_str)
-            {
+            if let Some(sk) = entity.attributes.get("sortkey").and_then(Value::as_str) {
                 parts.push(format!("SORTKEY:{sk}"));
             }
         }
@@ -853,11 +841,7 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
             }
         }
         GlobalGroup::CSkill => {
-            if let Some(values) = entity
-                .attributes
-                .get("cskill")
-                .and_then(Value::as_array)
-            {
+            if let Some(values) = entity.attributes.get("cskill").and_then(Value::as_array) {
                 for value in values.iter().filter_map(Value::as_str) {
                     parts.push(format!("CSKILL:{value}"));
                 }

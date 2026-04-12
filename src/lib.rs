@@ -296,8 +296,7 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
                 value: source_page.clone(),
                 canonical: true,
             }];
-            if let Some(source_long) =
-                line_codec::find_key_value(&supported_clauses, "SOURCELONG")
+            if let Some(source_long) = line_codec::find_key_value(&supported_clauses, "SOURCELONG")
             {
                 locators.push(CitationLocator {
                     kind: "long".to_string(),
@@ -305,8 +304,7 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
                     canonical: false,
                 });
             }
-            if let Some(source_link) =
-                line_codec::find_key_value(&supported_clauses, "SOURCELINK")
+            if let Some(source_link) = line_codec::find_key_value(&supported_clauses, "SOURCELINK")
             {
                 locators.push(CitationLocator {
                     kind: "link".to_string(),
@@ -379,21 +377,20 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
         // multi-line continuation.  Some LST files (e.g. biosettings) use
         // repeated heads for genuinely distinct records (different age
         // maturity brackets), so we must not merge those.
-        let merge_key: Option<(String, String)> =
-            if ext.eq_ignore_ascii_case("lst")
-                && is_multiline_lst_entity_type(&inferred_type_key)
-            {
-                if let (Some(Value::String(tok)), Some(Value::String(val))) = (
-                    attributes.get("pcgen_decl_token"),
-                    attributes.get("pcgen_decl_value"),
-                ) {
-                    Some((tok.clone(), val.clone()))
-                } else {
-                    None
-                }
+        let merge_key: Option<(String, String)> = if ext.eq_ignore_ascii_case("lst")
+            && is_multiline_lst_entity_type(&inferred_type_key)
+        {
+            if let (Some(Value::String(tok)), Some(Value::String(val))) = (
+                attributes.get("pcgen_decl_token"),
+                attributes.get("pcgen_decl_value"),
+            ) {
+                Some((tok.clone(), val.clone()))
             } else {
                 None
-            };
+            }
+        } else {
+            None
+        };
 
         if let Some(ref key) = merge_key {
             if let Some(&existing_idx) = lst_entity_index.get(key) {
@@ -404,9 +401,14 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
                 for (attr_key, attr_val) in attributes {
                     match attr_key.as_str() {
                         // Keep the first line's identity fields unchanged.
-                        "head" | "clauses" | "line_number" | "pcgen_line_number"
-                        | "pcgen_record_family" | "pcgen_record_style"
-                        | "pcgen_entity_type_key" | "source_format" => {}
+                        "head"
+                        | "clauses"
+                        | "line_number"
+                        | "pcgen_line_number"
+                        | "pcgen_record_family"
+                        | "pcgen_record_style"
+                        | "pcgen_entity_type_key"
+                        | "source_format" => {}
                         // Merge: don't overwrite a value that was already set
                         // by the first line, unless the key is absent.
                         _ => {
@@ -608,7 +610,9 @@ fn infer_record_style<'a>(
         return "tab";
     }
 
-    if ext.eq_ignore_ascii_case("pcg") && line_codec::parse_head_key_value(&parsed_line.head).is_some() {
+    if ext.eq_ignore_ascii_case("pcg")
+        && line_codec::parse_head_key_value(&parsed_line.head).is_some()
+    {
         return "pipe";
     }
 
@@ -623,7 +627,11 @@ fn infer_record_style<'a>(
     "tab"
 }
 
-fn infer_record_family(ext: &str, parsed_line: &ParsedLine, inferred_type_key: &str) -> &'static str {
+fn infer_record_family(
+    ext: &str,
+    parsed_line: &ParsedLine,
+    inferred_type_key: &str,
+) -> &'static str {
     match ext.to_ascii_lowercase().as_str() {
         "pcg" => {
             if line_codec::parse_head_key_value(&parsed_line.head).is_some() {
@@ -692,16 +700,24 @@ fn compare_entities_for_unparse(left: &Entity, right: &Entity) -> std::cmp::Orde
 
     left_format
         .cmp(&right_format)
-        .then_with(|| match (entity_line_number(left), entity_line_number(right)) {
-            (Some(a), Some(b)) => a.cmp(&b),
-            _ => std::cmp::Ordering::Equal,
-        })
+        .then_with(
+            || match (entity_line_number(left), entity_line_number(right)) {
+                (Some(a), Some(b)) => a.cmp(&b),
+                _ => std::cmp::Ordering::Equal,
+            },
+        )
         .then_with(|| {
             record_family_priority(left_format, entity_attr_str(left, "pcgen_record_family")).cmp(
-                &record_family_priority(right_format, entity_attr_str(right, "pcgen_record_family")),
+                &record_family_priority(
+                    right_format,
+                    entity_attr_str(right, "pcgen_record_family"),
+                ),
             )
         })
-        .then_with(|| entity_attr_str(left, "pcgen_decl_token").cmp(&entity_attr_str(right, "pcgen_decl_token")))
+        .then_with(|| {
+            entity_attr_str(left, "pcgen_decl_token")
+                .cmp(&entity_attr_str(right, "pcgen_decl_token"))
+        })
         .then_with(|| left.name.cmp(&right.name))
 }
 
@@ -808,8 +824,7 @@ mod tests {
 
     #[test]
     fn parse_line_keeps_bracketed_pipe_groups_together() {
-        let parsed =
-            parse_line("WEAPONPROF:[WEAPON:Longsword|WEAPON:Dagger|WEAPON:Quarterstaff]");
+        let parsed = parse_line("WEAPONPROF:[WEAPON:Longsword|WEAPON:Dagger|WEAPON:Quarterstaff]");
         assert_eq!(
             parsed.head,
             "WEAPONPROF:[WEAPON:Longsword|WEAPON:Dagger|WEAPON:Quarterstaff]"
@@ -1041,10 +1056,7 @@ mod tests {
             Some("Nightblade ~ Spells")
         );
         assert_eq!(
-            entity
-                .attributes
-                .get("category")
-                .and_then(Value::as_str),
+            entity.attributes.get("category").and_then(Value::as_str),
             Some("Special Ability")
         );
         assert_eq!(
@@ -1188,10 +1200,7 @@ mod tests {
             Some("Yes")
         );
         assert_eq!(
-            entity
-                .attributes
-                .get("weight")
-                .and_then(Value::as_str),
+            entity.attributes.get("weight").and_then(Value::as_str),
             Some("4")
         );
         assert_eq!(

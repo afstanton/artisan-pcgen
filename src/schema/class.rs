@@ -5,7 +5,7 @@
 //! Class files define character classes. The head is token-prefixed: `CLASS:name`.
 
 use crate::schema::{
-    ArtisanMapping, Cardinality, LineGrammar, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
+    ArtisanMapping, Cardinality, GlobalGroup, HeadFormat, LineGrammar, TokenDef, TokenGrammar,
 };
 
 static SPELLLIST_SLOTS: &[&str] = &["count", "type", "class"];

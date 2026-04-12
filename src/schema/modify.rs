@@ -7,7 +7,7 @@
 //! where Operation is ADD, SET, or SOLVE
 
 use crate::schema::{
-    ArtisanMapping, Cardinality, LineGrammar, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
+    ArtisanMapping, Cardinality, GlobalGroup, HeadFormat, LineGrammar, TokenDef, TokenGrammar,
 };
 
 static MODIFY_TOKENS: &[TokenDef] = &[

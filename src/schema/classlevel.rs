@@ -4,9 +4,7 @@
 //!
 //! Class level lines use the level number as the head with no token prefix.
 
-use crate::schema::{
-    ArtisanMapping, Cardinality, LineGrammar, HeadFormat, TokenDef, TokenGrammar,
-};
+use crate::schema::{ArtisanMapping, Cardinality, HeadFormat, LineGrammar, TokenDef, TokenGrammar};
 
 static CLASSLEVEL_TOKENS: &[TokenDef] = &[
     TokenDef {

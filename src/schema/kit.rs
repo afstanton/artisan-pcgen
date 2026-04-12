@@ -3,7 +3,7 @@
 //! KIT lines use `KIT:name` heads and can reference nested kits and gear.
 
 use crate::schema::{
-    ArtisanMapping, Cardinality, LineGrammar, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
+    ArtisanMapping, Cardinality, GlobalGroup, HeadFormat, LineGrammar, TokenDef, TokenGrammar,
 };
 
 static KIT_TOKENS: &[TokenDef] = &[

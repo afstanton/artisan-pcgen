@@ -181,9 +181,17 @@ fn bracket_group_values_are_structured() {
         .attributes
         .get("pcgen_classbought")
         .expect("pcgen_classbought should be set");
-    let groups = classbought.as_array().expect("pcgen_classbought should be an array");
-    assert_eq!(groups.len(), 1, "single CLASSBOUGHT group should produce a 1-element outer array");
-    let arr = groups[0].as_array().expect("each CLASSBOUGHT group should be an inner array");
+    let groups = classbought
+        .as_array()
+        .expect("pcgen_classbought should be an array");
+    assert_eq!(
+        groups.len(),
+        1,
+        "single CLASSBOUGHT group should produce a 1-element outer array"
+    );
+    let arr = groups[0]
+        .as_array()
+        .expect("each CLASSBOUGHT group should be an inner array");
     assert_eq!(arr.len(), 4, "CLASSBOUGHT group should have 4 sub-entries");
     assert_eq!(arr[0]["key"], "CLASS");
     assert_eq!(arr[0]["value"], "Wizard");
@@ -255,7 +263,9 @@ SPELLNAME:Fireball|TIMES:2|CLASS:Wizard|BOOK:Combat Book|SPELLLEVEL:3|FEATLIST:[
         .and_then(|v| v.as_array())
         .expect("pcgen_classbought should be an array after round-trip");
     assert_eq!(cb_groups.len(), 1);
-    let cb = cb_groups[0].as_array().expect("inner group should be an array");
+    let cb = cb_groups[0]
+        .as_array()
+        .expect("inner group should be an array");
     assert_eq!(cb.len(), 4);
     assert_eq!(cb[0]["key"], "CLASS");
     assert_eq!(cb[0]["value"], "Wizard");
@@ -793,7 +803,11 @@ fn canonical_coverage_report() {
     }
 
     let covered = total_entities - truly_sparse;
-    let pct = if total_entities > 0 { 100 * covered / total_entities } else { 0 };
+    let pct = if total_entities > 0 {
+        100 * covered / total_entities
+    } else {
+        0
+    };
 
     println!("\n=== Canonical Model Coverage Report ===");
     println!("Total entities:                    {total_entities}");
@@ -899,7 +913,10 @@ fn canonical_roundtrip_all_fixture_files() {
         exercised += 1;
     }
 
-    assert!(exercised > 0, "no canonical roundtrip fixture files exercised");
+    assert!(
+        exercised > 0,
+        "no canonical roundtrip fixture files exercised"
+    );
 }
 
 /// Build a snapshot focused on text-level fidelity.
@@ -989,13 +1006,23 @@ CLASS:Aberration\tSTARTSKILLPTS:2\tMODTOSKILLS:NO\tMONSKILL:2*INTSCORE\tMONNONSK
 
     // Should parse as a single merged entity
     let cat = parse_text_to_catalog(content, "test.lst", "lst");
-    assert_eq!(cat.entities.len(), 1, "multiline CLASS should merge to one entity");
+    assert_eq!(
+        cat.entities.len(),
+        1,
+        "multiline CLASS should merge to one entity"
+    );
 
     let entity = &cat.entities[0];
-    let type_key = entity.attributes.get("pcgen_entity_type_key")
-        .and_then(|v| v.as_str()).unwrap_or("MISSING");
-    let line_num = entity.attributes.get("pcgen_line_number")
-        .and_then(|v| v.as_u64()).unwrap_or(0);
+    let type_key = entity
+        .attributes
+        .get("pcgen_entity_type_key")
+        .and_then(|v| v.as_str())
+        .unwrap_or("MISSING");
+    let line_num = entity
+        .attributes
+        .get("pcgen_line_number")
+        .and_then(|v| v.as_u64())
+        .unwrap_or(0);
     // Merged entity lives at line 1 (the first CLASS:Aberration line)
     assert_eq!(line_num, 1, "merged entity should have first-line number");
 
@@ -1006,15 +1033,30 @@ CLASS:Aberration\tSTARTSKILLPTS:2\tMODTOSKILLS:NO\tMONSKILL:2*INTSCORE\tMONNONSK
             .collect();
 
     // All three tokens from line 3 must be emittable (proving the schema handles them)
-    assert!(emittable.contains("MODTOSKILLS"), "MODTOSKILLS not emittable: {emittable:?}");
-    assert!(emittable.contains("MONSKILL"),    "MONSKILL not emittable: {emittable:?}");
-    assert!(emittable.contains("MONNONSKILLHD"), "MONNONSKILLHD not emittable: {emittable:?}");
+    assert!(
+        emittable.contains("MODTOSKILLS"),
+        "MODTOSKILLS not emittable: {emittable:?}"
+    );
+    assert!(
+        emittable.contains("MONSKILL"),
+        "MONSKILL not emittable: {emittable:?}"
+    );
+    assert!(
+        emittable.contains("MONNONSKILLHD"),
+        "MONNONSKILLHD not emittable: {emittable:?}"
+    );
 
     // Verify the entity's decl_token/decl_value are set (needed for entity-key lookup)
-    let decl_token = entity.attributes.get("pcgen_decl_token")
-        .and_then(|v| v.as_str()).unwrap_or("MISSING");
-    let decl_value = entity.attributes.get("pcgen_decl_value")
-        .and_then(|v| v.as_str()).unwrap_or("MISSING");
+    let decl_token = entity
+        .attributes
+        .get("pcgen_decl_token")
+        .and_then(|v| v.as_str())
+        .unwrap_or("MISSING");
+    let decl_value = entity
+        .attributes
+        .get("pcgen_decl_value")
+        .and_then(|v| v.as_str())
+        .unwrap_or("MISSING");
     assert_eq!(decl_token, "CLASS", "decl_token should be CLASS");
     assert_eq!(decl_value, "Aberration", "decl_value should be Aberration");
 }
@@ -1160,9 +1202,7 @@ fn unparse_preserves_bracketed_pcg_record_shapes() {
         "DEITY:Pelor|DEITYDOMAINS:[DOMAIN:Good|DOMAIN:Sun]|ALIGNALLOW:LG|HOLYITEM:Sun Disk|DEITYFAVWEAP:[WEAPON:Morningstar]|DEITYALIGN:NG"
     ));
     assert!(generated.contains("DOMAIN:Sun|DOMAINGRANTS:Turn undead as a cleric of higher level."));
-    assert!(generated.contains(
-        "WEAPONPROF:[WEAPON:Longsword|WEAPON:Dagger|WEAPON:Quarterstaff]"
-    ));
+    assert!(generated.contains("WEAPONPROF:[WEAPON:Longsword|WEAPON:Dagger|WEAPON:Quarterstaff]"));
 }
 
 #[test]
@@ -1174,9 +1214,9 @@ fn unparse_preserves_nested_pcg_progression_records() {
     assert!(generated.contains(
         "EQUIPNAME:Longsword|OUTPUTORDER:1|COST:15 gp|WT:4 lb.|QUANTITY:1|CUSTOMIZATION:[BASEITEM:Longsword|DATA:EQMOD=STEEL]|NOTE:A trusty blade"
     ));
-    assert!(generated.contains(
-        "SKILL:Spellcraft|CLASSBOUGHT:[CLASS:Wizard|RANKS:3.0|CLASSSKILL:Y]"
-    ));
+    assert!(
+        generated.contains("SKILL:Spellcraft|CLASSBOUGHT:[CLASS:Wizard|RANKS:3.0|CLASSSKILL:Y]")
+    );
 }
 
 #[test]
@@ -1194,7 +1234,8 @@ fn unparse_emits_structured_ability_migration_tokens() {
 #[test]
 fn unparse_emits_lower_frequency_structured_tokens() {
     let class_file = fixture_root().join("roundtrip_class.lst");
-    let class_generated = unparse_catalog_to_text(&parse_file(&class_file).expect("parse class fixture"));
+    let class_generated =
+        unparse_catalog_to_text(&parse_file(&class_file).expect("parse class fixture"));
     assert!(class_generated.contains("SKILLLIST:1|Druid"));
 
     let equipment_file = fixture_root().join("roundtrip_equipment.lst");
@@ -1290,17 +1331,25 @@ fn adjacent_bracket_groups_are_split_into_separate_clauses() {
     let arr = cb.as_array().expect("pcgen_classbought should be an array");
 
     // Two separate bracket groups → two array elements (each itself an array of sub-entries).
-    assert_eq!(arr.len(), 2, "should have one entry per CLASSBOUGHT group; got {arr:?}");
+    assert_eq!(
+        arr.len(),
+        2,
+        "should have one entry per CLASSBOUGHT group; got {arr:?}"
+    );
 
     // First group: Bard at rank 5.0
-    let first = arr[0].as_array().expect("first CLASSBOUGHT should be an array");
+    let first = arr[0]
+        .as_array()
+        .expect("first CLASSBOUGHT should be an array");
     assert_eq!(first[0]["key"], "CLASS");
     assert_eq!(first[0]["value"], "Bard");
     assert_eq!(first[1]["key"], "RANKS");
     assert_eq!(first[1]["value"], "5.0");
 
     // Second group: Aristocrat at rank 1.0
-    let second = arr[1].as_array().expect("second CLASSBOUGHT should be an array");
+    let second = arr[1]
+        .as_array()
+        .expect("second CLASSBOUGHT should be an array");
     assert_eq!(second[0]["key"], "CLASS");
     assert_eq!(second[0]["value"], "Aristocrat");
     assert_eq!(second[1]["key"], "RANKS");
@@ -1328,7 +1377,11 @@ fn adjacent_bracket_groups_round_trip() {
         .and_then(|v| v.as_array())
         .expect("pcgen_classbought should be an array after round-trip");
 
-    assert_eq!(arr.len(), 2, "both CLASSBOUGHT groups should survive round-trip");
+    assert_eq!(
+        arr.len(),
+        2,
+        "both CLASSBOUGHT groups should survive round-trip"
+    );
     let first_groups = arr[0].as_array().expect("first group should be array");
     assert_eq!(first_groups[0]["value"], "Bard");
     let second_groups = arr[1].as_array().expect("second group should be array");
@@ -1352,9 +1405,14 @@ CLASS:Faceman\tSTARTSKILLPTS:6\tCSKILL:Bluff|Diplomacy|Disguise";
     let cat = parse_text_to_catalog(lines, "test.lst", "lst");
 
     // There should be exactly ONE entity, not two.
-    let faceman_entities: Vec<_> = cat.entities.iter().filter(|e| e.name == "Faceman").collect();
+    let faceman_entities: Vec<_> = cat
+        .entities
+        .iter()
+        .filter(|e| e.name == "Faceman")
+        .collect();
     assert_eq!(
-        faceman_entities.len(), 1,
+        faceman_entities.len(),
+        1,
         "two CLASS:Faceman lines should merge into a single entity"
     );
 
@@ -1374,7 +1432,9 @@ CLASS:Faceman\tSTARTSKILLPTS:6\tCSKILL:Bluff|Diplomacy|Disguise";
 
     // Attributes from the second line should also be present.
     assert_eq!(
-        e.attributes.get("pcgen_startskillpts").and_then(|v| v.as_i64()),
+        e.attributes
+            .get("pcgen_startskillpts")
+            .and_then(|v| v.as_i64()),
         Some(6),
         "STARTSKILLPTS from line 2 should be on merged entity"
     );
@@ -1389,19 +1449,27 @@ CLASS:Faceman\tHITDIE:10\tMAXLEVEL:20\n\
 CLASS:Faceman\tSTARTSKILLPTS:6";
 
     let cat = parse_text_to_catalog(lines, "identity.lst", "lst");
-    let faceman: Vec<_> = cat.entities.iter().filter(|e| e.name == "Faceman").collect();
+    let faceman: Vec<_> = cat
+        .entities
+        .iter()
+        .filter(|e| e.name == "Faceman")
+        .collect();
     assert_eq!(faceman.len(), 1);
 
     // Line number should be 1 (first occurrence).
     assert_eq!(
-        faceman[0].attributes.get("pcgen_line_number").and_then(|v| v.as_i64()),
+        faceman[0]
+            .attributes
+            .get("pcgen_line_number")
+            .and_then(|v| v.as_i64()),
         Some(1),
         "merged entity should carry line_number from the first occurrence"
     );
 
     // Only one external_id (from line 1).
     assert_eq!(
-        faceman[0].external_ids.len(), 1,
+        faceman[0].external_ids.len(),
+        1,
         "merged entity should have exactly one external_id (from first line)"
     );
     assert!(
@@ -1417,14 +1485,25 @@ fn multiline_lst_fixture_produces_single_faceman_entity() {
     let file = fixture_root().join("roundtrip_multiline_class.lst");
     let parsed = parse_file(&file).expect("parse multiline class fixture");
 
-    let faceman: Vec<_> = parsed.entities.iter().filter(|e| e.name == "Faceman").collect();
+    let faceman: Vec<_> = parsed
+        .entities
+        .iter()
+        .filter(|e| e.name == "Faceman")
+        .collect();
     assert_eq!(
-        faceman.len(), 1,
+        faceman.len(),
+        1,
         "fixture should produce exactly one Faceman entity"
     );
     // Both lines contributed attributes.
-    assert!(faceman[0].attributes.contains_key("hitdie"), "line 1 HITDIE should be present");
-    assert!(faceman[0].attributes.contains_key("pcgen_startskillpts"), "line 2 STARTSKILLPTS should be present");
+    assert!(
+        faceman[0].attributes.contains_key("hitdie"),
+        "line 1 HITDIE should be present"
+    );
+    assert!(
+        faceman[0].attributes.contains_key("pcgen_startskillpts"),
+        "line 2 STARTSKILLPTS should be present"
+    );
 }
 
 // ---------------------------------------------------------------------------
@@ -1448,7 +1527,9 @@ fn classabilitieslevel_annotates_for_class_and_level() {
         .expect("CLASSABILITIESLEVEL entity should be parsed");
 
     assert_eq!(
-        cal.attributes.get("pcgen_for_class").and_then(|v| v.as_str()),
+        cal.attributes
+            .get("pcgen_for_class")
+            .and_then(|v| v.as_str()),
         Some("Wizard"),
         "pcgen_for_class should name the parent class"
     );
@@ -1459,7 +1540,9 @@ fn classabilitieslevel_annotates_for_class_and_level() {
     );
     // Raw value preserved for round-trip.
     assert_eq!(
-        cal.attributes.get("pcgen_cal_classname_level").and_then(|v| v.as_str()),
+        cal.attributes
+            .get("pcgen_cal_classname_level")
+            .and_then(|v| v.as_str()),
         Some("Wizard=5"),
         "raw classname_level should be stored for round-trip fidelity"
     );
@@ -1485,35 +1568,51 @@ CoverageAbility_MODIFY_SOLVE\tCATEGORY:Internal\tMODIFY:Score|SOLVE|10\n";
     let cat = parse_text_to_catalog(lines, "test.lst", "lst");
 
     let find = |name: &str| {
-        cat.entities.iter().find(|e| e.name == name)
+        cat.entities
+            .iter()
+            .find(|e| e.name == name)
             .unwrap_or_else(|| panic!("entity {name} not found"))
     };
 
     // ADD variant: MODIFY:TestVar|ADD|1 → target="TestVar", value=Some("ADD|1")
     let add_entity = find("CoverageAbility_MODIFY_ADD");
-    assert_eq!(add_entity.effects.len(), 1, "ADD entity should have 1 effect");
+    assert_eq!(
+        add_entity.effects.len(),
+        1,
+        "ADD entity should have 1 effect"
+    );
     assert_eq!(add_entity.effects[0].kind, "MODIFY");
     assert_eq!(add_entity.effects[0].target, "TestVar");
     assert_eq!(add_entity.effects[0].value.as_deref(), Some("ADD|1"));
 
     // SET variant: MODIFY:Damage|SET|10d6 → target="Damage", value=Some("SET|10d6")
     let set_entity = find("CoverageAbility_MODIFY_SET");
-    assert_eq!(set_entity.effects.len(), 1, "SET entity should have 1 effect");
+    assert_eq!(
+        set_entity.effects.len(),
+        1,
+        "SET entity should have 1 effect"
+    );
     assert_eq!(set_entity.effects[0].kind, "MODIFY");
     assert_eq!(set_entity.effects[0].target, "Damage");
     assert_eq!(set_entity.effects[0].value.as_deref(), Some("SET|10d6"));
 
     // SOLVE variant: MODIFY:Score|SOLVE|10 → target="Score", value=Some("SOLVE|10")
     let solve_entity = find("CoverageAbility_MODIFY_SOLVE");
-    assert_eq!(solve_entity.effects.len(), 1, "SOLVE entity should have 1 effect");
+    assert_eq!(
+        solve_entity.effects.len(),
+        1,
+        "SOLVE entity should have 1 effect"
+    );
     assert_eq!(solve_entity.effects[0].kind, "MODIFY");
     assert_eq!(solve_entity.effects[0].target, "Score");
     assert_eq!(solve_entity.effects[0].value.as_deref(), Some("SOLVE|10"));
 
     // The pcgen_modify_* structured attributes should ALSO still be present,
     // since they are set independently by fields.rs.
-    assert!(add_entity.attributes.contains_key("pcgen_modify_variable"),
-        "pcgen_modify_variable should be set alongside the effect");
+    assert!(
+        add_entity.attributes.contains_key("pcgen_modify_variable"),
+        "pcgen_modify_variable should be set alongside the effect"
+    );
 }
 
 /// TEMPLATE clauses represent template grants — a game-mechanical effect applied
@@ -1530,12 +1629,21 @@ fn template_clause_projects_to_effects() {
         "test.lst",
         "lst",
     );
-    let class_entity = class_cat.entities.iter()
+    let class_entity = class_cat
+        .entities
+        .iter()
         .find(|e| e.name == "Coverage_TEMPLATE")
         .expect("CLASS with TEMPLATE should be parsed");
-    let template_effects: Vec<_> = class_entity.effects.iter()
-        .filter(|e| e.kind == "TEMPLATE").collect();
-    assert_eq!(template_effects.len(), 1, "CLASS TEMPLATE should produce 1 effect");
+    let template_effects: Vec<_> = class_entity
+        .effects
+        .iter()
+        .filter(|e| e.kind == "TEMPLATE")
+        .collect();
+    assert_eq!(
+        template_effects.len(),
+        1,
+        "CLASS TEMPLATE should produce 1 effect"
+    );
     assert_eq!(template_effects[0].target, "Coverage");
 
     // TEMPLATE on an ABILITY entity — handled via ArtisanMapping::Effect (effects path)
@@ -1544,12 +1652,21 @@ fn template_clause_projects_to_effects() {
         "test.lst",
         "lst",
     );
-    let ability_entity = ability_cat.entities.iter()
+    let ability_entity = ability_cat
+        .entities
+        .iter()
         .find(|e| e.name == "CelestialBlessing")
         .expect("ABILITY with TEMPLATE should be parsed");
-    let ab_template_effects: Vec<_> = ability_entity.effects.iter()
-        .filter(|e| e.kind == "TEMPLATE").collect();
-    assert_eq!(ab_template_effects.len(), 1, "ABILITY TEMPLATE should produce 1 effect");
+    let ab_template_effects: Vec<_> = ability_entity
+        .effects
+        .iter()
+        .filter(|e| e.kind == "TEMPLATE")
+        .collect();
+    assert_eq!(
+        ab_template_effects.len(),
+        1,
+        "ABILITY TEMPLATE should produce 1 effect"
+    );
     assert_eq!(ab_template_effects[0].target, "Celestial");
 }
 
@@ -1563,18 +1680,32 @@ fn ability_grant_clause_projects_to_effects() {
         "test.lst",
         "lst",
     );
-    let entity = cat.entities.iter()
+    let entity = cat
+        .entities
+        .iter()
         .find(|e| e.name == "AnimalLVL=1")
         .expect("FOLLOWER with ABILITY grant should be parsed");
 
-    let ability_effects: Vec<_> = entity.effects.iter()
-        .filter(|e| e.kind == "ABILITY").collect();
-    assert_eq!(ability_effects.len(), 1, "ABILITY grant should produce 1 effect");
-    assert_eq!(ability_effects[0].target, "Special Ability|AUTOMATIC|Companion Bond");
+    let ability_effects: Vec<_> = entity
+        .effects
+        .iter()
+        .filter(|e| e.kind == "ABILITY")
+        .collect();
+    assert_eq!(
+        ability_effects.len(),
+        1,
+        "ABILITY grant should produce 1 effect"
+    );
+    assert_eq!(
+        ability_effects[0].target,
+        "Special Ability|AUTOMATIC|Companion Bond"
+    );
 
     // The pcgen_abilities attribute should also still be set (emit path uses it)
-    assert!(entity.attributes.contains_key("pcgen_abilities"),
-        "pcgen_abilities attribute should be set alongside the effect");
+    assert!(
+        entity.attributes.contains_key("pcgen_abilities"),
+        "pcgen_abilities attribute should be set alongside the effect"
+    );
 }
 
 /// MODIFY effects survive the full parse → emit → reparse canonical roundtrip.
@@ -1592,7 +1723,8 @@ CoverageAbility_MODIFY_SET\tCATEGORY:Internal\tMODIFY:Damage|SET|10d6\n";
     let before = core_snapshot(&first);
     let after = core_snapshot(&second);
     assert_eq!(
-        before, after,
+        before,
+        after,
         "MODIFY effects should survive canonical roundtrip:\n{}",
         diff_core_snapshots(&before, &after)
     );
@@ -1600,11 +1732,18 @@ CoverageAbility_MODIFY_SET\tCATEGORY:Internal\tMODIFY:Damage|SET|10d6\n";
     // Both first and second parse should have exactly one MODIFY effect per entity.
     for cat in [&first, &second] {
         for entity in &cat.entities {
-            let modify_effects: Vec<_> = entity.effects.iter()
-                .filter(|e| e.kind == "MODIFY").collect();
-            assert_eq!(modify_effects.len(), 1,
+            let modify_effects: Vec<_> = entity
+                .effects
+                .iter()
+                .filter(|e| e.kind == "MODIFY")
+                .collect();
+            assert_eq!(
+                modify_effects.len(),
+                1,
                 "entity {} should have exactly 1 MODIFY effect after roundtrip; got: {:?}",
-                entity.name, modify_effects);
+                entity.name,
+                modify_effects
+            );
         }
     }
 }
@@ -1628,7 +1767,9 @@ fn character_progression_fixture_classabilitieslevel_has_for_class() {
         .expect("CLASSABILITIESLEVEL entity should be in character progression fixture");
 
     assert_eq!(
-        cal.attributes.get("pcgen_for_class").and_then(|v| v.as_str()),
+        cal.attributes
+            .get("pcgen_for_class")
+            .and_then(|v| v.as_str()),
         Some("Wizard"),
         "fixture CLASSABILITIESLEVEL should have pcgen_for_class=Wizard"
     );

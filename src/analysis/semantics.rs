@@ -163,10 +163,7 @@ fn split_at_pipe(value: &str, n: usize) -> (String, Option<String>) {
         if ch == '|' {
             pipe_count += 1;
             if pipe_count == n {
-                return (
-                    value[..i].to_string(),
-                    Some(value[i + 1..].to_string()),
-                );
+                return (value[..i].to_string(), Some(value[i + 1..].to_string()));
             }
         }
     }

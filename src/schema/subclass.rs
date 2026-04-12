@@ -3,7 +3,7 @@
 //! SUBCLASS lines define class specialization options. The head is
 //! token-prefixed: `SUBCLASS:name`.
 
-use crate::schema::{LineGrammar, GlobalGroup, HeadFormat, TokenDef};
+use crate::schema::{GlobalGroup, HeadFormat, LineGrammar, TokenDef};
 
 static SUBCLASS_TOKENS: &[TokenDef] = &[
     TokenDef::text("COST", "cost"),

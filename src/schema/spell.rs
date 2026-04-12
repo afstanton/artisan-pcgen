@@ -6,7 +6,7 @@
 //! (no token prefix). Spells have a rich set of descriptor tokens.
 
 use crate::schema::{
-    ArtisanMapping, Cardinality, LineGrammar, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
+    ArtisanMapping, Cardinality, GlobalGroup, HeadFormat, LineGrammar, TokenDef, TokenGrammar,
 };
 
 static SKILL_GLOBALS: &[GlobalGroup] = &[

@@ -5,7 +5,7 @@
 //! Skill files define individual skills. The head is token-prefixed: `SKILL:name`.
 
 use crate::schema::{
-    ArtisanMapping, Cardinality, LineGrammar, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
+    ArtisanMapping, Cardinality, GlobalGroup, HeadFormat, LineGrammar, TokenDef, TokenGrammar,
 };
 
 static SITUATION_SLOTS: &[&str] = &["name", "modifier"];

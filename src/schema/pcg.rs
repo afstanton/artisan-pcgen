@@ -3,7 +3,7 @@
 //! These heads appear as top-level session/profile lines in character files,
 //! e.g. `PCGVERSION:2.0` or `HEIGHT:51`.
 
-use crate::schema::{LineGrammar, HeadFormat, TokenDef};
+use crate::schema::{HeadFormat, LineGrammar, TokenDef};
 
 pub static PCGVERSION_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:pcgversion",
@@ -141,10 +141,7 @@ pub static CHARACTERNAME_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:charactername",
     head_token: Some("CHARACTERNAME"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text_required(
-        "CHARACTERNAME",
-        "character_name",
-    )],
+    tokens: &[TokenDef::text_required("CHARACTERNAME", "character_name")],
     globals: &[],
 };
 
@@ -429,7 +426,10 @@ pub static SUPPRESSBIOFIELDS_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:suppressbiofields",
     head_token: Some("SUPPRESSBIOFIELDS"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text("SUPPRESSBIOFIELDS", "pcgen_suppressbiofields")],
+    tokens: &[TokenDef::text(
+        "SUPPRESSBIOFIELDS",
+        "pcgen_suppressbiofields",
+    )],
     globals: &[],
 };
 

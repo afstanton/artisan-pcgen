@@ -5,7 +5,7 @@
 //! Ability category records are represented by head token `ABILITYCATEGORY:<name>`.
 
 use crate::schema::{
-    ArtisanMapping, Cardinality, LineGrammar, GlobalGroup, HeadFormat, TokenDef, TokenGrammar,
+    ArtisanMapping, Cardinality, GlobalGroup, HeadFormat, LineGrammar, TokenDef, TokenGrammar,
 };
 
 static ABILITYCATEGORY_TOKENS: &[TokenDef] = &[
