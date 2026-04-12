@@ -47,7 +47,7 @@ static KIT_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Field("pcgen_selection"),
         required: false,
     },
-    TokenDef::text("SIZE", "pcgen_size"),
+    TokenDef::text("SIZE", "size"),
     TokenDef {
         key: "EQMOD",
         grammar: TokenGrammar::PipeList,

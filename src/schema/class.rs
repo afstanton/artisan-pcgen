@@ -113,7 +113,7 @@ static CLASS_TOKENS: &[TokenDef] = &[
         key: "DEITY",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Once,
-        artisan_mapping: ArtisanMapping::Field("pcgen_deity"),
+        artisan_mapping: ArtisanMapping::Field("deity"),
         required: false,
     },
     TokenDef::pipe_positional_repeatable("FOLLOWERS", &["type", "limit"], "pcgen_followers"),

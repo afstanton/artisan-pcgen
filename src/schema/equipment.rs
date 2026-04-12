@@ -21,7 +21,7 @@ static EQUIPMENT_TOKENS: &[TokenDef] = &[
     TokenDef::text("BASEITEM", "pcgen_baseitem"),
     TokenDef::pipe_positional("CHARGES", CHARGES_SLOTS, "pcgen_charges"),
     // Size and wield
-    TokenDef::text("SIZE", "pcgen_size"),
+    TokenDef::text("SIZE", "size"),
     TokenDef::text("WIELD", "pcgen_wield"),
     // Armor/shield properties
     TokenDef::integer("EDR", "pcgen_edr"),

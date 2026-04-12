@@ -187,7 +187,7 @@ static PCC_TOKENS: &[TokenDef] = &[
         key: "COPYRIGHT",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Field("pcgen_copyright"),
+        artisan_mapping: ArtisanMapping::Field("copyright"),
         required: false,
     },
     TokenDef::text("COVER", "pcgen_cover"),

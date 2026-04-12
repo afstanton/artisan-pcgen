@@ -30,7 +30,7 @@ static DEITY_TOKENS: &[TokenDef] = &[
         key: "GROUP",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Field("pcgen_group"),
+        artisan_mapping: ArtisanMapping::Field("group"),
         required: false,
     },
     TokenDef::text("SYMBOL", "pcgen_symbol"),

@@ -160,7 +160,7 @@ pub static HEIGHT_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:height",
     head_token: Some("HEIGHT"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::integer("HEIGHT", "pcgen_height")],
+    tokens: &[TokenDef::integer("HEIGHT", "height")],
     globals: &[],
 };
 
@@ -168,7 +168,7 @@ pub static WEIGHT_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:weight",
     head_token: Some("WEIGHT"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::integer("WEIGHT", "pcgen_weight_value")],
+    tokens: &[TokenDef::integer("WEIGHT", "weight")],
     globals: &[],
 };
 
@@ -176,7 +176,7 @@ pub static AGE_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:age",
     head_token: Some("AGE"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::integer("AGE", "pcgen_age")],
+    tokens: &[TokenDef::integer("AGE", "age")],
     globals: &[],
 };
 
@@ -204,7 +204,7 @@ pub static SKINCOLOR_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:skincolor",
     head_token: Some("SKINCOLOR"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text("SKINCOLOR", "pcgen_skincolor")],
+    tokens: &[TokenDef::text("SKINCOLOR", "skin_color")],
     globals: &[],
 };
 
@@ -212,7 +212,7 @@ pub static EYECOLOR_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:eyecolor",
     head_token: Some("EYECOLOR"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text("EYECOLOR", "pcgen_eyecolor")],
+    tokens: &[TokenDef::text("EYECOLOR", "eye_color")],
     globals: &[],
 };
 
@@ -220,7 +220,7 @@ pub static HAIRCOLOR_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:haircolor",
     head_token: Some("HAIRCOLOR"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text("HAIRCOLOR", "pcgen_haircolor")],
+    tokens: &[TokenDef::text("HAIRCOLOR", "hair_color")],
     globals: &[],
 };
 
@@ -236,7 +236,7 @@ pub static CITY_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:city",
     head_token: Some("CITY"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text("CITY", "pcgen_city")],
+    tokens: &[TokenDef::text("CITY", "city")],
     globals: &[],
 };
 
@@ -244,7 +244,7 @@ pub static BIRTHDAY_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:birthday",
     head_token: Some("BIRTHDAY"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text("BIRTHDAY", "pcgen_birthday")],
+    tokens: &[TokenDef::text("BIRTHDAY", "birthday")],
     globals: &[],
 };
 
@@ -252,7 +252,7 @@ pub static BIRTHPLACE_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:birthplace",
     head_token: Some("BIRTHPLACE"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text("BIRTHPLACE", "pcgen_birthplace")],
+    tokens: &[TokenDef::text("BIRTHPLACE", "birthplace")],
     globals: &[],
 };
 
@@ -260,7 +260,7 @@ pub static PERSONALITYTRAIT1_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:personalitytrait1",
     head_token: Some("PERSONALITYTRAIT1"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text("PERSONALITYTRAIT1", "pcgen_personalitytrait1")],
+    tokens: &[TokenDef::text("PERSONALITYTRAIT1", "personality_trait_1")],
     globals: &[],
 };
 
@@ -268,7 +268,7 @@ pub static PERSONALITYTRAIT2_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:personalitytrait2",
     head_token: Some("PERSONALITYTRAIT2"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text("PERSONALITYTRAIT2", "pcgen_personalitytrait2")],
+    tokens: &[TokenDef::text("PERSONALITYTRAIT2", "personality_trait_2")],
     globals: &[],
 };
 
@@ -276,7 +276,7 @@ pub static SPEECHPATTERN_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:speechpattern",
     head_token: Some("SPEECHPATTERN"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text("SPEECHPATTERN", "pcgen_speechpattern")],
+    tokens: &[TokenDef::text("SPEECHPATTERN", "speech_pattern")],
     globals: &[],
 };
 
@@ -284,7 +284,7 @@ pub static PHOBIAS_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:phobias",
     head_token: Some("PHOBIAS"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text("PHOBIAS", "pcgen_phobias")],
+    tokens: &[TokenDef::text("PHOBIAS", "phobias")],
     globals: &[],
 };
 
@@ -292,7 +292,7 @@ pub static INTERESTS_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:interests",
     head_token: Some("INTERESTS"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text("INTERESTS", "pcgen_interests")],
+    tokens: &[TokenDef::text("INTERESTS", "interests")],
     globals: &[],
 };
 
@@ -300,7 +300,7 @@ pub static CATCHPHRASE_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:catchphrase",
     head_token: Some("CATCHPHRASE"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text("CATCHPHRASE", "pcgen_catchphrase")],
+    tokens: &[TokenDef::text("CATCHPHRASE", "catchphrase")],
     globals: &[],
 };
 
@@ -308,7 +308,7 @@ pub static PORTRAIT_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:portrait",
     head_token: Some("PORTRAIT"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text("PORTRAIT", "pcgen_portrait")],
+    tokens: &[TokenDef::text("PORTRAIT", "portrait")],
     globals: &[],
 };
 
@@ -349,7 +349,7 @@ pub static CHARACTERBIO_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:characterbio",
     head_token: Some("CHARACTERBIO"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text("CHARACTERBIO", "pcgen_characterbio")],
+    tokens: &[TokenDef::text("CHARACTERBIO", "character_bio")],
     globals: &[],
 };
 
@@ -357,7 +357,7 @@ pub static CHARACTERDESC_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:characterdesc",
     head_token: Some("CHARACTERDESC"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text("CHARACTERDESC", "pcgen_characterdesc")],
+    tokens: &[TokenDef::text("CHARACTERDESC", "character_desc")],
     globals: &[],
 };
 
@@ -365,7 +365,7 @@ pub static CHARACTERCOMP_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:charactercomp",
     head_token: Some("CHARACTERCOMP"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text("CHARACTERCOMP", "pcgen_charactercomp")],
+    tokens: &[TokenDef::text("CHARACTERCOMP", "character_comp")],
     globals: &[],
 };
 
@@ -373,7 +373,7 @@ pub static CHARACTERASSET_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:characterasset",
     head_token: Some("CHARACTERASSET"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text("CHARACTERASSET", "pcgen_characterasset")],
+    tokens: &[TokenDef::text("CHARACTERASSET", "character_asset")],
     globals: &[],
 };
 
@@ -381,7 +381,7 @@ pub static CHARACTERMAGIC_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:charactermagic",
     head_token: Some("CHARACTERMAGIC"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text("CHARACTERMAGIC", "pcgen_charactermagic")],
+    tokens: &[TokenDef::text("CHARACTERMAGIC", "character_magic")],
     globals: &[],
 };
 
@@ -389,7 +389,7 @@ pub static CHARACTERDMNOTES_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:characterdmnotes",
     head_token: Some("CHARACTERDMNOTES"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text("CHARACTERDMNOTES", "pcgen_characterdmnotes")],
+    tokens: &[TokenDef::text("CHARACTERDMNOTES", "character_dm_notes")],
     globals: &[],
 };
 

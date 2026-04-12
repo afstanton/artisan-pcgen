@@ -9,9 +9,9 @@ Total entities:                    558572
   effects + prerequisites:         42715
   effects only:                    130867
   prerequisites only:              52729
-  canonical attrs / citations:     189460
-  truly sparse (pcgen_* only):     142801
-  canonical coverage:              74% have >=1 canonical field
+  canonical attrs / citations:     195469
+  truly sparse (pcgen_* only):     136792
+  canonical coverage:              75% have >=1 canonical field
 
 === Effect Kinds Across All Entities ===
 235670 | BONUS
@@ -99,7 +99,8 @@ Total entities:                    558572
 137568 | description
 107855 | key
  63697 | cost
- 39479 | weight
+ 39484 | weight
+ 24244 | size
  22714 | sortkey
  20198 | outputname
   9802 | sab
@@ -110,6 +111,7 @@ Total entities:                    558572
   6870 | cskill
   4879 | hitdie
   4233 | explanation
+  3379 | vision
   3358 | rank
   3164 | qty
   2614 | maxlevel
@@ -125,35 +127,41 @@ Total entities:                    558572
    825 | abbreviation
    652 | spellstat
    613 | sex
+   577 | region
    320 | newcategory
+   302 | hair
+   301 | eyes
+   295 | skin_tone
+   213 | deity_name
    151 | cr_formula
    151 | is_monster
    148 | xp_penalty
+    33 | group
     31 | count
     25 | note
     24 | license
+     7 | age
      7 | base_age_add
-     5 | character_name
+     5 | birthday
+     5 | birthplace
 
 === pcgen_* Attributes On Truly Sparse Entities ===
  14448 | classes
  13191 | abilities
- 10754 | option
+  6956 | option
   6874 | cast
   6837 | maxver
   6837 | newkey
-  5669 | size
-  5372 | eqmods
-  5156 | visible
   5120 | source_short
+  4983 | visible
   4908 | source_date
-  4717 | source_web
+  4716 | source_web
   3365 | known
-  2793 | location
-  2525 | domains
-  2376 | lookup
+  2481 | domains
   1528 | dataformat
   1290 | maxdevver
+  1263 | location
+  1208 | eqmods
    950 | spelllevel
    869 | situations
    751 | selectable
@@ -166,7 +174,7 @@ Total entities:                    558572
    496 | ccskillmax
    496 | cskillmax
    490 | descriptors
-   477 | subrace
+   468 | subrace
    459 | spells
    452 | context
    442 | apply
@@ -190,10 +198,9 @@ Total entities:                    558572
    206 | forwardref
    203 | sprop
    189 | companionlist
-   184 | deity_name
    184 | keystat
    166 | free
-   163 | facts
+   160 | facts
    151 | udam
    133 | domain_name
    118 | removable
@@ -211,6 +218,9 @@ Total entities:                    558572
     84 | spellrange
     77 | spellknown
     75 | favoredclass
+    70 | outputsheet
+    69 | infosheet
+    67 | distancefactor
 
 === Failed Files ===
 [semantic:fail|canonical:ok] ../../../../externals/PCGen/pcgen/data/spycraft/crafty_games/spycraft/spycraft/spycraft_gadgets.lst

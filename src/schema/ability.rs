@@ -79,7 +79,7 @@ static ABILITY_TOKENS: &[TokenDef] = &[
         key: "VISION",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Field("pcgen_vision"),
+        artisan_mapping: ArtisanMapping::Field("vision"),
         required: false,
     },
     TokenDef::text("DR", "pcgen_dr"),
