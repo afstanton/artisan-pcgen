@@ -709,6 +709,8 @@ fn canonical_coverage_report() {
 
     // For sparse entities: tally pcgen_* keys still remaining (Phase N work)
     let mut sparse_pcgen_attr_counts: HashMap<String, usize> = HashMap::new();
+    // For sparse entities: tally by entity type to identify frontiers
+    let mut sparse_type_counts: HashMap<String, usize> = HashMap::new();
     // For covered entities with clean canonical attrs: tally those keys
     let mut canonical_attr_counts: HashMap<String, usize> = HashMap::new();
     // For ALL entities: effect and prereq kinds
@@ -749,6 +751,14 @@ fn canonical_coverage_report() {
                 (false, false) if is_covered => covered_canonical_attr_only += 1,
                 _ => {
                     truly_sparse += 1;
+                    // Track sparse entity type distribution
+                    let type_key = entity
+                        .attributes
+                        .get("pcgen_entity_type_key")
+                        .and_then(|v| v.as_str())
+                        .unwrap_or("unknown")
+                        .to_string();
+                    *sparse_type_counts.entry(type_key).or_insert(0) += 1;
                     // Tally pcgen_* keys still on sparse entities (Phase N candidates)
                     for key in entity.attributes.keys() {
                         if key.starts_with("pcgen_")
@@ -827,6 +837,14 @@ fn canonical_coverage_report() {
         let display = attr.strip_prefix("pcgen_").unwrap_or(attr);
         println!("  {:6} {display}", count);
     }
+    // Sparse entity type breakdown
+    let mut sparse_types: Vec<_> = sparse_type_counts.iter().collect();
+    sparse_types.sort_by(|a, b| b.1.cmp(a.1).then_with(|| a.0.cmp(b.0)));
+    println!("\n--- Sparse entities by type (top 20) ---");
+    for (entity_type, count) in sparse_types.iter().take(20) {
+        println!("  {:6} {entity_type}", count);
+    }
+
     println!(
         "\nNote: 'truly sparse' entities have only pcgen_* attributes (no canonical fields).\n"
     );
@@ -1414,7 +1432,7 @@ fn multiline_lst_fixture_produces_single_faceman_entity() {
 // ---------------------------------------------------------------------------
 
 /// CLASSABILITIESLEVEL lines in PCG files should carry `pcgen_for_class` (the
-/// parent class name) and `pcgen_class_level` (the integer level) derived from
+/// parent class name) and `class_level` (the integer level) derived from
 /// the `ClassName=LevelNumber` head value.
 #[test]
 fn classabilitieslevel_annotates_for_class_and_level() {
@@ -1435,9 +1453,9 @@ fn classabilitieslevel_annotates_for_class_and_level() {
         "pcgen_for_class should name the parent class"
     );
     assert_eq!(
-        cal.attributes.get("pcgen_class_level").and_then(|v| v.as_i64()),
+        cal.attributes.get("class_level").and_then(|v| v.as_i64()),
         Some(5),
-        "pcgen_class_level should be the integer level"
+        "class_level should be the integer level"
     );
     // Raw value preserved for round-trip.
     assert_eq!(
@@ -1615,8 +1633,8 @@ fn character_progression_fixture_classabilitieslevel_has_for_class() {
         "fixture CLASSABILITIESLEVEL should have pcgen_for_class=Wizard"
     );
     assert_eq!(
-        cal.attributes.get("pcgen_class_level").and_then(|v| v.as_i64()),
+        cal.attributes.get("class_level").and_then(|v| v.as_i64()),
         Some(5),
-        "fixture CLASSABILITIESLEVEL should have pcgen_class_level=5"
+        "fixture CLASSABILITIESLEVEL should have class_level=5"
     );
 }

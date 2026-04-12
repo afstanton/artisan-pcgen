@@ -34,7 +34,7 @@ static PCC_TOKENS: &[TokenDef] = &[
     // Game system
     TokenDef::text("GAMEMODE", "pcgen_gamemode"),
     TokenDef::text("SETTING", "pcgen_setting"),
-    TokenDef::text("BOOKTYPE", "pcgen_booktype"),
+    TokenDef::text("BOOKTYPE", "book_type"),
     // Catalog entries (file references)
     TokenDef {
         key: "ABILITY",

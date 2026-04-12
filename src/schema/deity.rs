@@ -16,14 +16,14 @@ static DEITY_TOKENS: &[TokenDef] = &[
         key: "DOMAINS",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Once,
-        artisan_mapping: ArtisanMapping::Field("pcgen_domains"),
+        artisan_mapping: ArtisanMapping::Field("domains"),
         required: false,
     },
     TokenDef {
         key: "DEITYWEAP",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Once,
-        artisan_mapping: ArtisanMapping::Field("pcgen_deityweap"),
+        artisan_mapping: ArtisanMapping::Field("deity_weapon"),
         required: false,
     },
     TokenDef {

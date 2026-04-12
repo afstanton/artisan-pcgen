@@ -16,7 +16,7 @@ static RACE_TOKENS: &[TokenDef] = &[
         key: "RACESUBTYPE",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Field("pcgen_racesubtype"),
+        artisan_mapping: ArtisanMapping::Field("race_subtype"),
         required: false,
     },
     TokenDef::text("SIZE", "size"),
@@ -59,7 +59,7 @@ static RACE_TOKENS: &[TokenDef] = &[
         key: "MOVE",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Field("pcgen_move"),
+        artisan_mapping: ArtisanMapping::Field("move"),
         required: false,
     },
     TokenDef {
@@ -73,7 +73,7 @@ static RACE_TOKENS: &[TokenDef] = &[
         key: "NATURALATTACKS",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Field("pcgen_naturalattacks"),
+        artisan_mapping: ArtisanMapping::Field("natural_attacks"),
         required: false,
     },
     // Favored class
@@ -81,7 +81,7 @@ static RACE_TOKENS: &[TokenDef] = &[
         key: "FAVCLASS",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Once,
-        artisan_mapping: ArtisanMapping::Field("pcgen_favclass"),
+        artisan_mapping: ArtisanMapping::Field("favored_class"),
         required: false,
     },
     // Monster-specific
@@ -112,7 +112,7 @@ static RACE_TOKENS: &[TokenDef] = &[
         key: "WEAPONBONUS",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Field("pcgen_weaponbonus"),
+        artisan_mapping: ArtisanMapping::Field("weapon_bonus"),
         required: false,
     },
     TokenDef {

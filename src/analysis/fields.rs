@@ -142,7 +142,7 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_setting".to_string(), Value::String(value.clone()));
             }
             "BOOKTYPE" => {
-                attributes.insert("pcgen_booktype".to_string(), Value::String(value.clone()));
+                attributes.insert("book_type".to_string(), Value::String(value.clone()));
             }
             "PCC" => append_string_attr(attributes, "pcgen_pcc", value),
             "CHOICE" => append_string_attr(attributes, "pcgen_choice", value),
@@ -212,17 +212,17 @@ pub(crate) fn project_clause_attributes(
             "RACETYPE" => {
                 attributes.insert("racetype".to_string(), Value::String(value.clone()));
             }
-            "RACESUBTYPE" => append_string_attr(attributes, "pcgen_racesubtype", value),
+            "RACESUBTYPE" => append_string_attr(attributes, "race_subtype", value),
             "SUBRACE" => {
                 attributes.insert("pcgen_subrace".to_string(), Value::String(value.clone()));
             }
             "SUBCLASS" => append_string_attr(attributes, "pcgen_subclass", value),
             "FAVCLASS" => {
-                attributes.insert("pcgen_favclass".to_string(), Value::String(value.clone()));
+                attributes.insert("favored_class".to_string(), Value::String(value.clone()));
             }
             "FAVOREDCLASS" => {
                 attributes.insert(
-                    "pcgen_favoredclass".to_string(),
+                    "favored_class".to_string(),
                     Value::String(value.clone()),
                 );
             }
@@ -322,15 +322,15 @@ pub(crate) fn project_clause_attributes(
                 );
             }
             "PROHIBITED" => append_string_attr(attributes, "pcgen_prohibited", value),
-            "ADDDOMAINS" => append_string_attr(attributes, "pcgen_adddomains", value),
+            "ADDDOMAINS" => append_string_attr(attributes, "add_domains", value),
             "DOMAIN" => {
-                attributes.insert("pcgen_domains".to_string(), Value::String(value.clone()));
+                attributes.insert("domains".to_string(), Value::String(value.clone()));
             }
             "ALIGN" => {
                 attributes.insert("alignment".to_string(), Value::String(value.clone()));
             }
             "DEITYWEAP" => {
-                attributes.insert("pcgen_deityweap".to_string(), Value::String(value.clone()));
+                attributes.insert("deity_weapon".to_string(), Value::String(value.clone()));
             }
             "PANTHEON" => {
                 attributes.insert("pcgen_pantheon".to_string(), Value::String(value.clone()));
@@ -350,7 +350,7 @@ pub(crate) fn project_clause_attributes(
             }
             "MONSKILL" => set_i64_or_string(attributes, "pcgen_monskill", value),
             "MONNONSKILLHD" => set_i64_or_string(attributes, "pcgen_monnonskillhd", value),
-            "WEAPONBONUS" => append_string_attr(attributes, "pcgen_weaponbonus", value),
+            "WEAPONBONUS" => append_string_attr(attributes, "weapon_bonus", value),
             "VISIBLE" => {
                 attributes.insert("pcgen_visible".to_string(), Value::String(value.clone()));
             }
@@ -468,7 +468,7 @@ pub(crate) fn project_clause_attributes(
             }
             // CLASS as a clause key: appears in PCG SPELLNAME, CLASSBOUGHT, etc.
             "CLASS" => {
-                attributes.insert("pcgen_class".to_string(), Value::String(value.clone()));
+                attributes.insert("class".to_string(), Value::String(value.clone()));
             }
             // CLASSBOUGHT is a bracket group: [CLASS:Wizard|RANKS:3.0|COST:1|CLASSSKILL:Y]
             // Multiple CLASSBOUGHT groups on a single line are accumulated as an array of arrays —
@@ -517,7 +517,7 @@ pub(crate) fn project_clause_attributes(
                 set_i64_or_string(attributes, "pcgen_times", value);
             }
             "BOOK" => {
-                attributes.insert("pcgen_book".to_string(), Value::String(value.clone()));
+                attributes.insert("book".to_string(), Value::String(value.clone()));
             }
             // FEATLIST bracket group: [FEAT:Empower Spell|FEAT:Quicken Spell]
             "FEATLIST" => {
@@ -640,7 +640,7 @@ pub(crate) fn project_clause_attributes(
             }
             "DESCRIPTOR" => append_string_attr(attributes, "pcgen_descriptors", value),
             "DOMAINS" => {
-                attributes.insert("pcgen_domains".to_string(), Value::String(value.clone()));
+                attributes.insert("domains".to_string(), Value::String(value.clone()));
             }
             "PPCOST" => set_i64_or_string(attributes, "pcgen_ppcost", value),
             "SPELLPOINTCOST" => {
@@ -1260,8 +1260,8 @@ pub(crate) fn project_clause_attributes(
             "CLASSES" => class_lists.push(parse_pipe_series(value)),
             "SPELLS" => spell_blocks.push(parse_spells(value)),
             "SPELLKNOWN" => append_string_attr(attributes, "pcgen_spellknown", value),
-            "MOVE" => append_string_attr(attributes, "pcgen_move", value),
-            "NATURALATTACKS" => append_string_attr(attributes, "pcgen_naturalattacks", value),
+            "MOVE" => append_string_attr(attributes, "move", value),
+            "NATURALATTACKS" => append_string_attr(attributes, "natural_attacks", value),
             "MODIFY" => {
                 // Parse MODIFY expressions: VarName|Operation|Value
                 match parse_modify(value) {
@@ -1841,10 +1841,10 @@ pub(crate) fn project_decl_token_value(
                     );
                 }
                 if let Ok(level) = level_str.parse::<i64>() {
-                    attributes.insert("pcgen_class_level".to_string(), json!(level));
+                    attributes.insert("class_level".to_string(), json!(level));
                 } else if !level_str.is_empty() {
                     attributes.insert(
-                        "pcgen_class_level".to_string(),
+                        "class_level".to_string(),
                         Value::String(level_str.to_string()),
                     );
                 }

@@ -589,9 +589,9 @@ pub static NOTE_SCHEMA: LineGrammar = LineGrammar {
 static SPELLNAME_TOKENS: &[TokenDef] = &[
     TokenDef::text_required("SPELLNAME", "pcgen_spellname"),
     TokenDef::integer("TIMES", "pcgen_times"),
-    TokenDef::text("BOOK", "pcgen_book"),
+    TokenDef::text("BOOK", "book"),
     TokenDef::text("SPELLLEVEL", "pcgen_spelllevel"),
-    TokenDef::text("CLASS", "pcgen_class"),
+    TokenDef::text("CLASS", "class"),
     // SOURCE in PCG context is a bracket group: [TYPE:CLASS|NAME:Wizard]
     TokenDef::bracket_group("SOURCE", "pcgen_source"),
     // FEATLIST bracket group: [FEAT:Empower Spell|FEAT:...]

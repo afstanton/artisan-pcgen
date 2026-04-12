@@ -58,7 +58,7 @@ static ABILITY_TOKENS: &[TokenDef] = &[
         key: "MOVE",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Field("pcgen_move"),
+        artisan_mapping: ArtisanMapping::Field("move"),
         required: false,
     },
     TokenDef {
@@ -72,7 +72,7 @@ static ABILITY_TOKENS: &[TokenDef] = &[
         key: "NATURALATTACKS",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Field("pcgen_naturalattacks"),
+        artisan_mapping: ArtisanMapping::Field("natural_attacks"),
         required: false,
     },
     TokenDef {

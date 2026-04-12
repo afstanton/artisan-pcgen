@@ -51,7 +51,7 @@ static SPELL_TOKENS: &[TokenDef] = &[
         key: "DOMAINS",
         grammar: TokenGrammar::PipeGroups,
         cardinality: Cardinality::Once,
-        artisan_mapping: ArtisanMapping::Field("pcgen_domains"),
+        artisan_mapping: ArtisanMapping::Field("domains"),
         required: false,
     },
     // Casting parameters
