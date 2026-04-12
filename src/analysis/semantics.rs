@@ -24,15 +24,114 @@ pub(crate) fn project_semantics(
                 continue;
             }
 
-            if key == "BONUS"
-                || key == "TEMPBONUS"
-                || key == "ADD"
+            // --- Numerically-structured bonus effects ---
+            // BONUS and TEMPBONUS have a structured format that is split here so that
+            // canonical consumers can filter by bonus domain without parsing raw strings.
+            //
+            //   BONUS:BonusType|SubType(s)|Formula[|TYPE=...][|prereq...]
+            //     → target = "BonusType|SubType(s)"
+            //     → value  = Some("Formula[|TYPE=...][|...]")
+            //
+            //   TEMPBONUS:Target|BonusType|SubType|Formula[|...]
+            //     → target = "Target|BonusType|SubType"
+            //     → value  = Some("Formula[|...]")
+            //
+            // Emit reconstructs `KIND:target|value` so the original PCGen text is preserved.
+            if key == "BONUS" || key == "TEMPBONUS" {
+                let split_at = if key == "TEMPBONUS" { 3 } else { 2 };
+                let (bonus_target, bonus_value) = split_at_pipe(value, split_at);
+                effects.push(Effect {
+                    kind: key.clone(),
+                    target: bonus_target,
+                    value: bonus_value,
+                });
+                continue;
+            }
+
+            // --- Variable definition effects ---
+            // DEFINE:VarName|InitialValue
+            //   → target = "VarName"   (the variable being defined)
+            //   → value  = Some("InitialValue")   (starting formula)
+            //
+            // DEFINESTAT:StatName|Formula
+            //   → target = "StatName"
+            //   → value  = Some("Formula")
+            //
+            // MODIFY:VarName|Operation|Formula
+            //   → target = "VarName"   (the variable being modified)
+            //   → value  = Some("Operation|Formula")
+            if key == "DEFINE" || key == "DEFINESTAT" {
+                let (var_name, init) = split_at_pipe(value, 1);
+                effects.push(Effect {
+                    kind: key.clone(),
+                    target: var_name,
+                    value: init,
+                });
+                continue;
+            }
+
+            if key == "MODIFY" {
+                let (var_name, op_and_formula) = split_at_pipe(value, 1);
+                effects.push(Effect {
+                    kind: key.clone(),
+                    target: var_name,
+                    value: op_and_formula,
+                });
+                continue;
+            }
+
+            if key == "ADD"
                 || key == "AUTO"
-                || key == "DEFINE"
-                || key == "DEFINESTAT"
                 || key == "CHOOSE"
                 || key == "SELECT"
-                || key == "MODIFY"
+                // TEMPLATE:Name applies a template to the bearer — a game-mechanical effect.
+                // Note: ability/feat schemas declare TEMPLATE as ArtisanMapping::Effect, so
+                // this entry is required for correct emit on those entity types.
+                || key == "TEMPLATE"
+                // ABILITY:Category|AUTO|Name grants an ability — a game-mechanical effect.
+                // The emit path reads from pcgen_abilities (attribute), so there is no
+                // double-emission risk.
+                || key == "ABILITY"
+                // LANGBONUS:Elvish|Dwarven grants bonus language choices — a canonical grant.
+                // Emit path uses GlobalGroup::LangBonus → pcgen_langbonus attribute.
+                || key == "LANGBONUS"
+                // GRANT:Category|Value is a generic grant (e.g. GRANT:MOVEMENT|Walk).
+                // Emit path uses the race schema token def → pcgen_grant attribute.
+                || key == "GRANT"
+                // --- Physical / combat grants (template and race entities) ---
+                // Each of these contributes something to the character's mechanical state
+                // when the entity is applied.  Emit paths all use schema Field → pcgen_*
+                // attributes, so there is no double-emission risk.
+                //
+                // VISION:Darkvision (60') — grants/changes vision types.
+                || key == "VISION"
+                // MOVE:Walk,30,Fly,60 — grants/changes movement modes.
+                || key == "MOVE"
+                // NATURALATTACKS:Bite,Weapon.Natural... — grants a natural attack.
+                || key == "NATURALATTACKS"
+                // DR:10/Magic — grants damage reduction.
+                || key == "DR"
+                // SR:15 — grants spell resistance.
+                || key == "SR"
+                // --- Character-build grants ---
+                // FEAT:Power Attack — grants a feat (when used as a clause, not as a head token).
+                || key == "FEAT"
+                // FOLLOWERS:Animal Companion|1 — grants follower limit.
+                || key == "FOLLOWERS"
+                // BONUSSKILLPOINTS:2 — grants bonus skill points per level.
+                || key == "BONUSSKILLPOINTS"
+                // ADDLEVEL:Fighter|1 — adds a level of the named class.
+                || key == "ADDLEVEL"
+                // SPELLS:book|TIMES=n|CL=n|spell,DC — grants spell-like ability use.
+                || key == "SPELLS"
+                // GENDERLOCK:Male — template effect that restricts the character's gender.
+                || key == "GENDERLOCK"
+                // MOVECLONE:Walk,Swim,/2 — clones a movement mode as a new mode.
+                || key == "MOVECLONE"
+                // STARTFEATS:2 — grants N additional feats at character creation (race/template).
+                || key == "STARTFEATS"
+                // WEAPONBONUS:Simple|Martial — grants weapon type proficiency (class/race).
+                || key == "WEAPONBONUS"
             {
                 effects.push(Effect {
                     kind: key.clone(),
@@ -42,6 +141,37 @@ pub(crate) fn project_semantics(
             }
         }
     }
+}
+
+/// Split a pipe-delimited value at the Nth pipe, returning (before, after).
+///
+/// If the value has fewer than `n` pipes, the entire value is returned as the
+/// first element and `None` as the second.
+///
+/// Examples:
+/// ```ignore
+/// // BONUS: split at 2nd pipe → domain | formula
+/// assert_eq!(split_at_pipe("COMBAT|BASEAB|1", 2), ("COMBAT|BASEAB".into(), Some("1".into())));
+/// // DEFINE: split at 1st pipe → varname | initial
+/// assert_eq!(split_at_pipe("PsionLevel|classlevel", 1), ("PsionLevel".into(), Some("classlevel".into())));
+/// // Too few pipes → entire string in target, None in value
+/// assert_eq!(split_at_pipe("NoPipes", 1), ("NoPipes".into(), None));
+/// ```
+fn split_at_pipe(value: &str, n: usize) -> (String, Option<String>) {
+    let mut pipe_count = 0usize;
+    for (i, ch) in value.char_indices() {
+        if ch == '|' {
+            pipe_count += 1;
+            if pipe_count == n {
+                return (
+                    value[..i].to_string(),
+                    Some(value[i + 1..].to_string()),
+                );
+            }
+        }
+    }
+    // Fewer than n pipes — store everything in target.
+    (value.to_string(), None)
 }
 
 pub(crate) fn infer_entity_type_key(head: &str, clauses: &[ParsedClause]) -> String {

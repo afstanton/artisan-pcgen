@@ -438,12 +438,40 @@ fn semantic_snapshot(catalog: &artisan_pcgen::ParsedCatalog) -> Value {
             );
         }
 
+        // Sort effects and prerequisites so comparison is order-independent.
+        // The emitter may reorder effects relative to the source (e.g. token-def
+        // fields before global-group effects), so we must not treat insertion
+        // order as semantically significant.
+        let mut effects: Vec<Value> = entity
+            .effects
+            .iter()
+            .map(|e| json!({ "kind": e.kind, "target": e.target, "value": e.value }))
+            .collect();
+        effects.sort_by(|a, b| {
+            a["kind"]
+                .as_str()
+                .cmp(&b["kind"].as_str())
+                .then_with(|| a["target"].as_str().cmp(&b["target"].as_str()))
+        });
+
+        let mut prereqs: Vec<Value> = entity
+            .prerequisites
+            .iter()
+            .map(|p| json!({ "kind": p.kind, "expression": p.expression }))
+            .collect();
+        prereqs.sort_by(|a, b| {
+            a["kind"]
+                .as_str()
+                .cmp(&b["kind"].as_str())
+                .then_with(|| a["expression"].as_str().cmp(&b["expression"].as_str()))
+        });
+
         entities.push(json!({
             "entity_type": type_key,
             "name": entity.name,
             "attributes": semantic_attrs,
-            "effects": entity.effects,
-            "prerequisites": entity.prerequisites,
+            "effects": effects,
+            "prerequisites": prereqs,
             "completeness": entity.completeness,
         }));
     }
@@ -1396,29 +1424,92 @@ CoverageAbility_MODIFY_SOLVE\tCATEGORY:Internal\tMODIFY:Score|SOLVE|10\n";
             .unwrap_or_else(|| panic!("entity {name} not found"))
     };
 
-    // ADD variant
+    // ADD variant: MODIFY:TestVar|ADD|1 → target="TestVar", value=Some("ADD|1")
     let add_entity = find("CoverageAbility_MODIFY_ADD");
     assert_eq!(add_entity.effects.len(), 1, "ADD entity should have 1 effect");
     assert_eq!(add_entity.effects[0].kind, "MODIFY");
-    assert_eq!(add_entity.effects[0].target, "TestVar|ADD|1");
-    assert!(add_entity.effects[0].value.is_none());
+    assert_eq!(add_entity.effects[0].target, "TestVar");
+    assert_eq!(add_entity.effects[0].value.as_deref(), Some("ADD|1"));
 
-    // SET variant
+    // SET variant: MODIFY:Damage|SET|10d6 → target="Damage", value=Some("SET|10d6")
     let set_entity = find("CoverageAbility_MODIFY_SET");
     assert_eq!(set_entity.effects.len(), 1, "SET entity should have 1 effect");
     assert_eq!(set_entity.effects[0].kind, "MODIFY");
-    assert_eq!(set_entity.effects[0].target, "Damage|SET|10d6");
+    assert_eq!(set_entity.effects[0].target, "Damage");
+    assert_eq!(set_entity.effects[0].value.as_deref(), Some("SET|10d6"));
 
-    // SOLVE variant
+    // SOLVE variant: MODIFY:Score|SOLVE|10 → target="Score", value=Some("SOLVE|10")
     let solve_entity = find("CoverageAbility_MODIFY_SOLVE");
     assert_eq!(solve_entity.effects.len(), 1, "SOLVE entity should have 1 effect");
     assert_eq!(solve_entity.effects[0].kind, "MODIFY");
-    assert_eq!(solve_entity.effects[0].target, "Score|SOLVE|10");
+    assert_eq!(solve_entity.effects[0].target, "Score");
+    assert_eq!(solve_entity.effects[0].value.as_deref(), Some("SOLVE|10"));
 
     // The pcgen_modify_* structured attributes should ALSO still be present,
     // since they are set independently by fields.rs.
     assert!(add_entity.attributes.contains_key("pcgen_modify_variable"),
         "pcgen_modify_variable should be set alongside the effect");
+}
+
+/// TEMPLATE clauses represent template grants — a game-mechanical effect applied
+/// to the bearer.  They should appear in `effects` so canonical consumers don't
+/// need to know the `pcgen_template` attribute.
+///
+/// Note: the ability/feat schemas already declare TEMPLATE as ArtisanMapping::Effect;
+/// this test confirms that projection is consistent with that declaration.
+#[test]
+fn template_clause_projects_to_effects() {
+    // TEMPLATE on a CLASS entity — handled via GlobalGroup::Template (attribute path)
+    let class_cat = parse_text_to_catalog(
+        "CLASS:Coverage_TEMPLATE\tTEMPLATE:Coverage",
+        "test.lst",
+        "lst",
+    );
+    let class_entity = class_cat.entities.iter()
+        .find(|e| e.name == "Coverage_TEMPLATE")
+        .expect("CLASS with TEMPLATE should be parsed");
+    let template_effects: Vec<_> = class_entity.effects.iter()
+        .filter(|e| e.kind == "TEMPLATE").collect();
+    assert_eq!(template_effects.len(), 1, "CLASS TEMPLATE should produce 1 effect");
+    assert_eq!(template_effects[0].target, "Coverage");
+
+    // TEMPLATE on an ABILITY entity — handled via ArtisanMapping::Effect (effects path)
+    let ability_cat = parse_text_to_catalog(
+        "CelestialBlessing\tCATEGORY:Special Ability\tTEMPLATE:Celestial",
+        "test.lst",
+        "lst",
+    );
+    let ability_entity = ability_cat.entities.iter()
+        .find(|e| e.name == "CelestialBlessing")
+        .expect("ABILITY with TEMPLATE should be parsed");
+    let ab_template_effects: Vec<_> = ability_entity.effects.iter()
+        .filter(|e| e.kind == "TEMPLATE").collect();
+    assert_eq!(ab_template_effects.len(), 1, "ABILITY TEMPLATE should produce 1 effect");
+    assert_eq!(ab_template_effects[0].target, "Celestial");
+}
+
+/// ABILITY grant clauses (ABILITY:Category|AUTO|Name) are game-mechanical grants.
+/// They should appear in `effects` so canonical consumers can see them without
+/// inspecting the `pcgen_abilities` attribute.
+#[test]
+fn ability_grant_clause_projects_to_effects() {
+    let cat = parse_text_to_catalog(
+        "FOLLOWER:AnimalLVL=1\tTYPE:Animal Companion\tABILITY:Special Ability|AUTOMATIC|Companion Bond\tBONUS:STAT|STR|1",
+        "test.lst",
+        "lst",
+    );
+    let entity = cat.entities.iter()
+        .find(|e| e.name == "AnimalLVL=1")
+        .expect("FOLLOWER with ABILITY grant should be parsed");
+
+    let ability_effects: Vec<_> = entity.effects.iter()
+        .filter(|e| e.kind == "ABILITY").collect();
+    assert_eq!(ability_effects.len(), 1, "ABILITY grant should produce 1 effect");
+    assert_eq!(ability_effects[0].target, "Special Ability|AUTOMATIC|Companion Bond");
+
+    // The pcgen_abilities attribute should also still be set (emit path uses it)
+    assert!(entity.attributes.contains_key("pcgen_abilities"),
+        "pcgen_abilities attribute should be set alongside the effect");
 }
 
 /// MODIFY effects survive the full parse → emit → reparse canonical roundtrip.

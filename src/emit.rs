@@ -614,9 +614,17 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
         GlobalGroup::Bonus => {
             for effect in &entity.effects {
                 if effect.kind.eq_ignore_ascii_case("BONUS") {
-                    parts.push(format!("BONUS:{}", effect.target));
+                    let s = match &effect.value {
+                        Some(v) => format!("BONUS:{}|{}", effect.target, v),
+                        None => format!("BONUS:{}", effect.target),
+                    };
+                    parts.push(s);
                 } else if effect.kind.eq_ignore_ascii_case("TEMPBONUS") {
-                    parts.push(format!("TEMPBONUS:{}", effect.target));
+                    let s = match &effect.value {
+                        Some(v) => format!("TEMPBONUS:{}|{}", effect.target, v),
+                        None => format!("TEMPBONUS:{}", effect.target),
+                    };
+                    parts.push(s);
                 }
             }
         }
@@ -646,9 +654,17 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
         GlobalGroup::Define => {
             for effect in &entity.effects {
                 if effect.kind.eq_ignore_ascii_case("DEFINE") {
-                    parts.push(format!("DEFINE:{}", effect.target));
+                    let s = match &effect.value {
+                        Some(v) => format!("DEFINE:{}|{}", effect.target, v),
+                        None => format!("DEFINE:{}", effect.target),
+                    };
+                    parts.push(s);
                 } else if effect.kind.eq_ignore_ascii_case("DEFINESTAT") {
-                    parts.push(format!("DEFINESTAT:{}", effect.target));
+                    let s = match &effect.value {
+                        Some(v) => format!("DEFINESTAT:{}|{}", effect.target, v),
+                        None => format!("DEFINESTAT:{}", effect.target),
+                    };
+                    parts.push(s);
                 }
             }
         }
