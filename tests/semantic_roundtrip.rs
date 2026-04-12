@@ -521,6 +521,236 @@ fn semantic_snapshot(catalog: &artisan_pcgen::ParsedCatalog) -> Value {
     })
 }
 
+/// Build a snapshot of ONLY the artisan-core canonical fields — entity name, entity type,
+/// effects, and prerequisites — with no `pcgen_*` attributes whatsoever.
+///
+/// This is the basis for the canonical roundtrip test.  Where this snapshot is thin
+/// (e.g. `effects: []`) despite a content-rich entity, that gap is the signal for future
+/// canonical-model work: those tokens currently live only in the `pcgen_*` projection and
+/// have not yet been lifted into the artisan-core canonical model.
+fn core_snapshot(catalog: &artisan_pcgen::ParsedCatalog) -> Value {
+    let mut type_key_by_id: BTreeMap<String, String> = BTreeMap::new();
+    for et in &catalog.entity_types {
+        type_key_by_id.insert(et.id.0.to_string(), et.key.clone());
+    }
+
+    let mut entities: Vec<Value> = catalog
+        .entities
+        .iter()
+        .map(|entity| {
+            let type_key = type_key_by_id
+                .get(&entity.entity_type.0.to_string())
+                .cloned()
+                .unwrap_or_else(|| "unknown".to_string());
+
+            // Sort so comparison is order-independent.
+            let mut effects: Vec<Value> = entity
+                .effects
+                .iter()
+                .map(|e| json!({ "kind": e.kind, "target": e.target, "value": e.value }))
+                .collect();
+            effects.sort_by(|a, b| {
+                a["kind"]
+                    .as_str()
+                    .cmp(&b["kind"].as_str())
+                    .then_with(|| a["target"].as_str().cmp(&b["target"].as_str()))
+            });
+
+            let mut prereqs: Vec<Value> = entity
+                .prerequisites
+                .iter()
+                .map(|p| json!({ "kind": p.kind, "expression": p.expression }))
+                .collect();
+            prereqs.sort_by(|a, b| {
+                a["kind"]
+                    .as_str()
+                    .cmp(&b["kind"].as_str())
+                    .then_with(|| a["expression"].as_str().cmp(&b["expression"].as_str()))
+            });
+
+            json!({
+                "name": entity.name,
+                "entity_type": type_key,
+                "effects": effects,
+                "prerequisites": prereqs,
+            })
+        })
+        .collect();
+
+    // Stable sort by (entity_type, name) regardless of parse order.
+    entities.sort_by(|a, b| {
+        a["entity_type"]
+            .as_str()
+            .cmp(&b["entity_type"].as_str())
+            .then_with(|| a["name"].as_str().cmp(&b["name"].as_str()))
+    });
+
+    json!({ "entities": entities })
+}
+
+/// Produce a human-readable diff summary between two `core_snapshot` values,
+/// naming the specific entity and field that diverged.  Used in assertion
+/// failure messages.
+fn diff_core_snapshots(before: &Value, after: &Value) -> String {
+    let empty = vec![];
+    let before_entities = before["entities"].as_array().unwrap_or(&empty);
+    let after_entities = after["entities"].as_array().unwrap_or(&empty);
+
+    if before_entities.len() != after_entities.len() {
+        return format!(
+            "entity count changed: {} → {}",
+            before_entities.len(),
+            after_entities.len()
+        );
+    }
+
+    for (b, a) in before_entities.iter().zip(after_entities.iter()) {
+        let name = b["name"].as_str().unwrap_or("?");
+        let etype = b["entity_type"].as_str().unwrap_or("?");
+        if b["name"] != a["name"] || b["entity_type"] != a["entity_type"] {
+            return format!(
+                "entity identity changed: ({etype}, {name}) → ({}, {})",
+                a["entity_type"].as_str().unwrap_or("?"),
+                a["name"].as_str().unwrap_or("?"),
+            );
+        }
+        if b["effects"] != a["effects"] {
+            return format!(
+                "effects mismatch for entity ({etype}, {name}):\n  before: {}\n  after:  {}",
+                b["effects"], a["effects"]
+            );
+        }
+        if b["prerequisites"] != a["prerequisites"] {
+            return format!(
+                "prerequisites mismatch for entity ({etype}, {name}):\n  before: {}\n  after:  {}",
+                b["prerequisites"], a["prerequisites"]
+            );
+        }
+    }
+
+    // Snapshots are equal — no diff to report.
+    String::new()
+}
+
+/// Fixtures included in the **canonical** roundtrip test.
+///
+/// More permissive than the text-fidelity filter.  The canonical test only checks
+/// artisan-core fields (name, entity_type, effects, prerequisites), so it can include
+/// fixtures where the text form changes across the roundtrip.
+fn should_canonical_roundtrip_fixture(path: &Path) -> bool {
+    !matches!(
+        path.file_name().and_then(|f| f.to_str()),
+        // Policy tokens have no emit path; re-parsing yields fewer entities.
+        Some("roundtrip_policy_tokens.lst")
+    )
+}
+
+/// Print the canonical artisan-core content across all fixture files.
+///
+/// Provides a readable map of what the canonical model currently captures vs. what
+/// remains only in `pcgen_*` projected attributes.  Run with `--nocapture` to see output.
+#[test]
+fn canonical_coverage_report() {
+    let root = fixture_root();
+    let files = collect_all_fixture_files(&root).expect("collect fixture files");
+
+    let mut total_entities = 0usize;
+    let mut entities_with_effects = 0usize;
+    let mut entities_with_prereqs = 0usize;
+    let mut entities_with_both = 0usize;
+    let mut entities_with_neither = 0usize;
+
+    for file in &files {
+        if !should_canonical_roundtrip_fixture(file) {
+            continue;
+        }
+        let source_name = file.file_name().and_then(|f| f.to_str()).unwrap_or("?");
+        let ext = file.extension().and_then(|e| e.to_str())
+            .map(|e| e.to_ascii_lowercase()).unwrap_or_default();
+        let text = fs::read_to_string(file).expect("read");
+        let cat = parse_text_to_catalog(&text, source_name, &ext);
+
+        for entity in &cat.entities {
+            total_entities += 1;
+            let has_effects = !entity.effects.is_empty();
+            let has_prereqs = !entity.prerequisites.is_empty();
+            match (has_effects, has_prereqs) {
+                (true, true)   => entities_with_both += 1,
+                (true, false)  => entities_with_effects += 1,
+                (false, true)  => entities_with_prereqs += 1,
+                (false, false) => entities_with_neither += 1,
+            }
+        }
+    }
+
+    println!("\n=== Canonical Model Coverage Report ===");
+    println!("Total entities:            {total_entities}");
+    println!("  with effects only:       {entities_with_effects}");
+    println!("  with prerequisites only: {entities_with_prereqs}");
+    println!("  with both:               {entities_with_both}");
+    println!("  with neither (sparse):   {entities_with_neither}");
+    let pct = if total_entities > 0 {
+        100 * (total_entities - entities_with_neither) / total_entities
+    } else { 0 };
+    println!("  canonical coverage:      {pct}% have ≥1 canonical field");
+    println!(
+        "\nNote: 'sparse' entities have game content only in pcgen_* attributes."
+    );
+    println!("These represent the remaining work to deepen the canonical model.\n");
+}
+
+/// Canonical artisan-core roundtrip: parse → emit → re-parse, then compare ONLY the
+/// artisan-core canonical fields (name, entity_type, effects, prerequisites).
+///
+/// All `pcgen_*` projected attributes are intentionally excluded from this comparison.
+/// Sparseness in the snapshot — an entity with `effects: []` despite having complex
+/// game mechanics — is expected and deliberate: it reveals exactly what work remains
+/// to lift more semantic content into the artisan-core canonical model.
+#[test]
+fn canonical_roundtrip_all_fixture_files() {
+    let root = fixture_root();
+    let files = collect_all_fixture_files(&root).expect("collect fixture files");
+    let mut exercised = 0usize;
+
+    for file in &files {
+        if !should_canonical_roundtrip_fixture(file) {
+            continue;
+        }
+
+        let source_name = file
+            .file_name()
+            .and_then(|f| f.to_str())
+            .unwrap_or("fixture");
+        let ext = file
+            .extension()
+            .and_then(|e| e.to_str())
+            .map(|e| e.to_ascii_lowercase())
+            .unwrap_or_else(|| "unknown".to_string());
+
+        let original_text = fs::read_to_string(file)
+            .unwrap_or_else(|e| panic!("read fixture {}: {e}", file.display()));
+
+        let first = parse_text_to_catalog(&original_text, source_name, &ext);
+        let generated = unparse_catalog_to_text(&first);
+        let second = parse_text_to_catalog(&generated, source_name, &ext);
+
+        let before = core_snapshot(&first);
+        let after = core_snapshot(&second);
+
+        if before != after {
+            let diff = diff_core_snapshots(&before, &after);
+            panic!(
+                "canonical roundtrip mismatch for {}:\n{diff}",
+                file.display()
+            );
+        }
+
+        exercised += 1;
+    }
+
+    assert!(exercised > 0, "no canonical roundtrip fixture files exercised");
+}
+
 /// Build a snapshot focused on text-level fidelity.
 ///
 /// Each line is normalised by sorting its pipe/tab-delimited tokens
