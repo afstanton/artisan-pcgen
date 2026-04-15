@@ -2,16 +2,16 @@
 Files scanned: 9447
 Total lines processed: 848333
 Semantic roundtrip: 3523 passed / 5924 failed
-Canonical roundtrip: 6871 passed / 2576 failed
+Canonical roundtrip: 5797 passed / 3650 failed
 
 === Canonical Model Coverage Report ===
 Total entities:                    558572
   effects + prerequisites:         42715
   effects only:                    130867
   prerequisites only:              52729
-  canonical attrs / citations:     198816
-  truly sparse (pcgen_* only):     133445
-  canonical coverage:              76% have >=1 canonical field
+  canonical attrs / citations:     251980
+  truly sparse (pcgen_* only):     80281
+  canonical coverage:              85% have >=1 canonical field
 
 === Effect Kinds Across All Entities ===
 235670 | BONUS
@@ -98,23 +98,37 @@ Total entities:                    558572
 165578 | category
 137568 | description
 107855 | key
+ 76643 | visible
+ 72768 | abilities
  63697 | cost
  39484 | weight
+ 39090 | classes
+ 25272 | school
  24244 | size
  22714 | sortkey
  20198 | outputname
+ 11505 | option
+ 11294 | source_short
   9802 | sab
   9771 | move
   9244 | natural_attacks
+  8898 | descriptors
   8878 | benefit
   8763 | racetype
+  8025 | cast
+  7952 | max_version
+  7952 | new_key
   7564 | cr
   7346 | monsterclass
+  6935 | subschool
   6870 | cskill
   6620 | domains
+  4999 | source_date
   4879 | hitdie
+  4822 | source_web
   4495 | race_subtype
   4233 | explanation
+  3890 | known
   3379 | vision
   3358 | rank
   3164 | qty
@@ -130,86 +144,46 @@ Total entities:                    558572
   1202 | level_adjustment
   1094 | favored_class
    874 | infotext
-   825 | abbreviation
-   652 | spellstat
-   613 | sex
-   577 | region
-   367 | class
-   320 | newcategory
-   302 | hair
-   301 | eyes
-   295 | skin_tone
-   213 | deity_name
-   151 | cr_formula
-   151 | is_monster
-   148 | xp_penalty
-    52 | book
 
 === pcgen_* Attributes On Truly Sparse Entities ===
- 14084 | classes
- 13191 | abilities
-  6956 | option
-  6874 | cast
-  6837 | maxver
-  6837 | newkey
-  5120 | source_short
-  4908 | source_date
-  4716 | source_web
-  4651 | visible
-  3365 | known
-  1528 | dataformat
-  1290 | maxdevver
-  1263 | location
-  1208 | eqmods
-   898 | spelllevel
+  1243 | location
    869 | situations
-   751 | selectable
-   703 | required
+   864 | spelllevel
    591 | contains
    591 | number
-   589 | abilitycategories
-   574 | equipbuy
+   586 | abilitycategories
    571 | minxp
    496 | ccskillmax
    496 | cskillmax
    459 | spells
-   452 | context
-   442 | apply
-   434 | subrace
+   452 | eqmods
    420 | down
-   419 | descriptors
    418 | up
    403 | basestatscore
    403 | statrange
    390 | values
-   286 | hands
+   383 | context
    282 | weaponprof_catalog
+   271 | hands
    269 | items
-   251 | donotadd
    248 | sizenum
    247 | level
-   227 | school
+   245 | donotadd
    217 | hidetype
    213 | prohibitspell
    208 | aspects
    206 | forwardref
-   203 | sprop
    189 | companionlist
-   184 | keystat
-   166 | free
-   151 | udam
-   138 | facts
+   176 | sprop
+   145 | udam
    133 | domain_name
    115 | outputorder
-   114 | subschool
-   109 | useuntrained
-    99 | kits
-    92 | face
-    90 | specialtyknown
-    89 | reach
-    84 | legs
+    88 | facts
+    85 | keystat
     84 | spellrange
-    77 | spellknown
+    76 | spellknown
+    74 | equipbuy
+    71 | subrace
     70 | outputsheet
     69 | infosheet
     67 | distancefactor
@@ -221,4 +195,30 @@ Total entities:                    558572
     67 | unitset
     67 | weightfactor
     67 | weightpattern
+    67 | weightunit
+    63 | local
+    63 | userpool_name
+    63 | userpool_poolpoints
+    61 | global
+    60 | useuntrained
+    50 | apply
+    42 | legs
+    41 | points
+    36 | maxcost
+    35 | alignmentfeature
+    35 | currencyunitabbrev
+    35 | diesizes
+    35 | displayorder
+    35 | menuentry
+    34 | acname
+    34 | allowedmodes
+    34 | babattcyc
+    34 | babmaxatt
+    34 | babminval
+    34 | defaultunitset
+    34 | domainfeature
+    34 | headslots
+    34 | loadmult
+    34 | numslots
+    34 | reach
 

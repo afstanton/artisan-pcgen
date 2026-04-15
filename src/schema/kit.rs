@@ -25,10 +25,10 @@ static KIT_TOKENS: &[TokenDef] = &[
         key: "ABILITY",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Field("pcgen_abilities"),
+        artisan_mapping: ArtisanMapping::Field("abilities"),
         required: false,
     },
-    TokenDef::text("OPTION", "pcgen_option"),
+    TokenDef::text("OPTION", "option"),
     TokenDef {
         key: "EQUIPBUY",
         grammar: TokenGrammar::Text,

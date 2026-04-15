@@ -98,12 +98,12 @@ pub(crate) fn project_clause_attributes(
             }
             "SOURCESHORT" => {
                 attributes.insert(
-                    "pcgen_source_short".to_string(),
+                    "source_short".to_string(),
                     Value::String(value.clone()),
                 );
             }
             "SOURCEWEB" => {
-                attributes.insert("pcgen_source_web".to_string(), Value::String(value.clone()));
+                attributes.insert("source_web".to_string(), Value::String(value.clone()));
             }
             "SOURCELINK" => {
                 attributes.insert(
@@ -113,7 +113,7 @@ pub(crate) fn project_clause_attributes(
             }
             "SOURCEDATE" => {
                 attributes.insert(
-                    "pcgen_source_date".to_string(),
+                    "source_date".to_string(),
                     Value::String(value.clone()),
                 );
             }
@@ -287,8 +287,8 @@ pub(crate) fn project_clause_attributes(
             "MEMORIZE" => {
                 attributes.insert("pcgen_memorize".to_string(), parse_yes_no_or_string(value));
             }
-            "CAST" => append_string_attr(attributes, "pcgen_cast", value),
-            "KNOWN" => append_string_attr(attributes, "pcgen_known", value),
+            "CAST" => append_string_attr(attributes, "cast", value),
+            "KNOWN" => append_string_attr(attributes, "known", value),
             "KNOWNSPELLS" => {
                 attributes.insert(
                     "pcgen_knownspells".to_string(),
@@ -343,7 +343,7 @@ pub(crate) fn project_clause_attributes(
             "MONNONSKILLHD" => set_i64_or_string(attributes, "pcgen_monnonskillhd", value),
             "WEAPONBONUS" => append_string_attr(attributes, "weapon_bonus", value),
             "VISIBLE" => {
-                attributes.insert("pcgen_visible".to_string(), Value::String(value.clone()));
+                attributes.insert("visible".to_string(), Value::String(value.clone()));
             }
             "UDAM" => {
                 attributes.insert("pcgen_udam".to_string(), Value::String(value.clone()));
@@ -578,10 +578,10 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("pcgen_range".to_string(), Value::String(value.clone()));
             }
             "SCHOOL" => {
-                attributes.insert("pcgen_school".to_string(), Value::String(value.clone()));
+                attributes.insert("school".to_string(), Value::String(value.clone()));
             }
             "SUBSCHOOL" => {
-                attributes.insert("pcgen_subschool".to_string(), Value::String(value.clone()));
+                attributes.insert("subschool".to_string(), Value::String(value.clone()));
             }
             "COMPS" => {
                 attributes.insert("pcgen_comps".to_string(), Value::String(value.clone()));
@@ -632,7 +632,7 @@ pub(crate) fn project_clause_attributes(
             "XPCOST" => {
                 attributes.insert("pcgen_xpcost".to_string(), Value::String(value.clone()));
             }
-            "DESCRIPTOR" => append_string_attr(attributes, "pcgen_descriptors", value),
+            "DESCRIPTOR" => append_string_attr(attributes, "descriptors", value),
             "DOMAINS" => {
                 attributes.insert("domains".to_string(), Value::String(value.clone()));
             }
@@ -646,7 +646,7 @@ pub(crate) fn project_clause_attributes(
             "ITEM" => append_string_attr(attributes, "pcgen_items", value),
             "GEAR" => append_string_attr(attributes, "pcgen_gear", value),
             "KIT" => append_string_attr(attributes, "pcgen_kits", value),
-            "ABILITY" => append_string_attr(attributes, "pcgen_abilities", value),
+            "ABILITY" => append_string_attr(attributes, "abilities", value),
             "ABILITYCATEGORY" => append_string_attr(attributes, "pcgen_abilitycategories", value),
             "FEAT" => append_string_attr(attributes, "pcgen_feats", value),
             "EQUIPMENT" => append_string_attr(attributes, "equipment", value),
@@ -657,16 +657,16 @@ pub(crate) fn project_clause_attributes(
             "HIDETYPE" => append_string_attr(attributes, "pcgen_hidetype", value),
             "URL" => append_string_attr(attributes, "url", value),
             "OPTION" => {
-                attributes.insert("pcgen_option".to_string(), Value::String(value.clone()));
+                attributes.insert("option".to_string(), Value::String(value.clone()));
             }
             "MAXVER" => {
-                attributes.insert("pcgen_maxver".to_string(), Value::String(value.clone()));
+                attributes.insert("max_version".to_string(), Value::String(value.clone()));
             }
             "MAXDEVVER" => {
                 attributes.insert("pcgen_maxdevver".to_string(), Value::String(value.clone()));
             }
             "NEWKEY" => {
-                attributes.insert("pcgen_newkey".to_string(), Value::String(value.clone()));
+                attributes.insert("new_key".to_string(), Value::String(value.clone()));
             }
             "NEWCATEGORY" => {
                 attributes.insert("newcategory".to_string(), Value::String(value.clone()));
@@ -1329,7 +1329,7 @@ pub(crate) fn project_clause_attributes(
         attributes.insert("pcgen_facts".to_string(), Value::Array(facts));
     }
     if !class_lists.is_empty() {
-        attributes.insert("pcgen_classes".to_string(), Value::Array(class_lists));
+        attributes.insert("classes".to_string(), Value::Array(class_lists));
     }
     if !spell_blocks.is_empty() {
         attributes.insert("pcgen_spells".to_string(), Value::Array(spell_blocks));
@@ -1356,7 +1356,7 @@ pub(crate) fn project_decl_token_value(
     attributes: &mut IndexMap<String, Value>,
 ) {
     match decl_token.to_ascii_uppercase().as_str() {
-        "ABILITY" => append_string_attr(attributes, "pcgen_abilities", decl_value),
+        "ABILITY" => append_string_attr(attributes, "abilities", decl_value),
         "ABILITYCATEGORY" => append_string_attr(attributes, "pcgen_abilitycategories", decl_value),
         "FEAT" => append_string_attr(attributes, "pcgen_feats", decl_value),
         "EQUIPMENT" => append_string_attr(attributes, "equipment", decl_value),

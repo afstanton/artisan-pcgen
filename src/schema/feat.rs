@@ -41,7 +41,7 @@ static FEAT_TOKENS: &[TokenDef] = &[
     TokenDef::pipe_positional_repeatable("FOLLOWERS", &["type", "limit"], "pcgen_followers"),
     TokenDef::pipe_list_repeatable("CCSKILL", "pcgen_ccskill"),
     TokenDef::pipe_list_repeatable("UNENCUMBEREDMOVE", "pcgen_unencumberedmove"),
-    TokenDef::text("VISIBLE", "pcgen_visible"),
+    TokenDef::text("VISIBLE", "visible"),
     TokenDef {
         key: "MOVECLONE",
         grammar: TokenGrammar::Text,

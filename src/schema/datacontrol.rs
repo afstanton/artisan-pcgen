@@ -9,7 +9,7 @@ use crate::schema::{HeadFormat, LineGrammar, TokenDef};
 static FACTSETDEF_TOKENS: &[TokenDef] = &[
     TokenDef::text_required("FACTSETDEF", "pcgen_factsetdef"),
     TokenDef::text("DATAFORMAT", "pcgen_dataformat"),
-    TokenDef::text("VISIBLE", "pcgen_visible"),
+    TokenDef::text("VISIBLE", "visible"),
     TokenDef::text("SELECTABLE", "pcgen_selectable"),
     TokenDef::text("REQUIRED", "pcgen_required"),
     TokenDef::text("DISPLAYNAME", "pcgen_displayname"),

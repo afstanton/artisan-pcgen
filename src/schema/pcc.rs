@@ -24,9 +24,9 @@ static PCC_TOKENS: &[TokenDef] = &[
     TokenDef::text("CAMPAIGN", "pcgen_campaign"),
     TokenDef::text("SOURCELONG", "pcgen_source_long"),
     TokenDef::text("SOURCE", "pcgen_source"),
-    TokenDef::text("SOURCESHORT", "pcgen_source_short"),
-    TokenDef::text("SOURCEWEB", "pcgen_source_web"),
-    TokenDef::text("SOURCEDATE", "pcgen_source_date"),
+    TokenDef::text("SOURCESHORT", "source_short"),
+    TokenDef::text("SOURCEWEB", "source_web"),
+    TokenDef::text("SOURCEDATE", "source_date"),
     // Publisher
     TokenDef::text("PUBNAMELONG", "pcgen_publisher_long"),
     TokenDef::text("PUBNAMESHORT", "pcgen_publisher_short"),
@@ -40,7 +40,7 @@ static PCC_TOKENS: &[TokenDef] = &[
         key: "ABILITY",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Field("pcgen_abilities"),
+        artisan_mapping: ArtisanMapping::Field("abilities"),
         required: false,
     },
     TokenDef {
@@ -196,16 +196,16 @@ static PCC_TOKENS: &[TokenDef] = &[
     TokenDef::text("DATAFORMAT", "pcgen_dataformat"),
     TokenDef::text("EXPLANATION", "explanation"),
     TokenDef::text("DISPLAYNAME", "pcgen_displayname"),
-    TokenDef::text("VISIBLE", "pcgen_visible"),
+    TokenDef::text("VISIBLE", "visible"),
     TokenDef::yesno("SHOWINMENU", "pcgen_showinmenu"),
     TokenDef::yesno("ISMATURE", "pcgen_ismature"),
     TokenDef::text("REQUIRED", "pcgen_required"),
     TokenDef::text("SELECTABLE", "pcgen_selectable"),
     TokenDef::text("NAMEISPI", "pcgen_nameispi"),
     TokenDef::text("DESCISPI", "pcgen_descispi"),
-    TokenDef::text("MAXVER", "pcgen_maxver"),
+    TokenDef::text("MAXVER", "max_version"),
     TokenDef::text("MAXDEVVER", "pcgen_maxdevver"),
-    TokenDef::text("NEWKEY", "pcgen_newkey"),
+    TokenDef::text("NEWKEY", "new_key"),
     TokenDef {
         key: "FORWARDREF",
         grammar: TokenGrammar::PipeList,
@@ -241,7 +241,7 @@ static PCC_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Field("url"),
         required: false,
     },
-    TokenDef::text("OPTION", "pcgen_option"),
+    TokenDef::text("OPTION", "option"),
     // Path to a help HTML file bundled with the campaign (e.g. HELP:./help_spycraft.html)
     TokenDef::text("HELP", "pcgen_help"),
 ];
@@ -282,7 +282,7 @@ static ISMATURE_INCLUDE_TOKENS: &[TokenDef] = &[
     PRECAMPAIGN_TOKEN,
 ];
 static ABILITY_INCLUDE_TOKENS: &[TokenDef] = &[
-    TokenDef::text_required("ABILITY", "pcgen_abilities"),
+    TokenDef::text_required("ABILITY", "abilities"),
     PRECAMPAIGN_TOKEN,
 ];
 static ABILITYCATEGORY_INCLUDE_TOKENS: &[TokenDef] = &[

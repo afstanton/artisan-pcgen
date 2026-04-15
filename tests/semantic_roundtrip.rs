@@ -704,10 +704,6 @@ fn canonical_coverage_report() {
         "pcgen_decl_value",
         "pcgen_mechanical_signals",
         "pcgen_entity_type_key",
-        "decl_token",
-        "decl_value",
-        "mechanical_signals",
-        "entity_type_key",
     ];
 
     let mut total_entities = 0usize;
@@ -1701,10 +1697,10 @@ fn ability_grant_clause_projects_to_effects() {
         "Special Ability|AUTOMATIC|Companion Bond"
     );
 
-    // The pcgen_abilities attribute should also still be set (emit path uses it)
+    // The abilities attribute should also still be set (emit path uses it)
     assert!(
-        entity.attributes.contains_key("pcgen_abilities"),
-        "pcgen_abilities attribute should be set alongside the effect"
+        entity.attributes.contains_key("abilities"),
+        "abilities attribute should be set alongside the effect"
     );
 }
 

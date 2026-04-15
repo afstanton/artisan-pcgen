@@ -16,7 +16,7 @@ static SKILL_TOKENS: &[TokenDef] = &[
         key: "CLASSES",
         grammar: TokenGrammar::PipeGroups,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Field("pcgen_classes"),
+        artisan_mapping: ArtisanMapping::Field("classes"),
         required: false,
     },
     // SITUATION adds a conditional modifier to the skill
@@ -35,7 +35,7 @@ static SKILL_TOKENS: &[TokenDef] = &[
     TokenDef::yesno("EXCLUSIVE", "pcgen_exclusive"),
     TokenDef::text("KEYSTAT", "pcgen_keystat"),
     TokenDef::text("ACHECK", "pcgen_accheck"),
-    TokenDef::text("VISIBLE", "pcgen_visible"),
+    TokenDef::text("VISIBLE", "visible"),
     // PCG character file: CLASSBOUGHT bracket group [CLASS:Wizard|RANKS:3.0|COST:1|CLASSSKILL:Y]
     // A skill may have multiple CLASSBOUGHT entries (one per class), written as adjacent groups
     // with no pipe separator: CLASSBOUGHT:[...]CLASSBOUGHT:[...]

@@ -89,7 +89,7 @@ pub(crate) fn project_semantics(
                 // this entry is required for correct emit on those entity types.
                 || key == "TEMPLATE"
                 // ABILITY:Category|AUTO|Name grants an ability — a game-mechanical effect.
-                // The emit path reads from pcgen_abilities (attribute), so there is no
+                // The emit path reads from the abilities attribute, so there is no
                 // double-emission risk.
                 || key == "ABILITY"
                 // LANGBONUS:Elvish|Dwarven grants bonus language choices — a canonical grant.

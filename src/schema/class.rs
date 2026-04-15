@@ -37,14 +37,14 @@ static CLASS_TOKENS: &[TokenDef] = &[
         key: "CAST",
         grammar: TokenGrammar::CommaList,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Field("pcgen_cast"),
+        artisan_mapping: ArtisanMapping::Field("cast"),
         required: false,
     },
     TokenDef {
         key: "KNOWN",
         grammar: TokenGrammar::CommaList,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Field("pcgen_known"),
+        artisan_mapping: ArtisanMapping::Field("known"),
         required: false,
     },
     TokenDef {
@@ -107,7 +107,7 @@ static CLASS_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Field("weapon_bonus"),
         required: false,
     },
-    TokenDef::text("VISIBLE", "pcgen_visible"),
+    TokenDef::text("VISIBLE", "visible"),
     TokenDef::pipe_list_repeatable("COMPANIONLIST", "pcgen_companionlist"),
     TokenDef {
         key: "DEITY",
@@ -234,7 +234,7 @@ static CLASS_TOKENS: &[TokenDef] = &[
         key: "ABILITY",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Field("pcgen_abilities"),
+        artisan_mapping: ArtisanMapping::Field("abilities"),
         required: false,
     },
     // .pcg character-file sub-tokens (appear in CLASS lines inside .pcg files)

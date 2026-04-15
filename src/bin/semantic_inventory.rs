@@ -21,10 +21,6 @@ const INFRASTRUCTURE_ATTRS: &[&str] = &[
     "pcgen_decl_value",
     "pcgen_mechanical_signals",
     "pcgen_entity_type_key",
-    "decl_token",
-    "decl_value",
-    "mechanical_signals",
-    "entity_type_key",
 ];
 
 #[derive(Debug, Clone)]

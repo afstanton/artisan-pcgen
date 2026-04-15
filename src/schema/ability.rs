@@ -38,7 +38,7 @@ static ABILITY_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Effect,
         required: false,
     },
-    TokenDef::text("VISIBLE", "pcgen_visible"),
+    TokenDef::text("VISIBLE", "visible"),
     // Spell-like abilities: SPELLS:mode|TIMES=formula|CASTERLEVEL=formula|spell,...
     TokenDef {
         key: "SPELLS",

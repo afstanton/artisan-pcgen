@@ -191,26 +191,62 @@ pub fn parse_file(path: &Path) -> io::Result<ParsedCatalog> {
     Ok(parse_text_to_catalog(&text, source_name, &ext))
 }
 
-pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> ParsedCatalog {
-    let type_key = format!("pcgen.{ext}");
-    let entity_type_id = deterministic_id(ENTITY_TYPE_NAMESPACE, &type_key);
+/// Find an existing EntityType whose PCGen schema key ExternalId matches
+/// `schema_key`, or create one with a deterministic id and insert it.
+/// Returns the `CanonicalId` of the found-or-created type.
+///
+/// `entity_types` is keyed by PCGen schema key (e.g. `"pcgen:entity:race"`)
+/// and acts as the accumulator during a single `parse_text_to_catalog` call.
+/// `game_system` is `None` during the parse loop and is back-filled after
+/// the PCC metadata has been read.
+fn find_or_create_entity_type(
+    entity_types: &mut BTreeMap<String, EntityType>,
+    schema_key: &str,
+) -> CanonicalId {
+    if let Some(et) = entity_types.get(schema_key) {
+        return et.id;
+    }
+    let id = deterministic_id(ENTITY_TYPE_NAMESPACE, schema_key);
+    let display_name = schema_key
+        .rsplit(':')
+        .next()
+        .unwrap_or(schema_key)
+        .replace('-', " ")
+        .split_whitespace()
+        .map(|w| {
+            let mut c = w.chars();
+            match c.next() {
+                None => String::new(),
+                Some(f) => f.to_uppercase().collect::<String>() + c.as_str(),
+            }
+        })
+        .collect::<Vec<_>>()
+        .join(" ");
+    entity_types.insert(
+        schema_key.to_string(),
+        EntityType {
+            id,
+            key: schema_key.to_string(),
+            name: display_name,
+            game_system: None,
+            parent: None,
+            fields: Vec::new(),
+            relationships: Vec::new(),
+            external_ids: vec![ExternalId {
+                format: FormatId::Pcgen,
+                namespace: Some("entity_type_key".to_string()),
+                value: schema_key.to_string(),
+            }],
+            provenance: None,
+        },
+    );
+    id
+}
 
-    let entity_type = EntityType {
-        id: entity_type_id,
-        key: type_key,
-        name: format!("PCGen {}", ext.to_ascii_uppercase()),
-        parent: None,
-        fields: Vec::new(),
-        relationships: Vec::new(),
-        descriptive_fields: IndexMap::new(),
-        mechanical_fields: IndexMap::new(),
-        external_ids: vec![ExternalId {
-            format: FormatId::Pcgen,
-            namespace: Some("entity_type".to_string()),
-            value: format!("pcgen:{ext}"),
-        }],
-        provenance: None,
-    };
+pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> ParsedCatalog {
+    // Accumulates per-schema EntityTypes as entities are parsed.
+    // Keyed by PCGen schema key, e.g. "pcgen:entity:race".
+    let mut entity_types: BTreeMap<String, EntityType> = BTreeMap::new();
 
     let mut metadata = metadata::PcgenMetadata::default();
     let mut entities = Vec::new();
@@ -340,6 +376,7 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
             "pcgen_entity_type_key".to_string(),
             Value::String(inferred_type_key.clone()),
         );
+        let schema_entity_type_id = find_or_create_entity_type(&mut entity_types, &inferred_type_key);
         let mechanical_signals = signals::extract_mechanical_signals(&supported_clauses);
         if !mechanical_signals.is_empty() {
             attributes.insert(
@@ -421,7 +458,7 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
         let new_idx = entities.len();
         entities.push(Entity {
             id: entity_id,
-            entity_type: entity_type_id,
+            entity_type: schema_entity_type_id,
             name,
             attributes,
             effects,
@@ -541,11 +578,20 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
         citation.source = source_id;
     }
 
+    // Back-fill game_system onto every EntityType created during parsing.
+    // The primary game system is the first GAMEMODE value (if any).
+    let primary_game_system = source.game_systems.first().cloned();
+    if let Some(ref gs) = primary_game_system {
+        for et in entity_types.values_mut() {
+            et.game_system = Some(gs.clone());
+        }
+    }
+
     ParsedCatalog {
         publishers,
         sources: vec![source],
         citations,
-        entity_types: vec![entity_type],
+        entity_types: entity_types.into_values().collect(),
         entities,
         ..ParsedCatalog::default()
     }
@@ -1097,7 +1143,7 @@ mod tests {
 
         let classes = entity
             .attributes
-            .get("pcgen_classes")
+            .get("classes")
             .and_then(Value::as_array)
             .expect("classes should be projected");
         assert_eq!(
@@ -1134,14 +1180,14 @@ mod tests {
         assert_eq!(
             entity
                 .attributes
-                .get("pcgen_school")
+                .get("school")
                 .and_then(Value::as_str),
             Some("Evocation")
         );
         assert_eq!(
             entity
                 .attributes
-                .get("pcgen_subschool")
+                .get("subschool")
                 .and_then(Value::as_str),
             Some("Force")
         );

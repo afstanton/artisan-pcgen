@@ -39,7 +39,7 @@ static TEMPLATE_TOKENS: &[TokenDef] = &[
     TokenDef::text("CR", "cr"),
     TokenDef::text("REGION", "region"),
     TokenDef::text("SUBREGION", "pcgen_subregion"),
-    TokenDef::text("VISIBLE", "pcgen_visible"),
+    TokenDef::text("VISIBLE", "visible"),
     TokenDef::text("REMOVABLE", "pcgen_removable"),
     TokenDef::text("HITDIE", "hitdie"),
     TokenDef {

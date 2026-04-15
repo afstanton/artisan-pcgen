@@ -11,9 +11,9 @@ pub static ABILITY_MIGRATION_SCHEMA: LineGrammar = LineGrammar {
     head_token: Some("ABILITY"),
     head_format: HeadFormat::TokenPrefixed,
     tokens: &[
-        TokenDef::text("MAXVER", "pcgen_maxver"),
+        TokenDef::text("MAXVER", "max_version"),
         TokenDef::text("MAXDEVVER", "pcgen_maxdevver"),
-        TokenDef::text("NEWKEY", "pcgen_newkey"),
+        TokenDef::text("NEWKEY", "new_key"),
         TokenDef::text("NEWCATEGORY", "newcategory"),
     ],
     globals: &[],

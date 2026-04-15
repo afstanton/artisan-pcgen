@@ -30,13 +30,13 @@ static SKILL_GLOBALS: &[GlobalGroup] = &[
 
 static SPELL_TOKENS: &[TokenDef] = &[
     // Core spell descriptor tokens (from datafilesspells.html)
-    TokenDef::text("SCHOOL", "pcgen_school"),
-    TokenDef::text("SUBSCHOOL", "pcgen_subschool"),
+    TokenDef::text("SCHOOL", "school"),
+    TokenDef::text("SUBSCHOOL", "subschool"),
     TokenDef {
         key: "DESCRIPTOR",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Field("pcgen_descriptors"),
+        artisan_mapping: ArtisanMapping::Field("descriptors"),
         required: false,
     },
     // Class/domain spell levels
@@ -44,7 +44,7 @@ static SPELL_TOKENS: &[TokenDef] = &[
         key: "CLASSES",
         grammar: TokenGrammar::PipeGroups,
         cardinality: Cardinality::Once,
-        artisan_mapping: ArtisanMapping::Field("pcgen_classes"),
+        artisan_mapping: ArtisanMapping::Field("classes"),
         required: false,
     },
     TokenDef {

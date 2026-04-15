@@ -7,7 +7,7 @@ use crate::schema::{ArtisanMapping, Cardinality, HeadFormat, LineGrammar, TokenD
 static GEAR_TOKENS: &[TokenDef] = &[
     TokenDef::text("LOCATION", "pcgen_location"),
     TokenDef::text("QTY", "qty"),
-    TokenDef::text("OPTION", "pcgen_option"),
+    TokenDef::text("OPTION", "option"),
     TokenDef::text("LOOKUP", "pcgen_lookup"),
     TokenDef::text("SIZE", "size"),
     TokenDef::text("MAXCOST", "pcgen_maxcost"),

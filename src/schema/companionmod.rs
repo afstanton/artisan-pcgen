@@ -20,7 +20,7 @@ static FOLLOWER_TOKENS: &[TokenDef] = &[
         key: "ABILITY",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Field("pcgen_abilities"),
+        artisan_mapping: ArtisanMapping::Field("abilities"),
         required: false,
     },
     TokenDef::pipe_positional_repeatable("KIT", &["count", "kit"], "pcgen_kits"),
@@ -30,7 +30,7 @@ static MASTERBONUSRACE_TOKENS: &[TokenDef] = &[TokenDef {
     key: "ABILITY",
     grammar: TokenGrammar::PipeList,
     cardinality: Cardinality::Repeatable,
-    artisan_mapping: ArtisanMapping::Field("pcgen_abilities"),
+    artisan_mapping: ArtisanMapping::Field("abilities"),
     required: false,
 }];
 
