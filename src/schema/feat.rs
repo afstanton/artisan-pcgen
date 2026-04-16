@@ -12,6 +12,13 @@ use crate::schema::{
 static ASPECT_SLOTS: &[&str] = &["name", "value", "formula"];
 
 static FEAT_TOKENS: &[TokenDef] = &[
+    TokenDef {
+        key: "ABILITY",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("abilities"),
+        required: false,
+    },
     TokenDef::integer("ADDSPELLLEVEL", "pcgen_addspelllevel"),
     TokenDef::pipe_positional_repeatable("ASPECT", ASPECT_SLOTS, "aspects"),
     TokenDef {
@@ -68,6 +75,7 @@ static FEAT_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::SourcePage,
     GlobalGroup::SourceLink,
     GlobalGroup::OutputName,
+    GlobalGroup::SortKey,
     GlobalGroup::CSkill,
     GlobalGroup::Sab,
     GlobalGroup::ChangeProf,

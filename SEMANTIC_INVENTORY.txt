@@ -208,3 +208,134 @@ Total entities:                    558572
      1 | subregion
      1 | umult
 
+=== Semantic Roundtrip Failure Patterns ===
+Files with entity count change: 152
+Files with effects change:      75650
+Files with prereqs change:      40122
+
+--- Attributes DROPPED after roundtrip (emitter fails to emit) ---
+ 46441 | abilities
+ 28608 | category
+ 27058 | visible
+ 20077 | sortkey
+ 11320 | type
+  8991 | pcgen_eqmods
+  8786 | pcgen_source_page
+  7292 | benefit
+  6724 | pcgen_source_long
+  6603 | description
+  6603 | pcgen_desc
+  6564 | source_short
+  5340 | kits
+  5018 | pcgen_range
+  4367 | pcgen_spells
+  4349 | pcgen_nameispi
+  4167 | pcgen_name_pi
+  3678 | key
+  2677 | cost
+  2624 | aspects
+  2574 | pcgen_mult
+  2012 | pcgen_stack
+  1833 | pcgen_name_open
+  1289 | pcgen_facts
+   918 | spell_known
+   911 | cskill
+   864 | max_version
+   864 | new_key
+   835 | equipment
+   800 | pcgen_template
+   798 | url
+   737 | pcgen_info
+   656 | infotext
+   603 | ability_categories
+   592 | natural_attacks
+   582 | source_date
+   574 | source_web
+   504 | pcgen_role
+   455 | face
+   447 | pcgen_descispi
+   436 | move
+   433 | pcgen_precampaign
+   426 | spell_level
+   419 | legs
+   397 | udam
+   396 | hands
+   366 | outputname
+   358 | abbreviation
+   356 | pcgen_dr
+   355 | pcgen_umult
+   321 | class
+   293 | sab
+   270 | pcgen_sr
+   263 | pcgen_weaponprof_catalog
+   260 | pcgen_addspelllevel
+   244 | serves_as
+   244 | vision
+   231 | level
+   230 | companion_list
+   192 | pcgen_hidetype
+
+--- Attributes ADDED after roundtrip (emitter invents new tokens) ---
+  6050 | pcgen_source_page
+  5988 | description
+  5988 | pcgen_desc
+  3572 | key
+  2574 | pcgen_mult
+  2563 | type
+  2514 | aspects
+  2175 | visible
+  2012 | pcgen_stack
+  1921 | cost
+  1248 | pcgen_facts
+  1215 | pcgen_spells
+   888 | spell_known
+   865 | cskill
+   835 | equipment
+   798 | url
+   656 | infotext
+   603 | ability_categories
+   517 | source_short
+   495 | source_date
+   474 | source_web
+   450 | category
+   447 | pcgen_descispi
+   418 | pcgen_template
+   382 | pcgen_precampaign
+   370 | spell_level
+   357 | outputname
+   270 | sortkey
+   263 | pcgen_weaponprof_catalog
+   260 | pcgen_addspelllevel
+
+--- Attributes CHANGED value after roundtrip (format normalization) ---
+ 38254 | pcgen_desc
+ 37145 | type
+ 33434 | description
+ 26660 | key
+ 21785 | pcgen_source_page
+ 10416 | category
+  1758 | spell_known
+   947 | aspects
+   947 | pcgen_facts
+   931 | pcgen_spells
+   793 | spell_level
+   737 | sab
+   558 | sortkey
+   309 | equipment
+   297 | visible
+   278 | classes
+   242 | url
+   197 | cskill
+   142 | outputname
+   129 | infotext
+   128 | cost
+   127 | benefit
+    81 | natural_attacks
+    76 | move
+    76 | pcgen_stack
+    75 | serves_as
+    56 | pcgen_template
+    55 | output_order
+    54 | userpool_name
+    44 | pcgen_mult
+

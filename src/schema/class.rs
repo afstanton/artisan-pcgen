@@ -264,6 +264,7 @@ static CLASS_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::SourcePage,
     GlobalGroup::SourceLink,
     GlobalGroup::OutputName,
+    GlobalGroup::SortKey,
     GlobalGroup::LangBonus,
     GlobalGroup::CSkill,
     GlobalGroup::Sab,

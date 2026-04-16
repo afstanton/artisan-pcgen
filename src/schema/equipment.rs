@@ -100,6 +100,13 @@ static EQUIPMENT_TOKENS: &[TokenDef] = &[
     // Both appear as `TOKEN:value` clauses in equipmod entity definitions.
     TokenDef::text("FORTIFICATION", "pcgen_fortification"),
     TokenDef::text("HEALING", "pcgen_healing"),
+    TokenDef {
+        key: "ABILITY",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("abilities"),
+        required: false,
+    },
 ];
 
 static EQUIPMENT_GLOBALS: &[GlobalGroup] = &[
@@ -117,6 +124,7 @@ static EQUIPMENT_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::SourcePage,
     GlobalGroup::SourceLink,
     GlobalGroup::OutputName,
+    GlobalGroup::SortKey,
     GlobalGroup::SourceMeta,
 ];
 

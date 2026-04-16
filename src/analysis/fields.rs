@@ -386,12 +386,11 @@ pub(crate) fn project_clause_attributes(
                 attributes.insert("category".to_string(), Value::String(value.clone()));
             }
             "DESC" => {
-                // Store under the canonical "description" key. The legacy pcgen_desc key
-                // is retained as an alias for emit paths that read it by name.
-                attributes.insert("description".to_string(), Value::String(value.clone()));
-                attributes
-                    .entry("pcgen_desc".to_string())
-                    .or_insert_with(|| Value::String(value.clone()));
+                // Store under the canonical "description" key and keep pcgen_desc in sync.
+                // Both always reflect the last DESC value so they stay equal across roundtrips.
+                let v = Value::String(value.clone());
+                attributes.insert("description".to_string(), v.clone());
+                attributes.insert("pcgen_desc".to_string(), v);
             }
             "DESC.CLEAR" => {
                 attributes.insert("pcgen_desc_clear".to_string(), Value::Bool(true));

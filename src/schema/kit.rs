@@ -65,6 +65,7 @@ pub static KIT_SCHEMA: LineGrammar = LineGrammar {
     globals: &[
         GlobalGroup::Prerequisites,
         GlobalGroup::LangBonus,
+        GlobalGroup::SortKey,
         GlobalGroup::SourceMeta,
     ],
 };

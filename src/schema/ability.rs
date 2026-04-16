@@ -98,6 +98,13 @@ static ABILITY_TOKENS: &[TokenDef] = &[
     TokenDef::pipe_positional_repeatable("FOLLOWERS", &["type", "limit"], "pcgen_followers"),
     // .pcg sub-token: the choice(s) this feat/ability was applied to
     TokenDef::text("APPLIEDTO", "pcgen_appliedto"),
+    TokenDef {
+        key: "ABILITY",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("abilities"),
+        required: false,
+    },
 ];
 
 static ABILITY_GLOBALS: &[GlobalGroup] = &[
@@ -115,8 +122,10 @@ static ABILITY_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::SourcePage,
     GlobalGroup::SourceLink,
     GlobalGroup::OutputName,
+    GlobalGroup::SortKey,
     GlobalGroup::CSkill,
     GlobalGroup::Sab,
+    GlobalGroup::LangBonus,
     GlobalGroup::ChangeProf,
     GlobalGroup::ServesAs,
     GlobalGroup::Qualify,

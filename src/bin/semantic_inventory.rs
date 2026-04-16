@@ -49,6 +49,25 @@ struct CoverageTally {
     prereq_kind_counts: HashMap<String, usize>,
 }
 
+/// Tracks the *reasons* why semantic roundtrip fails across the corpus.
+/// All counts are keyed by attribute name or change type — no file paths stored.
+#[derive(Default)]
+struct SemanticFailureTally {
+    /// Files where entity count changed after roundtrip (before_count -> after_count, tally)
+    entity_count_changed: usize,
+    /// Attribute keys present before roundtrip but absent after (emitter drops them).
+    /// Key = attribute name, value = number of files where this was observed.
+    dropped_attrs: HashMap<String, usize>,
+    /// Attribute keys absent before roundtrip but present after (emitter adds them spuriously).
+    added_attrs: HashMap<String, usize>,
+    /// Attribute keys whose value changed across roundtrip (different format).
+    changed_attrs: HashMap<String, usize>,
+    /// Effects that changed (kind, target, value differ).
+    effects_changed: usize,
+    /// Prerequisites that changed.
+    prereqs_changed: usize,
+}
+
 #[derive(Default)]
 struct Progress {
     files_seen: usize,
@@ -81,6 +100,7 @@ fn main() -> io::Result<()> {
     let mut files = Vec::new();
     let mut total_lines = 0usize;
     let mut coverage = CoverageTally::default();
+    let mut failures = SemanticFailureTally::default();
     let mut progress = Progress::default();
 
     eprintln!("semantic_inventory: scanning {} root(s)", roots.len());
@@ -95,6 +115,7 @@ fn main() -> io::Result<()> {
                     &mut files,
                     &mut total_lines,
                     &mut coverage,
+                    &mut failures,
                     &mut progress,
                 )?;
             }
@@ -208,6 +229,49 @@ fn main() -> io::Result<()> {
         true,
     );
 
+    // --- Semantic failure pattern report ---
+    writeln!(report, "=== Semantic Roundtrip Failure Patterns ===").unwrap();
+    writeln!(
+        report,
+        "Files with entity count change: {}",
+        failures.entity_count_changed
+    )
+    .unwrap();
+    writeln!(
+        report,
+        "Files with effects change:      {}",
+        failures.effects_changed
+    )
+    .unwrap();
+    writeln!(
+        report,
+        "Files with prereqs change:      {}",
+        failures.prereqs_changed
+    )
+    .unwrap();
+    writeln!(report).unwrap();
+    write_sorted_counts(
+        &mut report,
+        "--- Attributes DROPPED after roundtrip (emitter fails to emit) ---",
+        &failures.dropped_attrs,
+        60,
+        false,
+    );
+    write_sorted_counts(
+        &mut report,
+        "--- Attributes ADDED after roundtrip (emitter invents new tokens) ---",
+        &failures.added_attrs,
+        30,
+        false,
+    );
+    write_sorted_counts(
+        &mut report,
+        "--- Attributes CHANGED value after roundtrip (format normalization) ---",
+        &failures.changed_attrs,
+        30,
+        false,
+    );
+
     if per_file {
         writeln!(report, "=== File Roundtrip Results ===").unwrap();
         for file in &files {
@@ -292,6 +356,7 @@ fn scan_directory(
     files: &mut Vec<FileReport>,
     total_lines: &mut usize,
     coverage: &mut CoverageTally,
+    failures: &mut SemanticFailureTally,
     progress: &mut Progress,
 ) -> io::Result<()> {
     if !path.is_dir() {
@@ -302,7 +367,7 @@ fn scan_directory(
         let entry = entry?;
         let child = entry.path();
         if child.is_dir() {
-            scan_directory(&child, files, total_lines, coverage, progress)?;
+            scan_directory(&child, files, total_lines, coverage, failures, progress)?;
             continue;
         }
 
@@ -344,6 +409,10 @@ fn scan_directory(
 
         let semantic_ok = semantic_before == semantic_after;
         let canonical_ok = core_before == core_after;
+
+        if !semantic_ok {
+            tally_semantic_failure(&semantic_before, &semantic_after, failures);
+        }
 
         let semantic_diff = if semantic_ok {
             None
@@ -635,6 +704,92 @@ fn diff_value_summary(before: &Value, after: &Value) -> String {
         );
     }
     "semantic snapshot differs".to_string()
+}
+
+/// For a single failed-roundtrip file, tally the patterns of semantic divergence.
+/// Records attribute-level changes (dropped, added, changed) without any file identity.
+///
+/// Entities are matched by (entity_type_key, name) rather than by sorted position,
+/// so sort-order shifts caused by entity-type-key changes don't produce false positives.
+fn tally_semantic_failure(
+    before: &Value,
+    after: &Value,
+    tally: &mut SemanticFailureTally,
+) {
+    let empty = vec![];
+    let before_entities = before["entities"].as_array().unwrap_or(&empty);
+    let after_entities = after["entities"].as_array().unwrap_or(&empty);
+
+    if before_entities.len() != after_entities.len() {
+        tally.entity_count_changed += 1;
+        return;
+    }
+
+    // Build an index: (entity_type, name) -> entity value, for quick lookup.
+    let mut after_index: BTreeMap<(String, String), &Value> = BTreeMap::new();
+    for a in after_entities {
+        let name = a["name"].as_str().unwrap_or("").to_string();
+        let etype = a["entity_type"].as_str().unwrap_or("").to_string();
+        after_index.insert((etype, name), a);
+    }
+
+    for b in before_entities {
+        let name = b["name"].as_str().unwrap_or("").to_string();
+        let etype = b["entity_type"].as_str().unwrap_or("").to_string();
+
+        let Some(a) = after_index.get(&(etype, name)) else {
+            // Entity disappeared after roundtrip — count all its attrs as dropped
+            let empty_obj = serde_json::Map::new();
+            for key in b["attributes"].as_object().unwrap_or(&empty_obj).keys() {
+                if !INFRASTRUCTURE_ATTRS.contains(&key.as_str()) {
+                    *tally.dropped_attrs.entry(key.clone()).or_insert(0) += 1;
+                }
+            }
+            continue;
+        };
+
+        // Check effects
+        if b["effects"] != a["effects"] {
+            tally.effects_changed += 1;
+        }
+        // Check prerequisites
+        if b["prerequisites"] != a["prerequisites"] {
+            tally.prereqs_changed += 1;
+        }
+
+        // Compare attributes key-by-key
+        let empty_obj = serde_json::Map::new();
+        let b_attrs = b["attributes"].as_object().unwrap_or(&empty_obj);
+        let a_attrs = a["attributes"].as_object().unwrap_or(&empty_obj);
+
+        // Keys present before but missing or changed after
+        for (key, b_val) in b_attrs {
+            if INFRASTRUCTURE_ATTRS.contains(&key.as_str()) {
+                continue;
+            }
+            match a_attrs.get(key) {
+                None => {
+                    // Dropped by emitter
+                    *tally.dropped_attrs.entry(key.clone()).or_insert(0) += 1;
+                }
+                Some(a_val) if a_val != b_val => {
+                    // Value changed across roundtrip
+                    *tally.changed_attrs.entry(key.clone()).or_insert(0) += 1;
+                }
+                _ => {}
+            }
+        }
+
+        // Keys present after but absent before (emitter invented them)
+        for key in a_attrs.keys() {
+            if INFRASTRUCTURE_ATTRS.contains(&key.as_str()) {
+                continue;
+            }
+            if !b_attrs.contains_key(key) {
+                *tally.added_attrs.entry(key.clone()).or_insert(0) += 1;
+            }
+        }
+    }
 }
 
 fn tally_coverage(catalog: &ParsedCatalog, coverage: &mut CoverageTally) {

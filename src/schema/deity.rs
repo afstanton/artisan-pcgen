@@ -35,6 +35,14 @@ static DEITY_TOKENS: &[TokenDef] = &[
     },
     TokenDef::text("SYMBOL", "pcgen_symbol"),
     TokenDef::text("PANTHEON", "pcgen_pantheon"),
+    TokenDef {
+        key: "ABILITY",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("abilities"),
+        required: false,
+    },
+    TokenDef::text("VISIBLE", "visible"),
 ];
 
 static DEITY_GLOBALS: &[GlobalGroup] = &[
@@ -52,6 +60,9 @@ static DEITY_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::SourcePage,
     GlobalGroup::SourceLink,
     GlobalGroup::OutputName,
+    GlobalGroup::SortKey,
+    GlobalGroup::CSkill,
+    GlobalGroup::Sab,
     GlobalGroup::SourceMeta,
 ];
 
