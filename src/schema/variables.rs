@@ -35,7 +35,7 @@ pub static GLOBAL_VARIABLE_SCHEMA: LineGrammar = LineGrammar {
 // _variables.lst: channel variable definition, e.g. CHANNEL:PC.STAT|NUMBER=StatScore
 static CHANNEL_VARIABLE_TOKENS: &[TokenDef] = &[
     TokenDef::text_required("CHANNEL", "pcgen_channel"),
-    TokenDef::text("NUMBER", "pcgen_number"),
+    TokenDef::text("NUMBER", "number"),
     TokenDef::text("EXPLANATION", "explanation"),
 ];
 

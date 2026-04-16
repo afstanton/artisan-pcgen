@@ -23,7 +23,7 @@ static CLASS_TOKENS: &[TokenDef] = &[
         key: "LANGAUTO",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Field("pcgen_langauto"),
+        artisan_mapping: ArtisanMapping::Field("lang_auto"),
         required: false,
     },
     // Spell-related
@@ -66,10 +66,10 @@ static CLASS_TOKENS: &[TokenDef] = &[
         key: "PROHIBITSPELL",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Field("pcgen_prohibitspell"),
+        artisan_mapping: ArtisanMapping::Field("prohibit_spell"),
         required: false,
     },
-    TokenDef::text("KNOWNSPELLSFROMSPECIALTY", "pcgen_knownspellsfromspecialty"),
+    TokenDef::text("KNOWNSPELLSFROMSPECIALTY", "known_spells_from_specialty"),
     // Prohibited spell schools (specialist wizards). Repeatable; each occurrence
     // is one school name. Also appears as a sub-token in .pcg CLASS lines.
     TokenDef {
@@ -108,7 +108,7 @@ static CLASS_TOKENS: &[TokenDef] = &[
         required: false,
     },
     TokenDef::text("VISIBLE", "visible"),
-    TokenDef::pipe_list_repeatable("COMPANIONLIST", "pcgen_companionlist"),
+    TokenDef::pipe_list_repeatable("COMPANIONLIST", "companion_list"),
     TokenDef {
         key: "DEITY",
         grammar: TokenGrammar::PipeList,
@@ -117,7 +117,7 @@ static CLASS_TOKENS: &[TokenDef] = &[
         required: false,
     },
     TokenDef::pipe_positional_repeatable("FOLLOWERS", &["type", "limit"], "pcgen_followers"),
-    TokenDef::text("UDAM", "pcgen_udam"),
+    TokenDef::text("UDAM", "udam"),
     TokenDef::integer("UMULT", "pcgen_umult"),
     // Sub-class / substitution
     TokenDef::integer("PROHIBITCOST", "pcgen_prohibitcost"),

@@ -977,7 +977,7 @@ mod tests {
         assert_eq!(
             catalog.entities[0]
                 .attributes
-                .get("pcgen_level")
+                .get("level")
                 .and_then(Value::as_i64),
             Some(8)
         );
@@ -992,7 +992,7 @@ mod tests {
         assert_eq!(
             catalog.entities[1]
                 .attributes
-                .get("pcgen_outputorder")
+                .get("output_order")
                 .and_then(Value::as_i64),
             Some(24)
         );
@@ -1256,7 +1256,7 @@ mod tests {
 
         let sprop = entity
             .attributes
-            .get("pcgen_sprop")
+            .get("sprop")
             .and_then(Value::as_array)
             .expect("sprop should be projected");
         assert_eq!(

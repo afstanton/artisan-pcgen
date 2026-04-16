@@ -11,10 +11,10 @@ static CLASSLEVEL_TOKENS: &[TokenDef] = &[
         key: "DONOTADD",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Field("pcgen_donotadd"),
+        artisan_mapping: ArtisanMapping::Field("do_not_add"),
         required: false,
     },
-    TokenDef::text("UDAM", "pcgen_udam"),
+    TokenDef::text("UDAM", "udam"),
     TokenDef::integer("UMULT", "pcgen_umult"),
 ];
 

@@ -10,8 +10,8 @@ use crate::schema::{
 };
 
 static BONUSSPELLLEVEL_TOKENS: &[TokenDef] = &[
-    TokenDef::integer("BASESTATSCORE", "pcgen_basestatscore"),
-    TokenDef::integer("STATRANGE", "pcgen_statrange"),
+    TokenDef::integer("BASESTATSCORE", "base_stat_score"),
+    TokenDef::integer("STATRANGE", "stat_range"),
 ];
 
 pub static BONUSSPELLLEVEL_SCHEMA: LineGrammar = LineGrammar {
@@ -52,7 +52,7 @@ pub static ALIGNMENTFEATURE_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     head_format: HeadFormat::TokenPrefixed,
     tokens: &[TokenDef::yesno(
         "ALIGNMENTFEATURE",
-        "pcgen_alignmentfeature",
+        "alignment_feature",
     )],
     globals: &[],
 };
@@ -63,7 +63,7 @@ pub static CURRENCYUNITABBREV_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     head_format: HeadFormat::TokenPrefixed,
     tokens: &[TokenDef::text_required(
         "CURRENCYUNITABBREV",
-        "pcgen_currencyunitabbrev",
+        "currency_unit_abbrev",
     )],
     globals: &[],
 };
@@ -72,7 +72,7 @@ pub static MENUENTRY_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:system:menuentry",
     head_token: Some("MENUENTRY"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text_required("MENUENTRY", "pcgen_menuentry")],
+    tokens: &[TokenDef::text_required("MENUENTRY", "menu_entry")],
     globals: &[],
 };
 
@@ -82,7 +82,7 @@ pub static DISPLAYORDER_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     head_format: HeadFormat::TokenPrefixed,
     tokens: &[TokenDef::text_required(
         "DISPLAYORDER",
-        "pcgen_displayorder",
+        "display_order",
     )],
     globals: &[],
 };
@@ -91,7 +91,7 @@ pub static DIESIZES_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:system:diesizes",
     head_token: Some("DIESIZES"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text_required("DIESIZES", "pcgen_diesizes")],
+    tokens: &[TokenDef::text_required("DIESIZES", "die_sizes")],
     globals: &[],
 };
 
@@ -101,7 +101,7 @@ pub static DEFAULTUNITSET_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     head_format: HeadFormat::TokenPrefixed,
     tokens: &[TokenDef::text_required(
         "DEFAULTUNITSET",
-        "pcgen_defaultunitset",
+        "default_unit_set",
     )],
     globals: &[],
 };
@@ -112,7 +112,7 @@ pub static DEFAULTDATASET_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     head_format: HeadFormat::TokenPrefixed,
     tokens: &[TokenDef::text_required(
         "DEFAULTDATASET",
-        "pcgen_defaultdataset",
+        "default_dataset",
     )],
     globals: &[],
 };
@@ -123,7 +123,7 @@ pub static ALLOWEDMODES_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     head_format: HeadFormat::TokenPrefixed,
     tokens: &[TokenDef::text_required(
         "ALLOWEDMODES",
-        "pcgen_allowedmodes",
+        "allowed_modes",
     )],
     globals: &[],
 };
@@ -132,7 +132,7 @@ pub static GAMEMODEKEY_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:system:gamemodekey",
     head_token: Some("GAMEMODEKEY"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text_required("GAMEMODEKEY", "pcgen_gamemodekey")],
+    tokens: &[TokenDef::text_required("GAMEMODEKEY", "game_mode_key")],
     globals: &[],
 };
 
@@ -140,7 +140,7 @@ pub static BABMAXATT_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:system:babmaxatt",
     head_token: Some("BABMAXATT"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::integer("BABMAXATT", "pcgen_babmaxatt")],
+    tokens: &[TokenDef::integer("BABMAXATT", "bab_max_att")],
     globals: &[],
 };
 
@@ -148,7 +148,7 @@ pub static BABMINVAL_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:system:babminval",
     head_token: Some("BABMINVAL"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::integer("BABMINVAL", "pcgen_babminval")],
+    tokens: &[TokenDef::integer("BABMINVAL", "bab_min_val")],
     globals: &[],
 };
 
@@ -156,7 +156,7 @@ pub static BABATTCYC_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:system:babattcyc",
     head_token: Some("BABATTCYC"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::integer("BABATTCYC", "pcgen_babattcyc")],
+    tokens: &[TokenDef::integer("BABATTCYC", "bab_att_cyc")],
     globals: &[],
 };
 
@@ -164,7 +164,7 @@ pub static ACNAME_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:system:acname",
     head_token: Some("ACNAME"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text_required("ACNAME", "pcgen_acname")],
+    tokens: &[TokenDef::text_required("ACNAME", "ac_name")],
     globals: &[],
 };
 
@@ -172,7 +172,7 @@ pub static DOMAINFEATURE_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:system:domainfeature",
     head_token: Some("DOMAINFEATURE"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::yesno("DOMAINFEATURE", "pcgen_domainfeature")],
+    tokens: &[TokenDef::yesno("DOMAINFEATURE", "domain_feature")],
     globals: &[],
 };
 
@@ -180,7 +180,7 @@ pub static LEVELMSG_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:system:levelmsg",
     head_token: Some("LEVELMSG"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text_required("LEVELMSG", "pcgen_levelmsg")],
+    tokens: &[TokenDef::text_required("LEVELMSG", "level_msg")],
     globals: &[],
 };
 
@@ -188,7 +188,7 @@ pub static SHORTRANGE_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:system:shortrange",
     head_token: Some("SHORTRANGE"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::integer("SHORTRANGE", "pcgen_shortrange")],
+    tokens: &[TokenDef::integer("SHORTRANGE", "short_range")],
     globals: &[],
 };
 
@@ -196,7 +196,7 @@ pub static RANGEPENALTY_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:system:rangepenalty",
     head_token: Some("RANGEPENALTY"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::integer("RANGEPENALTY", "pcgen_rangepenalty")],
+    tokens: &[TokenDef::integer("RANGEPENALTY", "range_penalty")],
     globals: &[],
 };
 
@@ -204,7 +204,7 @@ pub static SQUARESIZE_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:system:squaresize",
     head_token: Some("SQUARESIZE"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::integer("SQUARESIZE", "pcgen_squaresize")],
+    tokens: &[TokenDef::integer("SQUARESIZE", "square_size")],
     globals: &[],
 };
 
@@ -214,7 +214,7 @@ pub static SKILLMULTIPLIER_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     head_format: HeadFormat::TokenPrefixed,
     tokens: &[TokenDef::text_required(
         "SKILLMULTIPLIER",
-        "pcgen_skillmultiplier",
+        "skill_multiplier",
     )],
     globals: &[],
 };
@@ -223,7 +223,7 @@ pub static SPELLBASEDC_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:system:spellbasedc",
     head_token: Some("SPELLBASEDC"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text_required("SPELLBASEDC", "pcgen_spellbasedc")],
+    tokens: &[TokenDef::text_required("SPELLBASEDC", "spell_base_dc")],
     globals: &[],
 };
 
@@ -233,7 +233,7 @@ pub static WEAPONNONPROFPENALTY_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     head_format: HeadFormat::TokenPrefixed,
     tokens: &[TokenDef::integer(
         "WEAPONNONPROFPENALTY",
-        "pcgen_weaponnonprofpenalty",
+        "weapon_nonprof_penalty",
     )],
     globals: &[],
 };
@@ -242,7 +242,7 @@ pub static WEAPONREACH_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:system:weaponreach",
     head_token: Some("WEAPONREACH"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text_required("WEAPONREACH", "pcgen_weaponreach")],
+    tokens: &[TokenDef::text_required("WEAPONREACH", "weapon_reach")],
     globals: &[],
 };
 
@@ -254,7 +254,7 @@ pub static CHARACTERTYPE_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
         key: "CHARACTERTYPE",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Once,
-        artisan_mapping: ArtisanMapping::Field("pcgen_charactertype"),
+        artisan_mapping: ArtisanMapping::Field("character_type"),
         required: true,
     }],
     globals: &[],
@@ -264,7 +264,7 @@ pub static CRTHRESHOLD_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:system:crthreshold",
     head_token: Some("CRTHRESHOLD"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text_required("CRTHRESHOLD", "pcgen_crthreshold")],
+    tokens: &[TokenDef::text_required("CRTHRESHOLD", "cr_threshold")],
     globals: &[],
 };
 
@@ -272,7 +272,7 @@ pub static CRSTEPS_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:system:crsteps",
     head_token: Some("CRSTEPS"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text_required("CRSTEPS", "pcgen_crsteps")],
+    tokens: &[TokenDef::text_required("CRSTEPS", "cr_steps")],
     globals: &[],
 };
 
@@ -284,7 +284,7 @@ pub static MONSTERROLES_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
         key: "MONSTERROLES",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Once,
-        artisan_mapping: ArtisanMapping::Field("pcgen_monsterroles"),
+        artisan_mapping: ArtisanMapping::Field("monster_roles"),
         required: true,
     }],
     globals: &[],
@@ -296,7 +296,7 @@ pub static MONSTERROLEDEFAULT_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     head_format: HeadFormat::TokenPrefixed,
     tokens: &[TokenDef::text_required(
         "MONSTERROLEDEFAULT",
-        "pcgen_monsterroledefault",
+        "monster_role_default",
     )],
     globals: &[],
 };
@@ -305,7 +305,7 @@ pub static XPTABLE_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:system:xptable",
     head_token: Some("XPTABLE"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text_required("XPTABLE", "pcgen_xptable")],
+    tokens: &[TokenDef::text_required("XPTABLE", "xp_table")],
     globals: &[],
 };
 
@@ -328,7 +328,7 @@ pub static RESIZABLEEQUIPTYPE_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
         key: "RESIZABLEEQUIPTYPE",
         grammar: TokenGrammar::PipeList,
         cardinality: Cardinality::Once,
-        artisan_mapping: ArtisanMapping::Field("pcgen_resizableequiptype"),
+        artisan_mapping: ArtisanMapping::Field("resizable_equip_type"),
         required: true,
     }],
     globals: &[],
@@ -340,7 +340,7 @@ pub static SKILLCOST_CROSSCLASS_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     head_format: HeadFormat::TokenPrefixed,
     tokens: &[TokenDef::integer(
         "SKILLCOST_CROSSCLASS",
-        "pcgen_skillcost_crossclass",
+        "skill_cost_cross_class",
     )],
     globals: &[],
 };
@@ -351,7 +351,7 @@ pub static SKILLCOST_CLASS_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     head_format: HeadFormat::TokenPrefixed,
     tokens: &[TokenDef::integer(
         "SKILLCOST_CLASS",
-        "pcgen_skillcost_class",
+        "skill_cost_class",
     )],
     globals: &[],
 };
@@ -362,7 +362,7 @@ pub static SKILLCOST_EXCLUSIVE_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     head_format: HeadFormat::TokenPrefixed,
     tokens: &[TokenDef::integer(
         "SKILLCOST_EXCLUSIVE",
-        "pcgen_skillcost_exclusive",
+        "skill_cost_exclusive",
     )],
     globals: &[],
 };
@@ -400,7 +400,7 @@ pub static MAXNONEPICLEVEL_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     head_format: HeadFormat::TokenPrefixed,
     tokens: &[TokenDef::integer(
         "MAXNONEPICLEVEL",
-        "pcgen_maxnonepiclevel",
+        "max_non_epic_level",
     )],
     globals: &[],
 };
@@ -412,7 +412,7 @@ pub static PLUSCOST_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     tokens: &[TokenDef::pipe_positional(
         "PLUSCOST",
         &["equipment_type", "formula"],
-        "pcgen_pluscost",
+        "plus_cost",
     )],
     globals: &[],
 };
@@ -445,16 +445,16 @@ pub static LOADMULT_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:system:loadmult",
     head_token: Some("LOADMULT"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::integer("LOADMULT", "pcgen_loadmult")],
+    tokens: &[TokenDef::integer("LOADMULT", "load_mult")],
     globals: &[],
 };
 
 static NUMSLOTS_SYSTEM_TOKENS: &[TokenDef] = &[
     TokenDef::text_required("NUMSLOTS", "pcgen_numslots"),
     TokenDef::integer("HEAD", "pcgen_headslots"),
-    TokenDef::integer("HANDS", "pcgen_hands"),
+    TokenDef::integer("HANDS", "hands"),
     TokenDef::integer("TORSO", "pcgen_torsoslots"),
-    TokenDef::integer("LEGS", "pcgen_legs"),
+    TokenDef::integer("LEGS", "legs"),
     TokenDef::integer("SHIELD", "pcgen_shieldslots"),
 ];
 
@@ -466,7 +466,7 @@ pub static NUMSLOTS_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     globals: &[],
 };
 
-static METHOD_SYSTEM_TOKENS: &[TokenDef] = &[TokenDef::integer("POINTS", "pcgen_points")];
+static METHOD_SYSTEM_TOKENS: &[TokenDef] = &[TokenDef::integer("POINTS", "points")];
 
 pub static METHOD_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:system:method",
@@ -504,7 +504,7 @@ pub static SPELLRANGE_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:system:spellrange",
     head_token: Some("SPELLRANGE"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text_required("SPELLRANGE", "pcgen_spellrange")],
+    tokens: &[TokenDef::text_required("SPELLRANGE", "spell_range")],
     globals: &[],
 };
 
@@ -512,7 +512,7 @@ pub static OUTPUTSHEET_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:system:outputsheet",
     head_token: Some("OUTPUTSHEET"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text_required("OUTPUTSHEET", "pcgen_outputsheet")],
+    tokens: &[TokenDef::text_required("OUTPUTSHEET", "output_sheet")],
     globals: &[],
 };
 
@@ -520,21 +520,21 @@ pub static INFOSHEET_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:system:infosheet",
     head_token: Some("INFOSHEET"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[TokenDef::text_required("INFOSHEET", "pcgen_infosheet")],
+    tokens: &[TokenDef::text_required("INFOSHEET", "info_sheet")],
     globals: &[],
 };
 
 static UNITSET_SYSTEM_TOKENS: &[TokenDef] = &[
-    TokenDef::text_required("UNITSET", "pcgen_unitset"),
-    TokenDef::text("DISTANCEUNIT", "pcgen_distanceunit"),
-    TokenDef::text("DISTANCEFACTOR", "pcgen_distancefactor"),
-    TokenDef::text("DISTANCEPATTERN", "pcgen_distancepattern"),
-    TokenDef::text("HEIGHTUNIT", "pcgen_heightunit"),
-    TokenDef::text("HEIGHTFACTOR", "pcgen_heightfactor"),
-    TokenDef::text("HEIGHTPATTERN", "pcgen_heightpattern"),
-    TokenDef::text("WEIGHTUNIT", "pcgen_weightunit"),
-    TokenDef::text("WEIGHTFACTOR", "pcgen_weightfactor"),
-    TokenDef::text("WEIGHTPATTERN", "pcgen_weightpattern"),
+    TokenDef::text_required("UNITSET", "unit_set"),
+    TokenDef::text("DISTANCEUNIT", "distance_unit"),
+    TokenDef::text("DISTANCEFACTOR", "distance_factor"),
+    TokenDef::text("DISTANCEPATTERN", "distance_pattern"),
+    TokenDef::text("HEIGHTUNIT", "height_unit"),
+    TokenDef::text("HEIGHTFACTOR", "height_factor"),
+    TokenDef::text("HEIGHTPATTERN", "height_pattern"),
+    TokenDef::text("WEIGHTUNIT", "weight_unit"),
+    TokenDef::text("WEIGHTFACTOR", "weight_factor"),
+    TokenDef::text("WEIGHTPATTERN", "weight_pattern"),
 ];
 
 pub static UNITSET_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
@@ -648,8 +648,8 @@ pub static ACTYPE_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
 };
 
 static BASEDICE_SYSTEM_TOKENS: &[TokenDef] = &[
-    TokenDef::text("UP", "pcgen_up"),
-    TokenDef::text("DOWN", "pcgen_down"),
+    TokenDef::text("UP", "up"),
+    TokenDef::text("DOWN", "down"),
 ];
 
 pub static BASEDICE_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
@@ -674,7 +674,7 @@ pub static WIELDCATEGORY_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     globals: &[GlobalGroup::Prerequisites],
 };
 
-static TAB_SYSTEM_TOKENS: &[TokenDef] = &[TokenDef::text("CONTEXT", "pcgen_context")];
+static TAB_SYSTEM_TOKENS: &[TokenDef] = &[TokenDef::text("CONTEXT", "context")];
 
 pub static TAB_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:system:tab",
@@ -685,8 +685,8 @@ pub static TAB_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
 };
 
 static EQSLOT_SYSTEM_TOKENS: &[TokenDef] = &[
-    TokenDef::text("CONTAINS", "pcgen_contains"),
-    TokenDef::text("NUMBER", "pcgen_number"),
+    TokenDef::text("CONTAINS", "contains"),
+    TokenDef::text("NUMBER", "number"),
 ];
 
 pub static EQSLOT_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
@@ -706,9 +706,9 @@ pub static AGESET_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
 };
 
 static LEVEL_SYSTEM_TOKENS: &[TokenDef] = &[
-    TokenDef::text("MINXP", "pcgen_minxp"),
-    TokenDef::text("CSKILLMAX", "pcgen_cskillmax"),
-    TokenDef::text("CCSKILLMAX", "pcgen_ccskillmax"),
+    TokenDef::text("MINXP", "min_xp"),
+    TokenDef::text("CSKILLMAX", "c_skill_max"),
+    TokenDef::text("CCSKILLMAX", "cc_skill_max"),
 ];
 
 pub static LEVEL_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
@@ -744,7 +744,7 @@ pub static STAT_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     head_token: Some("STAT"),
     head_format: HeadFormat::NameOnly,
     tokens: &[
-        TokenDef::integer("SCORE", "pcgen_score"),
+        TokenDef::integer("SCORE", "score"),
         TokenDef::text("ABB", "abbreviation"),
         TokenDef::text("STATMOD", "pcgen_statmod"),
     ],
@@ -756,7 +756,7 @@ pub static SIZEADJUSTMENT_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     head_token: Some("SIZENAME"),
     head_format: HeadFormat::TokenPrefixed,
     tokens: &[
-        TokenDef::text("SIZENUM", "pcgen_sizenum"),
+        TokenDef::text("SIZENUM", "size_num"),
         TokenDef::text("ISDEFAULTSIZE", "pcgen_isdefaultsize"),
     ],
     globals: &[],
@@ -819,7 +819,7 @@ static TABLE_SYSTEM_TOKENS: &[TokenDef] = &[TokenDef {
     key: "VALUES",
     grammar: TokenGrammar::Text,
     cardinality: Cardinality::Repeatable,
-    artisan_mapping: ArtisanMapping::Field("pcgen_values"),
+    artisan_mapping: ArtisanMapping::Field("values"),
     required: false,
 }];
 

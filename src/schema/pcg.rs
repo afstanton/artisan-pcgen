@@ -438,10 +438,10 @@ pub static SUPPRESSBIOFIELDS_SCHEMA: LineGrammar = LineGrammar {
 // ---------------------------------------------------------------------------
 
 static PCG_CLASS_TOKENS: &[TokenDef] = &[
-    TokenDef::integer("LEVEL", "pcgen_level"),
-    TokenDef::integer("SKILLPOOL", "pcgen_class_skillpool"),
-    TokenDef::text("SPELLBASE", "pcgen_class_spellbase"),
-    TokenDef::text("CANCASTPERDAY", "pcgen_class_cancastperday"),
+    TokenDef::integer("LEVEL", "level"),
+    TokenDef::integer("SKILLPOOL", "class_skill_pool"),
+    TokenDef::text("SPELLBASE", "class_spell_base"),
+    TokenDef::text("CANCASTPERDAY", "class_can_cast_per_day"),
     TokenDef::text("SUBCLASS", "pcgen_subclass"),
     TokenDef::pipe_list_repeatable("PROHIBITED", "pcgen_prohibited"),
 ];
@@ -459,10 +459,10 @@ pub static PCG_CLASS_SCHEMA: LineGrammar = LineGrammar {
 // ---------------------------------------------------------------------------
 
 static PCG_SKILL_TOKENS: &[TokenDef] = &[
-    TokenDef::integer("OUTPUTORDER", "pcgen_outputorder"),
+    TokenDef::integer("OUTPUTORDER", "output_order"),
     // CLASSBOUGHT is a bracket group: [CLASS:Wizard|RANKS:3.0|COST:1|CLASSSKILL:Y]
     // Repeatable: a single SKILL line may have multiple adjacent groups (no pipe between them).
-    TokenDef::bracket_group_repeatable("CLASSBOUGHT", "pcgen_classbought"),
+    TokenDef::bracket_group_repeatable("CLASSBOUGHT", "class_bought"),
 ];
 
 pub static PCG_SKILL_SCHEMA: LineGrammar = LineGrammar {
@@ -480,7 +480,7 @@ pub static PCG_SKILL_SCHEMA: LineGrammar = LineGrammar {
 static USERPOOL_TOKENS: &[TokenDef] = &[
     // POOLPOINTS value is decimal in pcg context (e.g. 0.0); use a distinct
     // attribute key from the standalone POOLPOINTS schema (pcgen_poolpoints)
-    TokenDef::text("POOLPOINTS", "pcgen_userpool_poolpoints"),
+    TokenDef::text("POOLPOINTS", "userpool_pool_points"),
 ];
 
 pub static USERPOOL_SCHEMA: LineGrammar = LineGrammar {
@@ -497,12 +497,12 @@ pub static USERPOOL_SCHEMA: LineGrammar = LineGrammar {
 
 static EQUIPSET_TOKENS: &[TokenDef] = &[
     // pcgen_equipset_id: distinct from any other "ID" usage
-    TokenDef::text("ID", "pcgen_equipset_id"),
+    TokenDef::text("ID", "equipset_id"),
     // VALUE uses the canonical projector attribute name (same as FUNCTION schema)
     TokenDef::text("VALUE", "pcgen_value"),
-    TokenDef::text("QUANTITY", "pcgen_quantity"),
+    TokenDef::text("QUANTITY", "quantity"),
     // pcgen_equipset_usetempmods: distinct from standalone pcgen_usetempmods
-    TokenDef::yesno("USETEMPMODS", "pcgen_equipset_usetempmods"),
+    TokenDef::yesno("USETEMPMODS", "equipset_use_temp_mods"),
     // Optional free-text annotation on an equipment set entry
     TokenDef::text("NOTE", "note"),
 ];
@@ -521,10 +521,10 @@ pub static EQUIPSET_SCHEMA: LineGrammar = LineGrammar {
 
 static EQUIPNAME_TOKENS: &[TokenDef] = &[
     // Reuse canonical attribute names that the projector already maps these to
-    TokenDef::integer("OUTPUTORDER", "pcgen_outputorder"),
+    TokenDef::integer("OUTPUTORDER", "output_order"),
     TokenDef::text("COST", "cost"),
     TokenDef::text("WT", "weight"),
-    TokenDef::text("QUANTITY", "pcgen_quantity"),
+    TokenDef::text("QUANTITY", "quantity"),
     // CUSTOMIZATION bracket group: [BASEITEM:Longsword|DATA:EQMOD=STEEL|...]
     // DATA sub-items live inside this bracket group; no separate DATA token needed.
     TokenDef::bracket_group("CUSTOMIZATION", "pcgen_customization"),
@@ -544,9 +544,9 @@ pub static EQUIPNAME_SCHEMA: LineGrammar = LineGrammar {
 // ---------------------------------------------------------------------------
 
 static CLASSABILITIESLEVEL_TOKENS: &[TokenDef] = &[
-    TokenDef::integer("HITPOINTS", "pcgen_cal_hitpoints"),
-    TokenDef::integer("SKILLSGAINED", "pcgen_cal_skillsgained"),
-    TokenDef::integer("SKILLSREMAINING", "pcgen_cal_skillsremaining"),
+    TokenDef::integer("HITPOINTS", "cal_hit_points"),
+    TokenDef::integer("SKILLSGAINED", "cal_skills_gained"),
+    TokenDef::integer("SKILLSREMAINING", "cal_skills_remaining"),
     // SPECIALTIES bracket group: [SPECIALTY:Evocation|SPECIALTY:...]
     TokenDef::bracket_group("SPECIALTIES", "pcgen_specialties"),
 ];
@@ -569,8 +569,8 @@ pub static CLASSABILITIESLEVEL_SCHEMA: LineGrammar = LineGrammar {
 static NOTE_TOKENS: &[TokenDef] = &[
     TokenDef::text_required("NOTE", "note"),
     // ID and PARENTID reuse the equipset id field (same projector slot)
-    TokenDef::text("ID", "pcgen_equipset_id"),
-    TokenDef::text("PARENTID", "pcgen_note_parentid"),
+    TokenDef::text("ID", "equipset_id"),
+    TokenDef::text("PARENTID", "note_parent_id"),
     TokenDef::text("VALUE", "pcgen_value"),
 ];
 
@@ -590,7 +590,7 @@ static SPELLNAME_TOKENS: &[TokenDef] = &[
     TokenDef::text_required("SPELLNAME", "pcgen_spellname"),
     TokenDef::integer("TIMES", "pcgen_times"),
     TokenDef::text("BOOK", "book"),
-    TokenDef::text("SPELLLEVEL", "pcgen_spelllevel"),
+    TokenDef::text("SPELLLEVEL", "spell_level"),
     TokenDef::text("CLASS", "class"),
     // SOURCE in PCG context is a bracket group: [TYPE:CLASS|NAME:Wizard]
     TokenDef::bracket_group("SOURCE", "pcgen_source"),
@@ -635,7 +635,7 @@ pub static PCG_DEITY_SCHEMA: LineGrammar = LineGrammar {
 // ---------------------------------------------------------------------------
 
 static PCG_DOMAIN_TOKENS: &[TokenDef] = &[
-    TokenDef::text_required("DOMAIN", "pcgen_domain_name"),
+    TokenDef::text_required("DOMAIN", "domain_name"),
     TokenDef::text("DOMAINGRANTS", "pcgen_domaingrants"),
     // SOURCE in PCG context is a bracket group: [TYPE:DEITY|NAME:Pelor]
     TokenDef::bracket_group("SOURCE", "pcgen_source"),

@@ -23,7 +23,7 @@ static FOLLOWER_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Field("abilities"),
         required: false,
     },
-    TokenDef::pipe_positional_repeatable("KIT", &["count", "kit"], "pcgen_kits"),
+    TokenDef::pipe_positional_repeatable("KIT", &["count", "kit"], "kits"),
 ];
 
 static MASTERBONUSRACE_TOKENS: &[TokenDef] = &[TokenDef {

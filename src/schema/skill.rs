@@ -20,7 +20,7 @@ static SKILL_TOKENS: &[TokenDef] = &[
         required: false,
     },
     // SITUATION adds a conditional modifier to the skill
-    TokenDef::pipe_positional_repeatable("SITUATION", SITUATION_SLOTS, "pcgen_situations"),
+    TokenDef::pipe_positional_repeatable("SITUATION", SITUATION_SLOTS, "situations"),
     TokenDef::text("RANK", "rank"),
     TokenDef::integer("COUNT", "count"),
     TokenDef::yesno("FREE", "pcgen_free"),
@@ -31,15 +31,15 @@ static SKILL_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Field("pcgen_selection"),
         required: false,
     },
-    TokenDef::yesno("USEUNTRAINED", "pcgen_useuntrained"),
-    TokenDef::yesno("EXCLUSIVE", "pcgen_exclusive"),
-    TokenDef::text("KEYSTAT", "pcgen_keystat"),
+    TokenDef::yesno("USEUNTRAINED", "use_untrained"),
+    TokenDef::yesno("EXCLUSIVE", "exclusive"),
+    TokenDef::text("KEYSTAT", "key_stat"),
     TokenDef::text("ACHECK", "pcgen_accheck"),
     TokenDef::text("VISIBLE", "visible"),
     // PCG character file: CLASSBOUGHT bracket group [CLASS:Wizard|RANKS:3.0|COST:1|CLASSSKILL:Y]
     // A skill may have multiple CLASSBOUGHT entries (one per class), written as adjacent groups
     // with no pipe separator: CLASSBOUGHT:[...]CLASSBOUGHT:[...]
-    TokenDef::bracket_group_repeatable("CLASSBOUGHT", "pcgen_classbought"),
+    TokenDef::bracket_group_repeatable("CLASSBOUGHT", "class_bought"),
 ];
 
 static SKILL_GLOBALS: &[GlobalGroup] = &[

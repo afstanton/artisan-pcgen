@@ -44,7 +44,7 @@ static EQUIPMENT_TOKENS: &[TokenDef] = &[
     TokenDef::text("CRITRANGE", "pcgen_critrange"),
     TokenDef::text("FUMBLERANGE", "pcgen_fumblerange"),
     TokenDef::text("RATEOFFIRE", "pcgen_rateoffire"),
-    TokenDef::text("REACH", "pcgen_reach"),
+    TokenDef::text("REACH", "reach"),
     TokenDef::text("REACHMULT", "pcgen_reachmult"),
     TokenDef::text("ALTCRITMULT", "pcgen_altcritmult"),
     TokenDef::text("ALTCRITRANGE", "pcgen_altcritrange"),
@@ -59,10 +59,10 @@ static EQUIPMENT_TOKENS: &[TokenDef] = &[
         required: false,
     },
     TokenDef::text("NAMEOPT", "pcgen_nameopt"),
-    TokenDef::text("FORMATCAT", "pcgen_formatcat"),
+    TokenDef::text("FORMATCAT", "format_cat"),
     TokenDef::yesno("ASSIGNTOALL", "pcgen_assigntoall"),
     TokenDef::pipe_positional_repeatable("ARMORTYPE", ARMORTYPE_SLOTS, "pcgen_armortype"),
-    TokenDef::pipe_positional("PROFICIENCY", PROFICIENCY_SLOTS, "pcgen_proficiency"),
+    TokenDef::pipe_positional("PROFICIENCY", PROFICIENCY_SLOTS, "proficiency"),
     TokenDef {
         key: "REPLACES",
         grammar: TokenGrammar::CommaList,
@@ -71,7 +71,7 @@ static EQUIPMENT_TOKENS: &[TokenDef] = &[
         required: false,
     },
     // Container
-    TokenDef::text("CONTAINS", "pcgen_contains"),
+    TokenDef::text("CONTAINS", "contains"),
     TokenDef::text("BASEQTY", "pcgen_baseqty"),
     TokenDef::text("MODS", "pcgen_mods"),
     // Aesthetic
@@ -91,7 +91,7 @@ static EQUIPMENT_TOKENS: &[TokenDef] = &[
         key: "SPROP",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Field("pcgen_sprop"),
+        artisan_mapping: ArtisanMapping::Field("sprop"),
         required: false,
     },
     // Magic item properties found in some third-party equipmod datasets.

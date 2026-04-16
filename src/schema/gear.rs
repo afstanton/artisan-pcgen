@@ -5,12 +5,12 @@
 use crate::schema::{ArtisanMapping, Cardinality, HeadFormat, LineGrammar, TokenDef, TokenGrammar};
 
 static GEAR_TOKENS: &[TokenDef] = &[
-    TokenDef::text("LOCATION", "pcgen_location"),
+    TokenDef::text("LOCATION", "location"),
     TokenDef::text("QTY", "qty"),
     TokenDef::text("OPTION", "option"),
     TokenDef::text("LOOKUP", "pcgen_lookup"),
     TokenDef::text("SIZE", "size"),
-    TokenDef::text("MAXCOST", "pcgen_maxcost"),
+    TokenDef::text("MAXCOST", "max_cost"),
     TokenDef {
         key: "EQMOD",
         grammar: TokenGrammar::PipeList,

@@ -484,7 +484,7 @@ fn collect_emittable_global_keys(group: GlobalGroup, entity: &Entity, keys: &mut
             }
             if entity
                 .attributes
-                .get("pcgen_factsets")
+                .get("fact_sets")
                 .and_then(Value::as_array)
                 .is_some_and(|values| !values.is_empty())
             {
@@ -534,7 +534,7 @@ fn collect_emittable_global_keys(group: GlobalGroup, entity: &Entity, keys: &mut
         GlobalGroup::LangBonus => {
             if entity
                 .attributes
-                .get("pcgen_langbonus")
+                .get("lang_bonus")
                 .and_then(Value::as_array)
                 .is_some_and(|values| !values.is_empty())
             {
@@ -574,7 +574,7 @@ fn collect_emittable_global_keys(group: GlobalGroup, entity: &Entity, keys: &mut
         GlobalGroup::ServesAs => {
             if entity
                 .attributes
-                .get("pcgen_servesas")
+                .get("serves_as")
                 .and_then(Value::as_array)
                 .is_some_and(|values| !values.is_empty())
             {
@@ -788,7 +788,7 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
             }
             if let Some(factsets) = entity
                 .attributes
-                .get("pcgen_factsets")
+                .get("fact_sets")
                 .and_then(Value::as_array)
             {
                 for factset in factsets {
@@ -832,7 +832,7 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
         GlobalGroup::LangBonus => {
             if let Some(values) = entity
                 .attributes
-                .get("pcgen_langbonus")
+                .get("lang_bonus")
                 .and_then(Value::as_array)
             {
                 for value in values.iter().filter_map(Value::as_str) {
@@ -868,7 +868,7 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
         GlobalGroup::ServesAs => {
             if let Some(values) = entity
                 .attributes
-                .get("pcgen_servesas")
+                .get("serves_as")
                 .and_then(Value::as_array)
             {
                 for value in values.iter().filter_map(Value::as_str) {

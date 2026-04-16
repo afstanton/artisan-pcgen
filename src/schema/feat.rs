@@ -13,7 +13,7 @@ static ASPECT_SLOTS: &[&str] = &["name", "value", "formula"];
 
 static FEAT_TOKENS: &[TokenDef] = &[
     TokenDef::integer("ADDSPELLLEVEL", "pcgen_addspelllevel"),
-    TokenDef::pipe_positional_repeatable("ASPECT", ASPECT_SLOTS, "pcgen_aspects"),
+    TokenDef::pipe_positional_repeatable("ASPECT", ASPECT_SLOTS, "aspects"),
     TokenDef {
         key: "MODIFYFEATCHOICE",
         grammar: TokenGrammar::Text,
@@ -37,7 +37,7 @@ static FEAT_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Effect,
         required: false,
     },
-    TokenDef::pipe_list_repeatable("COMPANIONLIST", "pcgen_companionlist"),
+    TokenDef::pipe_list_repeatable("COMPANIONLIST", "companion_list"),
     TokenDef::pipe_positional_repeatable("FOLLOWERS", &["type", "limit"], "pcgen_followers"),
     TokenDef::pipe_list_repeatable("CCSKILL", "pcgen_ccskill"),
     TokenDef::pipe_list_repeatable("UNENCUMBEREDMOVE", "pcgen_unencumberedmove"),

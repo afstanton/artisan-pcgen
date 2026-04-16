@@ -47,7 +47,7 @@ static PCC_TOKENS: &[TokenDef] = &[
         key: "ABILITYCATEGORY",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Field("pcgen_abilitycategories"),
+        artisan_mapping: ArtisanMapping::Field("ability_categories"),
         required: false,
     },
     TokenDef {
@@ -286,7 +286,7 @@ static ABILITY_INCLUDE_TOKENS: &[TokenDef] = &[
     PRECAMPAIGN_TOKEN,
 ];
 static ABILITYCATEGORY_INCLUDE_TOKENS: &[TokenDef] = &[
-    TokenDef::text_required("ABILITYCATEGORY", "pcgen_abilitycategories"),
+    TokenDef::text_required("ABILITYCATEGORY", "ability_categories"),
     PRECAMPAIGN_TOKEN,
 ];
 static FEAT_INCLUDE_TOKENS: &[TokenDef] = &[

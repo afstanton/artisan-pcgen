@@ -9,9 +9,9 @@ Total entities:                    558572
   effects + prerequisites:         42715
   effects only:                    130867
   prerequisites only:              52729
-  canonical attrs / citations:     251980
-  truly sparse (pcgen_* only):     80281
-  canonical coverage:              85% have >=1 canonical field
+  canonical attrs / citations:     262901
+  truly sparse (pcgen_* only):     69360
+  canonical coverage:              87% have >=1 canonical field
 
 === Effect Kinds Across All Entities ===
 235670 | BONUS
@@ -103,18 +103,24 @@ Total entities:                    558572
  63697 | cost
  39484 | weight
  39090 | classes
+ 25735 | sprop
  25272 | school
  24244 | size
  22714 | sortkey
  20198 | outputname
+ 11711 | aspects
  11505 | option
  11294 | source_short
+ 10703 | proficiency
   9802 | sab
   9771 | move
   9244 | natural_attacks
+  8988 | ability_categories
   8898 | descriptors
   8878 | benefit
   8763 | racetype
+  8300 | reach
+  8247 | equip_buy
   8025 | cast
   7952 | max_version
   7952 | new_key
@@ -123,102 +129,82 @@ Total entities:                    558572
   6935 | subschool
   6870 | cskill
   6620 | domains
+  6572 | legs
+  6361 | kits
+  6126 | spell_known
+  5772 | face
+  5319 | hands
+  5069 | items
   4999 | source_date
   4879 | hitdie
   4822 | source_web
+  4654 | contains
+  4602 | location
   4495 | race_subtype
+  4310 | key_stat
   4233 | explanation
   3890 | known
-  3379 | vision
-  3358 | rank
-  3164 | qty
-  2614 | maxlevel
-  2059 | equipment
-  2021 | alignment
-  1488 | deity_weapon
-  1463 | base_age
-  1424 | tempdesc
-  1377 | max_age
-  1251 | age_die_roll
-  1205 | url
-  1202 | level_adjustment
-  1094 | favored_class
-   874 | infotext
 
 === pcgen_* Attributes On Truly Sparse Entities ===
-  1243 | location
-   869 | situations
-   864 | spelllevel
-   591 | contains
-   591 | number
-   586 | abilitycategories
-   571 | minxp
-   496 | ccskillmax
-   496 | cskillmax
    459 | spells
-   452 | eqmods
-   420 | down
-   418 | up
-   403 | basestatscore
-   403 | statrange
-   390 | values
-   383 | context
    282 | weaponprof_catalog
-   271 | hands
-   269 | items
-   248 | sizenum
-   247 | level
-   245 | donotadd
    217 | hidetype
-   213 | prohibitspell
-   208 | aspects
    206 | forwardref
-   189 | companionlist
-   176 | sprop
-   145 | udam
-   133 | domain_name
-   115 | outputorder
+   104 | eqmods
     88 | facts
-    85 | keystat
-    84 | spellrange
-    76 | spellknown
-    74 | equipbuy
-    71 | subrace
-    70 | outputsheet
-    69 | infosheet
-    67 | distancefactor
-    67 | distancepattern
-    67 | distanceunit
-    67 | heightfactor
-    67 | heightpattern
-    67 | heightunit
-    67 | unitset
-    67 | weightfactor
-    67 | weightpattern
-    67 | weightunit
-    63 | local
-    63 | userpool_name
-    63 | userpool_poolpoints
-    61 | global
-    60 | useuntrained
-    50 | apply
-    42 | legs
-    41 | points
-    36 | maxcost
-    35 | alignmentfeature
-    35 | currencyunitabbrev
-    35 | diesizes
-    35 | displayorder
-    35 | menuentry
-    34 | acname
-    34 | allowedmodes
-    34 | babattcyc
-    34 | babmaxatt
-    34 | babminval
-    34 | defaultunitset
-    34 | domainfeature
-    34 | headslots
-    34 | loadmult
-    34 | numslots
-    34 | reach
+     5 | allowdebt
+     5 | autoresizegear
+     5 | autospells
+     5 | calcequipset
+     5 | endtable
+     5 | experience
+     5 | experiencetable
+     5 | featpool
+     5 | hairstyle
+     5 | handed
+     5 | ignorecost
+     5 | loadcompanions
+     5 | money
+     5 | pcgversion
+     5 | playername
+     5 | poolpoints
+     5 | poolpointsavail
+     5 | purchasepoints
+     5 | rollmethod_expression
+     5 | skillfilter
+     5 | skillsoutputorder
+     5 | spellbaseconcentration
+     5 | suppressbiofields
+     5 | tablabel
+     5 | tabname
+     5 | usehigherknown
+     5 | usehigherprepped
+     5 | usetempmods
+     5 | version
+     5 | xpaward
+     4 | dataformat
+     4 | dynamicscope
+     4 | language_catalog
+     3 | qualify
+     3 | removable
+     2 | channel
+     2 | function
+     2 | hiddenequiptypes
+     2 | hiddenfeattypes
+     2 | spelllist
+     2 | statinput
+     2 | statmodsave
+     2 | value
+     1 | althp
+     1 | baseitem
+     1 | changeprof
+     1 | exchangelevel
+     1 | feats
+     1 | itype
+     1 | nonpp
+     1 | repeatlevel
+     1 | replaces
+     1 | startskillpts
+     1 | subregion
+     1 | umult
 

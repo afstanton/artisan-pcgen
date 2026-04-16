@@ -85,7 +85,7 @@ static SPELL_TOKENS: &[TokenDef] = &[
         key: "ITEM",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
-        artisan_mapping: ArtisanMapping::Field("pcgen_items"),
+        artisan_mapping: ArtisanMapping::Field("items"),
         required: false,
     },
     TokenDef {

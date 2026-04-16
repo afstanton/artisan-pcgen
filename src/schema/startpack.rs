@@ -10,9 +10,9 @@ use crate::schema::{
 };
 
 static STARTPACK_TOKENS: &[TokenDef] = &[
-    TokenDef::text("APPLY", "pcgen_apply"),
-    TokenDef::text("EQUIPBUY", "pcgen_equipbuy"),
-    TokenDef::text("TOTALCOST", "pcgen_totalcost"),
+    TokenDef::text("APPLY", "apply"),
+    TokenDef::text("EQUIPBUY", "equip_buy"),
+    TokenDef::text("TOTALCOST", "total_cost"),
     TokenDef {
         key: "LOOKUP",
         grammar: TokenGrammar::Text,
@@ -33,11 +33,11 @@ static LANGAUTO_TOKENS: &[TokenDef] = &[TokenDef {
     key: "LANGAUTO",
     grammar: TokenGrammar::PipeList,
     cardinality: Cardinality::Once,
-    artisan_mapping: ArtisanMapping::Field("pcgen_langauto"),
+    artisan_mapping: ArtisanMapping::Field("lang_auto"),
     required: true,
 }];
 
-static TOTALCOST_TOKENS: &[TokenDef] = &[TokenDef::text_required("TOTALCOST", "pcgen_totalcost")];
+static TOTALCOST_TOKENS: &[TokenDef] = &[TokenDef::text_required("TOTALCOST", "total_cost")];
 
 pub static STARTPACK_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:entity:startpack",

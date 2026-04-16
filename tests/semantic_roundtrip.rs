@@ -170,7 +170,7 @@ fn assert_semantic_roundtrip_file(path: &Path) -> io::Result<()> {
 #[test]
 fn bracket_group_values_are_structured() {
     // CLASSBOUGHT — single group → array containing one bracket-group array
-    // pcgen_classbought is always [[{key,value},...]] so each group is an element.
+    // class_bought is always [[{key,value},...]] so each group is an element.
     let cat = parse_text_to_catalog(
         "SKILL:Spellcraft|CLASSBOUGHT:[CLASS:Wizard|RANKS:3.0|COST:1|CLASSSKILL:Y]",
         "test.pcg",
@@ -179,11 +179,11 @@ fn bracket_group_values_are_structured() {
     let entity = &cat.entities[0];
     let classbought = entity
         .attributes
-        .get("pcgen_classbought")
-        .expect("pcgen_classbought should be set");
+        .get("class_bought")
+        .expect("class_bought should be set");
     let groups = classbought
         .as_array()
-        .expect("pcgen_classbought should be an array");
+        .expect("class_bought should be an array");
     assert_eq!(
         groups.len(),
         1,
@@ -259,9 +259,9 @@ SPELLNAME:Fireball|TIMES:2|CLASS:Wizard|BOOK:Combat Book|SPELLLEVEL:3|FEATLIST:[
         .expect("Spellcraft entity should survive round-trip");
     let cb_groups = skill_after
         .attributes
-        .get("pcgen_classbought")
+        .get("class_bought")
         .and_then(|v| v.as_array())
-        .expect("pcgen_classbought should be an array after round-trip");
+        .expect("class_bought should be an array after round-trip");
     assert_eq!(cb_groups.len(), 1);
     let cb = cb_groups[0]
         .as_array()
@@ -1319,12 +1319,12 @@ fn adjacent_bracket_groups_are_split_into_separate_clauses() {
         .find(|e| e.name == "Perform")
         .expect("Perform skill should be parsed");
 
-    // pcgen_classbought should be an array because the token is Repeatable.
+    // class_bought should be an array because the token is Repeatable.
     let cb = entity
         .attributes
-        .get("pcgen_classbought")
-        .expect("pcgen_classbought should be set");
-    let arr = cb.as_array().expect("pcgen_classbought should be an array");
+        .get("class_bought")
+        .expect("class_bought should be set");
+    let arr = cb.as_array().expect("class_bought should be an array");
 
     // Two separate bracket groups → two array elements (each itself an array of sub-entries).
     assert_eq!(
@@ -1369,9 +1369,9 @@ fn adjacent_bracket_groups_round_trip() {
 
     let arr = skill
         .attributes
-        .get("pcgen_classbought")
+        .get("class_bought")
         .and_then(|v| v.as_array())
-        .expect("pcgen_classbought should be an array after round-trip");
+        .expect("class_bought should be an array after round-trip");
 
     assert_eq!(
         arr.len(),
