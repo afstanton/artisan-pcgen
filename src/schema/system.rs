@@ -739,16 +739,26 @@ pub static ALIGN_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     globals: &[GlobalGroup::Key, GlobalGroup::SortKey],
 };
 
+static STAT_TOKENS: &[TokenDef] = &[
+    TokenDef::integer("SCORE", "score"),
+    TokenDef::text("ABB", "abbreviation"),
+    TokenDef::text("STATMOD", "pcgen_statmod"),
+    // Some game modes (e.g. Pathfinder) grant internal abilities from stat entities.
+    TokenDef {
+        key: "ABILITY",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("abilities"),
+        required: false,
+    },
+];
+
 pub static STAT_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:system:stat",
     head_token: Some("STAT"),
     head_format: HeadFormat::NameOnly,
-    tokens: &[
-        TokenDef::integer("SCORE", "score"),
-        TokenDef::text("ABB", "abbreviation"),
-        TokenDef::text("STATMOD", "pcgen_statmod"),
-    ],
-    globals: &[GlobalGroup::Key, GlobalGroup::SortKey],
+    tokens: STAT_TOKENS,
+    globals: &[GlobalGroup::Key, GlobalGroup::SortKey, GlobalGroup::Bonus, GlobalGroup::Define],
 };
 
 pub static SIZEADJUSTMENT_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
@@ -850,11 +860,20 @@ static SUBSTITUTION_CLASS_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::Template,
 ];
 
+// Ability grants shared by subclasslevel and substitutionlevel rows.
+static SUBSTITUTION_LEVEL_TOKENS: &[TokenDef] = &[TokenDef {
+    key: "ABILITY",
+    grammar: TokenGrammar::Text,
+    cardinality: Cardinality::Repeatable,
+    artisan_mapping: ArtisanMapping::Field("abilities"),
+    required: false,
+}];
+
 pub static SUBCLASSLEVEL_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:system:subclasslevel",
     head_token: Some("SUBCLASSLEVEL"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[],
+    tokens: SUBSTITUTION_LEVEL_TOKENS,
     globals: SUBSTITUTION_CLASS_GLOBALS,
 };
 
@@ -870,6 +889,6 @@ pub static SUBSTITUTIONLEVEL_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:system:substitutionlevel",
     head_token: Some("SUBSTITUTIONLEVEL"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[],
+    tokens: SUBSTITUTION_LEVEL_TOKENS,
     globals: SUBSTITUTION_CLASS_GLOBALS,
 };

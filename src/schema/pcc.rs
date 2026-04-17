@@ -289,16 +289,49 @@ static ABILITYCATEGORY_INCLUDE_TOKENS: &[TokenDef] = &[
     TokenDef::text_required("ABILITYCATEGORY", "ability_categories"),
     PRECAMPAIGN_TOKEN,
 ];
+// Migration/compatibility tokens shared by all include types.
+// PCGen uses MAXVER + NEWKEY on include lines to rename entries across versions.
+static MAXVER_TOKEN: TokenDef = TokenDef {
+    key: "MAXVER",
+    grammar: TokenGrammar::Text,
+    cardinality: Cardinality::Once,
+    artisan_mapping: ArtisanMapping::Field("max_version"),
+    required: false,
+};
+static MAXDEVVER_TOKEN: TokenDef = TokenDef {
+    key: "MAXDEVVER",
+    grammar: TokenGrammar::Text,
+    cardinality: Cardinality::Once,
+    artisan_mapping: ArtisanMapping::Field("pcgen_maxdevver"),
+    required: false,
+};
+static NEWKEY_TOKEN: TokenDef = TokenDef {
+    key: "NEWKEY",
+    grammar: TokenGrammar::Text,
+    cardinality: Cardinality::Once,
+    artisan_mapping: ArtisanMapping::Field("new_key"),
+    required: false,
+};
+
 static FEAT_INCLUDE_TOKENS: &[TokenDef] = &[
     TokenDef::text_required("FEAT", "pcgen_feats"),
+    MAXVER_TOKEN,
+    MAXDEVVER_TOKEN,
+    NEWKEY_TOKEN,
     PRECAMPAIGN_TOKEN,
 ];
 static EQUIPMENT_INCLUDE_TOKENS: &[TokenDef] = &[
     TokenDef::text_required("EQUIPMENT", "equipment"),
+    MAXVER_TOKEN,
+    MAXDEVVER_TOKEN,
+    NEWKEY_TOKEN,
     PRECAMPAIGN_TOKEN,
 ];
 static SPELL_INCLUDE_TOKENS: &[TokenDef] = &[
     TokenDef::text_required("SPELL", "pcgen_spells"),
+    MAXVER_TOKEN,
+    MAXDEVVER_TOKEN,
+    NEWKEY_TOKEN,
     PRECAMPAIGN_TOKEN,
 ];
 static LICENSE_INCLUDE_TOKENS: &[TokenDef] = &[

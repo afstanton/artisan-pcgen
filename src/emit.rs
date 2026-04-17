@@ -472,6 +472,14 @@ fn collect_emittable_global_keys(group: GlobalGroup, entity: &Entity, keys: &mut
             if bool_like_attribute(entity, "pcgen_descispi").is_some() {
                 keys.insert("DESCISPI".to_string());
             }
+            if entity
+                .attributes
+                .get("pcgen_nameispi")
+                .and_then(Value::as_str)
+                .is_some()
+            {
+                keys.insert("NAMEISPI".to_string());
+            }
         }
         GlobalGroup::Fact => {
             if entity
@@ -770,6 +778,9 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
                     if desc_is_pi { "YES" } else { "NO" }
                 ));
             }
+            if let Some(name_is_pi) = entity.attributes.get("pcgen_nameispi").and_then(Value::as_str) {
+                parts.push(format!("NAMEISPI:{name_is_pi}"));
+            }
         }
         GlobalGroup::Fact => {
             if let Some(facts) = entity
@@ -898,7 +909,22 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
                 }
             }
         }
-        GlobalGroup::SourceMeta => {}
+        GlobalGroup::SourceMeta => {
+            // Emit inline source meta tokens that appear on individual entity
+            // lines (as opposed to the PCC-level source block).
+            if let Some(v) = entity.attributes.get("pcgen_source_long").and_then(Value::as_str) {
+                parts.push(format!("SOURCELONG:{v}"));
+            }
+            if let Some(v) = entity.attributes.get("source_short").and_then(Value::as_str) {
+                parts.push(format!("SOURCESHORT:{v}"));
+            }
+            if let Some(v) = entity.attributes.get("source_web").and_then(Value::as_str) {
+                parts.push(format!("SOURCEWEB:{v}"));
+            }
+            if let Some(v) = entity.attributes.get("source_date").and_then(Value::as_str) {
+                parts.push(format!("SOURCEDATE:{v}"));
+            }
+        }
     }
 }
 

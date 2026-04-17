@@ -3,10 +3,18 @@
 //! SUBCLASS lines define class specialization options. The head is
 //! token-prefixed: `SUBCLASS:name`.
 
-use crate::schema::{GlobalGroup, HeadFormat, LineGrammar, TokenDef};
+use crate::schema::{ArtisanMapping, Cardinality, GlobalGroup, HeadFormat, LineGrammar, TokenDef, TokenGrammar};
 
 static SUBCLASS_TOKENS: &[TokenDef] = &[
     TokenDef::text("COST", "cost"),
+    // ABILITY grants abilities at the subclass level (e.g. bonus proficiencies).
+    TokenDef {
+        key: "ABILITY",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("abilities"),
+        required: false,
+    },
     TokenDef::pipe_list_repeatable("CHOICE", "pcgen_choice"),
     TokenDef::pipe_list_repeatable("CCSKILL", "pcgen_ccskill"),
     TokenDef::pipe_list_repeatable("UNENCUMBEREDMOVE", "pcgen_unencumberedmove"),

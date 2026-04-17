@@ -22,12 +22,36 @@ pub(crate) fn unparse_line_internal_with_separator(
     clauses: &[ParsedClause],
     separator: &str,
 ) -> String {
-    let mut parts = vec![escape_head_segment(head)];
+    // Only escape `|` and `:` when the top-level separator is `|` (PCG pipe format).
+    // For tab-separated LST records, `|` is an intra-token value separator
+    // (e.g. BONUS:COMBAT|BASEAB|1) and must NOT be escaped — the clause
+    // parser does not unescape `\|`, so escaping would corrupt the values on
+    // the next parse.
+    let needs_pipe_escape = separator == "|";
+
+    let head_part = if needs_pipe_escape {
+        escape_head_segment(head)
+    } else {
+        head.to_string()
+    };
+    let mut parts = vec![head_part];
+
     for clause in clauses {
         match clause {
-            ParsedClause::Bare(value) => parts.push(escape_segment(value)),
+            ParsedClause::Bare(value) => {
+                let seg = if needs_pipe_escape {
+                    escape_segment(value)
+                } else {
+                    value.clone()
+                };
+                parts.push(seg);
+            }
             ParsedClause::KeyValue { key, value } => {
-                parts.push(format!("{}:{}", escape_segment(key), escape_segment(value)));
+                if needs_pipe_escape {
+                    parts.push(format!("{}:{}", escape_segment(key), escape_segment(value)));
+                } else {
+                    parts.push(format!("{key}:{value}"));
+                }
             }
         }
     }

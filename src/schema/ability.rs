@@ -105,6 +105,28 @@ static ABILITY_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Field("abilities"),
         required: false,
     },
+    // Unarmed damage progression (monk/brawler-style abilities).
+    // Format: UDAM:1d6 (or a level-scaling die table).
+    TokenDef::text("UDAM", "udam"),
+    // Unarmed multiplier for critical hits.
+    TokenDef::text("UMULT", "pcgen_umult"),
+    // FREE:YES/NO — whether the ability costs nothing (does not use pool points).
+    TokenDef::yesno("FREE", "pcgen_free"),
+    // INFO:note — arbitrary informational text attached to the ability.
+    TokenDef::text("INFO", "pcgen_info"),
+    // PRECAMPAIGN: prerequisite that limits the ability to specific campaign settings.
+    // Repeatable since multiple campaign constraints can be stacked.
+    TokenDef {
+        key: "PRECAMPAIGN",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("pcgen_precampaign"),
+        required: false,
+    },
+    // REGION:region_name restricts ability availability to characters from a region.
+    TokenDef::text("REGION", "region"),
+    // REMOVE removes a previously applied ability (used in .MOD contexts).
+    TokenDef::text("REMOVE", "pcgen_remove"),
 ];
 
 static ABILITY_GLOBALS: &[GlobalGroup] = &[

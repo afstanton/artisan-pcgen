@@ -44,6 +44,8 @@ static EQUIPMENT_TOKENS: &[TokenDef] = &[
     TokenDef::text("CRITRANGE", "pcgen_critrange"),
     TokenDef::text("FUMBLERANGE", "pcgen_fumblerange"),
     TokenDef::text("RATEOFFIRE", "pcgen_rateoffire"),
+    // RANGE: distance increment in feet for ranged/thrown weapons (e.g. RANGE:20).
+    TokenDef::text("RANGE", "pcgen_range"),
     TokenDef::text("REACH", "reach"),
     TokenDef::text("REACHMULT", "pcgen_reachmult"),
     TokenDef::text("ALTCRITMULT", "pcgen_altcritmult"),
@@ -105,6 +107,26 @@ static EQUIPMENT_TOKENS: &[TokenDef] = &[
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
         artisan_mapping: ArtisanMapping::Field("abilities"),
+        required: false,
+    },
+    // Spell-like items: SPELLS:mode|TIMES=formula|CL=formula|spell,DC,...
+    // Used by wands, staves, and other spell-trigger/spell-completion items.
+    TokenDef {
+        key: "SPELLS",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("pcgen_spells"),
+        required: false,
+    },
+    TokenDef::text("VISIBLE", "visible"),
+    TokenDef::text("CATEGORY", "category"),
+    // Equipment modifiers (e.g. EQMOD:MASTERWORK|SILVER). Stored as an array of
+    // {raw, parts} objects by fields.rs; serialised using the raw string on emit.
+    TokenDef {
+        key: "EQMOD",
+        grammar: TokenGrammar::PipeGroups,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("pcgen_eqmods"),
         required: false,
     },
 ];

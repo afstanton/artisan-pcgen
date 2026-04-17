@@ -29,6 +29,10 @@ static SKILL_GLOBALS: &[GlobalGroup] = &[
 ];
 
 static SPELL_TOKENS: &[TokenDef] = &[
+    // CATEGORY:SPELL is written by some publishers (notably 5e/Pathfinder data)
+    // to mark an entity as a spell. It must be emitted on roundtrip or the
+    // attribute is silently dropped for those spell records.
+    TokenDef::text("CATEGORY", "category"),
     // Core spell descriptor tokens (from datafilesspells.html)
     TokenDef::text("SCHOOL", "school"),
     TokenDef::text("SUBSCHOOL", "subschool"),
@@ -39,18 +43,22 @@ static SPELL_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Field("descriptors"),
         required: false,
     },
-    // Class/domain spell levels
+    // Class/domain spell levels.
+    // Cardinality is Repeatable because some spell files carry multiple
+    // CLASSES: tokens on a single spell line (one per caster group), and
+    // joining them into one token would merge distinct groups.
     TokenDef {
         key: "CLASSES",
         grammar: TokenGrammar::PipeGroups,
-        cardinality: Cardinality::Once,
+        cardinality: Cardinality::Repeatable,
         artisan_mapping: ArtisanMapping::Field("classes"),
         required: false,
     },
+    // DOMAINS can also appear multiple times (though rarely).
     TokenDef {
         key: "DOMAINS",
         grammar: TokenGrammar::PipeGroups,
-        cardinality: Cardinality::Once,
+        cardinality: Cardinality::Repeatable,
         artisan_mapping: ArtisanMapping::Field("domains"),
         required: false,
     },

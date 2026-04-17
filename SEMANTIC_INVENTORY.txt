@@ -1,8 +1,8 @@
 === Semantic Inventory Summary ===
 Files scanned: 9447
 Total lines processed: 848333
-Semantic roundtrip: 4479 passed / 4968 failed
-Canonical roundtrip: 7115 passed / 2332 failed
+Semantic roundtrip: 7407 passed / 2040 failed
+Canonical roundtrip: 7877 passed / 1570 failed
 
 === Canonical Model Coverage Report ===
 Total entities:                    558572
@@ -210,132 +210,219 @@ Total entities:                    558572
 
 === Semantic Roundtrip Failure Patterns ===
 Files with entity count change: 152
-Files with effects change:      29153
-Files with prereqs change:      9144
+Entities with effects change:   7663
+Entities with prereqs change:   6635
 
 --- Attributes DROPPED after roundtrip (emitter fails to emit) ---
- 28198 | category
- 27768 | type
- 27333 | visible
- 18831 | pcgen_source_page
- 17685 | description
- 17685 | pcgen_desc
-  9356 | pcgen_eqmods
-  7188 | benefit
-  6724 | pcgen_source_long
-  6048 | source_short
-  5343 | kits
-  5104 | abilities
-  5020 | pcgen_range
-  4348 | pcgen_nameispi
-  4166 | pcgen_name_pi
-  3203 | pcgen_spells
-  1978 | pcgen_mult
-  1833 | pcgen_name_open
-  1354 | sab
-  1268 | pcgen_stack
-   928 | cost
-   864 | max_version
-   864 | new_key
-   735 | pcgen_info
-   704 | key
-   569 | sortkey
-   532 | pcgen_template
-   504 | location
-   504 | pcgen_role
-   471 | natural_attacks
+  2263 | abilities
+   771 | pcgen_info
+   718 | cost
+   654 | description
+   654 | pcgen_desc
+   465 | natural_attacks
    455 | face
-   451 | sex
    419 | legs
-   403 | udam
    396 | hands
    358 | abbreviation
-   355 | pcgen_umult
    353 | pcgen_precampaign
-   324 | pcgen_lookup
-   320 | aspects
-   320 | cskill
    315 | class
-   293 | pcgen_dr
-   285 | pcgen_addspelllevel
-   267 | pcgen_switch
-   263 | outputname
-   261 | move
+   302 | type
+   270 | pcgen_dr
+   260 | move
    254 | pcgen_sr
-   236 | domains
-   227 | hair
    227 | level
-   226 | eyes
-   220 | skin_tone
-   207 | size
+   209 | pcgen_spells
+   190 | kits
    170 | vision
-   166 | pcgen_free
-   147 | size_num
-   146 | pcgen_itype
+   153 | domains
    145 | pcgen_displayname
-   131 | serves_as
+   117 | fact_sets
+   114 | visible
+   108 | key
+   100 | do_not_add
+    91 | down
+    87 | up
+    69 | max_version
+    69 | new_key
+    68 | serves_as
+    56 | spell_level
+    46 | cskill
+    43 | cast
+    43 | pcgen_subregion
+    42 | pcgen_facts
+    40 | category
+    39 | sab
+    36 | pcgen_nameopt
+    36 | sprop
+    32 | alignment
+    32 | stat_range
+    30 | spell_known
+    25 | known
+    22 | pcgen_template
+    20 | option
+    18 | pcgen_modify_operation
+    18 | pcgen_modify_value
+    18 | pcgen_modify_variable
+    17 | hitdie
+    15 | udam
+    14 | explanation
+    12 | key_stat
+    12 | size_num
+    10 | pcgen_tempvalue
+    10 | race_subtype
+     6 | outputname
+     6 | sortkey
+     6 | spellstat
+     5 | aspects
 
 --- Attributes ADDED after roundtrip (emitter invents new tokens) ---
-  1798 | abilities
-  1749 | pcgen_lookup
-  1610 | size_num
-   788 | age_die_roll
-   714 | max_age
-   633 | base_age
-   561 | sab
-   462 | pcgen_eqmods
-   460 | option
-   265 | size
-   223 | pcgen_modify_operation
-   223 | pcgen_modify_value
-   223 | pcgen_modify_variable
-   206 | classes
-   178 | qty
-   116 | benefit
-   109 | description
-   109 | pcgen_desc
-    92 | eyes
-    92 | hair
-    92 | skin_tone
-    92 | sortkey
-    80 | pcgen_assigntoall
-    79 | type
-    72 | aspects
-    68 | pcgen_spells
-    63 | pcgen_tempvalue
-    43 | prohibit_spell
-    37 | visible
-    29 | pcgen_mult
 
 --- Attributes CHANGED value after roundtrip (format normalization) ---
-  4998 | abilities
-  3698 | description
-  3698 | pcgen_desc
-  3610 | pcgen_eqmods
-  3313 | type
-  2054 | key
-  1714 | option
-  1021 | base_age
-   961 | qty
-   934 | max_age
-   868 | sab
-   803 | age_die_roll
-   796 | pcgen_replaces
-   672 | size
-   648 | sprop
-   609 | classes
-   497 | location
-   482 | cost
-   441 | pcgen_lookup
-   251 | pcgen_source_page
-   246 | kits
-   240 | category
-   222 | values
-   162 | pcgen_spells
-   130 | spell_level
-   126 | new_key
-   104 | aspects
-    66 | sortkey
-    65 | pcgen_facts
-    62 | companion_list
+   562 | description
+   562 | pcgen_desc
+   155 | type
+   139 | pcgen_spells
+     7 | pcgen_facts
+     4 | pcgen_precampaign
+
+--- Entity types with most attribute drops (top 30) ---
+  2921 | pcgen:entity:ability
+  2467 | pcgen:entity:equipment
+  1236 | pcgen:system:name
+  1035 | pcgen:entity:pcc
+   761 | pcgen:entity:spell
+   532 | pcgen:system:stat
+   517 | pcgen:entity:feat
+   407 | pcgen:system:wieldcategory
+   315 | pcgen:system:biosettings
+   300 | pcgen:system:sizeadjustment
+   230 | pcgen:entity:class
+   155 | pcgen:system:race
+   154 | pcgen:entity:companionmod-follower
+   130 | pcgen:system:substitutionlevel
+    86 | pcgen:entity:template
+    73 | pcgen:system:tab
+    71 | pcgen:pcg:deity
+    69 | pcgen:entity:skill
+    40 | pcgen:system:subclasslevel
+    20 | pcgen:entity:deity
+    15 | pcgen:system:substitutionclass
+    14 | pcgen:entity:modify
+    11 | pcgen:entity:subclass
+    10 | pcgen:entity:race
+     8 | pcgen:pcg:domain
+     5 | pcgen:pcg:allowdebt
+     5 | pcgen:pcg:autoresizegear
+     5 | pcgen:pcg:autospells
+     5 | pcgen:pcg:birthday
+     5 | pcgen:pcg:birthplace
+
+--- Entity types with most effects changes (top 20) ---
+  4808 | pcgen:entity:ability
+  1070 | pcgen:system:sizeadjustment
+   802 | pcgen:entity:equipment
+   365 | pcgen:entity:pcc
+   259 | pcgen:entity:feat
+   151 | pcgen:entity:companionmod-follower
+    86 | pcgen:entity:template
+    55 | pcgen:system:ageset
+    27 | pcgen:entity:race
+    18 | pcgen:system:stat
+    11 | pcgen:entity:spell
+     4 | pcgen:entity:class
+     4 | pcgen:entity:classlevel
+     1 | pcgen:entity:companionmod-masterbonusrace
+     1 | pcgen:entity:subclass
+     1 | pcgen:entity:variable-global
+
+--- Dropped attrs for pcgen:entity:ability (top 30) ---
+  2253 | abilities
+   302 | pcgen_precampaign
+   131 | kits
+    40 | category
+    40 | key
+    40 | type
+    39 | description
+    39 | pcgen_desc
+    17 | option
+     5 | aspects
+     5 | visible
+     1 | benefit
+     1 | cost
+     1 | cr
+     1 | note
+     1 | pcgen_appliedto
+     1 | pcgen_descispi
+     1 | pcgen_facts
+     1 | source_date
+     1 | source_short
+     1 | source_web
+
+--- Dropped attrs for pcgen:entity:equipment (top 30) ---
+   455 | face
+   437 | natural_attacks
+   419 | legs
+   240 | move
+   209 | pcgen_dr
+   167 | hands
+   140 | vision
+   118 | pcgen_info
+   109 | pcgen_sr
+    51 | kits
+    47 | type
+    19 | sab
+    17 | pcgen_template
+    10 | pcgen_tempvalue
+     9 | race_subtype
+     5 | udam
+     4 | pcgen_moveclone
+     3 | cr
+     3 | cskill
+     3 | pcgen_hitdiceadvancement
+     1 | pcgen_changeprof
+     1 | spell_known
+
+--- Dropped attrs for pcgen:system:name (top 30) ---
+   615 | description
+   615 | pcgen_desc
+     6 | sortkey
+
+--- Dropped attrs for pcgen:entity:pcc (top 30) ---
+   215 | type
+   213 | abbreviation
+   117 | fact_sets
+   109 | domains
+    84 | cost
+    68 | key
+    43 | pcgen_subregion
+    42 | cskill
+    32 | alignment
+    32 | pcgen_facts
+    20 | sab
+    12 | key_stat
+    12 | size_num
+     6 | outputname
+     5 | pcgen_template
+     5 | spell_level
+     4 | pcgen_accheck
+     3 | favored_class
+     3 | group
+     3 | lang_bonus
+     2 | pcgen_source_link
+     1 | classes
+     1 | level_adjustment
+     1 | pcgen_changeprof
+     1 | pcgen_isdefaultsize
+     1 | race_subtype
+
+--- Dropped attrs for pcgen:entity:spell (top 30) ---
+   633 | pcgen_info
+    36 | pcgen_nameopt
+    36 | sprop
+    36 | visible
+     7 | pcgen_dr
+     5 | pcgen_itype
+     4 | vision
+     3 | hitdie
+     1 | pcgen_spells
 

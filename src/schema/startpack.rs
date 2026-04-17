@@ -20,6 +20,7 @@ static STARTPACK_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Field("pcgen_lookup"),
         required: false,
     },
+    TokenDef::text("VISIBLE", "visible"),
 ];
 
 static FUNDS_TOKENS: &[TokenDef] = &[
@@ -39,22 +40,37 @@ static LANGAUTO_TOKENS: &[TokenDef] = &[TokenDef {
 
 static TOTALCOST_TOKENS: &[TokenDef] = &[TokenDef::text_required("TOTALCOST", "total_cost")];
 
+static STARTPACK_GLOBALS: &[GlobalGroup] = &[
+    GlobalGroup::Type,
+    GlobalGroup::Key,
+    GlobalGroup::Desc,
+    GlobalGroup::Fact,
+    GlobalGroup::Bonus,
+    GlobalGroup::Add,
+    GlobalGroup::Choose,
+    GlobalGroup::Auto,
+    GlobalGroup::Define,
+    GlobalGroup::Modify,
+    GlobalGroup::Prerequisites,
+    GlobalGroup::SourcePage,
+    GlobalGroup::SourceLink,
+    GlobalGroup::OutputName,
+    GlobalGroup::SortKey,
+    GlobalGroup::LangBonus,
+    GlobalGroup::CSkill,
+    GlobalGroup::Sab,
+    GlobalGroup::Template,
+    GlobalGroup::ServesAs,
+    GlobalGroup::Qualify,
+    GlobalGroup::SourceMeta,
+];
+
 pub static STARTPACK_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:entity:startpack",
     head_token: Some("STARTPACK"),
     head_format: HeadFormat::TokenPrefixed,
     tokens: STARTPACK_TOKENS,
-    globals: &[
-        GlobalGroup::Prerequisites,
-        GlobalGroup::Bonus,
-        GlobalGroup::Add,
-        GlobalGroup::Choose,
-        GlobalGroup::Auto,
-        GlobalGroup::Define,
-        GlobalGroup::Modify,
-        GlobalGroup::LangBonus,
-        GlobalGroup::SourceMeta,
-    ],
+    globals: STARTPACK_GLOBALS,
 };
 
 pub static FUNDS_STARTPACK_SCHEMA: LineGrammar = LineGrammar {

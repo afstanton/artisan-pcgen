@@ -440,6 +440,8 @@ fn looks_like_class_level(head: &str, clauses: &[ParsedClause]) -> bool {
 
 fn looks_like_deity(clauses: &[ParsedClause]) -> bool {
     has_token(clauses, "DEITYWEAP")
+        || has_token(clauses, "PANTHEON")
+        || has_token(clauses, "FOLLOWERALIGN")
         || (has_token(clauses, "ALIGN") && has_token(clauses, "DOMAINS"))
 }
 
@@ -464,9 +466,23 @@ fn looks_like_pcg_skill(clauses: &[ParsedClause]) -> bool {
 }
 
 fn looks_like_spell(clauses: &[ParsedClause]) -> bool {
+    // Explicit spell-descriptor tokens (comprehensive list from PCGen spell documentation).
+    // SUBSCHOOL and DESCRIPTOR are included because they appear in the spell schema and
+    // are not used by any other entity type — some spells have these without SCHOOL.
+    // CLASSES and DOMAINS are intentionally excluded: CLASSES is also used by skill
+    // entities (caught earlier by head-token "SKILL:"), and DOMAINS is used by deity
+    // entities. Adding either would cause false-positive misclassifications.
+    // RANGE is intentionally excluded: RANGE: also appears on equipment/weapon entries
+    // (to denote weapon range). All genuine spell entries carry at least one of the
+    // other tokens below (SCHOOL, COMPS, CASTTIME, etc.), so RANGE is redundant for
+    // spell identification and its inclusion incorrectly pulls in weapon/gadget items.
     has_token(clauses, "SCHOOL")
+        || has_token(clauses, "SUBSCHOOL")
+        || has_token(clauses, "DESCRIPTOR")
         || has_token(clauses, "COMPS")
         || has_token(clauses, "CT")
+        || has_token(clauses, "CASTTIME")
+        || has_token(clauses, "DURATION")
         || has_token(clauses, "SAVEINFO")
         || has_token(clauses, "SPELLRES")
         || has_token(clauses, "TARGETAREA")
@@ -475,6 +491,14 @@ fn looks_like_spell(clauses: &[ParsedClause]) -> bool {
 }
 
 fn looks_like_equipment(clauses: &[ParsedClause]) -> bool {
+    // Entities with CATEGORY are abilities or feats — never equipment.
+    // Ability entities can carry equipment-flavoured tokens (EQMOD, REACH,
+    // SPROP, etc.) without being equipment items, so we must check CATEGORY
+    // first to avoid misclassification.
+    if find_key_value(clauses, "CATEGORY").is_some() {
+        return false;
+    }
+
     has_token(clauses, "WT")
         || has_token(clauses, "WIELD")
         || has_token(clauses, "PROFICIENCY")
@@ -486,6 +510,26 @@ fn looks_like_equipment(clauses: &[ParsedClause]) -> bool {
         || has_token(clauses, "PLUS")
         || has_token(clauses, "FORMATCAT")
         || has_token(clauses, "ASSIGNTOALL")
+        // Weapon-specific tokens (uniquely equipment, not found on abilities)
+        || has_token(clauses, "DAMAGE")
+        || has_token(clauses, "CRITRANGE")
+        || has_token(clauses, "CRITMULT")
+        || has_token(clauses, "ALTDAMAGE")
+        || has_token(clauses, "ALTCRITRANGE")
+        || has_token(clauses, "FUMBLERANGE")
+        || has_token(clauses, "RATEOFFIRE")
+        // Armor/shield tokens
+        || has_token(clauses, "ACCHECK")
+        || has_token(clauses, "MAXDEX")
+        || has_token(clauses, "SLOTS")
+        // Container/miscellaneous tokens
+        || has_token(clauses, "CONTAINS")
+        || has_token(clauses, "CHARGES")
+        || has_token(clauses, "NUMPAGES")
+        || has_token(clauses, "BASEITEM")
+        || has_token(clauses, "EQMOD")
+        || has_token(clauses, "ALTEQMOD")
+        || has_token(clauses, "ITYPE")
 }
 
 fn looks_like_ability(clauses: &[ParsedClause]) -> bool {
@@ -494,27 +538,18 @@ fn looks_like_ability(clauses: &[ParsedClause]) -> bool {
     };
 
     let category = category.trim();
+    // CATEGORY=FEAT entities are feats, not abilities.
     if category.eq_ignore_ascii_case("FEAT") {
         return false;
     }
 
-    has_token(clauses, "ADDSPELLLEVEL")
-        || has_token(clauses, "SPELLS")
-        || has_token(clauses, "EQMOD")
-        || has_token(clauses, "CSKILL")
-        || has_token(clauses, "BENEFIT")
-        || has_token(clauses, "STACK")
-        || has_token(clauses, "MULT")
-        || has_token(clauses, "BONUS")
-        || has_token(clauses, "DEFINE")
-        || has_token(clauses, "SAB")
-        || has_token(clauses, "ABILITY")
-        || has_token(clauses, "SPELLKNOWN")
-        || category.eq_ignore_ascii_case("SPECIAL ABILITY")
-        || category.eq_ignore_ascii_case("INTERNAL")
-        || category.eq_ignore_ascii_case("TALENT")
-        || category.eq_ignore_ascii_case("AFFLICTIONS")
-        || category.eq_ignore_ascii_case("CAREER SKILL")
+    // Any non-FEAT CATEGORY is a strong, unambiguous signal that this is an
+    // ability entity. No other entity type uses CATEGORY in PCGen data.
+    // Previously we required at least one "signal" token in addition to
+    // CATEGORY, but that caused simple abilities (those with only CATEGORY,
+    // TYPE, VISIBLE, SOURCEPAGE, etc.) to be misclassified after roundtrip
+    // because the emitter doesn't output the original raw clauses.
+    true
 }
 
 fn looks_like_feat(clauses: &[ParsedClause]) -> bool {
@@ -564,9 +599,40 @@ fn map_type_root_to_entity_key(root: &str) -> Option<&'static str> {
         "ability" => Some("pcgen:entity:ability"),
         "class" => Some("pcgen:entity:class"),
         "skill" => Some("pcgen:entity:skill"),
-        "equipment" | "gear" | "item" | "weapon" | "armor" | "shield" => {
-            Some("pcgen:entity:equipment")
-        }
+        // Equipment type roots — covers all common PCGen equipment classifications
+        "equipment"
+        | "gear"
+        | "item"
+        | "weapon"
+        | "armor"
+        | "shield"
+        // Consumables
+        | "potion"
+        | "scroll"
+        | "wand"
+        | "rod"
+        | "staff"
+        // Ammunition
+        | "ammunition"
+        | "ammo"
+        // Rings and wondrous
+        | "ring"
+        | "wondrous"
+        // Tools and miscellaneous
+        | "tool"
+        | "goods"
+        | "food"
+        | "trade"
+        | "clothing"
+        | "mount"
+        | "spellcomponent"
+        | "magic"
+        | "masterwork"
+        | "light"
+        | "container"
+        // Pathfinder-specific
+        | "alchemical"
+        | "poison" => Some("pcgen:entity:equipment"),
         _ => None,
     }
 }

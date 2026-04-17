@@ -117,6 +117,15 @@ static TEMPLATE_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Field("abilities"),
         required: false,
     },
+    // KIT grants a starting kit to characters that acquire this template.
+    // Format: KIT:count|kit_name (raw string stored as array element).
+    TokenDef {
+        key: "KIT",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("kits"),
+        required: false,
+    },
 ];
 
 static TEMPLATE_GLOBALS: &[GlobalGroup] = &[

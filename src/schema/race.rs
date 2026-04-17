@@ -134,6 +134,34 @@ static RACE_TOKENS: &[TokenDef] = &[
         required: false,
     },
     TokenDef::text("VISIBLE", "visible"),
+    // KIT grants a starting kit. Format: KIT:count|kit_name.
+    TokenDef {
+        key: "KIT",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("kits"),
+        required: false,
+    },
+    // ROLE describes the combat role(s) of a monster (e.g. ROLE:Monster|Melee).
+    // Used by some datasets (Spycraft, BahamutDragon) for monster race entries.
+    TokenDef::text("ROLE", "pcgen_role"),
+    // SPELLS grants innate spell-like abilities to the race.
+    // Uses parse_spells structured format (raw field preserved for faithful emit).
+    TokenDef {
+        key: "SPELLS",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("pcgen_spells"),
+        required: false,
+    },
+    // REGION:region_name sets the race's geographic/cultural region.
+    TokenDef::text("REGION", "region"),
+    // SUBRACE:subrace_name sets the subrace designation.
+    TokenDef::text("SUBRACE", "subrace"),
+    // REMOVABLE:YES/NO — whether the race can be removed from a character.
+    TokenDef::yesno("REMOVABLE", "pcgen_removable"),
+    // ADDLEVEL adds virtual class levels to the race.
+    TokenDef::text("ADDLEVEL", "pcgen_addlevel"),
 ];
 
 static RACE_GLOBALS: &[GlobalGroup] = &[

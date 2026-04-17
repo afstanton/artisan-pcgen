@@ -12,6 +12,11 @@ use crate::schema::{
 static ASPECT_SLOTS: &[&str] = &["name", "value", "formula"];
 
 static FEAT_TOKENS: &[TokenDef] = &[
+    // CATEGORY:FEAT is used by some PCGen data files to explicitly mark a feat
+    // entity as a feat rather than an ability. Must be preserved on roundtrip so
+    // that the classification signal survives re-parsing (looks_like_feat checks
+    // for CATEGORY=FEAT). Feats with no CATEGORY token emit nothing here.
+    TokenDef::text("CATEGORY", "category"),
     TokenDef {
         key: "ABILITY",
         grammar: TokenGrammar::Text,
@@ -58,6 +63,8 @@ static FEAT_TOKENS: &[TokenDef] = &[
     },
     // .pcg sub-token: the choice(s) this feat/ability was applied to
     TokenDef::text("APPLIEDTO", "pcgen_appliedto"),
+    // BENEFIT describes the mechanical benefit of the feat (similar to ABILITY's BENEFIT).
+    TokenDef::text("BENEFIT", "benefit"),
 ];
 
 static FEAT_GLOBALS: &[GlobalGroup] = &[

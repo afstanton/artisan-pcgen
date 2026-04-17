@@ -1,6 +1,6 @@
 use artisan_pcgen::{ParsedCatalog, parse_text_to_catalog, unparse_catalog_to_text};
 use serde_json::{Value, json};
-use std::collections::{BTreeMap, HashMap};
+use std::collections::{BTreeMap, HashMap, VecDeque};
 use std::fmt::Write as _;
 use std::fs;
 use std::io;
@@ -14,6 +14,8 @@ const PROVENANCE_ATTRS: &[&str] = &[
     "pcgen_record_family",
     "pcgen_record_style",
     "source_format",
+    // Citation data — source page lives in CitationRecord, not as an entity attribute
+    "pcgen_source_page",
 ];
 
 const INFRASTRUCTURE_ATTRS: &[&str] = &[
@@ -21,6 +23,14 @@ const INFRASTRUCTURE_ATTRS: &[&str] = &[
     "pcgen_decl_value",
     "pcgen_mechanical_signals",
     "pcgen_entity_type_key",
+    // pcgen_name_open and pcgen_name_pi are DERIVED fields computed from entity name,
+    // pcgen_nameispi, outputname, and key. They are not stored as PCGen tokens.
+    // Their values always reflect the underlying semantic fields, which are compared
+    // separately. Including them causes false positives from the (type, name) last-write-wins
+    // comparison in tally_semantic_failure (e.g., base entity vs. MOD entity).
+    "pcgen_name_open",
+    "pcgen_name_pi",
+    "pcgen_nameispi",
 ];
 
 #[derive(Debug, Clone)]
@@ -56,7 +66,7 @@ struct SemanticFailureTally {
     /// Files where entity count changed after roundtrip (before_count -> after_count, tally)
     entity_count_changed: usize,
     /// Attribute keys present before roundtrip but absent after (emitter drops them).
-    /// Key = attribute name, value = number of files where this was observed.
+    /// Key = attribute name, value = number of entities where this was observed.
     dropped_attrs: HashMap<String, usize>,
     /// Attribute keys absent before roundtrip but present after (emitter adds them spuriously).
     added_attrs: HashMap<String, usize>,
@@ -66,6 +76,14 @@ struct SemanticFailureTally {
     effects_changed: usize,
     /// Prerequisites that changed.
     prereqs_changed: usize,
+    /// Per entity type: total number of attribute drops observed.
+    /// Key = entity_type_key, value = total drop count across all attrs.
+    drops_by_entity_type: HashMap<String, usize>,
+    /// Per entity type: which specific attribute keys are being dropped.
+    /// Key = entity_type_key → (attr_key → count).
+    drops_by_entity_type_and_attr: HashMap<String, HashMap<String, usize>>,
+    /// Per entity type: total number of effects that changed.
+    effects_changed_by_entity_type: HashMap<String, usize>,
 }
 
 #[derive(Default)]
@@ -239,13 +257,13 @@ fn main() -> io::Result<()> {
     .unwrap();
     writeln!(
         report,
-        "Files with effects change:      {}",
+        "Entities with effects change:   {}",
         failures.effects_changed
     )
     .unwrap();
     writeln!(
         report,
-        "Files with prereqs change:      {}",
+        "Entities with prereqs change:   {}",
         failures.prereqs_changed
     )
     .unwrap();
@@ -271,6 +289,38 @@ fn main() -> io::Result<()> {
         30,
         false,
     );
+    write_sorted_counts(
+        &mut report,
+        "--- Entity types with most attribute drops (top 30) ---",
+        &failures.drops_by_entity_type,
+        30,
+        false,
+    );
+    write_sorted_counts(
+        &mut report,
+        "--- Entity types with most effects changes (top 20) ---",
+        &failures.effects_changed_by_entity_type,
+        20,
+        false,
+    );
+
+    // Per-entity-type attribute drop breakdown for high-drop entity types
+    let high_drop_types: Vec<(&String, &usize)> = {
+        let mut v: Vec<_> = failures.drops_by_entity_type.iter().collect();
+        v.sort_by(|a, b| b.1.cmp(a.1));
+        v.into_iter().take(5).collect()
+    };
+    for (etype, _total) in high_drop_types {
+        if let Some(attr_counts) = failures.drops_by_entity_type_and_attr.get(etype) {
+            write_sorted_counts(
+                &mut report,
+                &format!("--- Dropped attrs for {} (top 30) ---", etype),
+                attr_counts,
+                30,
+                false,
+            );
+        }
+    }
 
     if per_file {
         writeln!(report, "=== File Roundtrip Results ===").unwrap();
@@ -472,24 +522,22 @@ fn semantic_snapshot(catalog: &ParsedCatalog) -> Value {
             .cloned()
             .unwrap_or_else(|| "unknown".to_string());
 
-        let mut semantic_attrs: BTreeMap<String, Value> = entity
+        // Exclude both provenance AND infrastructure attributes from the
+        // semantic snapshot. Infrastructure attrs (pcgen_mechanical_signals,
+        // pcgen_decl_token, etc.) are derived metadata — they are not semantic
+        // content. pcgen_mechanical_signals in particular is extracted from ALL
+        // raw clauses before roundtrip, but only from emitted tokens after
+        // roundtrip (e.g. multiple TYPE tokens collapse to one stored value),
+        // causing spurious differences that are not real semantic losses.
+        let semantic_attrs: BTreeMap<String, Value> = entity
             .attributes
             .iter()
-            .filter(|(k, _)| !PROVENANCE_ATTRS.contains(&k.as_str()))
+            .filter(|(k, _)| {
+                !PROVENANCE_ATTRS.contains(&k.as_str())
+                    && !INFRASTRUCTURE_ATTRS.contains(&k.as_str())
+            })
             .map(|(k, v)| (k.clone(), v.clone()))
             .collect();
-
-        let entity_type_key = semantic_attrs
-            .get("pcgen_entity_type_key")
-            .and_then(Value::as_str)
-            .unwrap_or("")
-            .to_string();
-        if !entity_type_key.is_empty() {
-            semantic_attrs.insert(
-                "pcgen_entity_type_key".to_string(),
-                Value::String(entity_type_key),
-            );
-        }
 
         let mut effects: Vec<Value> = entity
             .effects
@@ -725,24 +773,38 @@ fn tally_semantic_failure(
         return;
     }
 
-    // Build an index: (entity_type, name) -> entity value, for quick lookup.
-    let mut after_index: BTreeMap<(String, String), &Value> = BTreeMap::new();
+    // Build an index: (entity_type, name) -> ordered queue of entity values.
+    // Using VecDeque so that duplicate-named entities (e.g. base + .MOD records)
+    // are matched 1:1 in document order rather than last-write-wins, which caused
+    // false "abilities dropped" tallies when a base entity was compared against its
+    // own MOD record.
+    let mut after_index: BTreeMap<(String, String), VecDeque<&Value>> = BTreeMap::new();
     for a in after_entities {
         let name = a["name"].as_str().unwrap_or("").to_string();
         let etype = a["entity_type"].as_str().unwrap_or("").to_string();
-        after_index.insert((etype, name), a);
+        after_index.entry((etype, name)).or_default().push_back(a);
     }
 
     for b in before_entities {
         let name = b["name"].as_str().unwrap_or("").to_string();
         let etype = b["entity_type"].as_str().unwrap_or("").to_string();
 
-        let Some(a) = after_index.get(&(etype, name)) else {
+        let Some(a) = after_index.get_mut(&(etype.clone(), name)).and_then(|q| q.pop_front()) else {
             // Entity disappeared after roundtrip — count all its attrs as dropped
             let empty_obj = serde_json::Map::new();
             for key in b["attributes"].as_object().unwrap_or(&empty_obj).keys() {
                 if !INFRASTRUCTURE_ATTRS.contains(&key.as_str()) {
                     *tally.dropped_attrs.entry(key.clone()).or_insert(0) += 1;
+                    *tally
+                        .drops_by_entity_type
+                        .entry(etype.clone())
+                        .or_insert(0) += 1;
+                    *tally
+                        .drops_by_entity_type_and_attr
+                        .entry(etype.clone())
+                        .or_default()
+                        .entry(key.clone())
+                        .or_insert(0) += 1;
                 }
             }
             continue;
@@ -751,6 +813,10 @@ fn tally_semantic_failure(
         // Check effects
         if b["effects"] != a["effects"] {
             tally.effects_changed += 1;
+            *tally
+                .effects_changed_by_entity_type
+                .entry(etype.clone())
+                .or_insert(0) += 1;
         }
         // Check prerequisites
         if b["prerequisites"] != a["prerequisites"] {
@@ -771,6 +837,16 @@ fn tally_semantic_failure(
                 None => {
                     // Dropped by emitter
                     *tally.dropped_attrs.entry(key.clone()).or_insert(0) += 1;
+                    *tally
+                        .drops_by_entity_type
+                        .entry(etype.clone())
+                        .or_insert(0) += 1;
+                    *tally
+                        .drops_by_entity_type_and_attr
+                        .entry(etype.clone())
+                        .or_default()
+                        .entry(key.clone())
+                        .or_insert(0) += 1;
                 }
                 Some(a_val) if a_val != b_val => {
                     // Value changed across roundtrip

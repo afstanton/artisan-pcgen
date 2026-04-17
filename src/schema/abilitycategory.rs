@@ -23,6 +23,9 @@ static ABILITYCATEGORY_TOKENS: &[TokenDef] = &[
     TokenDef::text("FRACTIONALPOOL", "pcgen_fractionalpool"),
     TokenDef::text("PLURAL", "pcgen_plural"),
     TokenDef::text("POOL", "pcgen_pool"),
+    TokenDef::text("VISIBLE", "visible"),
+    // CATEGORY names the ability category this record defines (e.g. CATEGORY:FEAT).
+    TokenDef::text("CATEGORY", "category"),
 ];
 
 static ABILITYCATEGORY_GLOBALS: &[GlobalGroup] = &[
@@ -40,6 +43,7 @@ static ABILITYCATEGORY_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::SourcePage,
     GlobalGroup::SourceLink,
     GlobalGroup::OutputName,
+    GlobalGroup::SortKey,
     GlobalGroup::SourceMeta,
 ];
 

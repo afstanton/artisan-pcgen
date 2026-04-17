@@ -11,6 +11,14 @@ use crate::schema::{
 static SITUATION_SLOTS: &[&str] = &["name", "modifier"];
 
 static SKILL_TOKENS: &[TokenDef] = &[
+    // ABILITY grants abilities from skill entities (rare but present in some datasets).
+    TokenDef {
+        key: "ABILITY",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("abilities"),
+        required: false,
+    },
     // CLASSES is the skill's class list: which classes treat this as a class skill
     TokenDef {
         key: "CLASSES",
