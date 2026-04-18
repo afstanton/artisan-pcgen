@@ -1,8 +1,8 @@
 === Semantic Inventory Summary ===
 Files scanned: 9447
 Total lines processed: 848333
-Semantic roundtrip: 7407 passed / 2040 failed
-Canonical roundtrip: 7877 passed / 1570 failed
+Semantic roundtrip: 8185 passed / 1262 failed
+Canonical roundtrip: 8637 passed / 810 failed
 
 === Canonical Model Coverage Report ===
 Total entities:                    558572
@@ -210,100 +210,99 @@ Total entities:                    558572
 
 === Semantic Roundtrip Failure Patterns ===
 Files with entity count change: 152
-Entities with effects change:   7663
-Entities with prereqs change:   6635
+Entities with effects change:   1626
+Entities with prereqs change:   6937
 
 --- Attributes DROPPED after roundtrip (emitter fails to emit) ---
-  2263 | abilities
-   771 | pcgen_info
-   718 | cost
-   654 | description
-   654 | pcgen_desc
-   465 | natural_attacks
    455 | face
+   438 | natural_attacks
    419 | legs
-   396 | hands
-   358 | abbreviation
-   353 | pcgen_precampaign
-   315 | class
-   302 | type
-   270 | pcgen_dr
-   260 | move
-   254 | pcgen_sr
+   247 | pcgen_sr
+   245 | move
+   229 | pcgen_dr
    227 | level
    209 | pcgen_spells
-   190 | kits
-   170 | vision
+   183 | kits
+   167 | hands
    153 | domains
-   145 | pcgen_displayname
-   117 | fact_sets
+   146 | vision
    114 | visible
-   108 | key
    100 | do_not_add
-    91 | down
-    87 | up
+    75 | fact_sets
+    70 | type
     69 | max_version
     69 | new_key
     68 | serves_as
-    56 | spell_level
-    46 | cskill
+    51 | pcgen_precampaign
     43 | cast
-    43 | pcgen_subregion
     42 | pcgen_facts
-    40 | category
-    39 | sab
     36 | pcgen_nameopt
     36 | sprop
-    32 | alignment
-    32 | stat_range
-    30 | spell_known
     25 | known
-    22 | pcgen_template
+    24 | description
+    24 | pcgen_desc
+    23 | category
+    23 | key
+    23 | spell_level
+    20 | cost
     20 | option
+    19 | sab
     18 | pcgen_modify_operation
     18 | pcgen_modify_value
     18 | pcgen_modify_variable
     17 | hitdie
-    15 | udam
+    17 | pcgen_template
     14 | explanation
-    12 | key_stat
     12 | size_num
     10 | pcgen_tempvalue
     10 | race_subtype
-     6 | outputname
-     6 | sortkey
+     9 | pcgen_info
      6 | spellstat
+     6 | udam
      5 | aspects
+     5 | birthday
+     5 | birthplace
+     5 | character_asset
+     5 | character_comp
+     5 | character_dm_notes
+     5 | character_magic
+     5 | pcgen_allowdebt
+     5 | pcgen_autoresizegear
+     5 | pcgen_autospells
+     5 | pcgen_ignorecost
+     5 | pcgen_itype
+     5 | pcgen_loadcompanions
+     5 | pcgen_suppressbiofields
+     5 | pcgen_tabname
 
 --- Attributes ADDED after roundtrip (emitter invents new tokens) ---
+    12 | size
 
 --- Attributes CHANGED value after roundtrip (format normalization) ---
    562 | description
    562 | pcgen_desc
+   306 | pcgen_precampaign
    155 | type
    139 | pcgen_spells
+    24 | abilities
+    20 | sab
      7 | pcgen_facts
-     4 | pcgen_precampaign
 
 --- Entity types with most attribute drops (top 30) ---
-  2921 | pcgen:entity:ability
-  2467 | pcgen:entity:equipment
-  1236 | pcgen:system:name
-  1035 | pcgen:entity:pcc
-   761 | pcgen:entity:spell
-   532 | pcgen:system:stat
-   517 | pcgen:entity:feat
-   407 | pcgen:system:wieldcategory
-   315 | pcgen:system:biosettings
-   300 | pcgen:system:sizeadjustment
+  2349 | pcgen:entity:equipment
+   281 | pcgen:entity:ability
+   252 | pcgen:entity:pcc
    230 | pcgen:entity:class
    155 | pcgen:system:race
    154 | pcgen:entity:companionmod-follower
+   145 | pcgen:entity:feat
    130 | pcgen:system:substitutionlevel
+   128 | pcgen:entity:spell
     86 | pcgen:entity:template
     73 | pcgen:system:tab
     71 | pcgen:pcg:deity
     69 | pcgen:entity:skill
+    60 | pcgen:system:stat
     40 | pcgen:system:subclasslevel
     20 | pcgen:entity:deity
     15 | pcgen:system:substitutionclass
@@ -316,47 +315,26 @@ Entities with prereqs change:   6635
      5 | pcgen:pcg:autospells
      5 | pcgen:pcg:birthday
      5 | pcgen:pcg:birthplace
+     5 | pcgen:pcg:characterasset
+     5 | pcgen:pcg:charactercomp
+     5 | pcgen:pcg:characterdmnotes
+     5 | pcgen:pcg:charactermagic
 
 --- Entity types with most effects changes (top 20) ---
-  4808 | pcgen:entity:ability
-  1070 | pcgen:system:sizeadjustment
    802 | pcgen:entity:equipment
-   365 | pcgen:entity:pcc
-   259 | pcgen:entity:feat
+   364 | pcgen:entity:pcc
    151 | pcgen:entity:companionmod-follower
+   146 | pcgen:entity:feat
     86 | pcgen:entity:template
-    55 | pcgen:system:ageset
     27 | pcgen:entity:race
     18 | pcgen:system:stat
     11 | pcgen:entity:spell
+    10 | pcgen:entity:ability
      4 | pcgen:entity:class
      4 | pcgen:entity:classlevel
      1 | pcgen:entity:companionmod-masterbonusrace
      1 | pcgen:entity:subclass
      1 | pcgen:entity:variable-global
-
---- Dropped attrs for pcgen:entity:ability (top 30) ---
-  2253 | abilities
-   302 | pcgen_precampaign
-   131 | kits
-    40 | category
-    40 | key
-    40 | type
-    39 | description
-    39 | pcgen_desc
-    17 | option
-     5 | aspects
-     5 | visible
-     1 | benefit
-     1 | cost
-     1 | cr
-     1 | note
-     1 | pcgen_appliedto
-     1 | pcgen_descispi
-     1 | pcgen_facts
-     1 | source_date
-     1 | source_short
-     1 | source_web
 
 --- Dropped attrs for pcgen:entity:equipment (top 30) ---
    455 | face
@@ -366,7 +344,6 @@ Entities with prereqs change:   6635
    209 | pcgen_dr
    167 | hands
    140 | vision
-   118 | pcgen_info
    109 | pcgen_sr
     51 | kits
     47 | type
@@ -382,32 +359,38 @@ Entities with prereqs change:   6635
      1 | pcgen_changeprof
      1 | spell_known
 
---- Dropped attrs for pcgen:system:name (top 30) ---
-   615 | description
-   615 | pcgen_desc
-     6 | sortkey
+--- Dropped attrs for pcgen:entity:ability (top 30) ---
+   131 | kits
+    23 | category
+    23 | key
+    23 | type
+    22 | description
+    22 | pcgen_desc
+    17 | option
+     5 | aspects
+     5 | visible
+     1 | abilities
+     1 | benefit
+     1 | cost
+     1 | cr
+     1 | note
+     1 | pcgen_descispi
+     1 | pcgen_facts
+     1 | source_date
+     1 | source_short
+     1 | source_web
 
 --- Dropped attrs for pcgen:entity:pcc (top 30) ---
-   215 | type
-   213 | abbreviation
-   117 | fact_sets
    109 | domains
-    84 | cost
-    68 | key
-    43 | pcgen_subregion
-    42 | cskill
-    32 | alignment
+    75 | fact_sets
     32 | pcgen_facts
-    20 | sab
-    12 | key_stat
     12 | size_num
-     6 | outputname
-     5 | pcgen_template
-     5 | spell_level
      4 | pcgen_accheck
      3 | favored_class
      3 | group
      3 | lang_bonus
+     2 | description
+     2 | pcgen_desc
      2 | pcgen_source_link
      1 | classes
      1 | level_adjustment
@@ -415,14 +398,15 @@ Entities with prereqs change:   6635
      1 | pcgen_isdefaultsize
      1 | race_subtype
 
---- Dropped attrs for pcgen:entity:spell (top 30) ---
-   633 | pcgen_info
-    36 | pcgen_nameopt
-    36 | sprop
-    36 | visible
-     7 | pcgen_dr
-     5 | pcgen_itype
-     4 | vision
-     3 | hitdie
-     1 | pcgen_spells
+--- Dropped attrs for pcgen:entity:class (top 30) ---
+   225 | level
+     2 | pcgen_facts
+     1 | kits
+     1 | natural_attacks
+     1 | spell_level
+
+--- Dropped attrs for pcgen:system:race (top 30) ---
+    69 | max_version
+    69 | new_key
+    17 | pcgen_precampaign
 

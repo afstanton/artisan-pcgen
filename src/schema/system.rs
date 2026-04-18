@@ -661,9 +661,15 @@ pub static BASEDICE_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
 };
 
 static WIELDCATEGORY_SYSTEM_TOKENS: &[TokenDef] = &[
+    // HANDS: number of hands required to wield a weapon in this category.
+    TokenDef::integer("HANDS", "hands"),
     TokenDef::text("SWITCH", "pcgen_switch"),
     TokenDef::text("SIZEDIFF", "pcgen_sizediff"),
     TokenDef::yesno("FINESSABLE", "pcgen_finessable"),
+    // UP/DOWN: size-category transitions — which categories this one upgrades/downgrades to.
+    // Values are pipe-separated category names, e.g. "OneHanded|TwoHanded".
+    TokenDef::text("UP", "up"),
+    TokenDef::text("DOWN", "down"),
 ];
 
 pub static WIELDCATEGORY_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
@@ -702,7 +708,8 @@ pub static AGESET_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     head_token: Some("AGESET"),
     head_format: HeadFormat::TokenPrefixed,
     tokens: &[],
-    globals: &[],
+    // AGESET lines can carry BONUS effects (e.g. middle-age INT/WIS bonus).
+    globals: &[GlobalGroup::Bonus],
 };
 
 static LEVEL_SYSTEM_TOKENS: &[TokenDef] = &[
@@ -743,6 +750,10 @@ static STAT_TOKENS: &[TokenDef] = &[
     TokenDef::integer("SCORE", "score"),
     TokenDef::text("ABB", "abbreviation"),
     TokenDef::text("STATMOD", "pcgen_statmod"),
+    // COST: point-buy cost for this stat score (e.g. STAT:10 COST:10 in pointbuymethods_system.lst).
+    TokenDef::text("COST", "cost"),
+    // STATRANGE: bonus-spell interval (also used in BONUSSPELLLEVEL but appears on STAT in some datasets).
+    TokenDef::integer("STATRANGE", "stat_range"),
     // Some game modes (e.g. Pathfinder) grant internal abilities from stat entities.
     TokenDef {
         key: "ABILITY",
@@ -761,15 +772,29 @@ pub static STAT_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     globals: &[GlobalGroup::Key, GlobalGroup::SortKey, GlobalGroup::Bonus, GlobalGroup::Define],
 };
 
+static SIZEADJUSTMENT_TOKENS: &[TokenDef] = &[
+    TokenDef::text("SIZENUM", "size_num"),
+    TokenDef::text("ISDEFAULTSIZE", "pcgen_isdefaultsize"),
+    // ABB: abbreviation for the size (e.g. "T", "S", "M", "L", "H", "G", "C").
+    TokenDef::text("ABB", "abbreviation"),
+    // DISPLAYNAME: human-readable size name shown in UI (e.g. "Tiny", "Small").
+    TokenDef::text("DISPLAYNAME", "pcgen_displayname"),
+    // Some game modes grant internal abilities from size entities.
+    TokenDef {
+        key: "ABILITY",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("abilities"),
+        required: false,
+    },
+];
+
 pub static SIZEADJUSTMENT_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:system:sizeadjustment",
     head_token: Some("SIZENAME"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[
-        TokenDef::text("SIZENUM", "size_num"),
-        TokenDef::text("ISDEFAULTSIZE", "pcgen_isdefaultsize"),
-    ],
-    globals: &[],
+    tokens: SIZEADJUSTMENT_TOKENS,
+    globals: &[GlobalGroup::Bonus],
 };
 
 pub static RACE_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
@@ -790,7 +815,7 @@ pub static NAME_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
         TokenDef::yesno("DEFAULT", "pcgen_default"),
         TokenDef::text("EXCLUDE", "pcgen_exclude"),
     ],
-    globals: &[],
+    globals: &[GlobalGroup::Desc, GlobalGroup::SortKey],
 };
 
 pub static STARTTABLE_SYSTEM_SCHEMA: LineGrammar = LineGrammar {

@@ -244,6 +244,56 @@ static PCC_TOKENS: &[TokenDef] = &[
     TokenDef::text("OPTION", "option"),
     // Path to a help HTML file bundled with the campaign (e.g. HELP:./help_spycraft.html)
     TokenDef::text("HELP", "pcgen_help"),
+    // ABB: abbreviation for the campaign/source (e.g. "PHB", "MM").
+    TokenDef::text("ABB", "abbreviation"),
+    // DOMAIN: default domain list for the campaign (stores as string in some data files).
+    TokenDef::text("DOMAIN", "domains"),
+    // COST: point-buy or pool cost used in some campaign configurations.
+    TokenDef::text("COST", "cost"),
+    // SUBREGION: region sub-classification for campaign entities.
+    TokenDef::text("SUBREGION", "pcgen_subregion"),
+    // ALIGN: alignment restriction or default (maps to `alignment`; distinct from ALIGNMENT catalog).
+    TokenDef::text("ALIGN", "alignment"),
+    // FACTSET: named fact-set definitions (repeatable; each value is a FACTSET:name|... block).
+    TokenDef {
+        key: "FACTSET",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("fact_sets"),
+        required: false,
+    },
+    // FACTS: raw named-fact block stored as pcgen_facts.
+    TokenDef {
+        key: "FACTS",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("pcgen_facts"),
+        required: false,
+    },
+    // SIZE: size category for PCC-level entries.
+    TokenDef::text("SIZE", "size_num"),
+    // KEY_STAT: stat used as the key stat for spell-like features.
+    TokenDef::text("KEYSTAT", "key_stat"),
+    // SPELLLEVEL: maps a spell-level association for campaign-wide configuration.
+    TokenDef::text("SPELLLEVEL", "spell_level"),
+    // TEMPLATE: template grant at the PCC level.
+    TokenDef {
+        key: "TEMPLATE",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("pcgen_template"),
+        required: false,
+    },
+    // SAB: special ability bonus text.
+    TokenDef {
+        key: "SAB",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("sab"),
+        required: false,
+    },
+    // OUTPUTNAME: display name override.
+    TokenDef::text("OUTPUTNAME", "outputname"),
 ];
 
 static GLOBALMODIFIER_INCLUDE_TOKENS: &[TokenDef] = &[
@@ -259,7 +309,13 @@ pub static GLOBALMODIFIER_INCLUDE_SCHEMA: LineGrammar = LineGrammar {
     globals: &[],
 };
 
-static PCC_GLOBALS: &[GlobalGroup] = &[GlobalGroup::SourceMeta];
+static PCC_GLOBALS: &[GlobalGroup] = &[
+    GlobalGroup::Type,
+    GlobalGroup::Key,
+    GlobalGroup::CSkill,
+    GlobalGroup::Sab,
+    GlobalGroup::SourceMeta,
+];
 
 pub static PCC_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:entity:pcc",

@@ -65,6 +65,54 @@ static FEAT_TOKENS: &[TokenDef] = &[
     TokenDef::text("APPLIEDTO", "pcgen_appliedto"),
     // BENEFIT describes the mechanical benefit of the feat (similar to ABILITY's BENEFIT).
     TokenDef::text("BENEFIT", "benefit"),
+    // COST: pool-point cost (shared concept with ability entities).
+    TokenDef::text("COST", "cost"),
+    // INFO: free-text annotation (e.g. notes from 3rd-party publishers).
+    TokenDef::text("INFO", "pcgen_info"),
+    // SPELLLEVEL: associates the feat with a spell level (some feat files use this).
+    TokenDef::text("SPELLLEVEL", "spell_level"),
+    // MOVE, NATURALATTACKS, VISION, DR, SR — mechanical grants also found on ability entities.
+    TokenDef {
+        key: "MOVE",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("move"),
+        required: false,
+    },
+    TokenDef {
+        key: "NATURALATTACKS",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("natural_attacks"),
+        required: false,
+    },
+    TokenDef {
+        key: "VISION",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("vision"),
+        required: false,
+    },
+    TokenDef::text("DR", "pcgen_dr"),
+    TokenDef::text("SR", "pcgen_sr"),
+    // UDAM: unarmed damage progression (some homebrew feat files).
+    TokenDef::text("UDAM", "udam"),
+    // SPELLKNOWN: known-spell grant.
+    TokenDef {
+        key: "SPELLKNOWN",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("spell_known"),
+        required: false,
+    },
+    // KITS: kit grants on feat entities (rare but present in some datasets).
+    TokenDef {
+        key: "KIT",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("kits"),
+        required: false,
+    },
 ];
 
 static FEAT_GLOBALS: &[GlobalGroup] = &[

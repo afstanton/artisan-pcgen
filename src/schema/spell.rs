@@ -78,6 +78,8 @@ static SPELL_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Field("pcgen_tempvalue"),
         required: false,
     },
+    // INFO: free-text annotation for the spell (appears in some Pathfinder datasets).
+    TokenDef::text("INFO", "pcgen_info"),
     // Cost and variants
     TokenDef::text("COST", "cost"),
     TokenDef::text("XPCOST", "pcgen_xpcost"),

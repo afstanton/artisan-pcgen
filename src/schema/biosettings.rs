@@ -11,6 +11,10 @@ static BIOSETTINGS_TOKENS: &[TokenDef] = &[
     TokenDef::text("BASEAGEADD", "base_age_add"),
     TokenDef::text("MAXAGE", "max_age"),
     TokenDef::text("AGEDIEROLL", "age_die_roll"),
+    // CLASS: class-based age modifier block, e.g.
+    // "Barbarian,Rogue[BASEAGEADD:1d4]|Bard,Fighter[BASEAGEADD:1d6]|..."
+    // Stored and emitted as a raw text value.
+    TokenDef::text("CLASS", "class"),
     TokenDef {
         key: "SEX",
         grammar: TokenGrammar::Text,

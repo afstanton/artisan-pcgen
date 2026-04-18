@@ -129,6 +129,8 @@ static EQUIPMENT_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Field("pcgen_eqmods"),
         required: false,
     },
+    // INFO: free-text annotation (appears in some Pathfinder/3.5e equipment files).
+    TokenDef::text("INFO", "pcgen_info"),
 ];
 
 static EQUIPMENT_GLOBALS: &[GlobalGroup] = &[

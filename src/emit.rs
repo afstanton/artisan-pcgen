@@ -39,9 +39,29 @@ pub fn emit_entity(entity: &Entity, schema: &LineGrammar) -> String {
                 .map(|s| s.to_ascii_uppercase());
             let schema_head = schema.head_token.map(|s| s.to_ascii_uppercase());
 
-            if let (Some(decl), Some(expected)) = (decl_token, schema_head)
+            if let (Some(decl), Some(expected)) = (&decl_token, &schema_head)
                 && decl == expected
             {
+                format!("{decl}:{name}")
+            } else if let Some(decl) = &decl_token
+                && schema_head.is_none()
+            {
+                // Entity was parsed from a TOKEN:value head (e.g. ABILITY:Category|TYPE|Name
+                // on a tab-indented continuation line), but the schema has no fixed head
+                // token. Preserve the original TOKEN:name head so the second parse sees
+                // the same token-prefixed head and assigns the same entity type.
+                //
+                // Mark the token's backing field as already emitted so the token loop
+                // below doesn't also emit an ABILITY:name clause — that would cause the
+                // re-parser to double-count the value in the abilities array.
+                if let Some(field) = schema.tokens.iter()
+                    .find(|t| t.key.eq_ignore_ascii_case(decl))
+                    .and_then(|t| {
+                        if let ArtisanMapping::Field(f) = t.artisan_mapping { Some(f) } else { None }
+                    })
+                {
+                    emitted_attribute_fields.insert(field);
+                }
                 format!("{decl}:{name}")
             } else {
                 name.to_string()
