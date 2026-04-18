@@ -308,7 +308,7 @@ fn main() -> io::Result<()> {
     let high_drop_types: Vec<(&String, &usize)> = {
         let mut v: Vec<_> = failures.drops_by_entity_type.iter().collect();
         v.sort_by(|a, b| b.1.cmp(a.1));
-        v.into_iter().take(5).collect()
+        v.into_iter().take(10).collect()
     };
     for (etype, _total) in high_drop_types {
         if let Some(attr_counts) = failures.drops_by_entity_type_and_attr.get(etype) {

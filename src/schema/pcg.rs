@@ -3,7 +3,7 @@
 //! These heads appear as top-level session/profile lines in character files,
 //! e.g. `PCGVERSION:2.0` or `HEIGHT:51`.
 
-use crate::schema::{HeadFormat, LineGrammar, TokenDef};
+use crate::schema::{ArtisanMapping, Cardinality, HeadFormat, LineGrammar, TokenDef, TokenGrammar};
 
 pub static PCGVERSION_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:pcg:pcgversion",
@@ -620,6 +620,22 @@ static PCG_DEITY_TOKENS: &[TokenDef] = &[
     TokenDef::bracket_group("DEITYFAVWEAP", "pcgen_deityfavweap"),
     TokenDef::text("DEITYALIGN", "pcgen_deityalign"),
     TokenDef::text("DOMAINGRANTS", "pcgen_domaingrants"),
+    // DOMAINS: plain domain list (seen in some older PCG deity records).
+    TokenDef {
+        key: "DOMAINS",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Once,
+        artisan_mapping: ArtisanMapping::Field("domains"),
+        required: false,
+    },
+    // PRECAMPAIGN: prerequisite campaign check on PCG deity record.
+    TokenDef {
+        key: "PRECAMPAIGN",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("pcgen_precampaign"),
+        required: false,
+    },
 ];
 
 pub static PCG_DEITY_SCHEMA: LineGrammar = LineGrammar {
@@ -636,6 +652,9 @@ pub static PCG_DEITY_SCHEMA: LineGrammar = LineGrammar {
 
 static PCG_DOMAIN_TOKENS: &[TokenDef] = &[
     TokenDef::text_required("DOMAIN", "domain_name"),
+    // ASSOCIATEDDATA: the specific choice made when the domain was granted
+    // (e.g. the weapon selected for War domain or the knowledge area for Knowledge domain).
+    TokenDef::text("ASSOCIATEDDATA", "pcgen_associateddata"),
     TokenDef::text("DOMAINGRANTS", "pcgen_domaingrants"),
     // SOURCE in PCG context is a bracket group: [TYPE:DEITY|NAME:Pelor]
     TokenDef::bracket_group("SOURCE", "pcgen_source"),

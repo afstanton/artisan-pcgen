@@ -785,6 +785,8 @@ pub static STAT_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
         GlobalGroup::SortKey,
         GlobalGroup::Bonus,
         GlobalGroup::Define,
+        GlobalGroup::Fact,
+        GlobalGroup::Modify,
     ],
 };
 
@@ -923,6 +925,15 @@ static SUBSTITUTION_CLASS_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::SourceMeta,
 ];
 
+// Head-level tokens for SUBSTITUTIONCLASS lines (the class declaration, not per-level rows).
+// These appear on the line that introduces the substitution class itself.
+static SUBSTITUTIONCLASS_TOKENS: &[TokenDef] = &[
+    // HITDIE: hit die type for this substitution class (e.g. HITDIE:d8).
+    TokenDef::text("HITDIE", "hitdie"),
+    // STARTSKILLPTS: skill points per level for this substitution class.
+    TokenDef::text("STARTSKILLPTS", "pcgen_startskillpts"),
+];
+
 // Ability grants and class-level tokens shared by subclasslevel and substitutionlevel rows.
 // Mirrors the classlevel token set since these entity types serve the same structural role.
 static SUBSTITUTION_LEVEL_TOKENS: &[TokenDef] = &[
@@ -991,7 +1002,7 @@ pub static SUBSTITUTIONCLASS_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:system:substitutionclass",
     head_token: Some("SUBSTITUTIONCLASS"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[],
+    tokens: SUBSTITUTIONCLASS_TOKENS,
     globals: SUBSTITUTION_CLASS_GLOBALS,
 };
 

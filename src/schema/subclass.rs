@@ -21,6 +21,26 @@ static SUBCLASS_TOKENS: &[TokenDef] = &[
     TokenDef::pipe_positional_repeatable("SPELLLIST", &["level", "list"], "pcgen_spelllist"),
     TokenDef::text("KNOWNSPELLSFROMSPECIALTY", "known_spells_from_specialty"),
     TokenDef::integer("PROHIBITCOST", "pcgen_prohibitcost"),
+    // SPELLSTAT: ability score used for spell DCs and bonus spells (same as class-level SPELLSTAT).
+    TokenDef::text("SPELLSTAT", "spellstat"),
+    // STARTSKILLPTS: skill points at first subclass level.
+    TokenDef::text("STARTSKILLPTS", "pcgen_startskillpts"),
+    // DOMAIN: domain list for divine subclasses.
+    TokenDef {
+        key: "DOMAIN",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Once,
+        artisan_mapping: ArtisanMapping::Field("domains"),
+        required: false,
+    },
+    // PROHIBITED: prohibited spell school(s).
+    TokenDef {
+        key: "PROHIBITED",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("pcgen_prohibited"),
+        required: false,
+    },
 ];
 
 static SUBCLASS_GLOBALS: &[GlobalGroup] = &[

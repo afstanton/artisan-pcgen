@@ -144,6 +144,12 @@ static TEMPLATE_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Field("do_not_add"),
         required: false,
     },
+    // COST: pool-point cost for acquiring this template.
+    TokenDef::text("COST", "cost"),
+    // LEVEL: virtual class level granted by this template (some 3rd-party data).
+    TokenDef::integer("LEVEL", "level"),
+    // SPELLLEVEL: spell level association for template-granted spell-like abilities.
+    TokenDef::text("SPELLLEVEL", "spell_level"),
 ];
 
 static TEMPLATE_GLOBALS: &[GlobalGroup] = &[

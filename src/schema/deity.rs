@@ -43,6 +43,8 @@ static DEITY_TOKENS: &[TokenDef] = &[
         required: false,
     },
     TokenDef::text("VISIBLE", "visible"),
+    // SPELLLEVEL: associates a spell level with deity-granted spell-like abilities.
+    TokenDef::text("SPELLLEVEL", "spell_level"),
 ];
 
 static DEITY_GLOBALS: &[GlobalGroup] = &[
