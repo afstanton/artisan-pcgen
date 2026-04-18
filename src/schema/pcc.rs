@@ -246,8 +246,14 @@ static PCC_TOKENS: &[TokenDef] = &[
     TokenDef::text("HELP", "pcgen_help"),
     // ABB: abbreviation for the campaign/source (e.g. "PHB", "MM").
     TokenDef::text("ABB", "abbreviation"),
-    // DOMAIN: default domain list for the campaign (stores as string in some data files).
-    TokenDef::text("DOMAIN", "domains"),
+    // DOMAIN: path reference to a domain LST file (one per line, repeatable).
+    TokenDef {
+        key: "DOMAIN",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("domains"),
+        required: false,
+    },
     // COST: point-buy or pool cost used in some campaign configurations.
     TokenDef::text("COST", "cost"),
     // SUBREGION: region sub-classification for campaign entities.
@@ -270,9 +276,10 @@ static PCC_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Field("pcgen_facts"),
         required: false,
     },
-    // SIZE: size category for PCC-level entries.
-    TokenDef::text("SIZE", "size_num"),
-    // KEY_STAT: stat used as the key stat for spell-like features.
+    // SIZENUM: numeric size encoding for PCC-level entries (maps to size_num).
+    // Note: SIZE maps to the `size` field; SIZENUM maps to `size_num`.
+    TokenDef::text("SIZENUM", "size_num"),
+    // KEYSTAT: stat used as the key stat for spell-like features.
     TokenDef::text("KEYSTAT", "key_stat"),
     // SPELLLEVEL: maps a spell-level association for campaign-wide configuration.
     TokenDef::text("SPELLLEVEL", "spell_level"),

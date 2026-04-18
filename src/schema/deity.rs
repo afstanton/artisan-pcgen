@@ -63,6 +63,9 @@ static DEITY_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::SortKey,
     GlobalGroup::CSkill,
     GlobalGroup::Sab,
+    GlobalGroup::ServesAs,
+    GlobalGroup::Qualify,
+    GlobalGroup::ChangeProf,
     GlobalGroup::SourceMeta,
 ];
 

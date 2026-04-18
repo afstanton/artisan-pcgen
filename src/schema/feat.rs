@@ -113,6 +113,14 @@ static FEAT_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Field("kits"),
         required: false,
     },
+    // SPELLS: spell-like abilities granted by this feat (seen in some datasets).
+    TokenDef {
+        key: "SPELLS",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("pcgen_spells"),
+        required: false,
+    },
 ];
 
 static FEAT_GLOBALS: &[GlobalGroup] = &[

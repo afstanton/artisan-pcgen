@@ -123,10 +123,28 @@ static ABILITY_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Field("pcgen_precampaign"),
         required: false,
     },
+    // OPTION: selection option annotation (used in .pcg ability records).
+    TokenDef::text("OPTION", "option"),
     // REGION:region_name restricts ability availability to characters from a region.
     TokenDef::text("REGION", "region"),
     // REMOVE removes a previously applied ability (used in .MOD contexts).
     TokenDef::text("REMOVE", "pcgen_remove"),
+    // KIT:name — kit grant on an ability entity (seen in some Pathfinder datasets).
+    TokenDef {
+        key: "KIT",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("kits"),
+        required: false,
+    },
+    // DONOTADD: prevent an inherited skill from being class-skill on this entity.
+    TokenDef {
+        key: "DONOTADD",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("do_not_add"),
+        required: false,
+    },
 ];
 
 static ABILITY_GLOBALS: &[GlobalGroup] = &[

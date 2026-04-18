@@ -126,6 +126,24 @@ static TEMPLATE_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Field("kits"),
         required: false,
     },
+    // SPELLS: spell-like abilities granted by this template.
+    TokenDef {
+        key: "SPELLS",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("pcgen_spells"),
+        required: false,
+    },
+    // UDAM: unarmed damage progression granted by this template.
+    TokenDef::text("UDAM", "udam"),
+    // DONOTADD: prevent an inherited skill from being added as a class skill.
+    TokenDef {
+        key: "DONOTADD",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("do_not_add"),
+        required: false,
+    },
 ];
 
 static TEMPLATE_GLOBALS: &[GlobalGroup] = &[

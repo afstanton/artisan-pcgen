@@ -237,6 +237,25 @@ static CLASS_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Field("abilities"),
         required: false,
     },
+    // LEVEL:n in kit CLASS lines means "grant n levels of this class".
+    // Also appears in .pcg class records (though pcgen:pcg:class handles those separately).
+    TokenDef::integer("LEVEL", "level"),
+    // SPELLS: spell-like class grants (seen in some third-party class files).
+    TokenDef {
+        key: "SPELLS",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("pcgen_spells"),
+        required: false,
+    },
+    // DONOTADD: prevent skill from being added as a class skill.
+    TokenDef {
+        key: "DONOTADD",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("do_not_add"),
+        required: false,
+    },
     // .pcg character-file sub-tokens (appear in CLASS lines inside .pcg files)
     TokenDef::integer("SKILLPOOL", "pcgen_class_skillpool"),
     TokenDef::text("SPELLBASE", "pcgen_class_spellbase"),

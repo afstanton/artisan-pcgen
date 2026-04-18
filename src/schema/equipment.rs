@@ -131,6 +131,14 @@ static EQUIPMENT_TOKENS: &[TokenDef] = &[
     },
     // INFO: free-text annotation (appears in some Pathfinder/3.5e equipment files).
     TokenDef::text("INFO", "pcgen_info"),
+    // KIT:name — equipment entries in kit files can have KIT cross-references.
+    TokenDef {
+        key: "KIT",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("kits"),
+        required: false,
+    },
 ];
 
 static EQUIPMENT_GLOBALS: &[GlobalGroup] = &[
@@ -149,6 +157,9 @@ static EQUIPMENT_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::SourceLink,
     GlobalGroup::OutputName,
     GlobalGroup::SortKey,
+    GlobalGroup::Sab,
+    GlobalGroup::ServesAs,
+    GlobalGroup::Qualify,
     GlobalGroup::SourceMeta,
 ];
 

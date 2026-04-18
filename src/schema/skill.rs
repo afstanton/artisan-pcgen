@@ -66,6 +66,11 @@ static SKILL_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::SourceLink,
     GlobalGroup::OutputName,
     GlobalGroup::SortKey,
+    GlobalGroup::Sab,
+    GlobalGroup::CSkill,
+    GlobalGroup::ServesAs,
+    GlobalGroup::Qualify,
+    GlobalGroup::Template,
     GlobalGroup::SourceMeta,
 ];
 

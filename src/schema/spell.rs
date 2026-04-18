@@ -25,6 +25,9 @@ static SKILL_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::SourceLink,
     GlobalGroup::OutputName,
     GlobalGroup::SortKey,
+    GlobalGroup::Sab,
+    GlobalGroup::CSkill,
+    GlobalGroup::ServesAs,
     GlobalGroup::SourceMeta,
 ];
 
@@ -105,6 +108,10 @@ static SPELL_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Field("pcgen_variants"),
         required: false,
     },
+    // VISIBLE controls whether the spell appears in the spell list UI.
+    TokenDef::text("VISIBLE", "visible"),
+    // SPELLBASEDC: base difficulty class formula (e.g. SPELLBASEDC:10+SPELLLEVEL+WIS).
+    TokenDef::text("SPELLBASEDC", "spell_base_dc"),
 ];
 
 pub static SPELL_SCHEMA: LineGrammar = LineGrammar {

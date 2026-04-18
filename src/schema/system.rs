@@ -680,14 +680,24 @@ pub static WIELDCATEGORY_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     globals: &[GlobalGroup::Prerequisites],
 };
 
-static TAB_SYSTEM_TOKENS: &[TokenDef] = &[TokenDef::text("CONTEXT", "context")];
+static TAB_SYSTEM_TOKENS: &[TokenDef] = &[
+    TokenDef::text("CONTEXT", "context"),
+    TokenDef::text("VISIBLE", "visible"),
+    TokenDef::text("ROLLMETHOD", "pcgen_rollmethod"),
+    // DATAFORMAT: data storage format identifier for the tab (some game modes).
+    TokenDef::text("DATAFORMAT", "pcgen_dataformat"),
+];
 
 pub static TAB_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:system:tab",
     head_token: Some("TAB"),
     head_format: HeadFormat::TokenPrefixed,
     tokens: TAB_SYSTEM_TOKENS,
-    globals: &[],
+    globals: &[
+        GlobalGroup::Key,
+        GlobalGroup::SortKey,
+        GlobalGroup::Bonus,
+    ],
 };
 
 static EQSLOT_SYSTEM_TOKENS: &[TokenDef] = &[
@@ -769,7 +779,13 @@ pub static STAT_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     head_token: Some("STAT"),
     head_format: HeadFormat::NameOnly,
     tokens: STAT_TOKENS,
-    globals: &[GlobalGroup::Key, GlobalGroup::SortKey, GlobalGroup::Bonus, GlobalGroup::Define],
+    globals: &[
+        GlobalGroup::Type,
+        GlobalGroup::Key,
+        GlobalGroup::SortKey,
+        GlobalGroup::Bonus,
+        GlobalGroup::Define,
+    ],
 };
 
 static SIZEADJUSTMENT_TOKENS: &[TokenDef] = &[
@@ -797,11 +813,26 @@ pub static SIZEADJUSTMENT_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     globals: &[GlobalGroup::Bonus],
 };
 
+static RACE_SYSTEM_TOKENS: &[TokenDef] = &[
+    // MAXVER: maximum PCGen version this race entry is valid for.
+    TokenDef::text("MAXVER", "max_version"),
+    // NEWKEY: replacement key when this race entry is renamed/aliased.
+    TokenDef::text("NEWKEY", "new_key"),
+    // PRECAMPAIGN: restrict this race entry to specific campaign settings.
+    TokenDef {
+        key: "PRECAMPAIGN",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("pcgen_precampaign"),
+        required: false,
+    },
+];
+
 pub static RACE_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:system:race",
     head_token: Some("RACE"),
     head_format: HeadFormat::TokenPrefixed,
-    tokens: &[],
+    tokens: RACE_SYSTEM_TOKENS,
     globals: &[],
 };
 
@@ -867,15 +898,21 @@ pub static TABLE_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
 };
 
 static SUBSTITUTION_CLASS_GLOBALS: &[GlobalGroup] = &[
+    GlobalGroup::Type,
+    GlobalGroup::Key,
+    GlobalGroup::Desc,
+    GlobalGroup::Fact,
     GlobalGroup::Bonus,
     GlobalGroup::Add,
     GlobalGroup::Choose,
     GlobalGroup::Auto,
     GlobalGroup::Define,
+    GlobalGroup::Modify,
     GlobalGroup::Prerequisites,
     GlobalGroup::SourcePage,
     GlobalGroup::SourceLink,
     GlobalGroup::OutputName,
+    GlobalGroup::SortKey,
     GlobalGroup::LangBonus,
     GlobalGroup::CSkill,
     GlobalGroup::Sab,
@@ -883,16 +920,64 @@ static SUBSTITUTION_CLASS_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::ServesAs,
     GlobalGroup::Qualify,
     GlobalGroup::Template,
+    GlobalGroup::SourceMeta,
 ];
 
-// Ability grants shared by subclasslevel and substitutionlevel rows.
-static SUBSTITUTION_LEVEL_TOKENS: &[TokenDef] = &[TokenDef {
-    key: "ABILITY",
-    grammar: TokenGrammar::Text,
-    cardinality: Cardinality::Repeatable,
-    artisan_mapping: ArtisanMapping::Field("abilities"),
-    required: false,
-}];
+// Ability grants and class-level tokens shared by subclasslevel and substitutionlevel rows.
+// Mirrors the classlevel token set since these entity types serve the same structural role.
+static SUBSTITUTION_LEVEL_TOKENS: &[TokenDef] = &[
+    TokenDef {
+        key: "ABILITY",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("abilities"),
+        required: false,
+    },
+    TokenDef {
+        key: "DONOTADD",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("do_not_add"),
+        required: false,
+    },
+    TokenDef::text("UDAM", "udam"),
+    TokenDef::integer("UMULT", "pcgen_umult"),
+    TokenDef {
+        key: "CAST",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("cast"),
+        required: false,
+    },
+    TokenDef {
+        key: "KNOWN",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("known"),
+        required: false,
+    },
+    TokenDef {
+        key: "SPELLKNOWN",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("spell_known"),
+        required: false,
+    },
+    TokenDef {
+        key: "SPECIALTYKNOWN",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("pcgen_specialtyknown"),
+        required: false,
+    },
+    TokenDef {
+        key: "KIT",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("kits"),
+        required: false,
+    },
+];
 
 pub static SUBCLASSLEVEL_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:system:subclasslevel",

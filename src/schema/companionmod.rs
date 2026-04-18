@@ -12,6 +12,13 @@ use crate::schema::{
 static FOLLOWER_TOKENS: &[TokenDef] = &[
     TokenDef::text("HD", "hitdie"),
     TokenDef::text("RACETYPE", "racetype"),
+    TokenDef {
+        key: "RACESUBTYPE",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("race_subtype"),
+        required: false,
+    },
     TokenDef::text("COPYMASTERBAB", "pcgen_copymasterbab"),
     TokenDef::text("COPYMASTERCHECK", "pcgen_copymastercheck"),
     TokenDef::text("COPYMASTERHP", "pcgen_copymasterhp"),
@@ -24,6 +31,43 @@ static FOLLOWER_TOKENS: &[TokenDef] = &[
         required: false,
     },
     TokenDef::pipe_positional_repeatable("KIT", &["count", "kit"], "kits"),
+    // MOVE, NATURALATTACKS, VISION, DR, SR — mechanical properties of companion creature type.
+    TokenDef {
+        key: "MOVE",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("move"),
+        required: false,
+    },
+    TokenDef {
+        key: "NATURALATTACKS",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("natural_attacks"),
+        required: false,
+    },
+    TokenDef {
+        key: "VISION",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("vision"),
+        required: false,
+    },
+    TokenDef::text("DR", "pcgen_dr"),
+    TokenDef::text("SR", "pcgen_sr"),
+    TokenDef::text("FACE", "face"),
+    TokenDef::text("LEGS", "legs"),
+    TokenDef::text("HANDS", "hands"),
+    TokenDef::text("CR", "cr"),
+    TokenDef::text("SIZE", "size"),
+    // SPELLS: spell-like abilities of the companion.
+    TokenDef {
+        key: "SPELLS",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("pcgen_spells"),
+        required: false,
+    },
 ];
 
 static MASTERBONUSRACE_TOKENS: &[TokenDef] = &[TokenDef {
