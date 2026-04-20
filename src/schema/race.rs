@@ -162,6 +162,10 @@ static RACE_TOKENS: &[TokenDef] = &[
     TokenDef::yesno("REMOVABLE", "pcgen_removable"),
     // ADDLEVEL adds virtual class levels to the race.
     TokenDef::text("ADDLEVEL", "pcgen_addlevel"),
+    // INFO: free-text annotation for the race (appears in some datasets).
+    TokenDef::text("INFO", "pcgen_info"),
+    // REMOVE: specifies which features to remove from the base race.
+    TokenDef::text("REMOVE", "pcgen_remove"),
 ];
 
 static RACE_GLOBALS: &[GlobalGroup] = &[

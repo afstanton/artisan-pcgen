@@ -256,6 +256,24 @@ static CLASS_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Field("do_not_add"),
         required: false,
     },
+    // KIT: starting kit granted by this class.
+    TokenDef {
+        key: "KIT",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("kits"),
+        required: false,
+    },
+    // NATURALATTACKS: natural attack entry (rare on class entities, seen in monster class data).
+    TokenDef {
+        key: "NATURALATTACKS",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("natural_attacks"),
+        required: false,
+    },
+    // SPELLLEVEL: spell level association (some 3rd-party class data).
+    TokenDef::text("SPELLLEVEL", "spell_level"),
     // .pcg character-file sub-tokens (appear in CLASS lines inside .pcg files)
     TokenDef::integer("SKILLPOOL", "pcgen_class_skillpool"),
     TokenDef::text("SPELLBASE", "pcgen_class_spellbase"),

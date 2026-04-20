@@ -41,6 +41,24 @@ static SUBCLASS_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Field("pcgen_prohibited"),
         required: false,
     },
+    // HITDIE: hit die type for this subclass (e.g. HITDIE:d10).
+    TokenDef::text("HITDIE", "hitdie"),
+    // DEITY: deity requirement for this subclass.
+    TokenDef {
+        key: "DEITY",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Once,
+        artisan_mapping: ArtisanMapping::Field("deity"),
+        required: false,
+    },
+    // WEAPONBONUS: weapon proficiency bonus granted by this subclass.
+    TokenDef {
+        key: "WEAPONBONUS",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("weapon_bonus"),
+        required: false,
+    },
 ];
 
 static SUBCLASS_GLOBALS: &[GlobalGroup] = &[

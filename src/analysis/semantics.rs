@@ -2,7 +2,7 @@ use artisan_core::domain::rules::{Effect, Prerequisite};
 
 use crate::{
     ParsedClause,
-    parsing::line_codec::{find_key_value, parse_head_key_value},
+    parsing::line_codec::{find_key_value, find_last_key_value, parse_head_key_value},
 };
 
 pub(crate) fn project_semantics(
@@ -288,6 +288,19 @@ pub(crate) fn infer_entity_type_key_for_format(
                 "SKILL" if looks_like_pcg_skill(clauses) => return "pcgen:pcg:skill".to_string(),
                 _ => {}
             }
+        } else if source_format.eq_ignore_ascii_case("pcc") {
+            // PCC files use TOKEN:path lines for dataset includes.  These tokens are
+            // shared with LST entity head tokens (e.g. ABILITY, FEAT, EQUIPMENT), so
+            // the normal schema-lookup path would misclassify them as game-rule entities.
+            // Intercept here before the generic schema lookup runs.
+            match head_key_upper.as_str() {
+                "ABILITY" => return "pcgen:entity:pcc-ability-include".to_string(),
+                "ABILITYCATEGORY" => return "pcgen:entity:pcc-abilitycategory-include".to_string(),
+                "FEAT" => return "pcgen:entity:pcc-feat-include".to_string(),
+                "EQUIPMENT" => return "pcgen:entity:pcc-equipment-include".to_string(),
+                "SPELL" => return "pcgen:entity:pcc-spell-include".to_string(),
+                _ => {}
+            }
         } else {
             match head_key_upper.as_str() {
                 "CLASS" => return "pcgen:entity:class".to_string(),
@@ -378,12 +391,13 @@ fn looks_like_pcc(head: &str, clauses: &[ParsedClause]) -> bool {
         || has_token(clauses, "URL")
         || has_token(clauses, "OPTION")
         || has_token(clauses, "DATAFORMAT")
-        || has_token(clauses, "DISPLAYNAME")
+        // DISPLAYNAME is intentionally NOT included here: it is a common clause on
+        // many entity types (SIZE, OPTION, FEAT, etc.) and its presence on a clause
+        // does not imply a PCC context.  The PCC head-key list already catches
+        // entities whose HEAD token is DISPLAYNAME (e.g. `DISPLAYNAME:Spycraft`).
         || has_token(clauses, "EXPLANATION")
         || has_token(clauses, "REQUIRED")
         || has_token(clauses, "SELECTABLE")
-        || has_token(clauses, "NAMEISPI")
-        || has_token(clauses, "DESCISPI")
         || has_token(clauses, "MAXVER")
         || has_token(clauses, "NEWKEY")
         || has_token(clauses, "MAXDEVVER")
@@ -638,8 +652,25 @@ fn map_type_root_to_entity_key(root: &str) -> Option<&'static str> {
 }
 
 pub(crate) fn derive_entity_name(head: &str, clauses: &[ParsedClause]) -> Option<String> {
+    // Use the *last* KEY token for name derivation.  PCGen ability records
+    // sometimes carry two KEY tokens where the last one is the canonical
+    // identifier stored by the attribute layer (last-write-wins insert).
+    // Using the last value here keeps the entity name consistent with what
+    // the emitter will output after a roundtrip.
     if looks_like_ability(clauses)
-        && let Some(key_value) = find_key_value(clauses, "KEY")
+        && let Some(key_value) = find_last_key_value(clauses, "KEY")
+    {
+        return Some(key_value);
+    }
+
+    // Equipment modification (EQMOD) entries use a bare display name as the
+    // head but differentiate variants via KEY (e.g. multiple "Adamant" entries
+    // with KEY:ADAMANT_AMMO, KEY:ADAMANT_ARMR_LT, etc.).  Without KEY-based
+    // naming all variants would share the same entity name and the semantic
+    // snapshot would only see one.  Use KEY when looks_like_equipment so each
+    // EQMOD variant gets a stable, unique canonical name.
+    if looks_like_equipment(clauses)
+        && let Some(key_value) = find_last_key_value(clauses, "KEY")
     {
         return Some(key_value);
     }
@@ -648,7 +679,7 @@ pub(crate) fn derive_entity_name(head: &str, clauses: &[ParsedClause]) -> Option
 
     match decl_key.as_str() {
         "ABILITY" => {
-            if let Some(key_value) = find_key_value(clauses, "KEY") {
+            if let Some(key_value) = find_last_key_value(clauses, "KEY") {
                 return Some(key_value);
             }
             if let Some(ParsedClause::Bare(value)) = clauses.first() {

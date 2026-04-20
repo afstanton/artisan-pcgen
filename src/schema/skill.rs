@@ -48,6 +48,8 @@ static SKILL_TOKENS: &[TokenDef] = &[
     // A skill may have multiple CLASSBOUGHT entries (one per class), written as adjacent groups
     // with no pipe separator: CLASSBOUGHT:[...]CLASSBOUGHT:[...]
     TokenDef::bracket_group_repeatable("CLASSBOUGHT", "class_bought"),
+    // NOTE: free-text annotation attached to the skill entity.
+    TokenDef::text("NOTE", "note"),
 ];
 
 static SKILL_GLOBALS: &[GlobalGroup] = &[

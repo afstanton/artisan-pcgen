@@ -91,6 +91,26 @@ pub(crate) fn find_key_value(clauses: &[ParsedClause], key: &str) -> Option<Stri
     None
 }
 
+/// Like `find_key_value` but returns the **last** matching value.
+///
+/// PCGen ability records sometimes carry two KEY tokens: the first is a
+/// display alias and the second is the canonical identifier (e.g.
+/// `KEY:Darkvision\tKEY:Darkvision ~ Draegloth`).  The attribute store uses
+/// last-write-wins (`attributes.insert`), so the canonical identifier is
+/// whatever the *last* KEY token says.  Entity name derivation must use the
+/// same value so that the name is stable across roundtrips.
+pub(crate) fn find_last_key_value(clauses: &[ParsedClause], key: &str) -> Option<String> {
+    let mut last = None;
+    for clause in clauses {
+        if let ParsedClause::KeyValue { key: k, value } = clause
+            && k.eq_ignore_ascii_case(key)
+        {
+            last = Some(value.clone());
+        }
+    }
+    last
+}
+
 pub(crate) fn clauses_to_json(clauses: &[ParsedClause]) -> Vec<Value> {
     clauses
         .iter()

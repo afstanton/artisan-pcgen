@@ -139,6 +139,77 @@ static EQUIPMENT_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Field("kits"),
         required: false,
     },
+    // -------------------------------------------------------------------------
+    // Creature-property tokens
+    //
+    // Some PCGen equipment entries represent creatures (familiars, animal
+    // companions, mounts, etc.).  These entries share tokens with race and
+    // companion-modifier files.
+    // -------------------------------------------------------------------------
+    TokenDef::text("FACE", "face"),
+    TokenDef::text("LEGS", "legs"),
+    TokenDef::text("HANDS", "hands"),
+    TokenDef::text("DR", "pcgen_dr"),
+    TokenDef::text("SR", "pcgen_sr"),
+    TokenDef::text("CR", "cr"),
+    TokenDef::text("UDAM", "udam"),
+    TokenDef::text("HITDICEADVANCEMENT", "pcgen_hitdiceadvancement"),
+    TokenDef {
+        key: "RACESUBTYPE",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("race_subtype"),
+        required: false,
+    },
+    TokenDef {
+        key: "VISION",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("vision"),
+        required: false,
+    },
+    TokenDef {
+        key: "MOVE",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("move"),
+        required: false,
+    },
+    TokenDef {
+        key: "MOVECLONE",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("pcgen_moveclone"),
+        required: false,
+    },
+    TokenDef {
+        key: "NATURALATTACKS",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("natural_attacks"),
+        required: false,
+    },
+    TokenDef {
+        key: "TEMPVALUE",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("pcgen_tempvalue"),
+        required: false,
+    },
+    TokenDef {
+        key: "CHANGEPROF",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("pcgen_changeprof"),
+        required: false,
+    },
+    TokenDef {
+        key: "SPELLKNOWN",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("spell_known"),
+        required: false,
+    },
 ];
 
 static EQUIPMENT_GLOBALS: &[GlobalGroup] = &[
@@ -160,6 +231,8 @@ static EQUIPMENT_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::Sab,
     GlobalGroup::ServesAs,
     GlobalGroup::Qualify,
+    GlobalGroup::Template,
+    GlobalGroup::CSkill,
     GlobalGroup::SourceMeta,
 ];
 

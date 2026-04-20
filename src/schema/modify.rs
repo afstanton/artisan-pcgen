@@ -6,13 +6,13 @@
 //! Format: MODIFY:VarName|Operation|Value
 //! where Operation is ADD, SET, or SOLVE
 
-use crate::schema::{
-    ArtisanMapping, Cardinality, GlobalGroup, HeadFormat, LineGrammar, TokenDef, TokenGrammar,
-};
+use crate::schema::{GlobalGroup, HeadFormat, LineGrammar, TokenDef};
 
 static MODIFY_TOKENS: &[TokenDef] = &[
     // Note: MODIFY values are complex and can contain formulas. They are stored as-is.
-    // The three components (variable, operation, value) are project as separate attributes.
+    // The three components (variable, operation, value) are projected as separate attributes.
+    // EXPLANATION: human-readable description of what this MODIFY rule does.
+    TokenDef::text("EXPLANATION", "explanation"),
 ];
 
 static MODIFY_GLOBALS: &[GlobalGroup] = &[GlobalGroup::SourceMeta];

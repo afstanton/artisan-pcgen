@@ -643,7 +643,7 @@ pub static PCG_DEITY_SCHEMA: LineGrammar = LineGrammar {
     head_token: Some("DEITY"),
     head_format: HeadFormat::TokenPrefixed,
     tokens: PCG_DEITY_TOKENS,
-    globals: &[crate::schema::GlobalGroup::Desc],
+    globals: &[crate::schema::GlobalGroup::Desc, crate::schema::GlobalGroup::Fact],
 };
 
 // ---------------------------------------------------------------------------
@@ -658,6 +658,14 @@ static PCG_DOMAIN_TOKENS: &[TokenDef] = &[
     TokenDef::text("DOMAINGRANTS", "pcgen_domaingrants"),
     // SOURCE in PCG context is a bracket group: [TYPE:DEITY|NAME:Pelor]
     TokenDef::bracket_group("SOURCE", "pcgen_source"),
+    // PRECAMPAIGN: prerequisite campaign for this domain selection.
+    TokenDef {
+        key: "PRECAMPAIGN",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("pcgen_precampaign"),
+        required: false,
+    },
 ];
 
 pub static PCG_DOMAIN_SCHEMA: LineGrammar = LineGrammar {

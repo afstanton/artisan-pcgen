@@ -9,6 +9,8 @@ use crate::schema::{HeadFormat, LineGrammar, TokenDef};
 static LOCAL_VARIABLE_TOKENS: &[TokenDef] = &[
     TokenDef::text_required("LOCAL", "pcgen_local"),
     TokenDef::text("EXPLANATION", "explanation"),
+    // NOTE: free-text annotation attached to the variable definition.
+    TokenDef::text("NOTE", "note"),
 ];
 
 static GLOBAL_VARIABLE_TOKENS: &[TokenDef] = &[

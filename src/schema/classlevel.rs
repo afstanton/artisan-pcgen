@@ -9,6 +9,16 @@ use crate::schema::{
 };
 
 static CLASSLEVEL_TOKENS: &[TokenDef] = &[
+    // DR: damage reduction granted at this class level.
+    TokenDef::text("DR", "pcgen_dr"),
+    // MOVE: movement speed granted or modified at this class level.
+    TokenDef {
+        key: "MOVE",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("move"),
+        required: false,
+    },
     TokenDef {
         key: "DONOTADD",
         grammar: TokenGrammar::PipeList,

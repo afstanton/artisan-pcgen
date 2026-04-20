@@ -89,6 +89,34 @@ pub fn emit_entity(entity: &Entity, schema: &LineGrammar) -> String {
         emit_global_group(*group, entity, &mut parts);
     }
 
+    // Always emit prerequisites regardless of whether the schema declares
+    // GlobalGroup::Prerequisites.  PRE* tokens are valid on any PCGen entity
+    // type; the parser always captures them into entity.prerequisites, but
+    // lightweight schemas (e.g. many system-mode schemas) omit the global
+    // group.  Emitting here ensures they survive the roundtrip.  Skip if the
+    // schema already handled them via GlobalGroup::Prerequisites to avoid
+    // duplication.  Also skip any prerequisite whose kind matches a schema
+    // token def (e.g. PRECAMPAIGN in PCC schemas) — those were already emitted
+    // by the token-def loop above.
+    if !schema.globals.contains(&GlobalGroup::Prerequisites) && !entity.prerequisites.is_empty() {
+        let schema_token_keys: HashSet<String> = schema
+            .tokens
+            .iter()
+            .map(|t| t.key.to_ascii_uppercase())
+            .collect();
+        for prereq in &entity.prerequisites {
+            let kind_upper = prereq.kind.to_ascii_uppercase();
+            if schema_token_keys.contains(&kind_upper) {
+                // Already emitted by the schema token-def loop — skip.
+                continue;
+            }
+            match &prereq.expression {
+                Some(expr) => parts.push(format!("{}:{}", prereq.kind, expr)),
+                None => parts.push(prereq.kind.clone()),
+            }
+        }
+    }
+
     parts.join(top_level_separator(entity, schema))
 }
 
@@ -341,6 +369,22 @@ fn emits_pcg_style(entity: &Entity, schema: &LineGrammar) -> bool {
 fn token_prefixed_head_value(entity: &Entity, schema: &LineGrammar) -> Option<String> {
     if !emits_pcg_style(entity, schema) {
         return Some(head_name_for_entity(entity).to_string());
+    }
+
+    // For PCG-style entities, prefer the raw `pcgen_decl_value` over the
+    // serialized attribute value.  Serialisation normalises booleans (e.g.
+    // Y→YES for yesno tokens), which changes the entity name on the second
+    // parse and causes spurious attribute drops.
+    //
+    // Fall back to the serialized attribute value when `pcgen_decl_value` is
+    // absent (e.g. artisan-constructed entities that were never parsed from
+    // PCGen text).
+    if let Some(raw) = entity
+        .attributes
+        .get("pcgen_decl_value")
+        .and_then(Value::as_str)
+    {
+        return Some(raw.to_string());
     }
 
     let head_token = schema.head_token?;
@@ -809,11 +853,13 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
                 .and_then(Value::as_array)
             {
                 for fact in facts {
-                    if let (Some(k), Some(v)) = (
-                        fact.get("key").and_then(Value::as_str),
-                        fact.get("value").and_then(Value::as_str),
-                    ) {
-                        parts.push(format!("FACT:{k}|{v}"));
+                    if let Some(k) = fact.get("key").and_then(Value::as_str) {
+                        if let Some(v) = fact.get("value").and_then(Value::as_str) {
+                            parts.push(format!("FACT:{k}|{v}"));
+                        } else {
+                            // Fact with no value: emit bare FACT:key
+                            parts.push(format!("FACT:{k}"));
+                        }
                     }
                 }
             }

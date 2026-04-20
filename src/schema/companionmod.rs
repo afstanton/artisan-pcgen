@@ -70,13 +70,17 @@ static FOLLOWER_TOKENS: &[TokenDef] = &[
     },
 ];
 
-static MASTERBONUSRACE_TOKENS: &[TokenDef] = &[TokenDef {
-    key: "ABILITY",
-    grammar: TokenGrammar::PipeList,
-    cardinality: Cardinality::Repeatable,
-    artisan_mapping: ArtisanMapping::Field("abilities"),
-    required: false,
-}];
+static MASTERBONUSRACE_TOKENS: &[TokenDef] = &[
+    TokenDef {
+        key: "ABILITY",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("abilities"),
+        required: false,
+    },
+    // SR: spell resistance granted by the master bonus race.
+    TokenDef::text("SR", "pcgen_sr"),
+];
 
 pub static FOLLOWER_COMPANIONMOD_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:entity:companionmod-follower",
@@ -94,6 +98,7 @@ pub static FOLLOWER_COMPANIONMOD_SCHEMA: LineGrammar = LineGrammar {
         GlobalGroup::Prerequisites,
         GlobalGroup::Template,
         GlobalGroup::Sab,
+        GlobalGroup::CSkill,
         GlobalGroup::OutputName,
         GlobalGroup::SortKey,
         GlobalGroup::SourcePage,

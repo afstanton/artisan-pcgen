@@ -744,15 +744,19 @@ pub static ICON_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     globals: &[],
 };
 
+static ALIGN_TOKENS: &[TokenDef] = &[
+    TokenDef::text("ABB", "abbreviation"),
+    TokenDef::text("VALIDFORDEITY", "pcgen_validfordeity"),
+    TokenDef::text("VALIDFORFOLLOWER", "pcgen_validforfollower"),
+    // OPTION: option flags for this alignment (e.g. OPTION:PC).
+    TokenDef::text("OPTION", "option"),
+];
+
 pub static ALIGN_SYSTEM_SCHEMA: LineGrammar = LineGrammar {
     entity_type_key: "pcgen:system:align",
     head_token: Some("ALIGN"),
     head_format: HeadFormat::NameOnly,
-    tokens: &[
-        TokenDef::text("ABB", "abbreviation"),
-        TokenDef::text("VALIDFORDEITY", "pcgen_validfordeity"),
-        TokenDef::text("VALIDFORFOLLOWER", "pcgen_validforfollower"),
-    ],
+    tokens: ALIGN_TOKENS,
     globals: &[GlobalGroup::Key, GlobalGroup::SortKey],
 };
 

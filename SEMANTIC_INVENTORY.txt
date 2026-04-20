@@ -1,8 +1,8 @@
 === Semantic Inventory Summary ===
 Files scanned: 9447
 Total lines processed: 848333
-Semantic roundtrip: 8368 passed / 1079 failed
-Canonical roundtrip: 8742 passed / 705 failed
+Semantic roundtrip: 8798 passed / 649 failed
+Canonical roundtrip: 9219 passed / 228 failed
 
 === Canonical Model Coverage Report ===
 Total entities:                    558572
@@ -210,204 +210,110 @@ Total entities:                    558572
 
 === Semantic Roundtrip Failure Patterns ===
 Files with entity count change: 152
-Entities with effects change:   1240
-Entities with prereqs change:   6894
+Entities with effects change:   67
+Entities with prereqs change:   8
 
 --- Attributes DROPPED after roundtrip (emitter fails to emit) ---
-   455 | face
-   438 | natural_attacks
-   419 | legs
-   241 | move
-   212 | pcgen_dr
-   167 | hands
-   140 | vision
-   110 | pcgen_sr
-   109 | domains
-    75 | fact_sets
-    70 | type
-    36 | pcgen_facts
-    24 | description
-    24 | pcgen_desc
-    23 | category
-    23 | key
-    17 | pcgen_template
-    14 | explanation
-    10 | pcgen_tempvalue
-    10 | race_subtype
-     9 | pcgen_info
-     8 | pcgen_precampaign
-     5 | aspects
      5 | birthday
      5 | birthplace
      5 | character_asset
      5 | character_comp
      5 | character_dm_notes
      5 | character_magic
-     5 | pcgen_allowdebt
-     5 | pcgen_autoresizegear
-     5 | pcgen_autospells
-     5 | pcgen_ignorecost
-     5 | pcgen_loadcompanions
      5 | pcgen_suppressbiofields
      5 | pcgen_tabname
-     5 | pcgen_usehigherknown
-     5 | pcgen_usehigherprepped
-     5 | pcgen_usetempmods
      5 | portrait
-     5 | udam
-     5 | visible
      4 | catchphrase
      4 | character_bio
      4 | character_desc
      4 | city
-     4 | cr
-     4 | cskill
      4 | eye_color
      4 | hair_color
      4 | interests
-     4 | pcgen_accheck
      4 | pcgen_hairstyle
-     4 | pcgen_language_catalog
-     4 | pcgen_moveclone
      4 | pcgen_playername
      4 | personality_trait_1
      4 | personality_trait_2
      4 | phobias
      4 | skin_color
+     4 | speech_pattern
+     3 | group
+     1 | cr
+     1 | note
+     1 | pcgen_spells
 
 --- Attributes ADDED after roundtrip (emitter invents new tokens) ---
+     5 | equipset_use_temp_mods
 
 --- Attributes CHANGED value after roundtrip (format normalization) ---
-   562 | description
-   562 | pcgen_desc
-   306 | pcgen_precampaign
-   155 | type
-   139 | pcgen_spells
     24 | abilities
-    20 | sab
-     7 | pcgen_facts
+     9 | pcgen_facts
+     4 | pcgen_language_catalog
+     4 | pcgen_precampaign
 
 --- Entity types with most attribute drops (top 30) ---
-  2279 | pcgen:entity:equipment
-   240 | pcgen:entity:pcc
-   133 | pcgen:entity:ability
-    14 | pcgen:entity:modify
-    10 | pcgen:entity:race
-     8 | pcgen:pcg:domain
-     5 | pcgen:entity:class
-     5 | pcgen:entity:subclass
-     5 | pcgen:pcg:allowdebt
-     5 | pcgen:pcg:autoresizegear
-     5 | pcgen:pcg:autospells
      5 | pcgen:pcg:birthday
      5 | pcgen:pcg:birthplace
      5 | pcgen:pcg:characterasset
      5 | pcgen:pcg:charactercomp
      5 | pcgen:pcg:characterdmnotes
      5 | pcgen:pcg:charactermagic
-     5 | pcgen:pcg:ignorecost
-     5 | pcgen:pcg:loadcompanions
      5 | pcgen:pcg:portrait
      5 | pcgen:pcg:suppressbiofields
      5 | pcgen:pcg:tabname
-     5 | pcgen:pcg:usehigherknown
-     5 | pcgen:pcg:usehigherprepped
-     5 | pcgen:pcg:usetempmods
-     4 | pcgen:entity:classlevel
-     4 | pcgen:entity:pcc-language-include
      4 | pcgen:pcg:catchphrase
      4 | pcgen:pcg:characterbio
      4 | pcgen:pcg:characterdesc
+     4 | pcgen:pcg:city
+     4 | pcgen:pcg:eyecolor
+     4 | pcgen:pcg:haircolor
+     4 | pcgen:pcg:hairstyle
+     4 | pcgen:pcg:interests
+     4 | pcgen:pcg:personalitytrait1
+     4 | pcgen:pcg:personalitytrait2
+     4 | pcgen:pcg:phobias
+     4 | pcgen:pcg:playername
+     4 | pcgen:pcg:skincolor
+     4 | pcgen:pcg:speechpattern
+     3 | pcgen:entity:pcc
+     2 | pcgen:entity:ability
+     1 | pcgen:entity:spell
 
 --- Entity types with most effects changes (top 20) ---
-   802 | pcgen:entity:equipment
-   364 | pcgen:entity:pcc
     27 | pcgen:entity:race
     25 | pcgen:entity:template
     10 | pcgen:entity:ability
-     4 | pcgen:entity:class
-     4 | pcgen:entity:classlevel
-     1 | pcgen:entity:companionmod-masterbonusrace
+     3 | pcgen:entity:class
      1 | pcgen:entity:feat
-     1 | pcgen:entity:subclass
      1 | pcgen:entity:variable-global
 
---- Dropped attrs for pcgen:entity:equipment (top 30) ---
-   455 | face
-   437 | natural_attacks
-   419 | legs
-   240 | move
-   209 | pcgen_dr
-   167 | hands
-   140 | vision
-   109 | pcgen_sr
-    47 | type
-    17 | pcgen_template
-    10 | pcgen_tempvalue
-     9 | race_subtype
-     5 | udam
-     4 | pcgen_moveclone
-     3 | cr
-     3 | cskill
-     3 | pcgen_hitdiceadvancement
-     1 | pcgen_changeprof
-     1 | spell_known
-
---- Dropped attrs for pcgen:entity:pcc (top 30) ---
-   109 | domains
-    75 | fact_sets
-    32 | pcgen_facts
-     4 | pcgen_accheck
-     3 | favored_class
-     3 | group
-     3 | lang_bonus
-     2 | description
-     2 | pcgen_desc
-     2 | pcgen_source_link
-     1 | classes
-     1 | level_adjustment
-     1 | pcgen_changeprof
-     1 | pcgen_isdefaultsize
-     1 | race_subtype
-
---- Dropped attrs for pcgen:entity:ability (top 30) ---
-    23 | category
-    23 | key
-    23 | type
-    22 | description
-    22 | pcgen_desc
-     5 | aspects
-     5 | visible
-     1 | abilities
-     1 | benefit
-     1 | cost
-     1 | cr
-     1 | note
-     1 | pcgen_descispi
-     1 | pcgen_facts
-     1 | source_date
-     1 | source_short
-     1 | source_web
-
---- Dropped attrs for pcgen:entity:modify (top 30) ---
-    14 | explanation
-
---- Dropped attrs for pcgen:entity:race (top 30) ---
-     9 | pcgen_info
-     1 | pcgen_remove
-
---- Dropped attrs for pcgen:pcg:domain (top 30) ---
-     8 | pcgen_precampaign
+--- Dropped attrs for pcgen:pcg:charactercomp (top 30) ---
+     5 | character_comp
 
 --- Dropped attrs for pcgen:pcg:portrait (top 30) ---
      5 | portrait
 
---- Dropped attrs for pcgen:pcg:usetempmods (top 30) ---
-     5 | pcgen_usetempmods
+--- Dropped attrs for pcgen:pcg:suppressbiofields (top 30) ---
+     5 | pcgen_suppressbiofields
 
---- Dropped attrs for pcgen:pcg:autoresizegear (top 30) ---
-     5 | pcgen_autoresizegear
+--- Dropped attrs for pcgen:pcg:tabname (top 30) ---
+     5 | pcgen_tabname
 
---- Dropped attrs for pcgen:pcg:allowdebt (top 30) ---
-     5 | pcgen_allowdebt
+--- Dropped attrs for pcgen:pcg:characterdmnotes (top 30) ---
+     5 | character_dm_notes
+
+--- Dropped attrs for pcgen:pcg:charactermagic (top 30) ---
+     5 | character_magic
+
+--- Dropped attrs for pcgen:pcg:birthplace (top 30) ---
+     5 | birthplace
+
+--- Dropped attrs for pcgen:pcg:characterasset (top 30) ---
+     5 | character_asset
+
+--- Dropped attrs for pcgen:pcg:birthday (top 30) ---
+     5 | birthday
+
+--- Dropped attrs for pcgen:pcg:eyecolor (top 30) ---
+     4 | eye_color
 

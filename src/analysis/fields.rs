@@ -83,7 +83,16 @@ pub(crate) fn project_clause_attributes(
 
         match key.to_ascii_uppercase().as_str() {
             "TYPE" => {
-                attributes.insert("type".to_string(), Value::String(value.clone()));
+                // PCGen entities may carry multiple TYPE tokens that combine additively.
+                // Classification (infer_entity_type_key) uses the *first* TYPE token's
+                // root to determine the entity type (e.g. "Weapon" → equipment).  We
+                // must store and emit the same value so parse2 reaches the same entity
+                // type.  Use entry().or_insert() to keep the first TYPE and discard
+                // subsequent ones — this preserves roundtrip stability at the cost of
+                // dropping secondary TYPE values that differ from the first.
+                attributes
+                    .entry("type".to_string())
+                    .or_insert_with(|| Value::String(value.clone()));
             }
             "SOURCE" => {
                 // PCG files use SOURCE:[TYPE:CLASS|NAME:Wizard] bracket groups;
