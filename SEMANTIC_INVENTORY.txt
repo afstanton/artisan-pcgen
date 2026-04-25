@@ -1,8 +1,8 @@
 === Semantic Inventory Summary ===
 Files scanned: 9447
 Total lines processed: 848333
-Semantic roundtrip: 9438 passed / 9 failed
-Canonical roundtrip: 9439 passed / 8 failed
+Semantic roundtrip: 9434 passed / 13 failed
+Canonical roundtrip: 9434 passed / 13 failed
 
 === Canonical Model Coverage Report ===
 Total entities:                    558590
@@ -14,25 +14,25 @@ Total entities:                    558590
   canonical coverage:              87% have >=1 canonical field
 
 === Effect Kinds Across All Entities ===
-235661 | BONUS
- 85926 | ABILITY
- 49550 | DEFINE
- 13945 | CHOOSE
+235427 | BONUS
+ 85872 | ABILITY
+ 49479 | DEFINE
+ 13864 | CHOOSE
  13246 | SPELLS
- 10363 | AUTO
+ 10360 | AUTO
   9834 | NATURALATTACKS
   9772 | MOVE
-  8667 | TEMPLATE
-  6251 | STARTFEATS
-  6206 | ADD
+  8656 | TEMPLATE
+  6247 | STARTFEATS
+  6204 | ADD
   4859 | TEMPBONUS
-  3393 | VISION
-  3093 | DR
-  2132 | SR
+  3391 | VISION
+  3091 | DR
+  2131 | SR
   1847 | MODIFY
   1795 | LANGBONUS
-  1390 | DEFINESTAT
-   600 | SELECT
+  1388 | DEFINESTAT
+   598 | SELECT
    423 | FOLLOWERS
    305 | ADDLEVEL
    133 | MOVECLONE
@@ -42,26 +42,26 @@ Total entities:                    558590
      3 | BONUSSKILLPOINTS
 
 === Prerequisite Kinds Across All Entities ===
- 22686 | PREABILITY
+ 22676 | PREABILITY
  19693 | PREMULT
- 14750 | PREVARGTEQ
+ 14749 | PREVARGTEQ
   9319 | PRECLASS
   7413 | PRETYPE
-  6394 | !PRERACE
+  6393 | !PRERACE
   6274 | PRETEXT
-  5874 | !PREABILITY
-  4610 | PRESKILL
+  5872 | !PREABILITY
+  4606 | PRESKILL
   4521 | PRERACE
-  4434 | PRESTAT
+  4432 | PRESTAT
   3013 | PREVAREQ
-  2789 | PREPCLEVEL
+  2788 | PREPCLEVEL
   2598 | PRETOTALAB
   2448 | PRETEMPLATE
   2221 | PRESIZEEQ
   2074 | PREFACT
   2064 | PREVARLT
   2056 | !PRETYPE
-  1969 | PREALIGN
+  1968 | PREALIGN
   1474 | PREBASESIZEEQ
    909 | PRELEVEL
    866 | PRESPELLTYPE
@@ -210,8 +210,8 @@ Total entities:                    558590
 
 === Semantic Roundtrip Failure Patterns ===
 Files with entity count change: 0
-Entities with effects change:   5
-Entities with prereqs change:   0
+Entities with effects change:   6
+Entities with prereqs change:   7
 
 --- Attributes DROPPED after roundtrip (emitter fails to emit) ---
      5 | birthday
@@ -244,6 +244,7 @@ Entities with prereqs change:   0
 --- Attributes CHANGED value after roundtrip (format normalization) ---
     24 | abilities
      4 | pcgen_language_catalog
+     1 | weapon_bonus
 
 --- Entity types with most attribute drops (top 30) ---
      5 | pcgen:pcg:birthday
@@ -271,36 +272,35 @@ Entities with prereqs change:   0
      4 | pcgen:pcg:speechpattern
 
 --- Entity types with most effects changes (top 20) ---
-     4 | pcgen:entity:race
-     1 | pcgen:entity:class
-
---- Dropped attrs for pcgen:pcg:charactermagic (top 30) ---
-     5 | character_magic
-
---- Dropped attrs for pcgen:pcg:birthday (top 30) ---
-     5 | birthday
+     6 | pcgen:entity:class
 
 --- Dropped attrs for pcgen:pcg:suppressbiofields (top 30) ---
      5 | pcgen_suppressbiofields
 
---- Dropped attrs for pcgen:pcg:charactercomp (top 30) ---
-     5 | character_comp
-
---- Dropped attrs for pcgen:pcg:birthplace (top 30) ---
-     5 | birthplace
-
---- Dropped attrs for pcgen:pcg:characterdmnotes (top 30) ---
-     5 | character_dm_notes
+--- Dropped attrs for pcgen:pcg:portrait (top 30) ---
+     5 | portrait
 
 --- Dropped attrs for pcgen:pcg:tabname (top 30) ---
      5 | pcgen_tabname
 
---- Dropped attrs for pcgen:pcg:portrait (top 30) ---
-     5 | portrait
+--- Dropped attrs for pcgen:pcg:characterdmnotes (top 30) ---
+     5 | character_dm_notes
+
+--- Dropped attrs for pcgen:pcg:birthday (top 30) ---
+     5 | birthday
 
 --- Dropped attrs for pcgen:pcg:characterasset (top 30) ---
      5 | character_asset
 
---- Dropped attrs for pcgen:pcg:characterdesc (top 30) ---
-     4 | character_desc
+--- Dropped attrs for pcgen:pcg:charactercomp (top 30) ---
+     5 | character_comp
+
+--- Dropped attrs for pcgen:pcg:charactermagic (top 30) ---
+     5 | character_magic
+
+--- Dropped attrs for pcgen:pcg:birthplace (top 30) ---
+     5 | birthplace
+
+--- Dropped attrs for pcgen:pcg:personalitytrait2 (top 30) ---
+     4 | personality_trait_2
 

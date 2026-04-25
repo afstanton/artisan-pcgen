@@ -10,3 +10,6 @@ default_pcc=/path/to/PCGen/pcgen/data/3e/pcgen/renamer/pcgen_ogc_renamer.pcc
 
 # File used by probe_precampaign.
 precampaign_pcc=/path/to/PCGen/pcgen/data/pathfinder/.../example.pcc
+
+# File used by probe_skills_count.
+skills_lst=/path/to/PCGen/pcgen/data/pathfinder/paizo/roleplaying_game/core_essentials/ce_skills.lst

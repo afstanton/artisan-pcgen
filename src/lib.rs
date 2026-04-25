@@ -296,6 +296,22 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
             }
         }
 
+        // Deduplicate identical KeyValue clauses from the same line (e.g. STARTFEATS:1\tSTARTFEATS:1).
+        // Keep-first: if the same (key, value) pair appears more than once on one line, only the
+        // first occurrence is retained.  Distinct repeated values (ABILITY:A\tABILITY:B) are
+        // unaffected because their values differ.
+        {
+            let mut seen_kvs: std::collections::HashSet<(String, String)> =
+                std::collections::HashSet::new();
+            supported_clauses.retain(|clause| {
+                if let ParsedClause::KeyValue { key, value } = clause {
+                    seen_kvs.insert((key.clone(), value.clone()))
+                } else {
+                    true
+                }
+            });
+        }
+
         let name = semantics::derive_entity_name(&parsed_line.head, &supported_clauses)
             .unwrap_or_else(|| parsed_line.head.trim().to_string());
         let name = if name.is_empty() {

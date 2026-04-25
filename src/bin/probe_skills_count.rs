@@ -5,8 +5,11 @@ use std::collections::BTreeMap;
 use serde_json::Value;
 
 fn main() {
+    #[path = "probeutil/config.rs"] mod probe_config;
+    let config = probe_config::ProbeConfig::load();
+
     let path = std::env::args().nth(1)
-        .unwrap_or_else(|| "/Users/afstanton/code/afstanton/artisan/externals/PCGen/pcgen/data/pathfinder/paizo/roleplaying_game/core_essentials/ce_skills.lst".to_string());
+        .unwrap_or_else(|| config.get("skills_lst").to_string());
     let text = fs::read_to_string(&path).unwrap();
     let fname = path.split('/').last().unwrap_or(&path);
     let cat1 = parse_text_to_catalog(&text, fname, "lst");
