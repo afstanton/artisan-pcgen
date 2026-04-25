@@ -445,6 +445,25 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
                 // existing entity, skipping identity/structural fields that
                 // belong to the first line only.
                 let existing: &mut Entity = &mut entities[existing_idx];
+                // CLASS entities use multi-line continuation to spread data
+                // across many CLASS:Name lines.  Each continuation line may add
+                // new Repeatable-token values (WEAPONBONUS, ABILITY, …) that
+                // must accumulate into the existing arrays.  For all other
+                // entity types the first-wins (or_insert) rule is correct:
+                // e.g. ABILITY:Feat kit lines are the same entity redeclared in
+                // different kit contexts — their decl-value projection should
+                // not be duplicated.
+                //
+                // Only extend arrays for Cardinality::Repeatable fields: those
+                // emit each element as a separate token, so accumulating them
+                // across continuation lines produces a stable roundtrip.
+                // Cardinality::Once fields (even if stored as arrays via
+                // append_string_attr) are emitted as a single pipe-joined token,
+                // so extending them would produce a multi-element array that
+                // re-parses back as a single element — a mismatch.
+                let class_schema = (inferred_type_key == "pcgen:entity:class")
+                    .then(|| schema::schema_for_entity_type_key("pcgen:entity:class"))
+                    .flatten();
                 for (attr_key, attr_val) in attributes {
                     match attr_key.as_str() {
                         // Keep the first line's identity fields unchanged.
@@ -456,10 +475,32 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
                         | "pcgen_record_style"
                         | "pcgen_entity_type_key"
                         | "source_format" => {}
-                        // Merge: don't overwrite a value that was already set
-                        // by the first line, unless the key is absent.
                         _ => {
-                            existing.attributes.entry(attr_key).or_insert(attr_val);
+                            // For CLASS continuation lines, extend arrays only
+                            // when the backing schema token is Repeatable.
+                            let should_extend = class_schema
+                                .and_then(|s| {
+                                    s.tokens.iter().find(|t| {
+                                        matches!(
+                                            &t.artisan_mapping,
+                                            schema::ArtisanMapping::Field(f) if *f == attr_key
+                                        ) && t.cardinality == schema::Cardinality::Repeatable
+                                    })
+                                })
+                                .is_some();
+
+                            if should_extend {
+                                match (existing.attributes.get_mut(&attr_key), &attr_val) {
+                                    (Some(Value::Array(existing_arr)), Value::Array(new_arr)) => {
+                                        existing_arr.extend(new_arr.iter().cloned());
+                                    }
+                                    _ => {
+                                        existing.attributes.entry(attr_key).or_insert(attr_val);
+                                    }
+                                }
+                            } else {
+                                existing.attributes.entry(attr_key).or_insert(attr_val);
+                            }
                         }
                     }
                 }
