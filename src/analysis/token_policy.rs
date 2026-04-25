@@ -77,7 +77,7 @@ pub(crate) fn classify_token_key(input: &str, is_bare: bool) -> ClauseSupportLev
         // Single/two-letter noise
         "R" | "F" | "IE"
         // Typos and misspellings
-        | "VIIBLE" | "SERVAAS" | "SERVEAS"
+        | "VIIBLE" | "SERVAAS"
         // Prerequisite expression fragment split by the parser
         | "IV.PRECLASS"
         // Proper names and abbreviations found in body text or deity names
@@ -144,16 +144,19 @@ pub(crate) enum ClauseSupportLevel {
 fn is_known_bare_directive(input: &str) -> bool {
     let upper = input.to_ascii_uppercase();
 
-    // PRE* bare directives
-    if upper.starts_with("PRE") || upper.starts_with("!PRE") {
-        return true;
-    }
-
-    // Bare tokens that appear without a colon in PCGen data
-    if crate::schema::any_schema_knows_token(&upper) {
-        return true;
-    }
-
+    // NOTE: We intentionally do NOT call `any_schema_knows_token` here.
+    //
+    // `any_schema_knows_token` uses prefix matching for the Prerequisites
+    // group (keys starting with "PRE"), which would incorrectly classify
+    // spell names like "Prestidigitation" as known directives.  Real PCGen
+    // prerequisite tokens (PRELEVEL:5, PRECLASS:1,Fighter, etc.) always
+    // have a colon and are therefore parsed as KeyValue clauses, never Bare.
+    // Similarly, all other schema token keys (BONUS, TYPE, ADD, …) require
+    // a colon when used as clauses.  A Bare clause that happens to share a
+    // name with a schema key is prose or game-content, not a directive.
+    //
+    // Only the small set of tokens below are known to appear without a colon
+    // in PCGen LST data (e.g. inside pipe-list values or as standalone flags).
     matches!(
         upper.as_str(),
         "AUTOMATIC" | "VIRTUAL" | "PRERULE" | "!PRERULE" | "SET"
@@ -336,7 +339,9 @@ mod tests {
             "IE",
             "VIIBLE",
             "SERVAAS",
-            "SERVEAS",
+            // Note: SERVEAS is intentionally NOT here — it is a recognised
+            // old-style alias for SERVESAS and must be classified as
+            // SemanticallyInterpreted, not Artifact.
             "IV.PRECLASS",
             "SELUNE",
             "WWII",
@@ -350,5 +355,18 @@ mod tests {
                 "{token} should be Artifact"
             );
         }
+    }
+
+    #[test]
+    fn classify_token_key_treats_serveas_as_semantically_interpreted() {
+        // SERVEAS is an old-style alias for SERVESAS; both should be recognised.
+        assert!(matches!(
+            classify_token_key("SERVEAS", false),
+            ClauseSupportLevel::SemanticallyInterpreted
+        ));
+        assert!(matches!(
+            classify_token_key("SERVESAS", false),
+            ClauseSupportLevel::SemanticallyInterpreted
+        ));
     }
 }

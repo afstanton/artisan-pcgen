@@ -71,12 +71,45 @@ pub fn emit_entity(entity: &Entity, schema: &LineGrammar) -> String {
             let token = schema.head_token.unwrap_or("");
             let value =
                 token_prefixed_head_value(entity, schema).unwrap_or_else(|| name.to_string());
-            format!("{token}:{value}")
+            // Preserve the original head-token presence/absence.
+            //
+            // Entities that were parsed from lines WITHOUT a token prefix
+            // (e.g. `Acrobatics.MOD\tSITUATION:When Jumping` in a skills
+            // file) have no `pcgen_decl_token` attribute.  Emitting them
+            // WITH the prefix (e.g. `SKILL:Acrobatics.MOD`) causes the
+            // second parse to assign `pcgen_decl_token`, making the entity
+            // gain a merge key it did not originally have.  Subsequent
+            // same-name lines then collapse into a single entity, reducing
+            // the entity count and dropping data.
+            //
+            // If the entity DID originate from a prefixed head (CLASS:Wizard,
+            // ABILITYCATEGORY:Special Ability, …) `pcgen_decl_token` is
+            // present and we emit the prefix unchanged.
+            let had_prefix = entity
+                .attributes
+                .get("pcgen_decl_token")
+                .and_then(Value::as_str)
+                .is_some();
+            if had_prefix {
+                format!("{token}:{value}")
+            } else {
+                value
+            }
         }
     };
     parts.push(head);
 
     // --- Entity-specific tokens ---
+    // Collect schema token keys first so the Prerequisites global-group emitter
+    // can skip tokens that were already emitted by the token-def loop (e.g.
+    // PRECAMPAIGN, which starts with "PRE" but is a schema token, not a
+    // free-standing prerequisite).
+    let schema_token_keys: HashSet<String> = schema
+        .tokens
+        .iter()
+        .map(|t| t.key.to_ascii_uppercase())
+        .collect();
+
     for token_def in schema.tokens {
         if should_skip_duplicate_head_token(entity, schema, token_def) {
             continue;
@@ -86,7 +119,7 @@ pub fn emit_entity(entity: &Entity, schema: &LineGrammar) -> String {
 
     // --- Global token groups ---
     for group in schema.globals {
-        emit_global_group(*group, entity, &mut parts);
+        emit_global_group(*group, entity, &mut parts, &schema_token_keys);
     }
 
     // Always emit prerequisites regardless of whether the schema declares
@@ -99,11 +132,7 @@ pub fn emit_entity(entity: &Entity, schema: &LineGrammar) -> String {
     // token def (e.g. PRECAMPAIGN in PCC schemas) — those were already emitted
     // by the token-def loop above.
     if !schema.globals.contains(&GlobalGroup::Prerequisites) && !entity.prerequisites.is_empty() {
-        let schema_token_keys: HashSet<String> = schema
-            .tokens
-            .iter()
-            .map(|t| t.key.to_ascii_uppercase())
-            .collect();
+        // Reuse `schema_token_keys` computed above — no need to rebuild it.
         for prereq in &entity.prerequisites {
             let kind_upper = prereq.kind.to_ascii_uppercase();
             if schema_token_keys.contains(&kind_upper) {
@@ -681,7 +710,12 @@ fn collect_emittable_global_keys(group: GlobalGroup, entity: &Entity, keys: &mut
 // Global group emission
 // ---------------------------------------------------------------------------
 
-fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String>) {
+fn emit_global_group(
+    group: GlobalGroup,
+    entity: &Entity,
+    parts: &mut Vec<String>,
+    schema_token_keys: &HashSet<String>,
+) {
     match group {
         GlobalGroup::Bonus => {
             for effect in &entity.effects {
@@ -799,6 +833,14 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
         }
         GlobalGroup::Prerequisites => {
             for prereq in &entity.prerequisites {
+                // Skip prerequisites whose kind matches a schema token def
+                // (e.g. PRECAMPAIGN in the ability schema).  Those tokens are
+                // emitted by the token-def loop and must not be double-emitted
+                // here.
+                let kind_upper = prereq.kind.to_ascii_uppercase();
+                if schema_token_keys.contains(&kind_upper) {
+                    continue;
+                }
                 match &prereq.expression {
                     Some(expr) => parts.push(format!("{}:{}", prereq.kind, expr)),
                     None => parts.push(prereq.kind.clone()),
@@ -853,7 +895,13 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
                 .and_then(Value::as_array)
             {
                 for fact in facts {
-                    if let Some(k) = fact.get("key").and_then(Value::as_str) {
+                    // Prefer the stored raw value so that whitespace within the
+                    // fact (e.g. "CompMaterial| see text") is preserved exactly.
+                    // Fall back to reconstructed form for facts without a raw
+                    // field (e.g. facts created programmatically).
+                    if let Some(raw) = fact.get("raw").and_then(Value::as_str) {
+                        parts.push(format!("FACT:{raw}"));
+                    } else if let Some(k) = fact.get("key").and_then(Value::as_str) {
                         if let Some(v) = fact.get("value").and_then(Value::as_str) {
                             parts.push(format!("FACT:{k}|{v}"));
                         } else {
@@ -869,7 +917,10 @@ fn emit_global_group(group: GlobalGroup, entity: &Entity, parts: &mut Vec<String
                 .and_then(Value::as_array)
             {
                 for factset in factsets {
-                    if let (Some(k), Some(v)) = (
+                    // Prefer raw for FACTSET too.
+                    if let Some(raw) = factset.get("raw").and_then(Value::as_str) {
+                        parts.push(format!("FACTSET:{raw}"));
+                    } else if let (Some(k), Some(v)) = (
                         factset.get("key").and_then(Value::as_str),
                         factset.get("value").and_then(Value::as_str),
                     ) {

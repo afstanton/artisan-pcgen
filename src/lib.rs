@@ -106,6 +106,13 @@ impl PcgenLoader {
     }
 
     pub fn parse_pcc(input: &str) -> Result<ParsedCampaign, String> {
+        let normalized;
+        let input = if input.contains('\r') {
+            normalized = input.replace("\r\n", "\n").replace('\r', "\n");
+            normalized.as_str()
+        } else {
+            input
+        };
         let mut campaign = ParsedCampaign::default();
         for raw_line in input.lines() {
             let line = raw_line.trim();
@@ -244,6 +251,17 @@ fn find_or_create_entity_type(
 }
 
 pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> ParsedCatalog {
+    // Normalize line endings: Rust's str::lines() splits only on \n and \r\n,
+    // not on lone \r (classic Mac CR-only files). Convert \r\n → \n first to
+    // avoid double-splitting, then \r → \n.
+    let normalized;
+    let text = if text.contains('\r') {
+        normalized = text.replace("\r\n", "\n").replace('\r', "\n");
+        normalized.as_str()
+    } else {
+        text
+    };
+
     // Accumulates per-schema EntityTypes as entities are parsed.
     // Keyed by PCGen schema key, e.g. "pcgen:entity:race".
     let mut entity_types: BTreeMap<String, EntityType> = BTreeMap::new();
@@ -450,6 +468,16 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
                 existing.prerequisites.extend(prerequisites);
                 // entity_citations contains CanonicalIds of CitationRecords that were
                 // already pushed to the top-level `citations` vec above.
+                // Re-point those citations to the FIRST entity's id so that the
+                // semantic snapshot resolves them to the correct entity name.
+                // (Citation subjects were created with the continuation line's entity_id,
+                // which is never inserted into catalog.entities.)
+                let first_entity_id = existing.id;
+                for cit_id in &entity_citations {
+                    if let Some(cit) = citations.iter_mut().find(|c| c.id == *cit_id) {
+                        cit.subject = SubjectRef::Entity(first_entity_id);
+                    }
+                }
                 existing.citations.extend(entity_citations);
                 continue;
             }
@@ -661,6 +689,19 @@ fn infer_record_style<'a>(
         && !parsed_line.clauses.is_empty()
     {
         return "space";
+    }
+
+    // LST lines that use pipe as the top-level separator (no tabs) must be
+    // emitted back with `|` so the fallback emitter produces lines that the
+    // second-pass parser can split correctly.  Without this, the fallback uses
+    // `\t`, which gets absorbed into the head segment on re-parse (because
+    // bare-clause segments like `GROUP=…` and `SET` have no colon and do not
+    // trigger whitespace-token-start splitting).  Only set "pipe" when the raw
+    // line actually contains a `|`; single-token lines without a pipe should
+    // remain "tab" (the separator is irrelevant for them but "tab" is the
+    // conventional default).
+    if ext.eq_ignore_ascii_case("lst") && raw_line.contains('|') {
+        return "pipe";
     }
 
     "tab"

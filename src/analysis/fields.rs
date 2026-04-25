@@ -411,7 +411,7 @@ pub(crate) fn project_clause_attributes(
             "CSKILL" => append_string_attr(attributes, "cskill", value),
             "SAB" => append_string_attr(attributes, "sab", value),
             "CHANGEPROF" => append_string_attr(attributes, "pcgen_changeprof", value),
-            "SERVESAS" => append_string_attr(attributes, "serves_as", value),
+            "SERVESAS" | "SERVEAS" => append_string_attr(attributes, "serves_as", value),
             "QUALIFY" => append_string_attr(attributes, "pcgen_qualify", value),
             "TEMPLATE" => append_string_attr(attributes, "pcgen_template", value),
             "OUTPUTNAME" => {

@@ -415,7 +415,7 @@ impl GlobalGroup {
             GlobalGroup::Qualify => &["QUALIFY"],
             GlobalGroup::LangBonus => &["LANGBONUS"],
             GlobalGroup::ChangeProf => &["CHANGEPROF"],
-            GlobalGroup::ServesAs => &["SERVESAS"],
+            GlobalGroup::ServesAs => &["SERVESAS", "SERVEAS"],
             GlobalGroup::SourceMeta => &[
                 "CAMPAIGN",
                 "SOURCELONG",
