@@ -415,7 +415,10 @@ impl GlobalGroup {
             GlobalGroup::Qualify => &["QUALIFY"],
             GlobalGroup::LangBonus => &["LANGBONUS"],
             GlobalGroup::ChangeProf => &["CHANGEPROF"],
-            GlobalGroup::ServesAs => &["SERVESAS", "SERVEAS"],
+            // SERVEAS and SERVAAS are old-style aliases (the latter is a documented
+            // typo in at least one BahamutDragon dataset).  All three map to the same
+            // serves_as attribute and emit as the canonical SERVESAS token.
+            GlobalGroup::ServesAs => &["SERVESAS", "SERVEAS", "SERVAAS"],
             GlobalGroup::SourceMeta => &[
                 "CAMPAIGN",
                 "SOURCELONG",

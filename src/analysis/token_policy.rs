@@ -77,7 +77,7 @@ pub(crate) fn classify_token_key(input: &str, is_bare: bool) -> ClauseSupportLev
         // Single/two-letter noise
         "R" | "F" | "IE"
         // Typos and misspellings
-        | "VIIBLE" | "SERVAAS"
+        | "VIIBLE"
         // Prerequisite expression fragment split by the parser
         | "IV.PRECLASS"
         // Proper names and abbreviations found in body text or deity names
@@ -338,9 +338,8 @@ mod tests {
             "F",
             "IE",
             "VIIBLE",
-            "SERVAAS",
-            // Note: SERVEAS is intentionally NOT here — it is a recognised
-            // old-style alias for SERVESAS and must be classified as
+            // Note: SERVAAS is intentionally NOT here — it is a recognised
+            // typo alias for SERVESAS/SERVEAS and must be classified as
             // SemanticallyInterpreted, not Artifact.
             "IV.PRECLASS",
             "SELUNE",
@@ -359,7 +358,7 @@ mod tests {
 
     #[test]
     fn classify_token_key_treats_serveas_as_semantically_interpreted() {
-        // SERVEAS is an old-style alias for SERVESAS; both should be recognised.
+        // SERVEAS and SERVAAS are old-style aliases for SERVESAS; all should be recognised.
         assert!(matches!(
             classify_token_key("SERVEAS", false),
             ClauseSupportLevel::SemanticallyInterpreted
@@ -368,5 +367,9 @@ mod tests {
             classify_token_key("SERVESAS", false),
             ClauseSupportLevel::SemanticallyInterpreted
         ));
+        assert!(matches!(
+            classify_token_key("SERVAAS", false),
+            ClauseSupportLevel::SemanticallyInterpreted
+        ), "SERVAAS is a documented typo alias for SERVESAS and must be recognised");
     }
 }

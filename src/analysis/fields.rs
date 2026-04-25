@@ -411,7 +411,8 @@ pub(crate) fn project_clause_attributes(
             "CSKILL" => append_string_attr(attributes, "cskill", value),
             "SAB" => append_string_attr(attributes, "sab", value),
             "CHANGEPROF" => append_string_attr(attributes, "pcgen_changeprof", value),
-            "SERVESAS" | "SERVEAS" => append_string_attr(attributes, "serves_as", value),
+            // SERVAAS is a documented typo in the BahamutDragon dataset for SERVEAS/SERVESAS.
+            "SERVESAS" | "SERVEAS" | "SERVAAS" => append_string_attr(attributes, "serves_as", value),
             "QUALIFY" => append_string_attr(attributes, "pcgen_qualify", value),
             "TEMPLATE" => append_string_attr(attributes, "pcgen_template", value),
             "OUTPUTNAME" => {
@@ -1070,7 +1071,10 @@ pub(crate) fn project_clause_attributes(
                 set_i64_or_string(attributes, "pcgen_shieldslots", value);
             }
             "DR" => {
-                attributes.insert("pcgen_dr".to_string(), Value::String(value.clone()));
+                // DR can appear multiple times on the same line (e.g. DR:20/Magic + DR:5/Evil
+                // on a classlevel entry).  Use append_attribute so all occurrences are
+                // preserved as an array.  The emitter handles both String and Array forms.
+                append_attribute(attributes, "pcgen_dr", Value::String(value.clone()));
             }
             "SR" => {
                 attributes.insert("pcgen_sr".to_string(), Value::String(value.clone()));
