@@ -296,22 +296,6 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
             }
         }
 
-        // Deduplicate identical KeyValue clauses from the same line (e.g. STARTFEATS:1\tSTARTFEATS:1).
-        // Keep-first: if the same (key, value) pair appears more than once on one line, only the
-        // first occurrence is retained.  Distinct repeated values (ABILITY:A\tABILITY:B) are
-        // unaffected because their values differ.
-        {
-            let mut seen_kvs: std::collections::HashSet<(String, String)> =
-                std::collections::HashSet::new();
-            supported_clauses.retain(|clause| {
-                if let ParsedClause::KeyValue { key, value } = clause {
-                    seen_kvs.insert((key.clone(), value.clone()))
-                } else {
-                    true
-                }
-            });
-        }
-
         let name = semantics::derive_entity_name(&parsed_line.head, &supported_clauses)
             .unwrap_or_else(|| parsed_line.head.trim().to_string());
         let name = if name.is_empty() {
@@ -411,6 +395,36 @@ pub fn parse_text_to_catalog(text: &str, source_name: &str, ext: &str) -> Parsed
             Value::String(inferred_type_key.clone()),
         );
         let schema_entity_type_id = find_or_create_entity_type(&mut entity_types, &inferred_type_key);
+
+        // Deduplicate identical (key, value) clauses from the same line (e.g. STARTFEATS:1\tSTARTFEATS:1).
+        // Keep-first for Once-cardinality tokens only.  Skip deduplication when:
+        //   (a) the token has Cardinality::Repeatable in the entity's specific token list, or
+        //   (b) the key matches any of the entity's GlobalGroups (BONUS, ABILITY, etc.) —
+        //       GlobalGroups are always repeatable and may appear many times on one emitted line
+        //       when continuation lines from the source are merged into a single entity.
+        {
+            let entity_schema = schema::schema_for_entity_type_key(&inferred_type_key);
+            let mut seen_kvs: std::collections::HashSet<(String, String)> =
+                std::collections::HashSet::new();
+            supported_clauses.retain(|clause| {
+                if let ParsedClause::KeyValue { key, value } = clause {
+                    let upper = key.to_ascii_uppercase();
+                    let is_repeatable = entity_schema.is_some_and(|s| {
+                        s.tokens
+                            .iter()
+                            .any(|t| t.key.eq_ignore_ascii_case(key) && t.cardinality == schema::Cardinality::Repeatable)
+                        || s.globals.iter().any(|g| g.matches(&upper))
+                    });
+                    if is_repeatable {
+                        return true;
+                    }
+                    seen_kvs.insert((key.clone(), value.clone()))
+                } else {
+                    true
+                }
+            });
+        }
+
         let mechanical_signals = signals::extract_mechanical_signals(&supported_clauses);
         if !mechanical_signals.is_empty() {
             attributes.insert(
