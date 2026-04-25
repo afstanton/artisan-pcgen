@@ -82,8 +82,20 @@ static ABILITY_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Field("vision"),
         required: false,
     },
-    TokenDef::text("DR", "pcgen_dr"),
-    TokenDef::text("SR", "pcgen_sr"),
+    TokenDef {
+        key: "DR",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Effect,
+        required: false,
+    },
+    TokenDef {
+        key: "SR",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Effect,
+        required: false,
+    },
     // Equipment modification grant: EQMOD:name|key=value...
     TokenDef {
         key: "EQMOD",
@@ -145,6 +157,8 @@ static ABILITY_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Field("do_not_add"),
         required: false,
     },
+    // NOTE: free-text annotation attached to the ability (seen in some datasets).
+    TokenDef::text("NOTE", "note"),
 ];
 
 static ABILITY_GLOBALS: &[GlobalGroup] = &[

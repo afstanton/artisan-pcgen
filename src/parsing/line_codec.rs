@@ -220,11 +220,19 @@ fn split_on_whitespace_token_starts_trimmed(trimmed: &str) -> Vec<String> {
     let mut start = 0usize;
     let mut scan = 0usize;
 
+    // When the line contains TAB characters we require a TAB in the whitespace
+    // run before splitting.  This prevents false splits inside free-text values
+    // like DESC:CYRIC GRANTED SPELL:Create three shadow duplicates of yourself
+    // where "SPELL:" would otherwise look like a token start after a space.
+    // Pure-space-separated lines (no tabs at all) use the old behaviour.
+    let tab_separated = trimmed.contains('\t');
+
     while scan < trimmed.len() {
         let next_char = trimmed[scan..].chars().next().expect("valid char boundary");
         if next_char.is_whitespace() {
             let whitespace_start = scan;
             let mut after_ws = scan;
+            let mut ws_has_tab = false;
             while after_ws < trimmed.len() {
                 let ch = trimmed[after_ws..]
                     .chars()
@@ -233,10 +241,18 @@ fn split_on_whitespace_token_starts_trimmed(trimmed: &str) -> Vec<String> {
                 if !ch.is_whitespace() {
                     break;
                 }
+                if ch == '\t' {
+                    ws_has_tab = true;
+                }
                 after_ws += ch.len_utf8();
             }
 
-            if looks_like_token_start(trimmed, after_ws) {
+            // Only split here if:
+            //   - the whitespace run contains a TAB (for tab-separated lines), or
+            //   - the line has no tabs at all (space-only separation, old behaviour).
+            let eligible_split = !tab_separated || ws_has_tab;
+
+            if eligible_split && looks_like_token_start(trimmed, after_ws) {
                 push_trimmed_if_non_empty(&mut segments, &trimmed[start..whitespace_start]);
                 start = after_ws;
                 scan = after_ws;

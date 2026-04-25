@@ -1,5 +1,4 @@
-//! Probe: find PCC entities with effects changes after roundtrip.
-//! Scans ALL file types (same as semantic_inventory).
+//! Probe: find non-PCC entities with effects changes after roundtrip.
 use artisan_pcgen::{parse_text_to_catalog, unparse_catalog_to_text};
 use serde_json::{Value, json};
 use std::collections::{BTreeMap, VecDeque};
@@ -20,28 +19,8 @@ fn scan_dir(dir: &Path, paths: &mut Vec<PathBuf>) {
     }
 }
 
-fn entity_snapshot(entity: &artisan_pcgen::ParsedCatalog) -> BTreeMap<(String, String, usize), Vec<Value>> {
-    let mut map: BTreeMap<(String, String, usize), Vec<Value>> = BTreeMap::new();
-    let mut count: BTreeMap<(String, String), usize> = BTreeMap::new();
-
-    for e in &entity.entities {
-        let tk = e.attributes.get("pcgen_entity_type_key")
-            .and_then(Value::as_str).unwrap_or("?").to_string();
-        let key = (tk.clone(), e.name.clone());
-        let idx = *count.entry(key.clone()).or_insert(0);
-        *count.get_mut(&key).unwrap() += 1;
-
-        let mut effects: Vec<Value> = e.effects.iter()
-            .map(|eff| json!({"kind": eff.kind, "target": eff.target, "value": eff.value}))
-            .collect();
-        effects.sort_by(|a, b|
-            a["kind"].as_str().cmp(&b["kind"].as_str())
-                .then(a["target"].as_str().cmp(&b["target"].as_str()))
-                .then(a["value"].as_str().cmp(&b["value"].as_str()))
-        );
-        map.insert((tk, e.name.clone(), idx), effects);
-    }
-    map
+fn effect_snapshot(eff: &artisan_core::domain::rules::Effect) -> Value {
+    json!({"kind": eff.kind, "target": eff.target, "value": eff.value})
 }
 
 fn main() {
@@ -53,11 +32,15 @@ fn main() {
         scan_dir(Path::new(root), &mut all_files);
     }
 
-    let mut examples_shown = 0;
-    let max_examples = 10;
-    let mut total_changes = 0usize;
+    let target_types = ["pcgen:entity:race", "pcgen:entity:template",
+                        "pcgen:entity:ability", "pcgen:entity:class",
+                        "pcgen:entity:feat", "pcgen:entity:variable-global"];
 
-    'outer: for path in &all_files {
+    let mut examples_shown = 0;
+    let max_examples = 15;
+    let mut counts: BTreeMap<String, usize> = BTreeMap::new();
+
+    for path in &all_files {
         let ext = path.extension().and_then(|e| e.to_str()).unwrap_or("lst");
         let Ok(text) = fs::read_to_string(path) else { continue };
         let source_name = path.file_name().and_then(|f| f.to_str()).unwrap_or("file");
@@ -68,14 +51,12 @@ fn main() {
 
         if catalog1.entities.len() != catalog2.entities.len() { continue; }
 
-        // Build VecDeque index for catalog2 (same as inventory)
+        // Build after index
         let mut after_index: BTreeMap<(String, String), VecDeque<Vec<Value>>> = BTreeMap::new();
         for e in &catalog2.entities {
             let tk = e.attributes.get("pcgen_entity_type_key")
                 .and_then(Value::as_str).unwrap_or("?").to_string();
-            let mut effects: Vec<Value> = e.effects.iter()
-                .map(|eff| json!({"kind": eff.kind, "target": eff.target, "value": eff.value}))
-                .collect();
+            let mut effects: Vec<Value> = e.effects.iter().map(effect_snapshot).collect();
             effects.sort_by(|a, b|
                 a["kind"].as_str().cmp(&b["kind"].as_str())
                     .then(a["target"].as_str().cmp(&b["target"].as_str()))
@@ -86,47 +67,48 @@ fn main() {
 
         for e in &catalog1.entities {
             let tk = e.attributes.get("pcgen_entity_type_key")
-                .and_then(Value::as_str).unwrap_or("?").to_string();
-            if !tk.starts_with("pcgen:entity:pcc") { continue; }
+                .and_then(Value::as_str).unwrap_or("?");
+            if !target_types.contains(&tk) { continue; }
 
-            let mut before_effects: Vec<Value> = e.effects.iter()
-                .map(|eff| json!({"kind": eff.kind, "target": eff.target, "value": eff.value}))
-                .collect();
-            before_effects.sort_by(|a, b|
+            let mut before: Vec<Value> = e.effects.iter().map(effect_snapshot).collect();
+            before.sort_by(|a, b|
                 a["kind"].as_str().cmp(&b["kind"].as_str())
                     .then(a["target"].as_str().cmp(&b["target"].as_str()))
                     .then(a["value"].as_str().cmp(&b["value"].as_str()))
             );
 
-            if let Some(queue) = after_index.get_mut(&(tk.clone(), e.name.clone()))
-                && let Some(after_effects) = queue.pop_front()
+            if let Some(queue) = after_index.get_mut(&(tk.to_string(), e.name.clone()))
+                && let Some(after) = queue.pop_front()
             {
-                if before_effects != after_effects {
-                    total_changes += 1;
+                if before != after {
+                    *counts.entry(tk.to_string()).or_insert(0) += 1;
                     if examples_shown < max_examples {
                         examples_shown += 1;
                         let short = path.display().to_string();
                         let short = short.split("externals/").last().unwrap_or(&short);
                         println!("FILE: {}", short);
-                        println!("  entity_type={} name={:?}", tk, e.name);
-                        let max_len = before_effects.len().max(after_effects.len());
-                        for i in 0..max_len {
-                            let b = before_effects.get(i);
-                            let a = after_effects.get(i);
+                        println!("  type={} name={:?}", tk, e.name);
+                        let maxlen = before.len().max(after.len());
+                        for i in 0..maxlen {
+                            let b = before.get(i);
+                            let a = after.get(i);
                             if b != a {
                                 println!("  BEFORE[{}]: {:?}", i, b);
                                 println!("  AFTER[{}]:  {:?}", i, a);
-                                if examples_shown < max_examples { break; }
+                                break;
                             }
                         }
-                        println!("  Count: {} before → {} after", before_effects.len(), after_effects.len());
+                        println!("  Count: {} → {}", before.len(), after.len());
                         println!();
-                        if examples_shown >= max_examples { break 'outer; }
                     }
                 }
             }
         }
     }
 
-    println!("Total PCC effect changes found: {}", total_changes);
+    println!("=== Effects changes by type ===");
+    for (k, v) in &counts {
+        println!("  {} | {}", v, k);
+    }
+    println!("  Total: {}", counts.values().sum::<usize>());
 }

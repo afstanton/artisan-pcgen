@@ -4,7 +4,9 @@ use std::fs;
 use serde_json::Value;
 
 fn main() {
-    let path = "/Users/afstanton/code/afstanton/artisan/externals/PCGen/pcgen/data/pathfinder/super_genius_games/adventurers_handbook/sggah.pcc";
+    #[path = "probeutil/config.rs"] mod probe_config;
+    let config = probe_config::ProbeConfig::load();
+    let path = config.get("precampaign_pcc");
     let text = fs::read_to_string(path).expect("file not found");
     
     let first = parse_text_to_catalog(&text, "sggah.pcc", "pcc");

@@ -1,33 +1,33 @@
 === Semantic Inventory Summary ===
 Files scanned: 9447
 Total lines processed: 848333
-Semantic roundtrip: 8798 passed / 649 failed
-Canonical roundtrip: 9219 passed / 228 failed
+Semantic roundtrip: 9438 passed / 9 failed
+Canonical roundtrip: 9439 passed / 8 failed
 
 === Canonical Model Coverage Report ===
-Total entities:                    558572
+Total entities:                    558590
   effects + prerequisites:         42715
-  effects only:                    130867
-  prerequisites only:              52729
-  canonical attrs / citations:     262901
-  truly sparse (pcgen_* only):     69360
+  effects only:                    130863
+  prerequisites only:              52731
+  canonical attrs / citations:     262924
+  truly sparse (pcgen_* only):     69357
   canonical coverage:              87% have >=1 canonical field
 
 === Effect Kinds Across All Entities ===
-235670 | BONUS
- 85927 | ABILITY
+235661 | BONUS
+ 85926 | ABILITY
  49550 | DEFINE
  13945 | CHOOSE
  13246 | SPELLS
- 10365 | AUTO
+ 10363 | AUTO
   9834 | NATURALATTACKS
   9772 | MOVE
   8667 | TEMPLATE
   6251 | STARTFEATS
-  6207 | ADD
+  6206 | ADD
   4859 | TEMPBONUS
   3393 | VISION
-  3113 | DR
+  3093 | DR
   2132 | SR
   1847 | MODIFY
   1795 | LANGBONUS
@@ -42,15 +42,15 @@ Total entities:                    558572
      3 | BONUSSKILLPOINTS
 
 === Prerequisite Kinds Across All Entities ===
- 22687 | PREABILITY
+ 22686 | PREABILITY
  19693 | PREMULT
  14750 | PREVARGTEQ
   9319 | PRECLASS
-  7414 | PRETYPE
+  7413 | PRETYPE
   6394 | !PRERACE
   6274 | PRETEXT
   5874 | !PREABILITY
-  4611 | PRESKILL
+  4610 | PRESKILL
   4521 | PRERACE
   4434 | PRESTAT
   3013 | PREVAREQ
@@ -64,7 +64,7 @@ Total entities:                    558572
   1969 | PREALIGN
   1474 | PREBASESIZEEQ
    909 | PRELEVEL
-   867 | PRESPELLTYPE
+   866 | PRESPELLTYPE
    817 | PREDEITY
    750 | PREVARLTEQ
    720 | !PRECHARACTERTYPE
@@ -88,31 +88,31 @@ Total entities:                    558572
    139 | PREDOMAIN
    137 | !PREWEAPONPROF
    128 | PRELEVELMAX
-   114 | PRE
+   110 | PRE
    109 | !PRECSKILL
     97 | !PRECAMPAIGN
     85 | PRECSKILL
 
 === Canonical Attribute Keys On Covered Entities ===
-279682 | type
-165578 | category
-137568 | description
-107855 | key
+279694 | type
+165590 | category
+137577 | description
+107867 | key
  76643 | visible
- 72768 | abilities
+ 72775 | abilities
  63697 | cost
  39484 | weight
  39090 | classes
- 25735 | sprop
+ 25734 | sprop
  25272 | school
  24244 | size
  22714 | sortkey
  20198 | outputname
- 11711 | aspects
+ 11712 | aspects
  11505 | option
  11294 | source_short
  10703 | proficiency
-  9802 | sab
+  9801 | sab
   9771 | move
   9244 | natural_attacks
   8988 | ability_categories
@@ -124,7 +124,7 @@ Total entities:                    558572
   8025 | cast
   7952 | max_version
   7952 | new_key
-  7564 | cr
+  7557 | cr
   7346 | monsterclass
   6935 | subschool
   6870 | cskill
@@ -136,7 +136,7 @@ Total entities:                    558572
   5319 | hands
   5069 | items
   4999 | source_date
-  4879 | hitdie
+  4869 | hitdie
   4822 | source_web
   4654 | contains
   4602 | location
@@ -209,9 +209,9 @@ Total entities:                    558572
      1 | umult
 
 === Semantic Roundtrip Failure Patterns ===
-Files with entity count change: 152
-Entities with effects change:   67
-Entities with prereqs change:   8
+Files with entity count change: 0
+Entities with effects change:   5
+Entities with prereqs change:   0
 
 --- Attributes DROPPED after roundtrip (emitter fails to emit) ---
      5 | birthday
@@ -237,19 +237,13 @@ Entities with prereqs change:   8
      4 | phobias
      4 | skin_color
      4 | speech_pattern
-     3 | group
-     1 | cr
-     1 | note
-     1 | pcgen_spells
 
 --- Attributes ADDED after roundtrip (emitter invents new tokens) ---
      5 | equipset_use_temp_mods
 
 --- Attributes CHANGED value after roundtrip (format normalization) ---
     24 | abilities
-     9 | pcgen_facts
      4 | pcgen_language_catalog
-     4 | pcgen_precampaign
 
 --- Entity types with most attribute drops (top 30) ---
      5 | pcgen:pcg:birthday
@@ -275,45 +269,38 @@ Entities with prereqs change:   8
      4 | pcgen:pcg:playername
      4 | pcgen:pcg:skincolor
      4 | pcgen:pcg:speechpattern
-     3 | pcgen:entity:pcc
-     2 | pcgen:entity:ability
-     1 | pcgen:entity:spell
 
 --- Entity types with most effects changes (top 20) ---
-    27 | pcgen:entity:race
-    25 | pcgen:entity:template
-    10 | pcgen:entity:ability
-     3 | pcgen:entity:class
-     1 | pcgen:entity:feat
-     1 | pcgen:entity:variable-global
-
---- Dropped attrs for pcgen:pcg:charactercomp (top 30) ---
-     5 | character_comp
-
---- Dropped attrs for pcgen:pcg:portrait (top 30) ---
-     5 | portrait
-
---- Dropped attrs for pcgen:pcg:suppressbiofields (top 30) ---
-     5 | pcgen_suppressbiofields
-
---- Dropped attrs for pcgen:pcg:tabname (top 30) ---
-     5 | pcgen_tabname
-
---- Dropped attrs for pcgen:pcg:characterdmnotes (top 30) ---
-     5 | character_dm_notes
+     4 | pcgen:entity:race
+     1 | pcgen:entity:class
 
 --- Dropped attrs for pcgen:pcg:charactermagic (top 30) ---
      5 | character_magic
 
+--- Dropped attrs for pcgen:pcg:birthday (top 30) ---
+     5 | birthday
+
+--- Dropped attrs for pcgen:pcg:suppressbiofields (top 30) ---
+     5 | pcgen_suppressbiofields
+
+--- Dropped attrs for pcgen:pcg:charactercomp (top 30) ---
+     5 | character_comp
+
 --- Dropped attrs for pcgen:pcg:birthplace (top 30) ---
      5 | birthplace
+
+--- Dropped attrs for pcgen:pcg:characterdmnotes (top 30) ---
+     5 | character_dm_notes
+
+--- Dropped attrs for pcgen:pcg:tabname (top 30) ---
+     5 | pcgen_tabname
+
+--- Dropped attrs for pcgen:pcg:portrait (top 30) ---
+     5 | portrait
 
 --- Dropped attrs for pcgen:pcg:characterasset (top 30) ---
      5 | character_asset
 
---- Dropped attrs for pcgen:pcg:birthday (top 30) ---
-     5 | birthday
-
---- Dropped attrs for pcgen:pcg:eyecolor (top 30) ---
-     4 | eye_color
+--- Dropped attrs for pcgen:pcg:characterdesc (top 30) ---
+     4 | character_desc
 

@@ -148,6 +148,8 @@ static SPELL_TOKENS: &[TokenDef] = &[
     },
     // HITDIE: hit-die expression (some datasets apply HD on spell-like entities).
     TokenDef::text("HITDIE", "hitdie"),
+    // NOTE: free-text annotation (seen in some power/spell datasets).
+    TokenDef::text("NOTE", "note"),
 ];
 
 pub static SPELL_SCHEMA: LineGrammar = LineGrammar {

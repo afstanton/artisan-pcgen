@@ -93,8 +93,20 @@ static FEAT_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Field("vision"),
         required: false,
     },
-    TokenDef::text("DR", "pcgen_dr"),
-    TokenDef::text("SR", "pcgen_sr"),
+    TokenDef {
+        key: "DR",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Effect,
+        required: false,
+    },
+    TokenDef {
+        key: "SR",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Effect,
+        required: false,
+    },
     // UDAM: unarmed damage progression (some homebrew feat files).
     TokenDef::text("UDAM", "udam"),
     // SPELLKNOWN: known-spell grant.
@@ -121,6 +133,8 @@ static FEAT_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Field("pcgen_spells"),
         required: false,
     },
+    // NOTE: free-text annotation attached to the feat.
+    TokenDef::text("NOTE", "note"),
 ];
 
 static FEAT_GLOBALS: &[GlobalGroup] = &[

@@ -957,6 +957,8 @@ static SUBSTITUTION_LEVEL_TOKENS: &[TokenDef] = &[
     },
     TokenDef::text("UDAM", "udam"),
     TokenDef::integer("UMULT", "pcgen_umult"),
+    // HITDIE: hit-die override at this substitution/subclass level.
+    TokenDef::text("HITDIE", "hitdie"),
     TokenDef {
         key: "CAST",
         grammar: TokenGrammar::Text,
@@ -985,11 +987,53 @@ static SUBSTITUTION_LEVEL_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Field("pcgen_specialtyknown"),
         required: false,
     },
+    // SPELLLEVEL: spell-level association at this substitution level.
+    TokenDef {
+        key: "SPELLLEVEL",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("spell_level"),
+        required: false,
+    },
+    // SPELLS: spell-like abilities granted at this substitution level.
+    TokenDef {
+        key: "SPELLS",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("pcgen_spells"),
+        required: false,
+    },
+    // DOMAIN: domain granted at this substitution level.
+    TokenDef {
+        key: "DOMAIN",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("domains"),
+        required: false,
+    },
+    // CCSKILL: cross-class skill added at this substitution level.
+    TokenDef::pipe_list_repeatable("CCSKILL", "pcgen_ccskill"),
     TokenDef {
         key: "KIT",
         grammar: TokenGrammar::Text,
         cardinality: Cardinality::Repeatable,
         artisan_mapping: ArtisanMapping::Field("kits"),
+        required: false,
+    },
+    // ADDDOMAINS: additional domain slots granted at this subclass level.
+    TokenDef {
+        key: "ADDDOMAINS",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("add_domains"),
+        required: false,
+    },
+    // WEAPONBONUS: weapon proficiency bonus granted at this subclass level.
+    TokenDef {
+        key: "WEAPONBONUS",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("weapon_bonus"),
         required: false,
     },
 ];

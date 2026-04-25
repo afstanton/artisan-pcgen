@@ -59,6 +59,14 @@ static SUBCLASS_TOKENS: &[TokenDef] = &[
         artisan_mapping: ArtisanMapping::Field("weapon_bonus"),
         required: false,
     },
+    // PROHIBITSPELL: spell school(s) prohibited by this subclass.
+    TokenDef {
+        key: "PROHIBITSPELL",
+        grammar: TokenGrammar::Text,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("prohibit_spell"),
+        required: false,
+    },
 ];
 
 static SUBCLASS_GLOBALS: &[GlobalGroup] = &[
@@ -79,6 +87,7 @@ static SUBCLASS_GLOBALS: &[GlobalGroup] = &[
     GlobalGroup::LangBonus,
     GlobalGroup::CSkill,
     GlobalGroup::Sab,
+    GlobalGroup::SortKey,
     GlobalGroup::ChangeProf,
     GlobalGroup::ServesAs,
     GlobalGroup::Qualify,

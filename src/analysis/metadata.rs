@@ -19,72 +19,58 @@ pub(crate) fn collect_metadata(
     raw_line: &str,
     metadata: &mut PcgenMetadata,
 ) {
-    for (key, value) in extract_metadata_pairs(raw_line) {
-        match key.as_str() {
-            "CAMPAIGN" if metadata.campaign.is_none() => metadata.campaign = Some(value),
-            "SOURCELONG" | "SOURCE" if metadata.source_title.is_none() => {
-                metadata.source_title = Some(value)
-            }
-            "SOURCESHORT" if metadata.source_short.is_none() => metadata.source_short = Some(value),
-            "SOURCEWEB" if metadata.source_web.is_none() => metadata.source_web = Some(value),
-            "SOURCEDATE" if metadata.source_date.is_none() => metadata.source_date = Some(value),
-            "PUBNAMELONG" | "PUBLISHER" | "PUBLISHERNAME" if metadata.publisher_long.is_none() => {
-                metadata.publisher_long = Some(value)
-            }
-            "PUBNAMESHORT" if metadata.publisher_short.is_none() => {
-                metadata.publisher_short = Some(value)
-            }
-            "GAMEMODE" if metadata.game_mode.is_none() => metadata.game_mode = Some(value),
-            "SETTING" if metadata.setting.is_none() => metadata.setting = Some(value),
-            "BOOKTYPE" if metadata.book_type.is_none() => metadata.book_type = Some(value),
-            _ => {}
-        }
+    // Priority order: parsed head → parsed clauses → raw-line scan.
+    //
+    // The raw-line scanner (`extract_metadata_pairs`) can capture garbage: e.g.
+    // on an LST line like `Ability\tSOURCEDATE:2009-08\tASPECT:...`, it reads
+    // SOURCEDATE as "2009-08\tASPECT:..." because it scans until the next
+    // recognized keyword.  Parsed head/clause values are always clean.  Setting
+    // them first prevents the raw-line scan from clobbering them.
+    //
+    // This also fixes GAMEMODE/SETTING roundtrip stability: `GAMEMODE:3e|35e`
+    // splits to head "GAMEMODE:3e" (pipe is a field separator), so the entity
+    // name and the emitter output "3e".  Reading from the parsed head stores "3e"
+    // consistently before and after roundtrip; the raw-line value "3e|35e" would
+    // differ from "3e" after roundtrip.
+
+    // 1. Parsed head
+    if let Some((key, value)) = parse_head_key_value(&parsed_line.head) {
+        apply_metadata_kv(&key, value, metadata);
     }
 
-    if metadata.campaign.is_none()
-        && let Some((key, value)) = parse_head_key_value(&parsed_line.head)
-        && key.eq_ignore_ascii_case("CAMPAIGN")
-    {
-        metadata.campaign = Some(value);
-    }
-
+    // 2. Parsed clauses
     for clause in &parsed_line.clauses {
         if let ParsedClause::KeyValue { key, value } = clause {
-            let key_upper = key.to_ascii_uppercase();
-            if metadata.source_title.is_none()
-                && (key_upper == "SOURCELONG" || key_upper == "SOURCE")
-            {
-                metadata.source_title = Some(value.clone());
-            }
-            if metadata.source_short.is_none() && key_upper == "SOURCESHORT" {
-                metadata.source_short = Some(value.clone());
-            }
-            if metadata.source_web.is_none() && key_upper == "SOURCEWEB" {
-                metadata.source_web = Some(value.clone());
-            }
-            if metadata.source_date.is_none() && key_upper == "SOURCEDATE" {
-                metadata.source_date = Some(value.clone());
-            }
-            if metadata.publisher_long.is_none()
-                && (key_upper == "PUBNAMELONG"
-                    || key_upper == "PUBLISHER"
-                    || key_upper == "PUBLISHERNAME")
-            {
-                metadata.publisher_long = Some(value.clone());
-            }
-            if metadata.publisher_short.is_none() && key_upper == "PUBNAMESHORT" {
-                metadata.publisher_short = Some(value.clone());
-            }
-            if metadata.game_mode.is_none() && key_upper == "GAMEMODE" {
-                metadata.game_mode = Some(value.clone());
-            }
-            if metadata.setting.is_none() && key_upper == "SETTING" {
-                metadata.setting = Some(value.clone());
-            }
-            if metadata.book_type.is_none() && key_upper == "BOOKTYPE" {
-                metadata.book_type = Some(value.clone());
-            }
+            apply_metadata_kv(key, value.clone(), metadata);
         }
+    }
+
+    // 3. Raw-line scan (fallback for PCC files where the entire line is one
+    //    metadata directive and the above steps found nothing)
+    for (key, value) in extract_metadata_pairs(raw_line) {
+        apply_metadata_kv(&key, value, metadata);
+    }
+}
+
+fn apply_metadata_kv(key: &str, value: String, metadata: &mut PcgenMetadata) {
+    match key.to_ascii_uppercase().as_str() {
+        "CAMPAIGN" if metadata.campaign.is_none() => metadata.campaign = Some(value),
+        "SOURCELONG" | "SOURCE" if metadata.source_title.is_none() => {
+            metadata.source_title = Some(value)
+        }
+        "SOURCESHORT" if metadata.source_short.is_none() => metadata.source_short = Some(value),
+        "SOURCEWEB" if metadata.source_web.is_none() => metadata.source_web = Some(value),
+        "SOURCEDATE" if metadata.source_date.is_none() => metadata.source_date = Some(value),
+        "PUBNAMELONG" | "PUBLISHER" | "PUBLISHERNAME" if metadata.publisher_long.is_none() => {
+            metadata.publisher_long = Some(value)
+        }
+        "PUBNAMESHORT" if metadata.publisher_short.is_none() => {
+            metadata.publisher_short = Some(value)
+        }
+        "GAMEMODE" if metadata.game_mode.is_none() => metadata.game_mode = Some(value),
+        "SETTING" if metadata.setting.is_none() => metadata.setting = Some(value),
+        "BOOKTYPE" if metadata.book_type.is_none() => metadata.book_type = Some(value),
+        _ => {}
     }
 }
 

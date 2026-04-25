@@ -445,11 +445,66 @@ fn looks_like_system_stat(clauses: &[ParsedClause]) -> bool {
 
 fn looks_like_class_level(head: &str, clauses: &[ParsedClause]) -> bool {
     let normalized_head = head.trim();
-    !normalized_head.is_empty()
-        && normalized_head.chars().all(|ch| ch.is_ascii_digit())
-        && (has_token(clauses, "DONOTADD")
-            || has_token(clauses, "UDAM")
-            || has_token(clauses, "UMULT"))
+    // A class-level entry has a bare level number as the head (e.g. "1", "2", "20").
+    // Also handles the REPEATLEVEL variant: "1:REPEATLEVEL:1" (level + repeat interval).
+    // The original check required DONOTADD/UDAM/UMULT, which are rare — spellcasting
+    // class level lines carry CAST/KNOWN/SPECIALTYKNOWN instead, and those would
+    // otherwise be misclassified as `pcgen:entity:class` via looks_like_class.
+    // Extend the check: any line whose head is all digits (or digits:REPEATLEVEL:digits)
+    // and has at least one token characteristic of a class-level row is a classlevel entry.
+    let is_numeric_head = !normalized_head.is_empty()
+        && normalized_head.chars().all(|ch| ch.is_ascii_digit());
+    let is_repeatlevel_head = {
+        // Match: {digits}:REPEATLEVEL:{digits}
+        let up = normalized_head.to_ascii_uppercase();
+        if let Some(pos) = up.find(":REPEATLEVEL:") {
+            let pre = &up[..pos];
+            let post = &up[pos + ":REPEATLEVEL:".len()..];
+            !pre.is_empty()
+                && pre.chars().all(|c| c.is_ascii_digit())
+                && !post.is_empty()
+                && post.chars().all(|c| c.is_ascii_digit())
+        } else {
+            false
+        }
+    };
+    if !is_numeric_head && !is_repeatlevel_head {
+        return false;
+    }
+    // Disqualifiers: tokens that appear on ABILITY/feat entities but never on genuine
+    // class-level rows.  Some datasets enumerate abilities with numeric keys (e.g.
+    // "01", "02") that would otherwise match the digit-head test above.
+    if has_token(clauses, "CATEGORY")
+        || has_token(clauses, "MULT")
+        || has_token(clauses, "STACK")
+    {
+        return false;
+    }
+    has_token(clauses, "DONOTADD")
+        || has_token(clauses, "UDAM")
+        || has_token(clauses, "UMULT")
+        || has_token(clauses, "CAST")
+        || has_token(clauses, "KNOWN")
+        || has_token(clauses, "SPECIALTYKNOWN")
+        || has_token(clauses, "ABILITY")
+        || has_token(clauses, "SPELLKNOWN")
+        || has_token(clauses, "BONUS")
+        || has_token(clauses, "AUTO")
+        || has_token(clauses, "ADD")
+        || has_token(clauses, "DEFINE")
+        || has_token(clauses, "ADDDOMAINS")
+        || has_token(clauses, "WEAPONBONUS")
+        || has_token(clauses, "EXCHANGELEVEL")
+        || has_token(clauses, "DOMAIN")
+        || has_token(clauses, "SPELLS")
+        || has_token(clauses, "SPELLLEVEL")
+        || has_token(clauses, "VISION")
+        || has_token(clauses, "NATURALATTACKS")
+        || has_token(clauses, "SR")
+        || has_token(clauses, "DR")
+        || has_token(clauses, "MOVE")
+        || has_token(clauses, "HITDIE")
+        || has_token(clauses, "KIT")
 }
 
 fn looks_like_deity(clauses: &[ParsedClause]) -> bool {

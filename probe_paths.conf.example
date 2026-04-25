@@ -1,0 +1,12 @@
+# Paths to PCGen data directories for probe tools.
+# Copy this file to probe_paths.conf and adjust for your system.
+# probe_paths.conf is gitignored and never committed.
+
+pcgen_data=/path/to/PCGen/pcgen
+bahamut_data=/path/to/BahamutDragon/pcgen
+
+# Default file opened by probe_pcc_attrs when no CLI arg is given.
+default_pcc=/path/to/PCGen/pcgen/data/3e/pcgen/renamer/pcgen_ogc_renamer.pcc
+
+# File used by probe_precampaign.
+precampaign_pcc=/path/to/PCGen/pcgen/data/pathfinder/.../example.pcc
