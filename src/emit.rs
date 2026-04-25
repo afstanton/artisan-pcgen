@@ -141,7 +141,12 @@ pub fn emit_entity(entity: &Entity, schema: &LineGrammar) -> String {
             }
             match &prereq.expression {
                 Some(expr) => parts.push(format!("{}:{}", prereq.kind, expr)),
-                None => parts.push(prereq.kind.clone()),
+                // PCGen PRE* tokens always use KEY:value format; preserve the
+                // colon even when the value is empty so the re-parser can
+                // recognise `PRETEXT:` (and similar) as a token-start boundary
+                // and split correctly rather than absorbing it into the
+                // preceding clause value.
+                None => parts.push(format!("{}:", prereq.kind)),
             }
         }
     }
@@ -843,7 +848,9 @@ fn emit_global_group(
                 }
                 match &prereq.expression {
                     Some(expr) => parts.push(format!("{}:{}", prereq.kind, expr)),
-                    None => parts.push(prereq.kind.clone()),
+                    // Always emit with colon so the re-parser sees a valid
+                    // token-start boundary (e.g. `PRETEXT:` with empty value).
+                    None => parts.push(format!("{}:", prereq.kind)),
                 }
             }
         }
