@@ -1,3 +1,6 @@
 Weapon Focus (Longsword)	CATEGORY:Special Ability	APPLIEDTO:Longsword	TYPE:Combat	BONUS:COMBAT|TOHIT|1	SOURCEPAGE:1
 Nightblade Spellcraft	CATEGORY:Special Ability	ADDSPELLLEVEL:1	SPELLLEVEL:2	INFO:Core rules sidebar	COST:22000	MULT:YES	STACK:YES	VISIBLE:QUALIFY	SPELLS:Hellknight|TIMES=3+CHA|CASTERLEVEL=TL|Discern Lies,14+CHA	EQMOD:Special Ability ~ Uses per Day / 1|CHARGES[1]	COMPANIONLIST:Animal Companion|Companion (Bear),Companion (Wolf)	FOLLOWERS:Animal Companion|1	CHANGEPROF:TYPE.Hammer=Simple	SERVESAS:ABILITY=FEAT|Endurance|Diehard	TYPE:Special.Magic	KEY:Nightblade ~ Spells	DESC:Spellcasting text	TEMPDESC:Apply this bonus while the ward is active.	FACT:ClassType|PC	BONUS:COMBAT|TOHIT|1	TEMPBONUS:PC|COMBAT|AC|2|TYPE=Morale	CHOOSE:STAT	SELECT:1	AUTO:LANG|Common	DEFINE:NightbladeUses|3+CHA	PREVARGTEQ:STR,13	SOURCEPAGE:42
 Archetype Mastery	CATEGORY:Special Ability	NEWCATEGORY:Archetype	TYPE:Special	DESC:Grants access to a new ability category.	SOURCEPAGE:88
+# SERVEAS and SERVAAS are deprecated aliases for SERVESAS; they parse identically and emit as SERVESAS.
+Alias Coverage (SERVEAS)	CATEGORY:Special Ability	SERVEAS:ABILITY=FEAT|Endurance	TYPE:Special	SOURCEPAGE:1
+Alias Coverage (SERVAAS)	CATEGORY:Special Ability	SERVAAS:ABILITY=FEAT|Iron Will	TYPE:Special	SOURCEPAGE:1

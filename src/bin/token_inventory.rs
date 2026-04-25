@@ -450,12 +450,15 @@ fn process_file(
         });
 
         // Helper closures: look up emittable/fallback by entity key first, then line number.
+        // Deprecated aliases (SERVEAS → SERVESAS, SERVAAS → SERVESAS) are resolved so that
+        // entities that will emit the canonical form still count as "fully structured".
         let in_emittable = |token: &str| -> bool {
+            let canonical = canonical_token_key(token);
             entity_key
                 .as_ref()
                 .and_then(|k| emittable_by_entity.get(k))
                 .or_else(|| emittable_by_line.get(&line_number))
-                .is_some_and(|set| set.contains(token))
+                .is_some_and(|set| set.contains(canonical))
         };
         let in_fallback = |token: &str| -> bool {
             entity_key
@@ -600,6 +603,16 @@ fn combined_token_counts(
     }
 
     combined
+}
+
+/// Resolve deprecated token aliases to the canonical key the emitter will produce.
+/// Required so that `in_emittable` correctly identifies tokens that parse under one
+/// name but always emit under another (e.g. SERVEAS / SERVAAS → SERVESAS).
+fn canonical_token_key(token: &str) -> &str {
+    match token {
+        "SERVEAS" | "SERVAAS" => "SERVESAS",
+        other => other,
+    }
 }
 
 fn extract_head_key(head: &str) -> Option<String> {

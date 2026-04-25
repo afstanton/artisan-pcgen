@@ -745,7 +745,12 @@ pub(crate) fn derive_entity_name(head: &str, clauses: &[ParsedClause]) -> Option
             }
             Some(decl_value)
         }
-        _ => Some(decl_value),
+        // For any entity whose decl_value is an empty string (e.g. standalone PCG bio
+        // tokens like `BIRTHDAY:`, `PORTRAIT:`, `SUPPRESSBIOFIELDS:`), return None so the
+        // lib.rs caller falls back to `parsed_line.head.trim()` ("BIRTHDAY:", etc.).
+        // That head-derived name is stable across roundtrips, unlike "line_N" which
+        // changes whenever blank lines or comments are dropped from the emitted text.
+        _ => if decl_value.is_empty() { None } else { Some(decl_value) },
     }
 }
 

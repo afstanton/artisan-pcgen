@@ -356,7 +356,19 @@ fn should_skip_duplicate_head_token(
         return false;
     };
 
-    serialized[0] == head_value
+    yesno_equal(token_def.grammar, &serialized[0], &head_value)
+}
+
+/// Compare a serialized token value against the raw head value, normalising YesNo variants.
+/// PCG files store "Y"/"N" but `serialize_value` produces "YES"/"NO"; without this,
+/// `should_skip_duplicate_head_token` would fail to recognise the pair as equal.
+fn yesno_equal(grammar: TokenGrammar, serialized: &str, head: &str) -> bool {
+    if matches!(grammar, TokenGrammar::YesNo) {
+        let is_truthy = |s: &str| matches!(s.to_ascii_uppercase().as_str(), "Y" | "YES" | "TRUE" | "1");
+        is_truthy(serialized) == is_truthy(head)
+    } else {
+        serialized == head
+    }
 }
 
 fn head_name_for_entity(entity: &Entity) -> &str {
