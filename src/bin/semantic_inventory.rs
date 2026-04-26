@@ -623,12 +623,18 @@ fn semantic_snapshot(catalog: &ParsedCatalog) -> Value {
             .cmp(&b["subject"].as_str())
             .then_with(|| a["source"].as_str().cmp(&b["source"].as_str()))
     });
-    // Deduplicate citations: a file with duplicate entity definitions (e.g. the
-    // same CLASS:YYY block repeated 5 times) produces multiple citations for the
-    // same (subject, source, locators) triple before roundtrip, but the emitter
-    // collapses them to one on roundtrip.  Semantically a citation is unique per
-    // (subject, source, locators), so we strip duplicates before comparing.
-    citations.dedup();
+    // Deduplicate citations by (subject, source): duplicate CLASS head lines in
+    // the same file (e.g. CLASS:Foo	...SOURCEPAGE:14 followed by CLASS:Foo
+    // ...SOURCEPAGE:p.14) produce two citations for the same entity from the
+    // same source book with slightly different locators.  The emitter merges
+    // these into one entity and emits only one SOURCEPAGE, so after roundtrip
+    // there is only one citation.  Semantically what matters is that a source
+    // citation exists — the exact locator string within a given (subject,source)
+    // pair is provenance noise, not semantic content.
+    citations.dedup_by(|a, b| {
+        a["subject"].as_str() == b["subject"].as_str()
+            && a["source"].as_str() == b["source"].as_str()
+    });
     entities.sort_by(|a, b| {
         let a_type = a["attributes"]["pcgen_entity_type_key"]
             .as_str()

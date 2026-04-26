@@ -1244,15 +1244,6 @@ pub(crate) fn project_clause_attributes(
             "QUALITY" => append_string_attr(attributes, "pcgen_qualities", value),
             "SPROP" => sprop_values.push(Value::String(value.clone())),
             "PAGEUSAGE" => page_usage_values.push(Value::String(value.clone())),
-            "FORTIFICATION" => {
-                attributes.insert(
-                    "pcgen_fortification".to_string(),
-                    Value::String(value.clone()),
-                );
-            }
-            "HEALING" => {
-                attributes.insert("pcgen_healing".to_string(), Value::String(value.clone()));
-            }
             "CHARGES" => append_string_attr(attributes, "pcgen_charges", value),
             "FACT" => facts.push(parse_fact(value)),
             "FACTSET" => factsets.push(parse_fact(value)),

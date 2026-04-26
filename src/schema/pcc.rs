@@ -333,7 +333,13 @@ pub static PCC_SCHEMA: LineGrammar = LineGrammar {
 };
 
 static LANGUAGE_INCLUDE_TOKENS: &[TokenDef] = &[
-    TokenDef::text_required("LANGUAGE", "pcgen_language_catalog"),
+    TokenDef {
+        key: "LANGUAGE",
+        grammar: TokenGrammar::PipeList,
+        cardinality: Cardinality::Repeatable,
+        artisan_mapping: ArtisanMapping::Field("pcgen_language_catalog"),
+        required: true,
+    },
     PRECAMPAIGN_TOKEN,
 ];
 static VARIABLE_INCLUDE_TOKENS: &[TokenDef] = &[

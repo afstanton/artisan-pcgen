@@ -47,13 +47,18 @@ pub fn emit_entity(entity: &Entity, schema: &LineGrammar) -> String {
                 && schema_head.is_none()
             {
                 // Entity was parsed from a TOKEN:value head (e.g. ABILITY:Category|TYPE|Name
-                // on a tab-indented continuation line), but the schema has no fixed head
-                // token. Preserve the original TOKEN:name head so the second parse sees
-                // the same token-prefixed head and assigns the same entity type.
+                // in a PCG file), but the schema has no fixed head token.  Preserve the
+                // original TOKEN:decl_value head so the second parse reconstructs the same
+                // abilities / category / decl_value attributes.
+                //
+                // Use pcgen_decl_value when available — this is the category string that was
+                // in the original head (e.g. "Ability Bonus" in `ABILITY:Ability Bonus|...`).
+                // The entity name may have been overridden by a KEY clause (e.g. "+2 Strength")
+                // and must NOT be used here, as it would change the parsed decl_value on
+                // the second pass and alter the `abilities` attribute value.
                 //
                 // Mark the token's backing field as already emitted so the token loop
-                // below doesn't also emit an ABILITY:name clause — that would cause the
-                // re-parser to double-count the value in the abilities array.
+                // below doesn't also emit an ABILITY:decl_value clause.
                 if let Some(field) = schema.tokens.iter()
                     .find(|t| t.key.eq_ignore_ascii_case(decl))
                     .and_then(|t| {
@@ -62,7 +67,13 @@ pub fn emit_entity(entity: &Entity, schema: &LineGrammar) -> String {
                 {
                     emitted_attribute_fields.insert(field);
                 }
-                format!("{decl}:{name}")
+                let head_val = entity
+                    .attributes
+                    .get("pcgen_decl_value")
+                    .and_then(Value::as_str)
+                    .filter(|v| !v.is_empty())
+                    .unwrap_or(name);
+                format!("{decl}:{head_val}")
             } else {
                 name.to_string()
             }

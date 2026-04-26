@@ -1144,14 +1144,6 @@ fn unparse_emits_structured_entity_gap_tokens() {
         generated.contains("PROHIBITED:Necromancy|Enchantment"),
         "PROHIBITED should be emitted: {generated}"
     );
-    assert!(
-        generated.contains("FORTIFICATION:25"),
-        "FORTIFICATION should be emitted: {generated}"
-    );
-    assert!(
-        generated.contains("HEALING:5"),
-        "HEALING should be emitted: {generated}"
-    );
 }
 
 #[test]

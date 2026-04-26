@@ -1,7 +1,7 @@
 === Semantic Inventory Summary ===
 Files scanned: 9447
 Total lines processed: 848333
-Semantic roundtrip: 9441 passed / 6 failed
+Semantic roundtrip: 9447 passed / 0 failed
 Canonical roundtrip: 9447 passed / 0 failed
 
 === Canonical Model Coverage Report ===
@@ -218,8 +218,6 @@ Entities with prereqs change:   0
 --- Attributes ADDED after roundtrip (emitter invents new tokens) ---
 
 --- Attributes CHANGED value after roundtrip (format normalization) ---
-    24 | abilities
-     4 | pcgen_language_catalog
 
 --- Entity types with most attribute drops (top 30) ---
 
