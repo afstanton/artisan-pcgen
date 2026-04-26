@@ -9,7 +9,9 @@ lalrpop = "0.22"
 [dependencies]
 artisan-core = { path = "../artisan-core" }
 indexmap = { workspace = true }
+serde = { workspace = true }
 serde_json = { workspace = true }
+toml = { workspace = true }
 uuid = { workspace = true, features = ["v5"] }
 logos = "0.14"
 lalrpop-util = "0.22"

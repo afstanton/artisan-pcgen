@@ -16,6 +16,7 @@ use uuid::Uuid;
 
 mod analysis;
 mod emit;
+pub mod file_emit;
 mod parsing;
 pub mod schema;
 
